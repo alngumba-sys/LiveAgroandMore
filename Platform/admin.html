@@ -264,17 +264,17 @@ input, select, textarea { font-family: inherit; }
 .kpi .kpi-trend.warn { color: var(--orange); }
 
 /* Tables */
-.tbl-wrap { background: #fff; border: 1px solid var(--ink-08); border-radius: var(--radius-lg); overflow: hidden; box-shadow: var(--shadow-card); }
+.tbl-wrap { background: #FFFDF9; border: 1px solid rgba(0,21,36,0.10); border-radius: var(--radius-lg); overflow: hidden; box-shadow: var(--shadow-card); }
 .tbl-toolbar { display: flex; align-items: center; gap: 10px; padding: 12px 16px; border-bottom: 1px solid var(--ink-08); background: #FFF6E5; flex-wrap: wrap; }
 .tbl-search { flex: 1; min-width: 180px; background: #fff; border: 1px solid var(--ink-08); border-radius: var(--radius-sm); height: 30px; padding: 0 10px; display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--ink-40); }
 .tbl-search input { border: none; background: transparent; font-size: 12px; color: var(--ink); width: 100%; outline: none; }
 .tbl-filter-chips { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
 table.dt { width: 100%; border-collapse: collapse; font-size: 12.5px; }
-table.dt th { background: #F7F2E8; color: var(--ink); font-weight: 700; font-size: 10px; text-transform: uppercase; letter-spacing: .06em; padding: 10px 14px; text-align: left; border-bottom: 1px solid var(--ink-08); white-space: nowrap; }
+table.dt th { background: #F7F2E8; color: var(--ink); font-weight: 700; font-size: 11px; text-transform: uppercase; letter-spacing: .06em; padding: 10px 14px; text-align: left; border-bottom: 1px solid rgba(0,21,36,0.10); white-space: nowrap; }
 table.dt th.r, table.dt td.r { text-align: right; font-variant-numeric: tabular-nums; }
-table.dt td { padding: 12px 14px; border-bottom: 1px solid var(--ink-05); color: var(--ink-80); vertical-align: middle; }
+table.dt td { padding: 13px 16px; border-bottom: 1px solid var(--ink-05); color: var(--ink-80); vertical-align: middle; }
 table.dt tr:last-child td { border-bottom: none; }
-table.dt tr:hover td { background: rgba(21,97,109,.03); }
+table.dt tr:hover td { background: rgba(21,97,109,.08); }
 table.dt .cell-bold { color: var(--ink); font-weight: 700; }
 .cell-avatar { display: flex; align-items: center; gap: 8px; }
 .cell-avatar .av { width: 28px; height: 28px; border-radius: 50%; background: var(--teal); color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 10px; font-family: 'Poppins'; flex-shrink: 0; }
@@ -286,6 +286,17 @@ table.dt .cell-bold { color: var(--ink); font-weight: 700; }
 .ra-btn:hover { background: var(--cream); color: var(--ink); }
 .ra-btn.danger:hover { background: rgba(120,41,15,.1); color: var(--rust); }
 .ra-btn svg { width: 14px; height: 14px; }
+
+/* ── Context menu ──────────────────────────────────────── */
+.ctx-btn { background: none; border: none; cursor: pointer; padding: 4px 8px; border-radius: 4px; color: var(--ink-60); font-size: 18px; line-height: 1; font-weight: 700; letter-spacing: 1px; }
+.ctx-btn:hover { background: rgba(21,97,109,.08); color: var(--ink); }
+.ctx-menu { position: fixed; background: #fff; border: 1px solid rgba(0,21,36,0.12); border-radius: 10px; box-shadow: 0 8px 24px rgba(0,21,36,0.14); padding: 6px 0; min-width: 160px; z-index: 9999; display: none; }
+.ctx-menu.open { display: block; }
+.ctx-menu-item { display: block; width: 100%; text-align: left; background: none; border: none; padding: 9px 16px; font-size: 13px; font-family: inherit; color: var(--ink); cursor: pointer; white-space: nowrap; }
+.ctx-menu-item:hover { background: rgba(21,97,109,.07); }
+.ctx-menu-item.danger { color: var(--rust); }
+.ctx-menu-item.danger:hover { background: rgba(120,41,15,.07); }
+.ctx-divider { height: 1px; background: rgba(0,21,36,0.08); margin: 4px 0; }
 
 /* Status chips */
 .chip { display: inline-flex; align-items: center; gap: 4px; padding: 3px 8px; border-radius: 999px; font-size: 10.5px; font-weight: 700; letter-spacing: .02em; white-space: nowrap; }
@@ -639,7 +650,7 @@ table.dt .cell-bold { color: var(--ink); font-weight: 700; }
       <!-- ── Produce Prices ────────────────────────────────── -->
       <section class="page" id="page-prices">
         <div class="pg-header">
-          <div class="pg-header-left"><h1>Produce Prices</h1><p class="pg-sub">Monthly guide prices shown to farmers under "Sell My Produce".</p></div>
+          <div class="pg-header-left"><h1 style="color:var(--orange)">Produce Prices</h1><p class="pg-sub">Monthly guide prices shown to farmers in the mobile app under "Sell My Produce". Updated by the admin team from market surveys.</p></div>
           <div class="pg-actions">
             <button class="btn btn-secondary">Import Excel</button>
             <button class="btn btn-primary" onclick="openPriceModal()">
@@ -1519,6 +1530,33 @@ table.dt .cell-bold { color: var(--ink); font-weight: 700; }
 <script type="module">
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
 
+/* ── Context menu helper ──────────────────────────────── */
+(function(){
+  const menu = document.createElement('div');
+  menu.className = 'ctx-menu';
+  menu.id = 'ctx-menu';
+  document.body.appendChild(menu);
+
+  document.addEventListener('click', function(e){
+    if (!menu.contains(e.target) && !e.target.classList.contains('ctx-btn')) {
+      menu.classList.remove('open');
+    }
+  });
+
+  window.openCtxMenu = function(btn, items) {
+    menu.innerHTML = items.map(it => {
+      if (it === '---') return '<div class="ctx-divider"></div>';
+      return `<button class="ctx-menu-item${it.danger ? ' danger' : ''}" onclick="(${it.fn.toString()})()">${it.label}</button>`;
+    }).join('');
+    menu.classList.add('open');
+    const r = btn.getBoundingClientRect();
+    const mw = 172;
+    const left = Math.min(r.right - mw, window.innerWidth - mw - 8);
+    menu.style.top  = (r.bottom + 4) + 'px';
+    menu.style.left = Math.max(8, left) + 'px';
+  };
+})();
+
 /* ── Supabase client ─────────────────────────────────── */
 const SUPABASE_URL  = 'https://nqyutflqzjjueemirgzr.supabase.co';
 const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5xeXV0ZmxxempqdWVlbWlyZ3pyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcyNzc1NDQsImV4cCI6MjA5Mjg1MzU0NH0.8UgCkfGIEZfpwtbx7ajg6IPJe6Dp4cbs2dahPIK5mYI';
@@ -2091,17 +2129,12 @@ function renderProductsTable() {
             <td>${statusPill}</td>
             <td style="font-size:11.5px;color:var(--ink-60)">${updated}</td>
             <td>
-              <div class="row-actions">
-                <button class="ra-btn" title="Edit" onclick="openProductModal('${p.id}')">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-                </button>
-                <button class="ra-btn" title="Duplicate" onclick="duplicateProduct('${p.id}')">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
-                </button>
-                <button class="ra-btn danger" title="Archive" onclick="promptArchiveProduct('${p.id}','${p.name.replace(/'/g,"\\'")}')">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2"/></svg>
-                </button>
-              </div>
+              <button class="ctx-btn" title="Actions" onclick="openCtxMenu(this, [
+                { label: 'Edit', fn: function(){ openProductModal('${p.id}') } },
+                { label: 'Duplicate', fn: function(){ toast('Coming soon', 'info') } },
+                '---',
+                { label: 'Archive', danger: true, fn: function(){ promptArchiveProduct('${p.id}','${p.name.replace(/'/g,"\\'")}') } }
+              ])">⋮</button>
             </td>
           </tr>`;
         }).join('')}
@@ -2988,28 +3021,61 @@ window.loadPrices = async function() {
   renderPrices();
 };
 
+const CROP_EMOJI = {
+  'matooke':1,  'matoke':1,   'maize':1,     'beans':1,    'coffee':1,
+  'avocado':1,  'cassava':1,  'sweet potato':1, 'groundnut':1, 'sorghum':1,
+  'sunflower':1,'sim-sim':1,  'simsim':1,
+};
+const CROP_ICON = c => {
+  const l = (c||'').toLowerCase();
+  if (l.includes('matooke')||l.includes('matoke')) return '🍌';
+  if (l.includes('maize'))     return '🌽';
+  if (l.includes('beans'))     return '🫘';
+  if (l.includes('coffee'))    return '☕';
+  if (l.includes('avocado'))   return '🥑';
+  if (l.includes('cassava'))   return '🥔';
+  if (l.includes('sweet pot')) return '🍠';
+  if (l.includes('groundnut')) return '🥜';
+  if (l.includes('sorghum'))   return '🌾';
+  if (l.includes('sunflower')) return '🌻';
+  if (l.includes('sim'))       return '🌱';
+  return '🌿';
+};
+
 function renderPriceTable(rows, editable) {
   if (!rows.length) return '<div style="padding:48px;text-align:center;color:var(--ink-40)">No prices for this period.</div>';
-  const ugx = n => n == null ? '<span style="color:var(--ink-20)">—</span>' : 'UGX ' + Number(n).toLocaleString();
-  return `<table class="data-table">
+  const fmtP = n => n == null ? null : Number(n);
+  const cell = (n, isMax) => n == null
+    ? '<span style="color:var(--ink-20)">—</span>'
+    : `<span style="font-weight:600;font-size:13.5px;font-variant-numeric:tabular-nums;${isMax ? 'color:var(--teal)' : ''}">UGX ${Number(n).toLocaleString()}</span>`;
+
+  return `<table class="dt" style="font-size:13px">
     <thead><tr>
-      <th>Crop</th><th>Unit</th>
-      <th style="text-align:right">Central</th>
-      <th style="text-align:right">Eastern</th>
-      <th style="text-align:right">Northern</th>
-      <th style="text-align:right">Western</th>
-      ${editable ? '<th></th>' : ''}
+      <th style="min-width:180px">CROP</th>
+      <th>UNIT</th>
+      <th style="text-align:right">CENTRAL</th>
+      <th style="text-align:right">EASTERN</th>
+      <th style="text-align:right">NORTHERN</th>
+      <th style="text-align:right">WESTERN</th>
+      ${editable ? '<th style="width:40px"></th>' : ''}
     </tr></thead>
     <tbody>
-    ${rows.map(r => `<tr>
-      <td style="font-weight:600">${r.crop}</td>
-      <td><span class="chip chip-ghost">${r.unit}</span></td>
-      <td style="text-align:right;font-variant-numeric:tabular-nums">${ugx(r.central_ugx)}</td>
-      <td style="text-align:right;font-variant-numeric:tabular-nums">${ugx(r.eastern_ugx)}</td>
-      <td style="text-align:right;font-variant-numeric:tabular-nums">${ugx(r.northern_ugx)}</td>
-      <td style="text-align:right;font-variant-numeric:tabular-nums">${ugx(r.western_ugx)}</td>
-      ${editable ? `<td><button class="btn btn-ghost btn-sm" onclick="openPriceModal('${r.id}')">Edit</button></td>` : ''}
-    </tr>`).join('')}
+    ${rows.map(r => {
+      const vals = [r.central_ugx, r.eastern_ugx, r.northern_ugx, r.western_ugx].map(fmtP);
+      const maxVal = Math.max(...vals.filter(v => v != null));
+      const isMax = v => v != null && v === maxVal;
+      return `<tr>
+        <td style="font-weight:700">${CROP_ICON(r.crop)} ${r.crop}</td>
+        <td><span class="chip chip-ghost" style="font-size:11px">${r.unit}</span></td>
+        <td style="text-align:right">${cell(r.central_ugx,  isMax(r.central_ugx))}</td>
+        <td style="text-align:right">${cell(r.eastern_ugx,  isMax(r.eastern_ugx))}</td>
+        <td style="text-align:right">${cell(r.northern_ugx, isMax(r.northern_ugx))}</td>
+        <td style="text-align:right">${cell(r.western_ugx,  isMax(r.western_ugx))}</td>
+        ${editable ? `<td style="text-align:center">
+          <button class="ctx-btn" style="font-size:15px;padding:2px 6px" onclick="openPriceModal('${r.id}')" title="Edit">✏️</button>
+        </td>` : ''}
+      </tr>`;
+    }).join('')}
     </tbody>
   </table>`;
 }
@@ -3063,9 +3129,16 @@ function renderPrices() {
   const months = [...new Set(PRC.rows.map(r => r.month?.slice(0, 7)).filter(Boolean))].sort().reverse();
   const latestMonth = months[0] || new Date().toISOString().slice(0, 7);
   const rows = PRC.rows.filter(r => r.month?.slice(0, 7) === latestMonth);
-  el.innerHTML = `<div style="padding:10px 16px 8px;background:var(--ink-05);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-60)">
-    ${new Date(latestMonth + '-01').toLocaleDateString('en-UG', { month: 'long', year: 'numeric' })}
-  </div>${renderPriceTable(rows, true)}`;
+  const monthLabel = new Date(latestMonth + '-01').toLocaleDateString('en-UG', { month: 'long', year: 'numeric' });
+  el.innerHTML = `
+    <div style="padding:10px 16px 8px;background:var(--ink-05);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-60);display:flex;align-items:center;gap:10px">
+      ${monthLabel}
+      <span style="background:var(--orange);color:#fff;font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;text-transform:uppercase;letter-spacing:.04em">Active</span>
+    </div>
+    <div style="margin:12px 16px;padding:10px 14px;background:rgba(21,97,109,.06);border-left:3px solid var(--teal);border-radius:0 8px 8px 0;font-size:12.5px;color:var(--ink-80)">
+      <strong>✏️ Click the edit icon on any row to update prices.</strong> Changes go live in the mobile app within 30 seconds. The highest regional price is highlighted in teal.
+    </div>
+    ${renderPriceTable(rows, true)}`;
 }
 
 window.switchPricesTab = function(tab, el) {
@@ -3399,8 +3472,12 @@ function renderHire() {
           ${!r.active ? ' <span class="chip chip-rust" style="margin-top:2px">Inactive</span>' : ''}
         </td>
         <td style="white-space:nowrap">
-          <button class="btn btn-ghost btn-sm" onclick="openHireModal('${r.id}')">Edit</button>
-          <button class="btn btn-ghost btn-sm" onclick="toggleHireActive('${r.id}',${!r.active})">${r.active ? 'Deactivate' : 'Activate'}</button>
+          <button class="ctx-btn" title="Actions" onclick="openCtxMenu(this, [
+            { label: 'Edit', fn: function(){ openHireModal('${r.id}') } },
+            { label: '${r.active ? 'Deactivate' : 'Activate'}', fn: function(){ toggleHireActive('${r.id}',${!r.active}) } },
+            '---',
+            { label: 'Remove', danger: true, fn: function(){ removeHireProvider('${r.id}') } }
+          ])">⋮</button>
         </td>
       </tr>`;
     }).join('')}
@@ -3486,6 +3563,18 @@ window.toggleHireActive = async function(id, active) {
   loadHire();
 };
 
+window.removeHireProvider = async function(id) {
+  if (String(id).startsWith('hf')) {
+    toast('This is demo data — connect to Supabase to make changes.', 'info');
+    return;
+  }
+  if (!confirm('Remove this provider? This cannot be undone.')) return;
+  const { error } = await sb.from('hire_providers').delete().eq('id', id);
+  if (error) { toast(error.message, 'error'); return; }
+  toast('Provider removed.', 'success');
+  loadHire();
+};
+
 /* ══════════════════════════════════════════════════════
    ADVISORY CONTENT
 ══════════════════════════════════════════════════════ */
@@ -3552,10 +3641,12 @@ function renderAdvisory() {
       <td style="white-space:nowrap">${fmtDate(r.published_at)}</td>
       <td>${statusChip(r.visibility === 'public' ? 'active' : r.visibility === 'draft' ? 'draft' : 'pending')}</td>
       <td style="white-space:nowrap">
-        ${r.source_url ? `<a href="${r.source_url}" target="_blank" class="btn btn-ghost btn-sm" rel="noopener">View ↗</a>` : ''}
-        <button class="btn btn-ghost btn-sm" onclick="openAdvisoryModal('${r.id}')">Edit</button>
-        <button class="btn btn-ghost btn-sm" style="color:var(--rust)"
-                onclick="deleteAdvisory('${r.id}','${(r.title||'').replace(/'/g,"\\'")}')">Delete</button>
+        <button class="ctx-btn" title="Actions" onclick="openCtxMenu(this, [
+          ${r.source_url ? `{ label: 'View ↗', fn: function(){ window.open('${r.source_url.replace(/'/g,"\\'")}','_blank','noopener') } },` : ''}
+          { label: 'Edit', fn: function(){ openAdvisoryModal('${r.id}') } },
+          '---',
+          { label: 'Delete', danger: true, fn: function(){ deleteAdvisory('${r.id}','${(r.title||'').replace(/'/g,"\\'")}') } }
+        ])">⋮</button>
       </td>
     </tr>`).join('')}
     </tbody>
@@ -3888,9 +3979,12 @@ function renderNotifications() {
         <td>${statusChip(r.status)}</td>
         <td style="white-space:nowrap">
           ${r.status !== 'sent' ? `
-            <button class="btn btn-ghost btn-sm" onclick="openNotifModal('${r.id}')">Edit</button>
-            <button class="btn btn-primary btn-sm" onclick="sendNotifNow('${r.id}')">Send Now</button>
-            <button class="btn btn-ghost btn-sm" style="color:var(--rust)" onclick="deleteNotif('${r.id}')">Delete</button>
+            <button class="ctx-btn" title="Actions" onclick="openCtxMenu(this, [
+              { label: 'Edit', fn: function(){ openNotifModal('${r.id}') } },
+              { label: 'Send Now', fn: function(){ sendNotifNow('${r.id}') } },
+              '---',
+              { label: 'Delete', danger: true, fn: function(){ deleteNotif('${r.id}') } }
+            ])">⋮</button>
           ` : '—'}
         </td>
       </tr>`;
