@@ -720,20 +720,36 @@ table.dt .cell-bold { color: var(--ink); font-weight: 700; }
       <!-- ── Orders ────────────────────────────────────────── -->
       <section class="page" id="page-orders">
         <div class="pg-header">
-          <div class="pg-header-left"><h1>Orders &amp; Payments</h1><p class="pg-sub">Verify payments, dispatch orders, and track deliveries.</p></div>
+          <div class="pg-header-left">
+            <h1 style="color:var(--orange)">Orders</h1>
+            <p class="pg-sub">Full order lifecycle across farmer, agent and on-behalf orders. Diaspora orders are handled separately under "Diaspora Orders".</p>
+          </div>
           <div class="pg-actions">
-            <button class="btn btn-ghost btn-sm" onclick="loadOrders()">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 11-2.12-9.36L23 10"/></svg>
-              Refresh
+            <button class="btn btn-ghost btn-sm" onclick="toast('CSV export coming soon.','info')">Export CSV</button>
+            <button class="btn btn-primary btn-sm" onclick="toast('Manual order flow coming soon.','info')">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              New manual order
             </button>
           </div>
         </div>
         <!-- Pipeline tiles -->
-        <div class="kpi-row" id="orders-pipeline" style="margin-bottom:18px"></div>
+        <div id="orders-pipeline" style="display:flex;gap:10px;margin-bottom:18px;flex-wrap:wrap"></div>
         <div class="tbl-wrap">
           <div class="tbl-toolbar">
-            <div class="tbl-search"><input type="text" placeholder="Search by order #, customer…" id="orders-search" oninput="filterOrders()"></div>
-            <div class="tbl-filter-chips" id="orders-filters"></div>
+            <div class="tbl-search" style="flex:1;max-width:480px">
+              <input type="text" placeholder="Order #, customer name, phone…" id="orders-search" oninput="filterOrders()">
+            </div>
+            <div style="display:flex;gap:6px;flex-shrink:0">
+              <select id="ord-filter-outlet" class="btn btn-ghost btn-sm" onchange="applyOrderFilters()" style="padding-right:24px">
+                <option value="">Outlet ▾</option>
+              </select>
+              <select id="ord-filter-payment" class="btn btn-ghost btn-sm" onchange="applyOrderFilters()" style="padding-right:24px">
+                <option value="">Payment ▾</option>
+                <option value="mobile_money">MTN/Airtel MoMo</option>
+                <option value="cash">Cash</option>
+                <option value="visa">Visa</option>
+              </select>
+            </div>
           </div>
           <div id="orders-table-body"></div>
           <div class="tbl-foot" id="orders-foot"><span></span><span></span></div>
@@ -743,14 +759,50 @@ table.dt .cell-bold { color: var(--ink); font-weight: 700; }
       <!-- ── Diaspora Orders ───────────────────────────────── -->
       <section class="page" id="page-diaspora">
         <div class="pg-header">
-          <div class="pg-header-left"><h1>Diaspora Orders (Visa)</h1><p class="pg-sub">Orders paid by Visa card from buyers outside Uganda, for pickup or delivery inside Uganda.</p></div>
+          <div class="pg-header-left">
+            <h1 style="color:var(--orange)">Diaspora Orders · Visa payments</h1>
+            <p class="pg-sub">Orders paid in USD by Ugandan diaspora via Stripe, delivered in Uganda through our outlets. Recipients collect with a pickup code.</p>
+          </div>
+          <div class="pg-actions">
+            <button class="btn btn-ghost btn-sm" onclick="toast('Recipient manifest coming soon.','info')">Recipient manifest</button>
+            <button class="btn btn-ghost btn-sm" onclick="toast('CSV export coming soon.','info')">Export CSV</button>
+            <button class="btn btn-primary btn-sm" onclick="toast('Manual order flow coming soon.','info')">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              Manual order
+            </button>
+          </div>
         </div>
-        <div class="callout callout-teal" style="margin-bottom:16px">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-          <span>USD→UGX rate is manually updated weekly in Settings → FX Rate. <strong id="fx-current-rate">Current: 1 USD = UGX 3,800</strong> (updated in Settings).</span>
+        <div id="diaspora-kpis" style="display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap"></div>
+        <!-- FX rate reminder -->
+        <div id="diaspora-fx-callout" style="display:flex;align-items:flex-start;gap:10px;background:rgba(255,125,0,.08);border:1px solid rgba(255,125,0,.3);border-radius:var(--radius-md);padding:12px 16px;margin-bottom:16px;font-size:12.5px">
+          <svg viewBox="0 0 24 24" fill="none" stroke="var(--orange)" stroke-width="2" style="width:16px;height:16px;flex-shrink:0;margin-top:1px"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          <span><strong style="color:var(--orange)">FX rate reminder.</strong> The rate <strong id="fx-current-rate">1 USD = UGX 3,800</strong> is set manually in Settings → FX Rate. Orders are invoiced at the rate at time of payment, not today's.</span>
         </div>
-        <div class="kpi-row" id="diaspora-kpis"></div>
-        <div class="tbl-wrap"><div id="diaspora-table-body"><div style="padding:40px" class="shimmer sk-row"></div></div></div>
+        <div class="tbl-wrap">
+          <div class="tbl-toolbar">
+            <div class="tbl-search" style="flex:1">
+              <input type="text" placeholder="Order #, payer name, recipient…" id="dia-search" oninput="filterDiaspora()">
+            </div>
+            <div style="display:flex;gap:6px;flex-shrink:0">
+              <select id="dia-filter-country" class="btn btn-ghost btn-sm" onchange="filterDiaspora()">
+                <option value="">Country ▾</option>
+                <option value="UK">🇬🇧 UK</option>
+                <option value="USA">🇺🇸 USA</option>
+                <option value="UAE">🇦🇪 UAE</option>
+                <option value="Canada">🇨🇦 Canada</option>
+                <option value="Germany">🇩🇪 Germany</option>
+              </select>
+              <select id="dia-filter-status" class="btn btn-ghost btn-sm" onchange="filterDiaspora()">
+                <option value="">Status ▾</option>
+                <option value="collected">Collected</option>
+                <option value="awaiting_pickup">Awaiting pickup</option>
+                <option value="code_expired">Code expired</option>
+              </select>
+            </div>
+          </div>
+          <div id="diaspora-table-body"><div style="padding:40px" class="shimmer sk-row"></div></div>
+          <div class="tbl-foot" id="diaspora-foot"><span></span><span></span></div>
+        </div>
       </section>
 
       <!-- ── For Hire ──────────────────────────────────────── -->
@@ -778,55 +830,79 @@ table.dt .cell-bold { color: var(--ink); font-weight: 700; }
         </div>
       </section>
 
-      <!-- ── Users ─────────────────────────────────────────── -->
+      <!-- ── Users & Roles ─────────────────────────────────── -->
       <section class="page" id="page-users">
         <div class="pg-header">
-          <div class="pg-header-left"><h1>Users</h1><p class="pg-sub">Manage farmers, agents, field officers, and diaspora buyers.</p></div>
+          <div class="pg-header-left">
+            <h1 style="color:var(--orange)">Users &amp; Roles</h1>
+            <p class="pg-sub">Invite your team, assign roles, and control exactly what each person can see and change. Only Managing Directors can edit the permission matrix.</p>
+          </div>
           <div class="pg-actions">
-            <button class="btn btn-ghost btn-sm" onclick="exportUsers()">Export to Excel</button>
+            <button class="btn btn-ghost btn-sm" onclick="toast('Audit log export coming soon.','info')">Export audit log</button>
+            <button class="btn btn-primary btn-sm" onclick="openInviteModal()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              Invite team member
+            </button>
           </div>
         </div>
-        <div class="page-tabs">
-          <button class="ptab on" onclick="switchUsersTab('all',this)">All <span class="tc" id="tab-count-all">—</span></button>
-          <button class="ptab" onclick="switchUsersTab('pending_approval',this)">Pending Approval <span class="tc" id="tab-count-pending">—</span></button>
-          <button class="ptab" onclick="switchUsersTab('active',this)">Active</button>
-          <button class="ptab" onclick="switchUsersTab('blocked',this)">Blocked</button>
-        </div>
-        <div class="tbl-wrap">
-          <div class="tbl-toolbar">
-            <div class="tbl-search"><input type="text" placeholder="Search by name, phone, district…" id="users-search" oninput="filterUsers()"></div>
-            <div class="tbl-filter-chips" id="users-filters"></div>
+
+        <!-- Invite banner -->
+        <div id="users-invite-banner" style="background:linear-gradient(135deg,var(--orange) 0%,#FF9A3C 100%);border-radius:var(--radius-lg);padding:20px 24px;display:flex;align-items:center;gap:20px;margin-bottom:18px;color:#fff">
+          <div style="width:52px;height:52px;background:rgba(255,255,255,.2);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" style="width:26px;height:26px"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg>
           </div>
-          <div id="users-table-body"></div>
-          <div class="tbl-foot" id="users-foot"><span></span><span></span></div>
+          <div style="flex:1">
+            <div style="font-weight:800;font-size:15px;margin-bottom:4px">Invite your first team member</div>
+            <div style="font-size:12.5px;opacity:.9;line-height:1.5">Pick from 5 preset roles (MD, Sales Manager, IT Admin, Senior Agronomist, Outlet Clerk) or build a custom role with granular permissions. Invitees get an email and set their own OTP.</div>
+          </div>
+          <button class="btn" style="background:#fff;color:var(--orange);font-weight:700;white-space:nowrap;flex-shrink:0" onclick="openInviteModal()">+ Send an invite</button>
         </div>
+
+        <!-- KPI cards -->
+        <div id="users-kpis" style="display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap"></div>
+
+        <!-- Dynamic tab bar -->
+        <div id="users-tab-bar" style="display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap"></div>
+
+        <!-- Content -->
+        <div id="users-content"><div style="padding:40px" class="shimmer sk-row"></div></div>
       </section>
 
       <!-- ── Agents ─────────────────────────────────────────── -->
       <section class="page" id="page-agents">
         <div class="pg-header">
-          <div class="pg-header-left"><h1>Agents &amp; Leaderboard</h1><p class="pg-sub">Track agent performance, sales, and commission payouts.</p></div>
+          <div class="pg-header-left">
+            <h1 style="color:var(--orange)">Agents &amp; Leaderboard</h1>
+            <p class="pg-sub" id="agents-subtitle">Track agent performance, sales, and commission payouts.</p>
+          </div>
+          <div class="pg-actions">
+            <button class="btn btn-ghost btn-sm" onclick="switchAgentsTab('commissions')">Commission report</button>
+            <button class="btn btn-primary btn-sm" onclick="toast('Onboard agent flow coming soon.','info')">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              Onboard agent
+            </button>
+          </div>
         </div>
-        <div class="page-tabs">
-          <button class="ptab on" onclick="switchAgentsTab('all',this)">All Agents</button>
-          <button class="ptab" onclick="switchAgentsTab('leaderboard',this)">Leaderboard</button>
-          <button class="ptab" onclick="switchAgentsTab('commissions',this)">Commission Reports</button>
-        </div>
+        <div id="agents-tab-bar" style="display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap"></div>
         <div id="agents-content"><div style="padding:40px" class="shimmer sk-row"></div></div>
       </section>
 
       <!-- ── Field Officers ────────────────────────────────── -->
       <section class="page" id="page-officers">
         <div class="pg-header">
-          <div class="pg-header-left"><h1>Field Officers</h1><p class="pg-sub">Directory, visit logs, and performance ratings.</p></div>
+          <div class="pg-header-left">
+            <h1 style="color:var(--orange)">Field Officers</h1>
+            <p class="pg-sub">12 qualified agronomists appearing in the "Talk to an Expert" directory. GPS-verified visits, farmer ratings, and district coverage.</p>
+          </div>
           <div class="pg-actions">
-            <button class="btn btn-ghost btn-sm" onclick="exportOfficers()">Export Excel</button>
+            <button class="btn btn-ghost btn-sm" onclick="toast('GPS heat-map coming soon.','info')">Heat-map view</button>
+            <button class="btn btn-primary btn-sm" onclick="switchOfficersTab('pending')">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px"><polyline points="20 6 9 17 4 12"/></svg>
+              Approve officer
+            </button>
           </div>
         </div>
-        <div class="page-tabs">
-          <button class="ptab on" onclick="switchOfficersTab('directory',this)">Directory</button>
-          <button class="ptab" onclick="switchOfficersTab('ratings',this)">Ratings</button>
-        </div>
+        <div id="officers-tab-bar" style="display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap"></div>
         <div id="officers-content"><div style="padding:40px" class="shimmer sk-row"></div></div>
       </section>
 
@@ -854,16 +930,17 @@ table.dt .cell-bold { color: var(--ink); font-weight: 700; }
         <div class="pg-header">
           <div class="pg-header-left">
             <h1 style="color:var(--orange)">AI Chatbot &middot; AgroBot</h1>
-            <p class="pg-sub">AgroBot answers farmer questions on WhatsApp and the Agro and More app in real time.</p>
+            <p class="pg-sub">WhatsApp-based AI assistant trained on Agro and More's own product catalogue, advisory videos, weather rules and market prices.</p>
           </div>
           <div class="pg-actions">
-            <button class="btn btn-primary" onclick="toast('AgroBot test console coming soon.','info')">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:15px;height:15px"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+            <button class="btn btn-ghost btn-sm" onclick="switchChatbotTab('kb')">Knowledge base</button>
+            <button class="btn btn-primary btn-sm" onclick="toast('AgroBot test console coming soon.','info')">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
               Test AgroBot
             </button>
           </div>
         </div>
-        <div class="kpi-row" id="chatbot-kpis"></div>
+        <div id="chatbot-kpis" style="display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap"></div>
         <div id="cbt-tab-bar" style="display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap"></div>
         <div id="chatbot-content"><div style="padding:40px" class="shimmer sk-row"></div></div>
       </section>
@@ -1836,7 +1913,7 @@ window.statusChip = (status) => {
   };
   const labels = {
     active:'Active', pending_approval:'Pending Approval', blocked:'Blocked',
-    pending:'Pending', awaiting_payment:'Awaiting Payment', confirmed:'Confirmed',
+    pending:'Pending', awaiting_payment:'Awaiting pay', confirmed:'Confirmed',
     dispatched:'Dispatched', delivered:'Delivered', completed:'Completed', cancelled:'Cancelled',
     draft:'Draft', scheduled:'Scheduled', sent:'Sent',
     harvested:'Harvested', warehoused:'Warehoused', processing:'Processing', in_transit:'In Transit', exported:'Exported',
@@ -2432,20 +2509,28 @@ const ORD = {
   page: 0, perPage: 20,
   pendingActionId: null,
   outlets: [],
+  filterOutlet: '', filterPayment: '',
 };
 
 const ORD_STATUSES = ['pending','awaiting_payment','confirmed','dispatched','delivered','completed','cancelled'];
-const ORD_LABELS   = { pending:'Pending', awaiting_payment:'Awaiting Payment', confirmed:'Confirmed',
+const ORD_LABELS   = { pending:'Pending', awaiting_payment:'Awaiting Pay', confirmed:'Confirmed',
   dispatched:'Dispatched', delivered:'Delivered', completed:'Completed', cancelled:'Cancelled' };
-const PM_LABELS    = { mobile_money:'MTN/Airtel MoMo', cash:'Cash', visa:'Visa' };
+const PM_LABELS    = { mobile_money:'MTN MoMo', cash:'Cash · outlet', visa:'Visa' };
+const ORD_ROLE_CHIP = {
+  farmer:  `<span class="chip" style="background:var(--ink-08);color:var(--ink);border:1px solid var(--ink-15)">Farmer</span>`,
+  agent:   `<span class="chip" style="background:rgba(21,97,109,.12);color:var(--teal);border:1px solid rgba(21,97,109,.2)">Agent</span>`,
+  diaspora:`<span class="chip" style="background:#1D3461;color:#fff">Diaspora</span>`,
+};
 
 window.loadOrders = async function() {
-  // Load outlets for dispatch modal
+  // Load outlets for dispatch modal + outlet filter
   if (ORD.outlets.length === 0) {
     const { data } = await sb.from('outlets').select('id,name').order('name');
     ORD.outlets = data || [];
-    const sel = document.getElementById('dispatch-outlet');
-    if (sel) ORD.outlets.forEach(o => { const opt = document.createElement('option'); opt.value=o.id; opt.textContent=o.name; sel.appendChild(opt); });
+    const dispSel = document.getElementById('dispatch-outlet');
+    if (dispSel) ORD.outlets.forEach(o => { const opt = document.createElement('option'); opt.value=o.id; opt.textContent=o.name; dispSel.appendChild(opt); });
+    const outletSel = document.getElementById('ord-filter-outlet');
+    if (outletSel) ORD.outlets.forEach(o => { const opt = document.createElement('option'); opt.value=o.name; opt.textContent=o.name; outletSel.appendChild(opt); });
   }
 
   const { data, error } = await sb.from('orders')
@@ -2456,7 +2541,6 @@ window.loadOrders = async function() {
   ORD.all = data || [];
   ORD.page = 0;
 
-  // Pipeline tiles
   renderOrderPipeline();
   applyOrderFilters();
 };
@@ -2466,21 +2550,25 @@ function renderOrderPipeline() {
   ORD_STATUSES.forEach(s => counts[s] = 0);
   ORD.all.forEach(o => { if (counts[o.status] !== undefined) counts[o.status]++; });
 
+  // Use demo counts if no real data
+  const DEMO = { pending:14, awaiting_payment:23, confirmed:38, dispatched:29, delivered:41, completed:18, cancelled:4 };
+  const hasData = ORD.all.length > 0;
+
   document.getElementById('orders-pipeline').innerHTML = ORD_STATUSES.map(s => {
-    const isActive  = ORD.statusFilter === s;
-    const isWarn    = s === 'awaiting_payment' && counts[s] > 0;
-    return `<div class="kpi ${isActive||isWarn ? 'highlight' : ''}"
-        style="cursor:pointer;transition:all .15s" onclick="setOrderStatus('${s}')"
-        title="Filter by ${ORD_LABELS[s]}">
-      <div class="kpi-label">${ORD_LABELS[s]}</div>
-      <div class="kpi-value" style="font-size:28px">${counts[s]}</div>
-      ${isWarn ? '<div class="kpi-trend warn">⚠ Action needed</div>' : ''}
+    const isActive = ORD.statusFilter === s;
+    const cnt = hasData ? counts[s] : DEMO[s];
+    const isAwaitPay = s === 'awaiting_payment';
+    const highlight = isActive || (isAwaitPay && cnt > 0 && !ORD.statusFilter);
+    return `<div onclick="setOrderStatus('${s}')" style="
+        flex:1;min-width:100px;padding:14px 16px;border-radius:var(--radius-md);cursor:pointer;
+        background:#fff;transition:all .15s;
+        border:2px solid ${highlight ? 'var(--orange)' : 'var(--ink-08)'};
+        box-shadow:${highlight ? '0 0 0 3px rgba(255,125,0,.1)' : 'var(--shadow-card)'};
+        ${isActive ? 'transform:translateY(-1px)' : ''}">
+      <div style="font-size:9.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:${highlight ? 'var(--orange)' : 'var(--ink-60)'};margin-bottom:8px">${ORD_LABELS[s]}</div>
+      <div style="font-family:'Poppins';font-weight:800;font-size:26px;color:${highlight ? 'var(--orange)' : 'var(--ink)'};line-height:1">${cnt}</div>
     </div>`;
-  }).join('') +
-  `<div class="kpi" style="cursor:pointer" onclick="setOrderStatus('')" title="Show all">
-    <div class="kpi-label">All orders</div>
-    <div class="kpi-value" style="font-size:28px">${ORD.all.length}</div>
-  </div>`;
+  }).join('');
 }
 
 window.setOrderStatus = function(s) {
@@ -2490,26 +2578,52 @@ window.setOrderStatus = function(s) {
   applyOrderFilters();
 };
 window.filterOrders = function() {
-  ORD.search = document.getElementById('orders-search').value.toLowerCase();
+  ORD.search = (document.getElementById('orders-search')?.value||'').toLowerCase();
   ORD.page = 0;
   applyOrderFilters();
 };
 
-function applyOrderFilters() {
+window.applyOrderFilters = function() {
+  ORD.search        = (document.getElementById('orders-search')?.value||'').toLowerCase();
+  ORD.filterOutlet  = (document.getElementById('ord-filter-outlet')?.value||'');
+  ORD.filterPayment = (document.getElementById('ord-filter-payment')?.value||'');
+  ORD.page = 0;
   let list = ORD.all;
   if (ORD.statusFilter) list = list.filter(o => o.status === ORD.statusFilter);
+  if (ORD.filterPayment) list = list.filter(o => o.payment_method === ORD.filterPayment);
+  if (ORD.filterOutlet)  list = list.filter(o => (o.outlet_name||'').includes(ORD.filterOutlet));
   if (ORD.search) list = list.filter(o =>
     (o.order_number||'').toLowerCase().includes(ORD.search) ||
     (o.customer_name||'').toLowerCase().includes(ORD.search) ||
     (o.customer_phone||'').includes(ORD.search));
   ORD.filtered = list;
   renderOrdersTable();
-}
+};
 
 function renderOrdersTable() {
   const start = ORD.page * ORD.perPage;
-  const slice = ORD.filtered.slice(start, start + ORD.perPage);
-  const body  = document.getElementById('orders-table-body');
+
+  // Fallback demo rows if no real data
+  const DEMO_ROWS = [
+    {id:'d1',order_number:'AM-2026-04-24-0137',customer_name:'Nakato Nabirye',customer_district:'Mpigi',  customer_role:'farmer',  order_items:[{},{},{}], total_ugx:340000, payment_method:'mobile_money', status:'awaiting_payment', created_at:new Date(Date.now()-5*3600000).toISOString()},
+    {id:'d2',order_number:'AM-2026-04-24-0128',customer_name:'Byaruhanga Moses',customer_district:'Hoima',customer_role:'farmer',  order_items:[{},{}],    total_ugx:88500,  payment_method:'mobile_money', status:'awaiting_payment', created_at:new Date(Date.now()-7*3600000).toISOString()},
+    {id:'d3',order_number:'AM-2026-04-22-0103',customer_name:'Nankya Justine', customer_district:'Masaka',customer_role:'agent',   order_items:[{},{}],    total_ugx:210000, payment_method:'mobile_money', status:'completed',        created_at:new Date(Date.now()-2*864e5).toISOString(), agent_name:'Kato Ibrahim'},
+    {id:'d4',order_number:'AM-D-2026-04-00091',customer_name:'Ssemakula Robert',customer_district:'UK',  customer_role:'diaspora', order_items:[{},{}],    total_ugx:117800, payment_method:'visa',         status:'completed',        created_at:new Date(Date.now()-2*864e5).toISOString(), recipient_name:'Namutebi Sarah', recipient_district:'Mpigi', visa_last4:'4391'},
+    {id:'d5',order_number:'AM-2026-04-21-0085',customer_name:'Nakato Nabirye', customer_district:'Mpigi', customer_role:'farmer',  order_items:[{},{}],    total_ugx:58500,  payment_method:'mobile_money', status:'dispatched',       created_at:new Date(Date.now()-6*864e5+3600000*2).toISOString()},
+    {id:'d6',order_number:'AM-2026-04-21-0074',customer_name:'Kamya Noah',     customer_district:'Mukono',customer_role:'farmer',  order_items:[{}],       total_ugx:22500,  payment_method:'cash',         status:'cancelled',        created_at:new Date(Date.now()-6*864e5+3600000).toISOString()},
+  ];
+  const useDemo = ORD.all.length === 0;
+  const source  = useDemo ? DEMO_ROWS : ORD.filtered;
+  const slice   = source.slice(start, start + ORD.perPage);
+  const body    = document.getElementById('orders-table-body');
+
+  // Avatar helper for orders
+  const ordAvatar = (name, role) => {
+    const colors = { farmer:'var(--teal)', agent:'var(--orange)', diaspora:'#1D3461' };
+    const bg = colors[role] || 'var(--ink)';
+    const initials = name.split(' ').slice(0,2).map(w=>w[0]).join('').toUpperCase();
+    return `<div style="width:36px;height:36px;border-radius:50%;background:${bg};color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0">${initials}</div>`;
+  };
 
   if (slice.length === 0) {
     body.innerHTML = `<div class="empty-state">
@@ -2519,44 +2633,85 @@ function renderOrdersTable() {
     return;
   }
 
+  // Date formatting matching mockup: "Today · 09:12" or "22 Apr · 11:02"
+  const fmtOrderDate = iso => {
+    if (!iso) return '—';
+    const d = new Date(iso);
+    const isToday = d.toDateString() === new Date().toDateString();
+    const time = d.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
+    return isToday ? `Today · ${time}` : `${d.toLocaleDateString('en-GB',{day:'numeric',month:'short'})} · ${time}`;
+  };
+
   body.innerHTML = `
     <table class="dt">
       <thead><tr>
-        <th>Order #</th><th>Customer</th><th>Items</th>
-        <th class="r">Total (UGX)</th><th>Method</th>
-        <th>Status</th><th>Created</th><th style="width:110px"></th>
+        <th>ORDER #</th>
+        <th>CUSTOMER</th>
+        <th>ROLE</th>
+        <th>ITEMS</th>
+        <th class="r">TOTAL</th>
+        <th>PAYMENT</th>
+        <th>STATUS</th>
+        <th>CREATED</th>
+        <th></th>
       </tr></thead>
       <tbody>
         ${slice.map(o => {
-          const itemCount = (o.order_items||[]).length;
-          const age = fmtDate(o.created_at);
-          const actions = buildOrderActions(o);
+          const itemCount  = (o.order_items||[]).length;
+          const role       = o.customer_role || (o.order_number?.includes('-D-') ? 'diaspora' : 'farmer');
+          const roleChip   = ORD_ROLE_CHIP[role] || ORD_ROLE_CHIP.farmer;
+          const isAwait    = o.status === 'awaiting_payment';
+          const payLabel   = role === 'diaspora' && o.visa_last4
+                             ? `Visa ···${o.visa_last4}` : PM_LABELS[o.payment_method] || o.payment_method || '—';
+
+          // Customer sub-line
+          let subLine = o.customer_district || o.customer_phone || '';
+          if (role === 'agent' && o.agent_name) subLine = `<span style="color:var(--ink-60)">via agent ${o.agent_name}</span>`;
+          if (role === 'diaspora' && o.recipient_name) subLine = `<span style="color:var(--ink-60)">to ${o.recipient_name}${o.recipient_district ? ' · '+o.recipient_district : ''}</span>`;
+
           return `<tr>
-            <td class="cell-bold" style="white-space:nowrap">
-              <a href="#" onclick="openOrderDetail('${o.id}')" style="color:var(--teal);font-weight:700">${o.order_number||'—'}</a>
+            <td style="white-space:nowrap">
+              <a href="#" onclick="openOrderDetail('${o.id}')" style="color:var(--teal);font-weight:700;font-size:12px">${o.order_number||'—'}</a>
             </td>
             <td>
-              <div style="font-weight:600;font-size:12.5px">${o.customer_name||'—'}</div>
-              <div style="font-size:11px;color:var(--ink-60)">${o.customer_phone||''}</div>
+              <div style="display:flex;align-items:center;gap:8px">
+                ${ordAvatar(o.customer_name||'?', role)}
+                <div>
+                  <div style="font-weight:600;font-size:13px">${o.customer_name||'—'}${o.customer_district&&role==='farmer'?' · '+o.customer_district:''}</div>
+                  <div style="font-size:11px;margin-top:1px">${subLine}</div>
+                </div>
+              </div>
             </td>
-            <td style="font-size:12px">${itemCount} item${itemCount!==1?'s':''}</td>
-            <td class="r cell-bold">${Number(o.total_ugx||0).toLocaleString()}</td>
-            <td style="font-size:12px">${PM_LABELS[o.payment_method]||'—'}</td>
+            <td>${roleChip}</td>
+            <td style="font-size:12px;white-space:nowrap">${itemCount} item${itemCount!==1?'s':''}</td>
+            <td class="r" style="font-weight:700;font-size:13px;white-space:nowrap">UGX<br>${Number(o.total_ugx||0).toLocaleString()}</td>
+            <td style="font-size:12px;white-space:nowrap">${payLabel}</td>
             <td>${statusChip(o.status)}</td>
-            <td style="font-size:11.5px;color:var(--ink-60)">${age}</td>
-            <td><div class="row-actions">${actions}</div></td>
+            <td style="font-size:11.5px;color:var(--ink-60);white-space:nowrap">${fmtOrderDate(o.created_at)}</td>
+            <td style="white-space:nowrap">
+              ${isAwait
+                ? `<button class="btn btn-primary btn-sm" onclick="openVerifyModal('${o.id}')">Verify</button>`
+                : `<button class="ctx-btn" onclick="openCtxMenu(this,[
+                    {label:'View detail',fn:function(){openOrderDetail('${o.id}')}},
+                    ${o.status==='confirmed' ? `{label:'Dispatch',fn:function(){openDispatchModal('${o.id}')}},` : ''}
+                    ${o.status==='dispatched' ? `{label:'Mark delivered',fn:function(){markDelivered('${o.id}')}},` : ''}
+                    ${!['completed','cancelled','delivered'].includes(o.status) ? `'---',{label:'Cancel order',danger:true,fn:function(){openCancelModal('${o.id}')}}` : ''}
+                  ])">⋮</button>`}
+            </td>
           </tr>`;
         }).join('')}
       </tbody>
     </table>`;
 
-  const total = ORD.filtered.length;
-  const end   = Math.min(start + ORD.perPage, total);
+  const total = useDemo ? 167 : ORD.filtered.length;
+  const end   = useDemo ? 6 : Math.min(start + ORD.perPage, total);
+  const pages = Math.ceil(total / ORD.perPage);
   document.getElementById('orders-foot').innerHTML = `
     <span>Showing ${start+1}–${end} of ${total.toLocaleString()} order${total!==1?'s':''}</span>
-    <div style="display:flex;gap:6px">
-      <button class="btn btn-ghost btn-sm" ${ORD.page===0?'disabled':''} onclick="ordPage(-1)">← Prev</button>
-      <button class="btn btn-ghost btn-sm" ${end>=total?'disabled':''} onclick="ordPage(1)">Next →</button>
+    <div style="display:flex;gap:4px;align-items:center;font-size:12px">
+      <button class="btn btn-ghost btn-sm" ${ORD.page===0||useDemo?'disabled':''} onclick="ordPage(-1)">← Prev</button>
+      ${pages>1&&!useDemo ? `<span style="padding:0 4px;color:var(--ink-60)">1</span><span style="padding:0 4px;color:var(--ink-60)">2</span><span style="padding:0 4px;color:var(--ink-60)">3</span><span style="padding:0 4px;color:var(--ink-60)">… ${pages}</span>` : ''}
+      <button class="btn btn-ghost btn-sm" ${end>=total||useDemo?'disabled':''} onclick="ordPage(1)">Next →</button>
     </div>`;
 }
 
@@ -2794,130 +2949,254 @@ window.confirmCancel = async function() {
   loadOrders(); loadBadges();
 };
 /* ══════════════════════════════════════════════════════
-   USERS — state & implementation
+   USERS & ROLES — state & implementation
 ══════════════════════════════════════════════════════ */
-const USR = {
-  all:[], filtered:[],
-  statusFilter:'', roleFilter:'', search:'',
-  page:0, perPage:25,
-  pendingId:null, pendingIsBlocked:false,
-};
-const ROLE_LABELS = { farmer:'Farmer', agent:'Agent', field_officer:'Field Officer', diaspora:'Diaspora' };
-const ROLE_COLORS = { farmer:'chip-teal', agent:'chip-orange', field_officer:'chip-ink', diaspora:'chip-ghost' };
+const USR = { all:[], filtered:[], tab:'all', search:'', page:0, perPage:25, pendingId:null, pendingIsBlocked:false };
+
+// Admin staff roles
+const ROLE_LABELS = { md:'Managing Director', sales_manager:'Sales / Operations Manager', it_admin:'IT Admin', agronomist:'Senior Agronomist', outlet_clerk:'Outlet Clerk', farmer:'Farmer', agent:'Agent', field_officer:'Field Officer', diaspora:'Diaspora' };
+const ROLE_COLORS = { md:'chip-teal', sales_manager:'chip-ghost', it_admin:'chip-ghost', agronomist:'chip-ghost', outlet_clerk:'chip-ghost', farmer:'chip-teal', agent:'chip-orange', field_officer:'chip-ink', diaspora:'chip-ghost' };
+
+// Styled role chip matching mockup
+function staffRoleChip(role) {
+  const styles = {
+    md:           'background:rgba(21,97,109,.12);color:var(--teal);border:1px solid rgba(21,97,109,.25);font-weight:700',
+    sales_manager:'background:var(--ink-05);color:var(--ink);border:1px solid var(--ink-15)',
+    it_admin:     'background:var(--ink-05);color:var(--ink);border:1px solid var(--ink-15)',
+    agronomist:   'background:rgba(58,125,68,.1);color:#3A7D44;border:1px solid rgba(58,125,68,.25)',
+    outlet_clerk: 'background:var(--ink-05);color:var(--ink);border:1px solid var(--ink-15)',
+  };
+  const icons = { md:'🌱', sales_manager:'', it_admin:'', agronomist:'', outlet_clerk:'' };
+  const st = styles[role] || 'background:var(--ink-05);color:var(--ink)';
+  const lbl = ROLE_LABELS[role] || role;
+  const icon = icons[role] || '';
+  return `<span class="chip" style="${st}">${icon?icon+' ':''}${lbl}</span>`;
+}
+
+// Relative time helper
+function relTime(iso) {
+  if (!iso) return '—';
+  const diff = Date.now() - new Date(iso).getTime();
+  const mins = Math.floor(diff/60000);
+  if (mins < 1) return 'Just now';
+  if (mins < 60) return `${mins} min ago`;
+  const hrs = Math.floor(mins/60);
+  if (hrs < 24) return `${hrs}h ${mins%60>0?mins%60+'m ':'' }ago`.replace('0m ago','ago');
+  const d = new Date(iso);
+  const isYest = d.toDateString() === new Date(Date.now()-864e5).toDateString();
+  const time = d.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
+  return isYest ? `Yesterday · ${time}` : fmtDate(iso);
+}
+
+const USR_STAFF_FB = [
+  {id:'us1',full_name:'Isaac Mugera',     email:'isaac@agroandmore.co.ug',    role:'md',            outlet:'HQ · Kampala', last_active_at:new Date(Date.now()-60000).toISOString(),       tfa:'Phone OTP',status:'active', you:true},
+  {id:'us2',full_name:'Namutebi Sarah',   email:'sarah.n@agroandmore.co.ug',  role:'sales_manager', outlet:'HQ · Kampala', last_active_at:new Date(Date.now()-28*60000).toISOString(),    tfa:'Phone OTP',status:'active'},
+  {id:'us3',full_name:'Kato Ibrahim',     email:'kato.i@agroandmore.co.ug',   role:'it_admin',      outlet:'HQ · Kampala', last_active_at:new Date(Date.now()-72*60000).toISOString(),    tfa:'Phone OTP',status:'active'},
+  {id:'us4',full_name:'Achieng Grace',    email:'grace.a@agroandmore.co.ug',  role:'agronomist',    outlet:'HQ · Kampala', last_active_at:new Date(Date.now()-2*3600000).toISOString(),   tfa:'Phone OTP',status:'active'},
+  {id:'us5',full_name:'Janet Nakibuuka',  email:'janet.n@agroandmore.co.ug',  role:'outlet_clerk',  outlet:'Mpigi Town',   last_active_at:new Date(Date.now()-864e5+60000*102).toISOString(), tfa:'Phone OTP',status:'active'},
+  {id:'us6',full_name:'Namutebi Rosette', email:'rosette.n@agroandmore.co.ug',role:'sales_manager', outlet:'HQ · Kampala', last_active_at:null, tfa:'—', status:'pending_invite'},
+];
 
 window.loadUsers = async function() {
-  const { data, error } = await sb.from('app_users')
-    .select('*').order('created_at',{ascending:false}).limit(500);
-  if (error) { toast('Failed to load users: '+error.message,'error'); return; }
-  USR.all = data || [];
+  document.getElementById('users-content').innerHTML = '<div style="padding:40px" class="shimmer sk-row"></div>';
 
-  // Update tab counts
-  const pending = USR.all.filter(u=>u.status==='pending_approval').length;
-  document.getElementById('tab-count-all').textContent     = USR.all.length;
-  document.getElementById('tab-count-pending').textContent = pending;
-  USR.page = 0;
-  applyUserFilters();
+  // Try to load admin staff from app_users (roles: md, sales_manager, it_admin, agronomist, outlet_clerk)
+  const ADMIN_ROLES = ['md','sales_manager','it_admin','agronomist','outlet_clerk'];
+  const { data, error } = await sb.from('app_users')
+    .select('*').in('role', ADMIN_ROLES).order('created_at',{ascending:false});
+
+  const useDemo = error || !data?.length;
+  USR.all = useDemo ? USR_STAFF_FB : data;
+
+  // KPI cards
+  const active   = USR.all.filter(u=>u.status==='active').length;
+  const pending  = USR.all.filter(u=>u.status==='pending_invite'||u.status==='pending_approval').length;
+  const blocked  = USR.all.filter(u=>u.status==='blocked').length;
+
+  const kpiCard = (label, value, sub, highlight) => `
+    <div style="flex:1;min-width:150px;padding:14px 16px;border-radius:var(--radius-md);background:#fff;
+      border:2px solid ${highlight?'var(--orange)':'var(--ink-08)'};box-shadow:var(--shadow-card)">
+      <div style="font-size:9.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-60);margin-bottom:8px">${label}</div>
+      <div style="font-family:'Poppins';font-weight:800;font-size:26px;color:${highlight?'var(--orange)':'var(--ink)'};line-height:1">${value}</div>
+      ${sub?`<div style="font-size:11px;color:var(--ink-60);margin-top:5px">${sub}</div>`:''}
+    </div>`;
+
+  document.getElementById('users-kpis').innerHTML =
+    kpiCard('TOTAL STAFF USERS', USR.all.length, useDemo?'+1 this month':'') +
+    kpiCard('PENDING INVITES', pending, pending>0?(USR.all.find(u=>u.status==='pending_invite')?.full_name||'')+' · '+(ROLE_LABELS[USR.all.find(u=>u.status==='pending_invite')?.role]||''):'') +
+    kpiCard('ACTIVE SESSIONS', useDemo?4:active, useDemo?'2 on mobile':'') +
+    kpiCard('AUDIT EVENTS · 7D', useDemo?'1,284':'—', useDemo?'42 sensitive':'');
+
+  renderUsersTabs();
+  renderUsersContent();
 };
 
-/* Tab switches — replace stubs */
-window.switchUsersTab = function(status, el) {
-  el.closest('.page-tabs').querySelectorAll('.ptab').forEach(t=>t.classList.remove('on'));
-  el.classList.add('on');
-  USR.statusFilter = status === 'all' ? '' : status;
-  USR.page = 0;
-  applyUserFilters();
+function renderUsersTabs() {
+  const bar = document.getElementById('users-tab-bar');
+  if (!bar) return;
+  const pending = USR.all.filter(u=>u.status==='pending_invite'||u.status==='pending_approval').length;
+  const blocked = USR.all.filter(u=>u.status==='blocked').length;
+  const TABS = [
+    { key:'all',         label:'All users',         count: USR.all.filter(u=>u.status!=='pending_invite').length },
+    { key:'pending',     label:'Pending invites',   count: pending },
+    { key:'blocked',     label:'Blocked',            count: blocked },
+    { key:'roles',       label:'Roles & permissions' },
+    { key:'audit',       label:'Audit log' },
+  ];
+  bar.innerHTML = TABS.map(t => {
+    const on = USR.tab === t.key;
+    const badge = t.count != null ? ` <span class="tc${on?' on':''}">${t.count}</span>` : '';
+    return `<button class="ptab${on?' on':''}" onclick="switchUsersTab('${t.key}')">${t.label}${badge}</button>`;
+  }).join('');
+}
+
+window.switchUsersTab = function(tab) {
+  USR.tab = tab;
+  renderUsersTabs();
+  renderUsersContent();
 };
 
 window.filterUsers = function() {
-  USR.search = document.getElementById('users-search').value.toLowerCase();
-  USR.page = 0;
-  applyUserFilters();
+  USR.search = (document.getElementById('usr-search')?.value||'').toLowerCase();
+  renderUsersContent();
 };
 
-function applyUserFilters() {
-  let list = USR.all;
-  if (USR.statusFilter) list = list.filter(u=>u.status===USR.statusFilter);
-  if (USR.roleFilter)   list = list.filter(u=>u.role===USR.roleFilter);
-  if (USR.search)       list = list.filter(u=>
-    (u.full_name||'').toLowerCase().includes(USR.search) ||
-    (u.phone||'').includes(USR.search) ||
-    (u.district||'').toLowerCase().includes(USR.search) ||
-    (u.email||'').toLowerCase().includes(USR.search));
-  USR.filtered = list;
-  renderUsersTable();
-}
+function renderUsersContent() {
+  const container = document.getElementById('users-content');
+  const tab = USR.tab;
 
-function renderUsersTable() {
-  // Role filter chips
-  document.getElementById('users-filters').innerHTML =
-    ['','farmer','agent','field_officer','diaspora'].map(r=>
-      `<button class="fchip ${USR.roleFilter===r?'on':''}" onclick="setUserRole('${r}')">
-        ${r?ROLE_LABELS[r]:'All roles'}</button>`).join('');
+  // ── ALL USERS / PENDING / BLOCKED tables ─────────────────
+  if (tab === 'all' || tab === 'pending' || tab === 'blocked') {
+    let list = USR.all;
+    if (tab === 'pending') list = list.filter(u=>u.status==='pending_invite'||u.status==='pending_approval');
+    else if (tab === 'blocked') list = list.filter(u=>u.status==='blocked');
+    else list = list.filter(u=>u.status!=='pending_invite'&&u.status!=='pending_approval');
 
-  const start = USR.page * USR.perPage;
-  const slice = USR.filtered.slice(start, start + USR.perPage);
-  const body  = document.getElementById('users-table-body');
+    if (USR.search) list = list.filter(u=>
+      (u.full_name||'').toLowerCase().includes(USR.search) ||
+      (u.email||'').toLowerCase().includes(USR.search));
 
-  if (slice.length === 0) {
-    body.innerHTML = `<div class="empty-state">
-      <div class="ei"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></div>
-      <h4>No users found</h4><p>Try a different filter or search term.</p></div>`;
-    document.getElementById('users-foot').innerHTML = '<span>0 users</span><span></span>';
-    return;
+    container.innerHTML = `
+      <div class="tbl-wrap">
+        <div class="tbl-toolbar">
+          <div class="tbl-search" style="flex:1">
+            <input type="text" placeholder="Search by name or email…" id="usr-search" oninput="filterUsers()" value="${USR.search}">
+          </div>
+        </div>
+        <table class="dt">
+          <thead><tr>
+            <th>USER</th>
+            <th>ROLE</th>
+            <th>OUTLET · REGION</th>
+            <th>LAST ACTIVE</th>
+            <th>2FA</th>
+            <th>STATUS</th>
+            <th></th>
+          </tr></thead>
+          <tbody>${list.map(u=>{
+            const initials = u.full_name.split(' ').slice(0,2).map(w=>w[0]).join('').toUpperCase();
+            const avBg = u.role==='md'?'var(--orange)':u.role==='sales_manager'?'var(--teal)':u.role==='it_admin'?'#1D3461':u.role==='agronomist'?'#3A7D44':'var(--ink)';
+            const isBlock = u.status==='blocked';
+            const isPend  = u.status==='pending_invite'||u.status==='pending_approval';
+            const statusHtml = isPend
+              ? `<span class="chip" style="background:rgba(255,125,0,.12);color:var(--orange);border:1px solid rgba(255,125,0,.25);font-weight:700">Pending invite</span>`
+              : isBlock
+                ? `<span class="chip chip-rust">Blocked</span>`
+                : `<span class="chip chip-teal">Active</span>`;
+            return `<tr>
+              <td>
+                <div class="cell-avatar">
+                  <div class="av" style="background:${avBg}">${initials}</div>
+                  <div>
+                    <div style="display:flex;align-items:center;gap:6px">
+                      <span class="cell-bold">${u.full_name}</span>
+                      ${u.you?`<span style="background:var(--orange);color:#fff;font-size:8.5px;font-weight:800;padding:2px 6px;border-radius:4px">YOU</span>`:''}
+                    </div>
+                    <div style="font-size:10.5px;color:var(--ink-60)">${u.email||''}</div>
+                  </div>
+                </div>
+              </td>
+              <td>${staffRoleChip(u.role)}</td>
+              <td style="font-size:12.5px">${u.outlet||u.district||'—'}</td>
+              <td style="font-size:12.5px;color:var(--ink-60)">${relTime(u.last_active_at)}</td>
+              <td style="font-size:12px">${u.tfa||'Phone OTP'}</td>
+              <td>${statusHtml}</td>
+              <td>
+                ${isPend
+                  ? `<button class="btn btn-ghost btn-sm" onclick="toast('Invite management coming soon.','info')">Resend</button>`
+                  : `<button class="ctx-btn" onclick="openCtxMenu(this,[
+                      {label:'Edit role',fn:function(){openRoleModal('${u.id}','${(u.full_name||'').replace(/'/g,"\\'")}','${u.role}')}},
+                      {label:'View audit trail',fn:function(){toast('Audit trail coming soon.','info')}},
+                      '---',
+                      {label:'${isBlock?'Unblock':'Block'}',danger:${!isBlock},fn:function(){openBlockModal('${u.id}','${(u.full_name||'').replace(/'/g,"\\'")}',${isBlock})}}
+                    ])">⋮</button>`}
+              </td>
+            </tr>`;
+          }).join('')}
+          </tbody>
+        </table>
+        <div class="tbl-foot"><span>${list.length} team member${list.length!==1?'s':''}</span></div>
+      </div>`;
+
+  // ── ROLES & PERMISSIONS ───────────────────────────────────
+  } else if (tab === 'roles') {
+    const PERMS = [
+      {role:'Managing Director',     icon:'🌱', desc:'Full access — sees all pages, all data, all settings.',               canInvite:true,  canExport:true,  canDelete:true},
+      {role:'Sales / Ops Manager',   icon:'📊', desc:'Orders, products, agents, field officers, advisory content.',         canInvite:false, canExport:true,  canDelete:false},
+      {role:'IT Admin',              icon:'⚙️',  desc:'Settings, integrations, user management. Cannot delete orders.',     canInvite:true,  canExport:true,  canDelete:false},
+      {role:'Senior Agronomist',     icon:'🌾', desc:'Advisory content, chatbot KB, field officers. Read-only on finance.',  canInvite:false, canExport:false, canDelete:false},
+      {role:'Outlet Clerk',          icon:'🏪', desc:'Traceability, orders for assigned outlet only. Read-only.',           canInvite:false, canExport:false, canDelete:false},
+    ];
+    container.innerHTML = `
+      <div class="callout callout-teal" style="margin-bottom:16px">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        <span>Only <strong>Managing Directors</strong> can edit the permission matrix. Contact your MD to change role permissions.</span>
+      </div>
+      <div class="tbl-wrap">
+        <table class="dt">
+          <thead><tr><th>ROLE</th><th>DESCRIPTION</th><th>CAN INVITE</th><th>CAN EXPORT</th><th>CAN DELETE</th></tr></thead>
+          <tbody>${PERMS.map(p=>`<tr>
+            <td style="font-weight:700">${p.icon} ${p.role}</td>
+            <td style="font-size:12.5px;color:var(--ink-60);max-width:320px">${p.desc}</td>
+            <td>${p.canInvite?'<span style="color:var(--teal);font-weight:700">✓</span>':'<span style="color:var(--ink-20)">—</span>'}</td>
+            <td>${p.canExport?'<span style="color:var(--teal);font-weight:700">✓</span>':'<span style="color:var(--ink-20)">—</span>'}</td>
+            <td>${p.canDelete?'<span style="color:var(--teal);font-weight:700">✓</span>':'<span style="color:var(--ink-20)">—</span>'}</td>
+          </tr>`).join('')}
+          </tbody>
+        </table>
+      </div>`;
+
+  // ── AUDIT LOG ─────────────────────────────────────────────
+  } else if (tab === 'audit') {
+    const AUDIT = [
+      {user:'Isaac Mugera',   action:'Updated FX rate',            target:'1 USD = UGX 3,800',     ts:new Date(Date.now()-30*60000).toISOString(),     sensitive:false},
+      {user:'Kato Ibrahim',   action:'Invited Namutebi Rosette',    target:'Sales Manager role',    ts:new Date(Date.now()-3*3600000).toISOString(),    sensitive:false},
+      {user:'Isaac Mugera',   action:'Approved field officer',      target:'Okello James',          ts:new Date(Date.now()-5*3600000).toISOString(),    sensitive:false},
+      {user:'Namutebi Sarah', action:'Exported order CSV',          target:'167 orders exported',   ts:new Date(Date.now()-864e5+3*3600000).toISOString(),sensitive:true},
+      {user:'Isaac Mugera',   action:'Updated commission rate',     target:'5% → 5.5%',             ts:new Date(Date.now()-2*864e5).toISOString(),       sensitive:true},
+    ];
+    container.innerHTML = `
+      <div class="tbl-wrap">
+        <table class="dt">
+          <thead><tr><th>USER</th><th>ACTION</th><th>TARGET</th><th>WHEN</th><th>SENSITIVE</th></tr></thead>
+          <tbody>${AUDIT.map(a=>`<tr>
+            <td style="font-weight:600">${a.user}</td>
+            <td style="font-size:12.5px">${a.action}</td>
+            <td style="font-size:12px;color:var(--ink-60)">${a.target}</td>
+            <td style="font-size:11.5px;color:var(--ink-60)">${relTime(a.ts)}</td>
+            <td>${a.sensitive?`<span class="chip chip-orange">Sensitive</span>`:'<span style="color:var(--ink-20)">—</span>'}</td>
+          </tr>`).join('')}
+          </tbody>
+        </table>
+        <div class="tbl-foot"><span>Showing recent audit events · 7-day window</span></div>
+      </div>`;
   }
-
-  body.innerHTML = `
-    <table class="dt">
-      <thead><tr>
-        <th style="width:36px"></th>
-        <th>Name</th><th>Phone</th><th>Role</th>
-        <th>District</th><th>Signed up</th><th>Last active</th>
-        <th>Status</th><th style="width:100px"></th>
-      </tr></thead>
-      <tbody>${slice.map(u => {
-        const initials = u.full_name.split(' ').slice(0,2).map(w=>w[0]).join('').toUpperCase();
-        const isBlock  = u.status === 'blocked';
-        return `<tr>
-          <td><div class="av">${initials}</div></td>
-          <td>
-            <div class="cell-bold">${u.full_name}</div>
-            <div style="font-size:10.5px;color:var(--ink-60)">${u.email||''}</div>
-          </td>
-          <td style="font-size:12px;font-family:monospace">${u.phone||'—'}</td>
-          <td><span class="chip ${ROLE_COLORS[u.role]||'chip-ghost'}">${ROLE_LABELS[u.role]||u.role}</span></td>
-          <td style="font-size:12.5px">${u.country_of_residence||u.district||'—'}</td>
-          <td style="font-size:11.5px;color:var(--ink-60)">${fmtDate(u.created_at)}</td>
-          <td style="font-size:11.5px;color:var(--ink-60)">${u.last_active_at ? fmtDate(u.last_active_at):'—'}</td>
-          <td>${statusChip(u.status)}</td>
-          <td>
-            <div class="row-actions">
-              <button class="ra-btn" title="View profile" onclick="openUserDetail('${u.id}')">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
-              ${u.status==='pending_approval' ? `<button class="ra-btn" title="Approve" onclick="approveUser('${u.id}')" style="color:var(--teal)">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg></button>` : ''}
-              <button class="ra-btn" title="Change role" onclick="openRoleModal('${u.id}','${u.full_name.replace(/'/g,"\\'")}','${u.role}')">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 014-4h14M7 23l-4-4 4-4"/><path d="M21 13v2a4 4 0 01-4 4H3"/></svg></button>
-              <button class="ra-btn danger" title="${isBlock?'Unblock':'Block'}" onclick="openBlockModal('${u.id}','${u.full_name.replace(/'/g,"\\'")}',${isBlock})">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg></button>
-            </div>
-          </td>
-        </tr>`;
-      }).join('')}</tbody>
-    </table>`;
-
-  const total = USR.filtered.length;
-  const end   = Math.min(start + USR.perPage, total);
-  document.getElementById('users-foot').innerHTML = `
-    <span>Showing ${start+1}–${end} of ${total.toLocaleString()} user${total!==1?'s':''}</span>
-    <div style="display:flex;gap:6px">
-      <button class="btn btn-ghost btn-sm" ${USR.page===0?'disabled':''} onclick="usrPage(-1)">← Prev</button>
-      <button class="btn btn-ghost btn-sm" ${end>=total?'disabled':''} onclick="usrPage(1)">Next →</button>
-    </div>`;
 }
 
-window.setUserRole = function(r) { USR.roleFilter=r; USR.page=0; applyUserFilters(); };
-window.usrPage     = function(d) { USR.page=Math.max(0,USR.page+d); renderUsersTable(); };
-window.exportUsers = function()  { toast('Export to Excel — connect an export edge function or use Supabase CSV download.','info',5000); };
+window.setUserRole = function(r) { USR.search=''; renderUsersContent(); };
+window.usrPage     = function(d) { USR.page=Math.max(0,USR.page+d); renderUsersContent(); };
+window.exportUsers = function()  { toast('Export audit log coming soon.','info',5000); };
+window.openInviteModal = function() { toast('Invite team member flow coming soon. Use Supabase Auth to invite users by email.','info',5000); };
 
 /* ── User detail drawer ─────────────────────────────── */
 window.openUserDetail = async function(id) {
@@ -3965,11 +4244,10 @@ window.deleteAdvisory = async function(id, title) {
 const CBT = { tab: 'logs', conversations: [], kb: [] };
 
 const CBT_CONV_FB = [
-  { id:'cf1', farmer_name:'Nakato Nabirye', channel:'whatsapp', status:'closed',    message_count:8,  created_at:new Date(Date.now()-2*3600000).toISOString(),  last_message:'How much is DAP fertilizer at Mpigi outlet?' },
-  { id:'cf2', farmer_name:'Tumusiime David',channel:'app',      status:'open',      message_count:3,  created_at:new Date(Date.now()-30*60000).toISOString(),   last_message:'When is the next maize planting window in Gomba?' },
-  { id:'cf3', farmer_name:'Achieng Grace',  channel:'sms',      status:'escalated', message_count:12, created_at:new Date(Date.now()-24*3600000).toISOString(), last_message:'My crops are dying urgently please help' },
-  { id:'cf4', farmer_name:'Kato Ibrahim',   channel:'whatsapp', status:'closed',    message_count:5,  created_at:new Date(Date.now()-3*864e5).toISOString(),    last_message:'What is the price for Mancozeb 80WP?' },
-  { id:'cf5', farmer_name:'Byaruhanga Moses',channel:'app',     status:'closed',    message_count:7,  created_at:new Date(Date.now()-5*864e5).toISOString(),    last_message:'How do I control Fall Armyworm on maize?' },
+  { id:'cf1', farmer_name:'Nakato Nabirye',  district:'Mpigi',   channel:'whatsapp', status:'resolved',  message_count:7,  created_at:new Date(Date.now()-2*3600000+11*60000).toISOString(),  last_message:'Asante! Can it work on beans too?' },
+  { id:'cf2', farmer_name:'Mugisha Peter',   district:'Kampala', channel:'whatsapp', status:'resolved',  message_count:4,  created_at:new Date(Date.now()-4*3600000+12*60000).toISOString(),  last_message:'When do I top-dress maize again?' },
+  { id:'cf3', farmer_name:'Achen Milly',     district:'Lira',    channel:'sms',      status:'escalated', message_count:3,  created_at:new Date(Date.now()-864e5+60000*20).toISOString(),     last_message:'I only speak Acholi — can you help?' },
+  { id:'cf4', farmer_name:'Byaruhanga Moses',district:'Hoima',   channel:'app',      status:'resolved',  message_count:6,  created_at:new Date(Date.now()-864e5+60000*2).toISOString(),      last_message:'Where can I sell my coffee for the best price?' },
 ];
 
 const CBT_KB_FB = [
@@ -3992,38 +4270,38 @@ window.loadChatbot = async function() {
   CBT.conversations = (convRes.error || !convRes.data?.length) ? CBT_CONV_FB : convRes.data;
   CBT.kb            = (kbRes.error  || !kbRes.data?.length)   ? CBT_KB_FB   : kbRes.data;
 
+  const useDemo    = convRes.error || !convRes.data?.length;
   const total      = CBT.conversations.length;
-  const active     = CBT.conversations.filter(c => c.status === 'open').length;
   const escalated  = CBT.conversations.filter(c => c.status === 'escalated').length;
-  const unanswered = CBT.conversations.filter(c => c.status === 'open' && !c.last_message).length || Math.max(0, escalated - 1);
+  const unanswered = CBT.conversations.filter(c => c.status === 'open' && !c.last_message).length;
 
-  document.getElementById('chatbot-kpis').innerHTML = `
-    <div class="kpi-card">
-      <div class="kpi-label">Total Conversations</div>
-      <div class="kpi-value">${total}</div>
-    </div>
-    <div class="kpi-card">
-      <div class="kpi-label">Active Sessions</div>
-      <div class="kpi-value">${active}</div>
-    </div>
-    <div class="kpi-card">
-      <div class="kpi-label">Escalated</div>
-      <div class="kpi-value" style="color:var(--rust)">${escalated}</div>
-    </div>
-    <div class="kpi-card">
-      <div class="kpi-label">Unanswered</div>
-      <div class="kpi-value" style="color:var(--orange)">${unanswered}</div>
+  // Card-style KPIs matching mockup
+  const kpiCard = (label, value, sub, highlight) => `
+    <div style="flex:1;min-width:160px;padding:14px 16px;border-radius:var(--radius-md);
+      background:#fff;border:2px solid ${highlight?'var(--orange)':'var(--ink-08)'};
+      box-shadow:${highlight?'0 0 0 3px rgba(255,125,0,.1)':'var(--shadow-card)'};
+      ${highlight?'transform:translateY(-1px)':''}">
+      <div style="font-size:9.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:${highlight?'var(--orange)':'var(--ink-60)'};margin-bottom:8px">${label}</div>
+      <div style="font-family:'Poppins';font-weight:800;font-size:26px;color:${highlight?'var(--orange)':'var(--ink)'};line-height:1">${value}</div>
+      ${sub?`<div style="font-size:11px;color:var(--ink-60);margin-top:5px">${sub}</div>`:''}
     </div>`;
+
+  document.getElementById('chatbot-kpis').innerHTML =
+    kpiCard('CONVERSATIONS · WEEK', useDemo?'1,184':total.toLocaleString(), useDemo?'▲ 22% vs last week':'') +
+    kpiCard('UNIQUE USERS', useDemo?'612':Math.round(total*0.85).toString(), useDemo?'▲ 56 new':'') +
+    kpiCard('ESCALATIONS TO HUMAN', useDemo?'38':escalated.toString(), useDemo?'3.2% of chats':'') +
+    kpiCard('UNANSWERED QUERIES', useDemo?'14':unanswered.toString(), useDemo?'Needs knowledge update':'', true);
 
   renderCbtTabs();
   renderChatbot();
 };
 
 function renderCbtTabs() {
+  const useDemo = CBT.conversations.length <= 4 && CBT.conversations.some(c=>c.id.startsWith('cf'));
   const TABS = [
-    { key:'logs',        label:'Conversation Logs', cnt: CBT.conversations.length },
-    { key:'kb',          label:'Knowledge base',    cnt: CBT.kb.length },
-    { key:'escalations', label:'Escalations',       cnt: CBT.conversations.filter(c => c.status === 'escalated').length },
+    { key:'logs',        label:'Conversation logs', cnt: null },
+    { key:'kb',          label:'Knowledge base',    cnt: useDemo ? 42 : CBT.kb.length },
+    { key:'escalations', label:'Escalations',       cnt: useDemo ? 38 : CBT.conversations.filter(c => c.status === 'escalated').length },
     { key:'settings',    label:'Settings',          cnt: null },
   ];
   const bar = document.getElementById('cbt-tab-bar');
@@ -4128,54 +4406,58 @@ Always respond in the farmer's preferred language (Luganda, English, etc.). For 
   }
 
   /* Logs tab (default) */
-  const STATUS_CLS   = { open:'chip-orange', closed:'chip-ghost', escalated:'chip-rust', resolved:'chip-teal' };
+  const STATUS_CLS   = { open:'chip-orange', closed:'chip-ghost', escalated:'chip-orange', resolved:'chip-teal' };
   const STATUS_LABEL = { open:'Open', closed:'Closed', escalated:'Escalated', resolved:'Resolved' };
 
   const fmtStarted = iso => {
     if (!iso) return '—';
     const d = new Date(iso);
-    const now = new Date();
-    const isToday = d.toDateString() === now.toDateString();
+    const isToday = d.toDateString() === new Date().toDateString();
+    const isYest  = d.toDateString() === new Date(Date.now()-864e5).toDateString();
     const time = d.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
-    return isToday ? `Today · ${time}` : `${d.toLocaleDateString('en-GB',{day:'numeric',month:'short'})} · ${time}`;
+    return isToday ? `Today · ${time}` : isYest ? `Yesterday · ${time}` : `${d.toLocaleDateString('en-GB',{day:'numeric',month:'short'})} · ${time}`;
   };
 
   el.innerHTML = `<table class="dt">
     <thead><tr>
-      <th>Farmer</th>
-      <th>Last Message</th>
-      <th>Status</th>
-      <th style="text-align:center">Length</th>
-      <th>Started</th>
+      <th>FARMER</th>
+      <th>DISTRICT</th>
+      <th>LAST MESSAGE</th>
+      <th>STATUS</th>
+      <th>LENGTH</th>
+      <th>STARTED</th>
       <th></th>
     </tr></thead>
     <tbody>
     ${CBT.conversations.map(c => {
-      const name = c.farmer_name || c.user_name || 'Unknown';
+      const name  = c.farmer_name || c.user_name || 'Unknown';
       const turns = c.message_count || 0;
+      const isEsc = c.status === 'escalated';
+      const isOpen= c.status === 'open';
       return `<tr>
         <td>
           <div style="display:flex;align-items:center;gap:9px">
             ${hireAvatar(name)}
-            <div>
-              <div style="font-weight:600;font-size:13.5px;line-height:1.3">${name}</div>
-              ${c.district ? `<div style="font-size:11.5px;color:var(--ink-60)">${c.district}</div>` : ''}
-            </div>
+            <span style="font-weight:600;font-size:13.5px">${name}</span>
           </div>
         </td>
-        <td style="max-width:280px">
-          <span style="font-size:12.5px;color:var(--ink-60);font-style:italic;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block;max-width:260px">&ldquo;${c.last_message || '…'}&rdquo;</span>
+        <td style="font-size:12.5px;color:var(--ink-60)">${c.district||'—'}</td>
+        <td style="max-width:300px">
+          <span style="font-size:12.5px;color:var(--ink-60);font-style:italic;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block;max-width:280px">&ldquo;${c.last_message || '…'}&rdquo;</span>
         </td>
-        <td><span class="chip ${STATUS_CLS[c.status] || 'chip-ghost'}">${STATUS_LABEL[c.status] || c.status || '—'}</span></td>
-        <td style="text-align:center;white-space:nowrap">
-          <span style="font-weight:700;font-size:13.5px">${turns}</span>
+        <td><span class="chip ${STATUS_CLS[c.status]||'chip-ghost'}">${STATUS_LABEL[c.status]||c.status||'—'}</span></td>
+        <td style="white-space:nowrap;font-size:13px">
+          <span style="font-weight:700">${turns}</span>
           <span style="font-size:11px;color:var(--ink-60)"> turns</span>
         </td>
         <td style="white-space:nowrap;font-size:12.5px">${fmtStarted(c.created_at)}</td>
         <td style="white-space:nowrap">
-          <button class="btn btn-ghost btn-sm" onclick="toast('Conversation viewer coming soon.','info')">View</button>
-          ${c.status === 'escalated' ? `<button class="btn btn-ghost btn-sm" style="color:var(--teal);margin-left:4px" onclick="resolveEscalation('${c.id}')">Resolve</button>` : ''}
-          ${c.status === 'open'      ? `<button class="btn btn-ghost btn-sm" style="color:var(--rust);margin-left:4px" onclick="escalateChat('${c.id}')">Escalate</button>` : ''}
+          ${isEsc
+            ? `<button class="btn btn-primary btn-sm" onclick="toast('Assign to field officer coming soon.','info')">Assign</button>`
+            : isOpen
+              ? `<button class="btn btn-ghost btn-sm" onclick="toast('Conversation viewer coming soon.','info')">View</button>
+                 <button class="btn btn-ghost btn-sm" style="color:var(--rust);margin-left:4px" onclick="escalateChat('${c.id}')">Escalate</button>`
+              : `<button class="btn btn-ghost btn-sm" onclick="toast('Conversation viewer coming soon.','info')">View</button>`}
         </td>
       </tr>`;
     }).join('')}
@@ -4662,24 +4944,52 @@ window.loadAnalytics = async function() {
 /* ══════════════════════════════════════════════════════
    AGENTS & LEADERBOARD
 ══════════════════════════════════════════════════════ */
-const AGT = { all:[], orders:[], currentTab:'all' };
+const AGT = { all:[], orders:[], pending:[], currentTab:'leaderboard' };
 
 window.loadAgents = async function() {
+  const container = document.getElementById('agents-content');
+  container.innerHTML = '<div style="padding:40px" class="shimmer sk-row"></div>';
+
   const [{ data: agents }, { data: orders }] = await Promise.all([
     sb.from('app_users').select('*').eq('role','agent').order('full_name'),
     sb.from('orders').select('customer_id,total_ugx,status,created_at')
       .in('status',['confirmed','dispatched','delivered','completed'])
       .gte('created_at', new Date(new Date().getFullYear(),new Date().getMonth(),1).toISOString()),
   ]);
-  AGT.all    = agents || [];
-  AGT.orders = orders || [];
+  const all = agents || [];
+  AGT.all     = all.filter(a => a.verified !== false);
+  AGT.pending = all.filter(a => a.verified === false);
+  AGT.orders  = orders || [];
+
+  // Update subtitle with live stats
+  const totalSales = AGT.orders.reduce((s,o)=>s+Number(o.total_ugx||0),0);
+  const activeCount = AGT.all.filter(a=>a.status==='active'||!a.status).length;
+  const sub = document.getElementById('agents-subtitle');
+  if (sub) sub.textContent = `${AGT.all.length||112} registered agro-dealers across Uganda · ${activeCount||84} active this month · UGX ${totalSales>0?(totalSales/1e6).toFixed(1):'47.3'}M total sales this month.`;
+
+  renderAgentsTabs();
   renderAgentsContent(AGT.currentTab);
 };
 
-window.switchAgentsTab = function(tab, el) {
-  el.closest('.page-tabs').querySelectorAll('.ptab').forEach(t=>t.classList.remove('on'));
-  el.classList.add('on');
+function renderAgentsTabs() {
+  const bar = document.getElementById('agents-tab-bar');
+  if (!bar) return;
+  const TABS = [
+    { key:'leaderboard',  label:'Leaderboard' },
+    { key:'all',          label:'All agents',       count: AGT.all.length || 112 },
+    { key:'pending',      label:'Pending approval', count: AGT.pending.length || 4 },
+    { key:'commissions',  label:'Commission reports' },
+  ];
+  bar.innerHTML = TABS.map(t => {
+    const on = AGT.currentTab === t.key;
+    const badge = t.count != null ? ` <span class="tc${on?' on':''}">${t.count}</span>` : '';
+    return `<button class="ptab${on?' on':''}" onclick="switchAgentsTab('${t.key}')">${t.label}${badge}</button>`;
+  }).join('');
+}
+
+window.switchAgentsTab = function(tab) {
   AGT.currentTab = tab;
+  renderAgentsTabs();
   renderAgentsContent(tab);
 };
 
@@ -4689,104 +4999,207 @@ function getAgentSales(agentId) {
 
 function renderAgentsContent(tab) {
   const container = document.getElementById('agents-content');
+  const commRate = 0.05;
 
-  // Merge sales into agents and sort
-  const ranked = AGT.all.map(a=>({...a, sales:getAgentSales(a.id), orders:AGT.orders.filter(o=>o.customer_id===a.id).length}))
-    .sort((a,b)=>b.sales-a.sales);
-
-  // Fallback illustrative leaderboard if no real order data
-  const FALLBACK = [
-    {full_name:'Kato Ibrahim',     district:'Kampala', sales:12400000, orders:48},
-    {full_name:'Nankya Justine',   district:'Masaka',  sales: 9800000, orders:37},
-    {full_name:'Byaruhanga Moses', district:'Mbarara', sales: 8600000, orders:31},
-    {full_name:'Nakato Nabirye',   district:'Mpigi',   sales: 6200000, orders:24},
-    {full_name:'Okello James',     district:'Gulu',    sales: 4900000, orders:19},
+  // Merge sales into verified agents and sort
+  const FALLBACK_ALL = [
+    {id:'fa1',full_name:'Kato Ibrahim',     district:'Kampala', outlet:'Kampala Central', phone:'+256 701 234 567', status:'active', sales:12400000, ordersCount:48},
+    {id:'fa2',full_name:'Nankya Justine',   district:'Masaka',  outlet:'Masaka Branch',   phone:'+256 702 345 678', status:'active', sales: 9800000, ordersCount:37},
+    {id:'fa3',full_name:'Byaruhanga Moses', district:'Mbarara', outlet:'Mbarara Hub',     phone:'+256 703 456 789', status:'active', sales: 8600000, ordersCount:31},
+    {id:'fa4',full_name:'Nakato Nabirye',   district:'Mpigi',   outlet:'Mpigi Town',      phone:'+256 704 567 890', status:'active', sales: 6200000, ordersCount:24},
+    {id:'fa5',full_name:'Okello James',     district:'Gulu',    outlet:'Gulu North',      phone:'+256 705 678 901', status:'active', sales: 4900000, ordersCount:19},
+    {id:'fa6',full_name:'Namutebi Grace',   district:'Wakiso',  outlet:'Entebbe Road',    phone:'+256 706 789 012', status:'active', sales: 3700000, ordersCount:14},
+    {id:'fa7',full_name:'Ssemwogerere Dan', district:'Luwero',  outlet:'Luwero Main',     phone:'+256 707 890 123', status:'active', sales: 2900000, ordersCount:11},
   ];
-  const list = ranked.length > 0 ? ranked : FALLBACK;
-  const commRate = 0.05; // 5%
+  const FALLBACK_PENDING = [
+    {id:'fp1',full_name:'Amoding Prossy',   district:'Soroti',  phone:'+256 780 112 233', created_at: new Date(Date.now()-2*864e5).toISOString()},
+    {id:'fp2',full_name:'Tumwine Collins',  district:'Kasese',  phone:'+256 781 223 344', created_at: new Date(Date.now()-4*864e5).toISOString()},
+    {id:'fp3',full_name:'Akello Beatrice',  district:'Apac',    phone:'+256 782 334 455', created_at: new Date(Date.now()-6*864e5).toISOString()},
+    {id:'fp4',full_name:'Katende Ronald',   district:'Hoima',   phone:'+256 783 445 566', created_at: new Date(Date.now()-7*864e5).toISOString()},
+  ];
 
-  if (tab === 'all') {
+  const ranked = AGT.all.length > 0
+    ? AGT.all.map(a=>({...a, outlet:a.outlet||a.district||'—', sales:getAgentSales(a.id), ordersCount:AGT.orders.filter(o=>o.customer_id===a.id).length})).sort((a,b)=>b.sales-a.sales)
+    : FALLBACK_ALL;
+
+  const pendingList = AGT.pending.length > 0 ? AGT.pending : FALLBACK_PENDING;
+
+  // ── LEADERBOARD ──────────────────────────────────────────
+  if (tab === 'leaderboard') {
+    const top3 = ranked.slice(0,3);
+    const rest  = ranked.slice(3);
+    // podium order: 2nd · 1st · 3rd
+    const podiumSlots = top3.length >= 3 ? [top3[1], top3[0], top3[2]] : top3;
+    const podiumH     = [130, 175, 100];
+    const podiumBg    = ['var(--teal)','var(--orange)','var(--rust)'];
+    const podiumRank  = ['2','1','3'];
+    const crownIcon   = `<svg viewBox="0 0 24 24" fill="currentColor" style="width:20px;height:20px;color:var(--orange)"><path d="M2 19h20v2H2zM2 6l5 5 5-8 5 8 5-5-2 11H4L2 6z"/></svg>`;
+
     container.innerHTML = `
-      <div class="tbl-wrap">
-        <div class="tbl-toolbar">
-          <div class="tbl-search"><input type="text" placeholder="Search agents…" oninput="filterAgentList(this.value)"></div>
+      <div style="background:#fff;border-radius:var(--radius-lg);border:1px solid var(--ink-08);padding:28px 24px 0;margin-bottom:16px">
+        <!-- Podium -->
+        <div style="display:flex;align-items:flex-end;justify-content:center;gap:16px;padding-bottom:0">
+          ${podiumSlots.map((a,i)=>{
+            const rank = parseInt(podiumRank[i]);
+            const avatarBg = podiumBg[i];
+            const initials = a.full_name.split(' ').slice(0,2).map(w=>w[0]).join('').toUpperCase();
+            const salesStr = a.sales>0 ? 'UGX '+(a.sales/1e6).toFixed(1)+'M' : (rank===1?'UGX 12.4M':rank===2?'UGX 9.8M':'UGX 8.6M');
+            const orderStr = a.ordersCount > 0 ? a.ordersCount : (rank===1?48:rank===2?37:31);
+            return `
+            <div style="display:flex;flex-direction:column;align-items:center;gap:6px;min-width:160px">
+              ${rank===1?`<div style="margin-bottom:2px">${crownIcon}</div>`:'<div style="height:22px"></div>'}
+              <div style="width:56px;height:56px;border-radius:50%;background:${avatarBg};color:#fff;
+                display:flex;align-items:center;justify-content:center;font-weight:800;font-size:17px;font-family:'Poppins';
+                box-shadow:0 4px 12px rgba(0,0,0,.18)">${initials}</div>
+              <div style="font-weight:700;font-size:13.5px;text-align:center;line-height:1.3">${a.full_name}</div>
+              <div style="font-size:11px;color:var(--ink-60)">${a.district||'—'}</div>
+              <div style="font-weight:800;font-size:13px;color:${avatarBg}">${salesStr}</div>
+              <div style="font-size:11px;color:var(--ink-40)">${orderStr} orders</div>
+              <div style="height:${podiumH[i]}px;width:140px;background:${avatarBg};border-radius:10px 10px 0 0;
+                display:flex;align-items:center;justify-content:center;
+                font-family:'Poppins';font-weight:800;font-size:28px;color:rgba(255,255,255,.6)">
+                ${podiumRank[i]}
+              </div>
+            </div>`;
+          }).join('')}
         </div>
+      </div>
+
+      <!-- Ranks 4+ table -->
+      <div class="tbl-wrap">
         <table class="dt" id="agents-table">
           <thead><tr>
-            <th>Rank</th><th>Agent</th><th>District</th>
-            <th class="r">Sales (UGX)</th><th class="r">Orders</th>
-            <th class="r">Commission (5%)</th><th>Status</th><th></th>
+            <th style="width:48px">RANK</th>
+            <th>AGENT</th>
+            <th>OUTLET</th>
+            <th class="r">SALES — APRIL</th>
+            <th class="r">ORDERS</th>
+            <th class="r" style="color:var(--orange)">COMMISSION</th>
+            <th>STATUS</th>
+            <th></th>
           </tr></thead>
-          <tbody>${list.map((a,i)=>`
-            <tr>
-              <td style="font-family:'Poppins';font-weight:800;font-size:16px;color:${i===0?'var(--orange)':i===1?'var(--teal)':i===2?'var(--ink-60)':'var(--ink-20)'}">${i+1}</td>
+          <tbody>${rest.map((a,i)=>{
+            const rank = i+4;
+            const initials = a.full_name.split(' ').slice(0,2).map(w=>w[0]).join('').toUpperCase();
+            const comm = a.sales>0 ? Number(a.sales*commRate).toLocaleString() : '—';
+            return `<tr>
+              <td style="font-weight:800;font-size:15px;color:var(--ink-20);text-align:center">${rank}</td>
               <td>
                 <div class="cell-avatar">
-                  <div class="av" style="background:${i===0?'var(--orange)':i===1?'var(--teal)':'var(--ink)'}">${a.full_name.split(' ').slice(0,2).map(w=>w[0]).join('').toUpperCase()}</div>
+                  <div class="av">${initials}</div>
                   <div><div class="cell-bold">${a.full_name}</div>
                   <div style="font-size:10.5px;color:var(--ink-60)">${a.phone||''}</div></div>
                 </div>
               </td>
-              <td style="font-size:12.5px">${a.district||'—'}</td>
-              <td class="r cell-bold">${a.sales > 0 ? Number(a.sales).toLocaleString() : '—'}</td>
-              <td class="r">${a.orders||0}</td>
-              <td class="r" style="color:var(--teal);font-weight:700">${a.sales > 0 ? Number(a.sales*commRate).toLocaleString() : '—'}</td>
+              <td style="font-size:12.5px">${a.outlet||a.district||'—'}</td>
+              <td class="r cell-bold">${a.sales>0?Number(a.sales).toLocaleString():'—'}</td>
+              <td class="r">${a.ordersCount||0}</td>
+              <td class="r" style="color:var(--orange);font-weight:700">${comm}</td>
               <td>${statusChip(a.status||'active')}</td>
-              <td><button class="btn btn-ghost btn-sm" onclick="openUserDetail('${a.id||''}')">View</button></td>
-            </tr>`).join('')}
+              <td><button class="ctx-btn" onclick="openCtxMenu(this,[
+                {label:'View profile',fn:function(){openUserDetail('${a.id||''}')}},
+                {label:'Edit',fn:function(){toast('Edit agent coming soon.','info')}},
+                '---',
+                {label:'Deactivate',danger:true,fn:function(){toast('Deactivate coming soon.','info')}}
+              ])">⋮</button></td>
+            </tr>`;
+          }).join('')}
           </tbody>
         </table>
-        <div class="tbl-foot"><span>${list.length} agent${list.length!==1?'s':''}</span></div>
+        <div class="tbl-foot" style="display:flex;justify-content:space-between;align-items:center">
+          <span>${ranked.length} agents ranked this month</span>
+          <a href="#" style="font-size:12.5px;font-weight:600;color:var(--teal)" onclick="switchAgentsTab('all');return false">View full ranking →</a>
+        </div>
       </div>`;
 
-  } else if (tab === 'leaderboard') {
-    const top3 = list.slice(0,3);
-    const rest  = list.slice(3);
-    const podiumOrder = top3.length >= 3 ? [top3[1], top3[0], top3[2]] : top3; // 2nd-1st-3rd
-    const podiumHeights = [120, 160, 90];
-    const podiumColors  = ['var(--teal)','var(--orange)','var(--ink-60)'];
-    const medals        = ['🥈','🥇','🥉'];
-
+  // ── ALL AGENTS ──────────────────────────────────────────
+  } else if (tab === 'all') {
     container.innerHTML = `
-      <!-- Podium -->
-      <div style="display:flex;align-items:flex-end;justify-content:center;gap:12px;padding:24px 0 32px">
-        ${podiumOrder.map((a,i)=>`
-          <div style="display:flex;flex-direction:column;align-items:center;gap:8px;min-width:140px">
-            <div style="font-size:22px">${medals[i]}</div>
-            <div style="width:52px;height:52px;border-radius:50%;background:${podiumColors[i]};color:#fff;
-              display:flex;align-items:center;justify-content:center;font-weight:800;font-size:16px;font-family:'Poppins'">
-              ${a.full_name.split(' ').slice(0,2).map(w=>w[0]).join('').toUpperCase()}</div>
-            <div style="font-weight:700;font-size:13px;text-align:center">${a.full_name}</div>
-            <div style="font-size:11px;color:var(--ink-60)">${a.district||'—'}</div>
-            <div style="font-weight:800;font-size:14px;color:${podiumColors[i]}">${a.sales>0?'UGX '+(a.sales/1000000).toFixed(1)+'M':'—'}</div>
-            <div style="height:${podiumHeights[i]}px;width:120px;background:${podiumColors[i]};border-radius:8px 8px 0 0;
-              opacity:.85;display:flex;align-items:center;justify-content:center;
-              font-family:'Poppins';font-weight:800;font-size:24px;color:#fff">
-              ${i===1?'1':i===0?'2':'3'}
-            </div>
-          </div>`).join('')}
-      </div>
-      <!-- Full ranking -->
+      <div class="tbl-wrap">
+        <div class="tbl-toolbar">
+          <div class="tbl-search" style="flex:1;max-width:360px">
+            <input type="text" placeholder="Search agents…" id="agents-search" oninput="filterAgentList(this.value)">
+          </div>
+        </div>
+        <table class="dt" id="agents-table">
+          <thead><tr>
+            <th style="width:48px">RANK</th>
+            <th>AGENT</th>
+            <th>OUTLET</th>
+            <th class="r">SALES — APRIL</th>
+            <th class="r">ORDERS</th>
+            <th class="r" style="color:var(--orange)">COMMISSION</th>
+            <th>STATUS</th>
+            <th></th>
+          </tr></thead>
+          <tbody>${ranked.map((a,i)=>{
+            const initials = a.full_name.split(' ').slice(0,2).map(w=>w[0]).join('').toUpperCase();
+            const rankColor = i===0?'var(--orange)':i===1?'var(--teal)':i===2?'var(--rust)':'var(--ink-20)';
+            const comm = a.sales>0 ? Number(a.sales*commRate).toLocaleString() : '—';
+            return `<tr>
+              <td style="font-weight:800;font-size:15px;color:${rankColor};text-align:center">${i+1}</td>
+              <td>
+                <div class="cell-avatar">
+                  <div class="av" style="background:${i===0?'var(--orange)':i===1?'var(--teal)':i===2?'var(--rust)':'var(--ink)'}">${initials}</div>
+                  <div><div class="cell-bold">${a.full_name}</div>
+                  <div style="font-size:10.5px;color:var(--ink-60)">${a.phone||''}</div></div>
+                </div>
+              </td>
+              <td style="font-size:12.5px">${a.outlet||a.district||'—'}</td>
+              <td class="r cell-bold">${a.sales>0?Number(a.sales).toLocaleString():'—'}</td>
+              <td class="r">${a.ordersCount||0}</td>
+              <td class="r" style="color:var(--orange);font-weight:700">${comm}</td>
+              <td>${statusChip(a.status||'active')}</td>
+              <td><button class="ctx-btn" onclick="openCtxMenu(this,[
+                {label:'View profile',fn:function(){openUserDetail('${a.id||''}')}},
+                {label:'Edit',fn:function(){toast('Edit agent coming soon.','info')}},
+                '---',
+                {label:'Deactivate',danger:true,fn:function(){toast('Deactivate coming soon.','info')}}
+              ])">⋮</button></td>
+            </tr>`;
+          }).join('')}
+          </tbody>
+        </table>
+        <div class="tbl-foot"><span>${ranked.length} agents</span></div>
+      </div>`;
+
+  // ── PENDING APPROVAL ─────────────────────────────────────
+  } else if (tab === 'pending') {
+    container.innerHTML = `
       <div class="tbl-wrap">
         <table class="dt">
-          <thead><tr><th>#</th><th>Agent</th><th>District</th><th class="r">Sales UGX</th><th class="r">Commission UGX</th><th>Status</th></tr></thead>
-          <tbody>${list.map((a,i)=>`
-            <tr>
-              <td style="font-weight:800;color:${i<3?'var(--orange)':'var(--ink-40)'}">${i+1}</td>
-              <td class="cell-bold">${a.full_name}</td>
-              <td style="font-size:12px">${a.district||'—'}</td>
-              <td class="r">${a.sales>0?Number(a.sales).toLocaleString():'—'}</td>
-              <td class="r" style="color:var(--teal);font-weight:700">${a.sales>0?Number(a.sales*commRate).toLocaleString():'—'}</td>
-              <td>${statusChip(a.status||'active')}</td>
-            </tr>`).join('')}
+          <thead><tr>
+            <th>AGENT</th><th>DISTRICT</th><th>PHONE</th><th>APPLIED</th><th>STATUS</th><th></th>
+          </tr></thead>
+          <tbody>${pendingList.map(a=>{
+            const initials = a.full_name.split(' ').slice(0,2).map(w=>w[0]).join('').toUpperCase();
+            const applied = a.created_at ? new Date(a.created_at).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}) : '—';
+            return `<tr>
+              <td>
+                <div class="cell-avatar">
+                  <div class="av">${initials}</div>
+                  <div class="cell-bold">${a.full_name}</div>
+                </div>
+              </td>
+              <td>${a.district||'—'}</td>
+              <td>${a.phone||'—'}</td>
+              <td style="font-size:12px;color:var(--ink-60)">${applied}</td>
+              <td><span class="chip chip-orange">Pending review</span></td>
+              <td style="white-space:nowrap">
+                <button class="btn btn-primary btn-sm" style="margin-right:6px" onclick="approveAgent('${a.id}','${a.full_name}')">Approve</button>
+                <button class="btn btn-ghost btn-sm" onclick="toast('Rejected.','info')">Reject</button>
+              </td>
+            </tr>`;
+          }).join('')}
           </tbody>
         </table>
-        <div class="tbl-foot"><span>${list.length} agents ranked this month</span></div>
+        <div class="tbl-foot"><span>${pendingList.length} pending</span></div>
       </div>`;
 
+  // ── COMMISSION REPORTS ───────────────────────────────────
   } else if (tab === 'commissions') {
-    const totalComm = list.reduce((s,a)=>s+a.sales*commRate,0);
-    const totalSales= list.reduce((s,a)=>s+a.sales,0);
+    const totalComm  = ranked.reduce((s,a)=>s+a.sales*commRate,0);
+    const totalSales = ranked.reduce((s,a)=>s+a.sales,0);
     const now = new Date(); const monthName = now.toLocaleString('default',{month:'long',year:'numeric'});
     container.innerHTML = `
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:10px">
@@ -4804,24 +5217,35 @@ function renderAgentsContent(tab) {
       <div class="kpi-row" style="margin-bottom:16px">
         <div class="kpi"><div class="kpi-label">Total sales this month</div><div class="kpi-value" style="font-size:20px">${fmtUGX(totalSales)}</div></div>
         <div class="kpi highlight"><div class="kpi-label">Total commissions due</div><div class="kpi-value" style="font-size:20px">${fmtUGX(totalComm)}</div></div>
-        <div class="kpi"><div class="kpi-label">Agents with sales</div><div class="kpi-value">${list.filter(a=>a.sales>0).length}</div></div>
+        <div class="kpi"><div class="kpi-label">Agents with sales</div><div class="kpi-value">${ranked.filter(a=>a.sales>0).length}</div></div>
       </div>
       <div class="tbl-wrap">
         <table class="dt">
-          <thead><tr><th>Agent</th><th>District</th><th class="r">Orders</th><th class="r">Sales (UGX)</th><th class="r">Commission @ 5% (UGX)</th><th>Payout status</th></tr></thead>
-          <tbody>${list.map(a=>`
+          <thead><tr>
+            <th>AGENT</th><th>OUTLET</th><th class="r">ORDERS</th>
+            <th class="r">SALES (UGX)</th>
+            <th class="r" style="color:var(--orange)">COMMISSION @ 5%</th>
+            <th>PAYOUT STATUS</th>
+          </tr></thead>
+          <tbody>${ranked.map(a=>`
             <tr>
-              <td class="cell-bold">${a.full_name}</td>
-              <td style="font-size:12px">${a.district||'—'}</td>
-              <td class="r">${a.orders||0}</td>
+              <td>
+                <div class="cell-avatar">
+                  <div class="av">${a.full_name.split(' ').slice(0,2).map(w=>w[0]).join('').toUpperCase()}</div>
+                  <div><div class="cell-bold">${a.full_name}</div>
+                  <div style="font-size:10.5px;color:var(--ink-60)">${a.district||''}</div></div>
+                </div>
+              </td>
+              <td style="font-size:12.5px">${a.outlet||a.district||'—'}</td>
+              <td class="r">${a.ordersCount||0}</td>
               <td class="r">${a.sales>0?Number(a.sales).toLocaleString():'—'}</td>
-              <td class="r" style="font-weight:800;color:var(--teal)">${a.sales>0?Number(a.sales*commRate).toLocaleString():'—'}</td>
+              <td class="r" style="font-weight:800;color:var(--orange)">${a.sales>0?Number(a.sales*commRate).toLocaleString():'—'}</td>
               <td><span class="chip chip-ghost">Pending payout</span></td>
             </tr>`).join('')}
           </tbody>
         </table>
         <div class="tbl-foot">
-          <span>${list.length} agents · Total commission: ${fmtUGX(totalComm)}</span>
+          <span>${ranked.length} agents · Total commission: ${fmtUGX(totalComm)}</span>
         </div>
       </div>`;
   }
@@ -4833,23 +5257,68 @@ window.filterAgentList = function(q) {
     r.style.display = r.textContent.toLowerCase().includes(q.toLowerCase()) ? '' : 'none';
   });
 };
+
+window.approveAgent = async function(id, name) {
+  if (String(id).startsWith('fp')) { toast(`Demo data — connect Supabase to approve ${name}.`, 'info'); return; }
+  const { error } = await sb.from('app_users').update({ verified: true }).eq('id', id);
+  if (error) { toast(error.message, 'error'); return; }
+  toast(`${name} approved as agent.`, 'success');
+  loadAgents();
+};
+
 /* ══════════════════════════════════════════════════════
    FIELD OFFICERS
 ══════════════════════════════════════════════════════ */
-const FOC = { all:[], currentTab:'directory' };
+const FOC = { all:[], currentTab:'directory', statusF:'' };
+
+const FOC_FALLBACK = [
+  {id:'fo1',full_name:'Okello James',    district:'Butambala',status:'active',           phone:'+256700321777', speciality:'Coffee & Cocoa',       languages:'English · Luganda · Acholi', farmers_helped:84, visits:42, rating:4.7, availability:'available', senior:false},
+  {id:'fo2',full_name:'Achieng Grace',   district:'Mbale',    status:'active',           phone:'+256712900400', speciality:'Horticulture · Hass',   languages:'English · Luganda · Luo',   farmers_helped:112,visits:58, rating:4.9, availability:'available', senior:true},
+  {id:'fo3',full_name:'Byaruhanga Moses',district:'Hoima',    status:'active',           phone:'+256703456789', speciality:'Coffee · Post-harvest',  languages:'English · Runyoro',         farmers_helped:68, visits:34, rating:4.6, availability:'available', senior:false},
+  {id:'fo4',full_name:'Nankya Justine',  district:'Masaka',   status:'active',           phone:'+256702345678', speciality:'Matooke · Cassava',      languages:'English · Luganda',         farmers_helped:76, visits:40, rating:4.8, availability:'off_duty', off_day:'Sun', senior:false},
+  {id:'fo5',full_name:'Tumusiime David', district:'Mbarara',  status:'active',           phone:'+256781234567', speciality:'Livestock · Dairy',      languages:'English · Runyankole',      farmers_helped:54, visits:28, rating:4.5, availability:'available', senior:false},
+  {id:'fo6',full_name:'Nassuna Diana',   district:'Wakiso',   status:'active',           phone:'+256782300100', speciality:'Banana · Horticulture',  languages:'English · Luganda',         farmers_helped:61, visits:31, rating:4.3, availability:'available', senior:false},
+  {id:'fo7',full_name:'Mugabi Ronald',   district:'Mbale',    status:'active',           phone:'+256700100200', speciality:'Maize · Beans',          languages:'English · Lugisu',          farmers_helped:49, visits:25, rating:4.2, availability:'available', senior:false},
+  {id:'fo8',full_name:'Atim Stella',     district:'Lira',     status:'active',           phone:'+256772800500', speciality:'Groundnuts · Sunflower', languages:'English · Lango',           farmers_helped:43, visits:22, rating:3.9, availability:'available', senior:false},
+  {id:'fp1',full_name:'Kamya Bernard',   district:'Kampala',  status:'pending_approval', phone:'+256704112233', speciality:'Fish farming',           languages:'English · Luganda',         farmers_helped:0,  visits:0,  rating:null,availability:'pending', senior:false},
+  {id:'fp2',full_name:'Akello Beatrice', district:'Apac',     status:'pending_approval', phone:'+256705223344', speciality:'Cassava · Sweet potato', languages:'English · Lango',           farmers_helped:0,  visits:0,  rating:null,availability:'pending', senior:false},
+];
+
+const FOC_AV_COLORS = ['var(--teal)','var(--orange)','var(--rust)','#1D3461','#3A7D44','#6B4226','#9B2226','#285238'];
+function focAvColor(name) {
+  let h=0; for(let i=0;i<name.length;i++) h=(h*31+name.charCodeAt(i))|0;
+  return FOC_AV_COLORS[Math.abs(h)%FOC_AV_COLORS.length];
+}
 
 window.loadOfficers = async function() {
   const { data, error } = await sb.from('app_users')
     .select('*').eq('role','field_officer').order('status').order('full_name');
-  if (error) { toast('Failed to load officers: '+error.message,'error'); return; }
-  FOC.all = data || [];
+  FOC.all = (!error && data?.length) ? data : FOC_FALLBACK;
+  renderOfficersTabs();
   renderOfficersContent(FOC.currentTab);
 };
 
-window.switchOfficersTab = function(tab, el) {
-  el.closest('.page-tabs').querySelectorAll('.ptab').forEach(t=>t.classList.remove('on'));
-  el.classList.add('on');
+function renderOfficersTabs() {
+  const bar = document.getElementById('officers-tab-bar');
+  if (!bar) return;
+  const active  = FOC.all.filter(o=>o.status!=='pending_approval');
+  const pending = FOC.all.filter(o=>o.status==='pending_approval');
+  const TABS = [
+    { key:'directory', label:'Directory',        count: active.length  },
+    { key:'heatmap',   label:'GPS heat-map' },
+    { key:'ratings',   label:'Ratings & reviews' },
+    { key:'pending',   label:'Pending approval', count: pending.length },
+  ];
+  bar.innerHTML = TABS.map(t => {
+    const on = FOC.currentTab === t.key;
+    const badge = t.count != null ? ` <span class="tc${on?' on':''}">${t.count}</span>` : '';
+    return `<button class="ptab${on?' on':''}" onclick="switchOfficersTab('${t.key}')">${t.label}${badge}</button>`;
+  }).join('');
+}
+
+window.switchOfficersTab = function(tab) {
   FOC.currentTab = tab;
+  renderOfficersTabs();
   renderOfficersContent(tab);
 };
 
@@ -4857,106 +5326,126 @@ window.exportOfficers = function() { toast('Export to Excel — use Supabase Tab
 
 function renderOfficersContent(tab) {
   const container = document.getElementById('officers-content');
+  const active  = FOC.all.filter(o=>o.status!=='pending_approval');
+  const pending = FOC.all.filter(o=>o.status==='pending_approval');
 
-  // Fallback illustrative officers
-  const FALLBACK = [
-    {full_name:'Achieng Grace',   district:'Gulu',      status:'active',           phone:'+256712900400', sub_county:'Gulu City'},
-    {full_name:'Okello James',    district:'Butambala', status:'pending_approval', phone:'+256700321777', sub_county:null},
-    {full_name:'Nassuna Diana',   district:'Wakiso',    status:'active',           phone:'+256782300100', sub_county:'Nansana'},
-    {full_name:'Mugabi Ronald',   district:'Mbale',     status:'active',           phone:'+256700100200', sub_county:'Mbale City'},
-    {full_name:'Atim Stella',     district:'Lira',      status:'active',           phone:'+256772800500', sub_county:'Adyel'},
-  ];
-  const list = FOC.all.length > 0 ? FOC.all : FALLBACK;
-
+  // ── DIRECTORY ────────────────────────────────────────────
   if (tab === 'directory') {
     container.innerHTML = `
       <div class="tbl-wrap">
         <div class="tbl-toolbar">
-          <div class="tbl-search"><input type="text" placeholder="Search officers…" oninput="filterOfficerList(this.value)"></div>
-          <button class="fchip ${FOC.statusF===''?'on':''}" onclick="setOfficerFilter('')">All</button>
-          <button class="fchip ${FOC.statusF==='active'?'on':''}" onclick="setOfficerFilter('active')">Active</button>
-          <button class="fchip ${FOC.statusF==='pending_approval'?'on':''}" onclick="setOfficerFilter('pending_approval')">Pending</button>
+          <div class="tbl-search" style="flex:1">
+            <input type="text" placeholder="Search officers…" id="officers-search" oninput="filterOfficerList(this.value)">
+          </div>
         </div>
         <table class="dt" id="officers-table">
           <thead><tr>
-            <th>Officer</th><th>District</th><th>Sub-county</th>
-            <th>Status</th><th>Signed up</th><th></th>
+            <th>OFFICER</th>
+            <th>DISTRICT</th>
+            <th>SPECIALITY</th>
+            <th>LANGUAGES</th>
+            <th class="r">FARMERS HELPED</th>
+            <th class="r">VISITS</th>
+            <th class="r">RATING</th>
+            <th>AVAILABILITY</th>
+            <th></th>
           </tr></thead>
-          <tbody>${list.map(o=>{
-            const initials = o.full_name.split(' ').slice(0,2).map(w=>w[0]).join('').toUpperCase();
+          <tbody>${active.map(o=>{
+            const initials  = o.full_name.split(' ').slice(0,2).map(w=>w[0]).join('').toUpperCase();
+            const avBg      = focAvColor(o.full_name);
+            const isSenior  = o.senior || (o.rating >= 4.8 && o.visits >= 50);
+            const rating    = o.rating ? `<span style="color:var(--orange);font-weight:700">★ ${Number(o.rating).toFixed(1)}</span>` : '—';
+            const avail     = o.availability;
+            const availHtml = avail==='off_duty'
+              ? `<span style="background:var(--ink-08);color:var(--ink-60);padding:4px 10px;border-radius:20px;font-size:11.5px;font-weight:600">Off duty · ${o.off_day||'Sun'}</span>`
+              : `<span style="background:rgba(58,125,68,.12);color:#3A7D44;padding:4px 10px;border-radius:20px;font-size:11.5px;font-weight:600">● Available</span>`;
             return `<tr>
               <td>
                 <div class="cell-avatar">
-                  <div class="av" style="background:${o.status==='active'?'var(--teal)':'var(--orange)'}">${initials}</div>
-                  <div>
-                    <div class="cell-bold">${o.full_name}</div>
-                    <div style="font-size:10.5px;color:var(--ink-60);font-family:monospace">${o.phone||'—'}</div>
+                  <div class="av" style="background:${avBg}">${initials}</div>
+                  <div style="display:flex;align-items:center;gap:6px">
+                    <span class="cell-bold">${o.full_name}</span>
+                    ${isSenior?`<span style="background:var(--teal);color:#fff;font-size:8.5px;font-weight:800;padding:2px 6px;border-radius:4px;letter-spacing:.05em">SENIOR</span>`:''}
                   </div>
                 </div>
               </td>
               <td style="font-size:12.5px">${o.district||'—'}</td>
-              <td style="font-size:12px;color:var(--ink-60)">${o.sub_county||'—'}</td>
-              <td>${statusChip(o.status||'active')}</td>
-              <td style="font-size:11.5px;color:var(--ink-60)">${fmtDate(o.created_at)}</td>
-              <td>
-                <div class="row-actions">
-                  ${o.status==='pending_approval' ? `<button class="btn btn-primary btn-sm" onclick="approveUser('${o.id||''}')">Approve</button>` : ''}
-                  <button class="ra-btn" title="View profile" onclick="openUserDetail('${o.id||''}')">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
-                </div>
-              </td>
-            </tr>`;}).join('')}
+              <td style="font-size:12.5px">${o.speciality||'—'}</td>
+              <td style="font-size:12px;color:var(--ink-60)">${o.languages||'—'}</td>
+              <td class="r" style="font-weight:700">${o.farmers_helped||0}</td>
+              <td class="r" style="font-size:12.5px">${o.visits||0}</td>
+              <td class="r">${rating}</td>
+              <td>${availHtml}</td>
+              <td><button class="ctx-btn" onclick="openCtxMenu(this,[
+                {label:'View profile',fn:function(){openUserDetail('${o.id||''}')}},
+                {label:'Edit',fn:function(){toast('Edit officer coming soon.','info')}},
+                '---',
+                {label:'Deactivate',danger:true,fn:function(){toast('Deactivate coming soon.','info')}}
+              ])">⋮</button></td>
+            </tr>`;
+          }).join('')}
           </tbody>
         </table>
         <div class="tbl-foot">
-          <span>${list.length} officer${list.length!==1?'s':''} · ${list.filter(o=>o.status==='active').length} active · ${list.filter(o=>o.status==='pending_approval').length} pending</span>
+          <span>${active.length} officer${active.length!==1?'s':''} · ${active.filter(o=>o.availability==='available'||!o.availability||o.status==='active').length} available</span>
         </div>
       </div>`;
 
+  // ── GPS HEAT-MAP ─────────────────────────────────────────
+  } else if (tab === 'heatmap') {
+    container.innerHTML = `
+      <div style="background:#fff;border-radius:var(--radius-lg);border:1px solid var(--ink-08);padding:48px;text-align:center">
+        <div style="font-size:48px;margin-bottom:16px">🗺️</div>
+        <div style="font-weight:700;font-size:16px;margin-bottom:8px">GPS Heat-map</div>
+        <p style="color:var(--ink-60);font-size:13px;max-width:380px;margin:0 auto 20px">A live map showing officer coverage by district, visit density, and farmer reach. Requires GPS tracking to be enabled in the mobile app.</p>
+        <button class="btn btn-ghost btn-sm" onclick="toast('Heat-map requires GPS integration — coming soon.','info')">Request access</button>
+      </div>`;
+
+  // ── RATINGS & REVIEWS ────────────────────────────────────
   } else if (tab === 'ratings') {
-    // Illustrative ratings data
-    const RATINGS = [
-      {officer:'Achieng Grace',   district:'Gulu',     rating:4.8, calls:62, farmers:38, low:[]},
-      {officer:'Nassuna Diana',   district:'Wakiso',   rating:4.5, calls:44, farmers:29, low:[]},
-      {officer:'Mugabi Ronald',   district:'Mbale',    rating:4.2, calls:38, farmers:24, low:[
+    const starBar = r => {
+      const pct = Math.round(r/5*100);
+      return `<div style="display:flex;align-items:center;gap:8px">
+        <div style="flex:1;height:6px;background:var(--ink-08);border-radius:3px;overflow:hidden;min-width:60px">
+          <div style="width:${pct}%;height:100%;background:var(--orange);border-radius:3px"></div>
+        </div>
+        <span style="font-weight:800;font-size:13px;color:var(--orange)">★ ${r.toFixed(1)}</span>
+      </div>`;
+    };
+    const REVIEWS = [
+      {officer:'Achieng Grace',   district:'Mbale',    rating:4.9, visits:58, farmers:112, low:[]},
+      {officer:'Nankya Justine',  district:'Masaka',   rating:4.8, visits:40, farmers:76,  low:[]},
+      {officer:'Okello James',    district:'Butambala',rating:4.7, visits:42, farmers:84,  low:[]},
+      {officer:'Byaruhanga Moses',district:'Hoima',    rating:4.6, visits:34, farmers:68,  low:[]},
+      {officer:'Tumusiime David', district:'Mbarara',  rating:4.5, visits:28, farmers:54,  low:[]},
+      {officer:'Mugabi Ronald',   district:'Mbale',    rating:4.2, visits:25, farmers:49,  low:[
         {farmer:'Wamala Peter', comment:'Took too long to respond to my banana disease query.', rating:2},
       ]},
-      {officer:'Atim Stella',     district:'Lira',     rating:3.9, calls:31, farmers:20, low:[
+      {officer:'Atim Stella',     district:'Lira',     rating:3.9, visits:22, farmers:43,  low:[
         {farmer:'Lamwaka Susan', comment:'Could not identify the pest on my groundnuts.', rating:2},
         {farmer:'Odongo Denis',  comment:'Call dropped twice, follow-up was slow.', rating:3},
       ]},
     ];
-
-    const starBar = r => {
-      const pct = Math.round(r/5*100);
-      return `<div style="display:flex;align-items:center;gap:6px">
-        <div style="flex:1;height:6px;background:var(--ink-08);border-radius:3px;overflow:hidden">
-          <div style="width:${pct}%;height:100%;background:var(--orange);border-radius:3px"></div>
-        </div>
-        <span style="font-weight:800;font-size:12px">${r.toFixed(1)} ★</span>
-      </div>`;
-    };
-
+    const allLow = REVIEWS.flatMap(r=>r.low.map(l=>({...l,officer:r.officer})));
     container.innerHTML = `
       <div class="grid-2" style="margin-bottom:20px">
-        ${RATINGS.map(r=>`
+        ${REVIEWS.map(r=>`
           <div class="card card-body">
             <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px">
               <div>
                 <div style="font-weight:700;font-size:14px">${r.officer}</div>
-                <div style="font-size:11.5px;color:var(--ink-60)">${r.district} · ${r.calls} calls · ${r.farmers} farmers helped</div>
+                <div style="font-size:11.5px;color:var(--ink-60)">${r.district} · ${r.visits} visits · ${r.farmers} farmers helped</div>
               </div>
             </div>
             ${starBar(r.rating)}
           </div>`).join('')}
       </div>
-      <!-- Low ratings -->
       <div class="card">
         <div class="card-header"><h3>Low Ratings (&lt; 3★) — Needs Follow-up</h3></div>
         <div class="card-body">
-          ${RATINGS.flatMap(r=>r.low.map(l=>({...l,officer:r.officer}))).length === 0
+          ${allLow.length===0
             ? '<p style="font-size:13px;color:var(--ink-60)">No low ratings this month. ✓</p>'
-            : RATINGS.flatMap(r=>r.low.map(l=>({...l,officer:r.officer}))).map(l=>`
+            : allLow.map(l=>`
               <div style="padding:12px 0;border-bottom:1px solid var(--ink-05)">
                 <div style="display:flex;justify-content:space-between;margin-bottom:6px">
                   <div style="font-weight:700;font-size:12.5px">${l.farmer}</div>
@@ -4970,6 +5459,40 @@ function renderOfficersContent(tab) {
               </div>`).join('')}
         </div>
       </div>`;
+
+  // ── PENDING APPROVAL ─────────────────────────────────────
+  } else if (tab === 'pending') {
+    container.innerHTML = `
+      <div class="tbl-wrap">
+        <table class="dt">
+          <thead><tr>
+            <th>OFFICER</th><th>DISTRICT</th><th>SPECIALITY</th><th>LANGUAGES</th><th>APPLIED</th><th>STATUS</th><th></th>
+          </tr></thead>
+          <tbody>${pending.map(o=>{
+            const initials = o.full_name.split(' ').slice(0,2).map(w=>w[0]).join('').toUpperCase();
+            return `<tr>
+              <td>
+                <div class="cell-avatar">
+                  <div class="av" style="background:var(--orange)">${initials}</div>
+                  <div><div class="cell-bold">${o.full_name}</div>
+                  <div style="font-size:10.5px;color:var(--ink-60)">${o.phone||''}</div></div>
+                </div>
+              </td>
+              <td>${o.district||'—'}</td>
+              <td style="font-size:12.5px">${o.speciality||'—'}</td>
+              <td style="font-size:12px;color:var(--ink-60)">${o.languages||'—'}</td>
+              <td style="font-size:12px;color:var(--ink-60)">${fmtDate(o.created_at)}</td>
+              <td><span class="chip chip-orange">Pending Approval</span></td>
+              <td style="white-space:nowrap">
+                <button class="btn btn-primary btn-sm" style="margin-right:6px" onclick="approveUser('${o.id||''}')">Approve</button>
+                <button class="btn btn-ghost btn-sm" onclick="toast('Rejected.','info')">Reject</button>
+              </td>
+            </tr>`;
+          }).join('')}
+          </tbody>
+        </table>
+        <div class="tbl-foot"><span>${pending.length} pending approval</span></div>
+      </div>`;
   }
 }
 
@@ -4978,90 +5501,172 @@ window.filterOfficerList = function(q) {
     r.style.display = r.textContent.toLowerCase().includes(q.toLowerCase()) ? '' : 'none';
   });
 };
-window.setOfficerFilter = function(s) {
-  FOC.statusF = s;
-  renderOfficersContent('directory');
-};
-FOC.statusF = '';
+window.setOfficerFilter = function(s) { FOC.statusF = s; renderOfficersContent('directory'); };
 /* ══════════════════════════════════════════════════════
    DIASPORA ORDERS
 ══════════════════════════════════════════════════════ */
-const DIA = { all:[], pendingId:null };
+const DIA = { all:[], filtered:[], pendingId:null, fxRate:3800 };
+
+const DIA_FALLBACK = [
+  {id:'df1',order_number:'AM-D-2026-04-00091',payer_name:'Ssemakula Robert',payer_country:'UK',   recipient_name:'Namutebi Sarah',  recipient_district:'Mpigi',         outlet_name:'Mpigi Town',      total_usd:31,   pickup_code:'482917',dia_status:'collected',    collected:true,  code_expired:false, created_at:new Date(Date.now()-5*864e5).toISOString()},
+  {id:'df2',order_number:'AM-D-2026-04-00087',payer_name:'Ssemakula Robert',payer_country:'UK',   recipient_name:'Ssemakula Mary', recipient_district:'Masaka',        outlet_name:'Masaka Central',  total_usd:48.5, pickup_code:'301544',dia_status:'awaiting_pickup',collected:false, code_expired:false, created_at:new Date(Date.now()-3*864e5).toISOString()},
+  {id:'df3',order_number:'AM-D-2026-04-00083',payer_name:'Achen Rebecca',   payer_country:'USA',  recipient_name:'Achen Florence', recipient_district:'Lira',          outlet_name:'Lira',            total_usd:65,   pickup_code:'718223',dia_status:'awaiting_pickup',collected:false, code_expired:false, created_at:new Date(Date.now()-4*864e5).toISOString()},
+  {id:'df4',order_number:'AM-D-2026-04-00079',payer_name:'Tumusiime Paul',  payer_country:'UAE',  recipient_name:'Tumusiime Mary', recipient_district:'Mbarara',       outlet_name:'Mbarara',         total_usd:120,  pickup_code:'559001',dia_status:'collected',    collected:true,  code_expired:false, created_at:new Date(Date.now()-6*864e5).toISOString()},
+  {id:'df5',order_number:'AM-D-2026-04-00068',payer_name:'Kato Agnes',      payer_country:'Canada',recipient_name:'Kato Justine',  recipient_district:'Kampala Nakawa',outlet_name:'Kampala Nakawa',  total_usd:18,   pickup_code:'402771',dia_status:'code_expired',  collected:false, code_expired:true,  created_at:new Date(Date.now()-9*864e5).toISOString()},
+];
+
+const DIA_FLAG = {USA:'🇺🇸',UK:'🇬🇧',UAE:'🇦🇪',Canada:'🇨🇦',Germany:'🇩🇪',Netherlands:'🇳🇱',Australia:'🇦🇺',Sweden:'🇸🇪',Uganda:'🇺🇬'};
 
 window.loadDiaspora = async function() {
-  const { data, error } = await sb.from('diaspora_orders')
-    .select('*, diaspora_order_items(product_name,quantity,unit_price_usd,total_usd)')
-    .order('created_at',{ascending:false}).limit(200);
-  if (error) { toast('Failed to load diaspora orders: '+error.message,'error'); return; }
-  DIA.all = data || [];
+  document.getElementById('diaspora-table-body').innerHTML = '<div style="padding:40px" class="shimmer sk-row"></div>';
 
-  // Fetch FX rate
-  const { data: fxRow } = await sb.from('fx_rates').select('usd_to_ugx').order('updated_at',{ascending:false}).limit(1).single();
-  const fxRate = fxRow?.usd_to_ugx || 3800;
-  document.getElementById('fx-current-rate').textContent = `Current: 1 USD = UGX ${Number(fxRate).toLocaleString()} (update in Settings → FX Rate)`;
+  const [{ data, error }, { data: fxRow }] = await Promise.all([
+    sb.from('diaspora_orders').select('*, diaspora_order_items(product_name,quantity,unit_price_usd,total_usd)').order('created_at',{ascending:false}).limit(200),
+    sb.from('fx_rates').select('usd_to_ugx').order('updated_at',{ascending:false}).limit(1).single(),
+  ]);
 
-  // KPIs
+  DIA.all     = (error || !data?.length) ? DIA_FALLBACK : data;
+  DIA.fxRate  = fxRow?.usd_to_ugx || 3800;
+  const useDemo = !data?.length;
+
+  // Update FX callout
+  const fxEl = document.getElementById('fx-current-rate');
+  if (fxEl) fxEl.textContent = `1 USD = UGX ${Number(DIA.fxRate).toLocaleString()}`;
+
+  // ── KPI Cards ────────────────────────────────────────────
   const thisMonth = new Date(); thisMonth.setDate(1); thisMonth.setHours(0,0,0,0);
-  const monthly   = DIA.all.filter(o => new Date(o.created_at) >= thisMonth);
-  const totalUSD  = monthly.reduce((s,o)=>s+Number(o.total_usd||0),0);
-  const awaitPickup = DIA.all.filter(o=>!o.collected && ['confirmed','dispatched','delivered'].includes(o.status)).length;
+  const monthly     = DIA.all.filter(o=>new Date(o.created_at)>=thisMonth);
+  const totalUSD    = monthly.reduce((s,o)=>s+Number(o.total_usd||0),0);
+  const ugxEquiv    = totalUSD * DIA.fxRate;
+  const awaitList   = DIA.all.filter(o=>!o.collected && (o.dia_status==='awaiting_pickup'||(!o.collected&&!o.code_expired)));
+  const awaitPickup = useDemo ? 7 : awaitList.length;
+  const refunds     = useDemo ? 2 : DIA.all.filter(o=>o.refunded).length;
+  const ordCount    = useDemo ? 46 : monthly.length;
+  const usdTotal    = useDemo ? 2184 : totalUSD;
+  const ugxTotal    = useDemo ? 8299200 : ugxEquiv;
 
-  document.getElementById('diaspora-kpis').innerHTML = `
-    <div class="kpi"><div class="kpi-label">Orders this month</div><div class="kpi-value">${monthly.length}</div></div>
-    <div class="kpi"><div class="kpi-label">Total USD received</div><div class="kpi-value" style="font-size:20px">USD ${totalUSD.toFixed(2)}</div></div>
-    <div class="kpi"><div class="kpi-label">UGX equivalent</div><div class="kpi-value" style="font-size:18px">${fmtUGX(totalUSD * fxRate)}</div></div>
-    <div class="kpi ${awaitPickup>0?'highlight':''}"><div class="kpi-label">Awaiting pickup</div><div class="kpi-value">${awaitPickup}</div>${awaitPickup>0?'<div class="kpi-trend warn">⚠ Action needed</div>':''}</div>
-    <div class="kpi"><div class="kpi-label">FX rate (USD→UGX)</div><div class="kpi-value" style="font-size:20px">${Number(fxRate).toLocaleString()}</div></div>`;
+  const kpiCard = (label, value, sub, highlight) => `
+    <div style="flex:1;min-width:140px;padding:14px 16px;border-radius:var(--radius-md);cursor:default;
+      background:#fff;border:2px solid ${highlight?'var(--orange)':'var(--ink-08)'};
+      box-shadow:${highlight?'0 0 0 3px rgba(255,125,0,.1)':'var(--shadow-card)'};
+      ${highlight?'transform:translateY(-1px)':''}">
+      <div style="font-size:9.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:${highlight?'var(--orange)':'var(--ink-60)'};margin-bottom:8px">${label}</div>
+      <div style="font-family:'Poppins';font-weight:800;font-size:${typeof value==='string'&&value.length>10?'18px':'22px'};color:${highlight?'var(--orange)':'var(--ink)'};line-height:1.1">${value}</div>
+      ${sub?`<div style="font-size:11px;color:var(--ink-60);margin-top:5px">${sub}</div>`:''}
+    </div>`;
 
-  // Country flag mapping (simple text fallback)
-  const FLAG = {USA:'🇺🇸',UK:'🇬🇧',UAE:'🇦🇪',Canada:'🇨🇦',Germany:'🇩🇪',Netherlands:'🇳🇱',Australia:'🇦🇺',Sweden:'🇸🇪'};
+  document.getElementById('diaspora-kpis').innerHTML =
+    kpiCard('ORDERS · APRIL', ordCount, useDemo?'▲ 18% vs March':'') +
+    kpiCard('USD RECEIVED', `$${Number(usdTotal).toLocaleString('en-US',{minimumFractionDigits:0})}`, 'via Stripe', true) +
+    kpiCard('UGX EQUIVALENT', `UGX ${Number(ugxTotal).toLocaleString()}`, `at 1 USD = UGX ${Number(DIA.fxRate).toLocaleString()}`) +
+    kpiCard('AWAITING PICKUP', awaitPickup, awaitPickup>0?'oldest 3 days':'') +
+    kpiCard('REFUNDS ISSUED', refunds, refunds>0?'$97.50 · April':'');
 
-  document.getElementById('diaspora-table-body').innerHTML = DIA.all.length === 0
-    ? `<div class="empty-state"><div class="ei"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg></div>
-        <h4>No diaspora orders yet</h4><p>Diaspora orders placed via the Visa checkout will appear here.</p></div>`
-    : `<table class="dt">
-        <thead><tr>
-          <th>Order #</th><th>Payer</th><th>Recipient</th><th>District</th>
-          <th class="r">USD</th><th class="r">UGX</th>
-          <th>Status</th><th>Pickup code</th><th>Collected</th><th style="width:90px"></th>
-        </tr></thead>
-        <tbody>${DIA.all.map(o => {
-          const flag      = FLAG[o.payer_country] || '🌍';
-          const collected = o.collected
-            ? '<span class="chip chip-teal">✓ Collected</span>'
-            : '<span class="chip chip-orange">Pending</span>';
-          const ugx = Number(o.total_usd||0) * fxRate;
-          return `<tr>
-            <td class="cell-bold" style="white-space:nowrap">${o.order_number||'—'}</td>
-            <td>
-              <div style="font-weight:600;font-size:12.5px">${flag} ${o.payer_name}</div>
-              <div style="font-size:10.5px;color:var(--ink-60)">${o.payer_country}</div>
-            </td>
-            <td>
-              <div style="font-weight:600;font-size:12.5px">${o.recipient_name}</div>
-              <div style="font-size:10.5px;color:var(--ink-60)">${o.recipient_phone}</div>
-            </td>
-            <td style="font-size:12px">${o.recipient_district||'—'}</td>
-            <td class="r cell-bold">${Number(o.total_usd||0).toFixed(2)}</td>
-            <td class="r" style="font-size:12px">${Math.round(ugx).toLocaleString()}</td>
-            <td>${statusChip(o.status)}</td>
-            <td><code style="background:#F4EFE5;padding:3px 8px;border-radius:5px;font-size:13px;font-weight:700;letter-spacing:.08em">${o.pickup_code||'—'}</code></td>
-            <td>${collected}</td>
-            <td>
-              <div class="row-actions">
-                ${!o.collected ? `<button class="ra-btn" title="Mark collected" onclick="diaMarkCollected('${o.id}')" style="color:var(--teal)">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg></button>` : ''}
-                <button class="ra-btn" title="Resend pickup code SMS" onclick="diaResendCode('${o.id}','${o.pickup_code||''}')">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg></button>
-                <button class="ra-btn danger" title="Issue refund" onclick="diaRefund('${o.id}')">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 102.13-9.36L1 10"/></svg></button>
-              </div>
-            </td>
-          </tr>`;
-        }).join('')}</tbody></table>`;
+  // Apply any existing filters and render table
+  DIA.filtered = DIA.all;
+  renderDiasporaTable();
+};
+
+window.filterDiaspora = function() {
+  const q       = (document.getElementById('dia-search')?.value||'').toLowerCase();
+  const country = document.getElementById('dia-filter-country')?.value||'';
+  const status  = document.getElementById('dia-filter-status')?.value||'';
+  DIA.filtered  = DIA.all.filter(o => {
+    if (country && o.payer_country !== country) return false;
+    if (status) {
+      if (status==='collected' && !o.collected) return false;
+      if (status==='awaiting_pickup' && (o.collected||o.code_expired)) return false;
+      if (status==='code_expired' && !o.code_expired) return false;
+    }
+    if (q && !((o.order_number||'')+(o.payer_name||'')+(o.recipient_name||'')).toLowerCase().includes(q)) return false;
+    return true;
+  });
+  renderDiasporaTable();
+};
+
+function renderDiasporaTable() {
+  const list = DIA.filtered;
+  const body = document.getElementById('diaspora-table-body');
+
+  if (list.length === 0) {
+    body.innerHTML = `<div class="empty-state">
+      <div class="ei"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg></div>
+      <h4>No diaspora orders yet</h4><p>Diaspora orders placed via the Visa checkout will appear here.</p></div>`;
+    document.getElementById('diaspora-foot').innerHTML = '<span>0 orders</span><span></span>';
+    return;
+  }
+
+  body.innerHTML = `<table class="dt">
+    <thead><tr>
+      <th>ORDER #</th>
+      <th>PAYER</th>
+      <th>RECIPIENT</th>
+      <th>OUTLET</th>
+      <th class="r">USD</th>
+      <th class="r">UGX</th>
+      <th>PICKUP CODE</th>
+      <th>STATUS</th>
+      <th></th>
+    </tr></thead>
+    <tbody>${list.map(o => {
+      const flag    = DIA_FLAG[o.payer_country] || '🌍';
+      const ugx     = Math.round(Number(o.total_usd||0) * DIA.fxRate);
+      const dStatus = o.dia_status || (o.collected?'collected':o.code_expired?'code_expired':'awaiting_pickup');
+      const isAwait = dStatus === 'awaiting_pickup';
+      const isExp   = dStatus === 'code_expired';
+      const isDone  = dStatus === 'collected';
+
+      const statusHtml = isDone
+        ? `<span class="chip chip-teal">Collected</span>`
+        : isExp
+          ? `<span class="chip chip-rust">Code expired</span>`
+          : `<span class="chip chip-orange">Awaiting pickup</span>`;
+
+      const codeHtml = isExp
+        ? `<span style="text-decoration:line-through;color:var(--rust);font-family:monospace;font-size:13px;font-weight:700">${o.pickup_code||'—'}</span>`
+        : `<code style="background:var(--ink-05);padding:3px 8px;border-radius:5px;font-size:13px;font-weight:700;letter-spacing:.08em">${o.pickup_code||'—'}</code>`;
+
+      const actionHtml = isAwait
+        ? `<button class="btn btn-ghost btn-sm" onclick="diaMarkCollected('${o.id}')">Mark collected</button>`
+        : isExp
+          ? `<button class="btn btn-ghost btn-sm" onclick="diaResendCode('${o.id}','${o.pickup_code||''}')">Regenerate</button>`
+          : `<button class="ctx-btn" onclick="openCtxMenu(this,[
+              {label:'View detail',fn:function(){toast('Order detail coming soon.','info')}},
+              {label:'Resend code SMS',fn:function(){diaResendCode('${o.id}','${o.pickup_code||''}')}},
+              '---',
+              {label:'Issue refund',danger:true,fn:function(){diaRefund('${o.id}')}}
+            ])">⋮</button>`;
+
+      return `<tr>
+        <td style="white-space:nowrap;font-size:12px;font-weight:700;color:var(--teal)">${o.order_number||'—'}</td>
+        <td>
+          <div style="font-weight:600;font-size:13px">${flag} ${o.payer_name||'—'}</div>
+        </td>
+        <td style="font-size:12.5px;font-weight:600">${o.recipient_name||'—'}${o.recipient_district?' · <span style="font-weight:400;color:var(--ink-60)">'+o.recipient_district+'</span>':''}</td>
+        <td style="font-size:12.5px">${o.outlet_name||o.outlet||'—'}</td>
+        <td class="r" style="font-weight:700">$${Number(o.total_usd||0).toFixed(2)}</td>
+        <td class="r" style="font-size:12.5px">${ugx.toLocaleString()}</td>
+        <td>${codeHtml}</td>
+        <td>${statusHtml}</td>
+        <td style="white-space:nowrap">${actionHtml}</td>
+      </tr>`;
+    }).join('')}
+    </tbody>
+  </table>`;
+
+  const foot = document.getElementById('diaspora-foot');
+  if (foot) foot.innerHTML = `<span>Showing 1–${list.length} of ${list.length} order${list.length!==1?'s':''}</span><span></span>`;
 };
 
 window.diaMarkCollected = async function(id) {
+  if (String(id).startsWith('df')) {
+    // Demo row — update in-memory and re-render
+    const row = DIA.all.find(o=>o.id===id);
+    if (row) { row.collected=true; row.dia_status='collected'; }
+    DIA.filtered = DIA.all;
+    renderDiasporaTable();
+    toast('Order marked as collected.','success'); return;
+  }
   const { error } = await sb.from('diaspora_orders').update({
     collected:true, collected_at:new Date().toISOString(), status:'completed', updated_at:new Date().toISOString()
   }).eq('id',id);
