@@ -670,11 +670,14 @@ table.dt .cell-bold { color: var(--ink); font-weight: 700; }
       <!-- ── Traceability ───────────────────────────────────── -->
       <section class="page" id="page-traceability">
         <div class="pg-header">
-          <div class="pg-header-left"><h1>Traceability — Coffee &amp; Hass Avocado</h1><p class="pg-sub">Track batches from harvest through to export.</p></div>
+          <div class="pg-header-left"><h1 style="color:var(--orange)">Traceability — Coffee &amp; Hass Avocado</h1><p class="pg-sub">Track batches from harvest through to export.</p></div>
           <div class="pg-actions">
             <button class="btn btn-secondary">Upload Batch Data (Excel)</button>
             <button class="btn btn-primary" onclick="openBatchModal()">Add Batch Manually</button>
           </div>
+        </div>
+        <div style="border-left:3px solid var(--teal);background:rgba(21,97,109,.06);padding:10px 14px;border-radius:0 var(--radius-sm) var(--radius-sm) 0;margin-bottom:12px;font-size:13px;color:var(--teal)">
+          Tracking coffee and Hass avocado batches from harvest through to export.
         </div>
         <div class="tbl-wrap" id="trace-table-wrap">
           <div class="tbl-toolbar">
@@ -723,7 +726,7 @@ table.dt .cell-bold { color: var(--ink); font-weight: 700; }
       <!-- ── For Hire ──────────────────────────────────────── -->
       <section class="page" id="page-forhire">
         <div class="pg-header">
-          <div class="pg-header-left"><h1>For Hire Providers</h1><p class="pg-sub">Tractors, water pumps, threshers, and transport available for hire.</p></div>
+          <div class="pg-header-left"><h1 style="color:var(--orange)">For Hire Providers</h1><p class="pg-sub">Tractors, water pumps, threshers, and transport available for hire.</p></div>
           <div class="pg-actions">
             <button class="btn btn-primary" onclick="openHireModal()">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
@@ -736,6 +739,9 @@ table.dt .cell-bold { color: var(--ink); font-weight: 700; }
           <button class="ptab" onclick="switchHireTab('water_pump',this)">Water Pumps</button>
           <button class="ptab" onclick="switchHireTab('thresher',this)">Threshers</button>
           <button class="ptab" onclick="switchHireTab('transport',this)">Transport</button>
+        </div>
+        <div style="border-left:3px solid var(--teal);background:rgba(21,97,109,.06);padding:10px 14px;border-radius:0 var(--radius-sm) var(--radius-sm) 0;margin-bottom:12px;font-size:13px;color:var(--teal)">
+          Equipment available for hire across Uganda. Verified providers are shown in the farmer app.
         </div>
         <div class="tbl-wrap"><div id="hire-table-body"><div style="padding:40px" class="shimmer sk-row"></div></div></div>
       </section>
@@ -795,7 +801,7 @@ table.dt .cell-bold { color: var(--ink); font-weight: 700; }
       <!-- ── Advisory Content ──────────────────────────────── -->
       <section class="page" id="page-advisory">
         <div class="pg-header">
-          <div class="pg-header-left"><h1>Advisory Content</h1><p class="pg-sub">Videos, radio recordings, and seasonal tips for farmers.</p></div>
+          <div class="pg-header-left"><h1 style="color:var(--orange)">Advisory Content</h1><p class="pg-sub">Videos, radio recordings, and seasonal tips for farmers.</p></div>
           <div class="pg-actions">
             <button class="btn btn-secondary" onclick="navigate('notifications')">Schedule Push Notification</button>
             <button class="btn btn-primary" onclick="openAdvisoryModal()">
@@ -810,13 +816,16 @@ table.dt .cell-bold { color: var(--ink); font-weight: 700; }
           <button class="ptab" onclick="switchAdvisoryTab('seasonal_tip',this)">Seasonal Tips</button>
           <button class="ptab" onclick="switchAdvisoryTab('draft',this)">Drafts</button>
         </div>
+        <div style="border-left:3px solid var(--teal);background:rgba(21,97,109,.06);padding:10px 14px;border-radius:0 var(--radius-sm) var(--radius-sm) 0;margin-bottom:12px;font-size:13px;color:var(--teal)">
+          Videos, radio recordings, and seasonal tips distributed to farmers through the mobile app.
+        </div>
         <div class="tbl-wrap"><div id="advisory-table-body"><div style="padding:40px" class="shimmer sk-row"></div></div></div>
       </section>
 
       <!-- ── AI Chatbot ─────────────────────────────────────── -->
       <section class="page" id="page-chatbot">
         <div class="pg-header">
-          <div class="pg-header-left"><h1>AI Chatbot</h1><p class="pg-sub">Conversation logs, knowledge base, and escalation queue.</p></div>
+          <div class="pg-header-left"><h1 style="color:var(--orange)">AI Chatbot</h1><p class="pg-sub">Conversation logs, knowledge base, and escalation queue.</p></div>
         </div>
         <div class="kpi-row" id="chatbot-kpis"></div>
         <div class="page-tabs">
@@ -831,7 +840,7 @@ table.dt .cell-bold { color: var(--ink); font-weight: 700; }
       <!-- ── Push Notifications ────────────────────────────── -->
       <section class="page" id="page-notifications">
         <div class="pg-header">
-          <div class="pg-header-left"><h1>Push Notifications</h1><p class="pg-sub">Schedule and send push notifications to your users.</p></div>
+          <div class="pg-header-left"><h1 style="color:var(--orange)">Push Notifications</h1><p class="pg-sub">Schedule and send push notifications to your users.</p></div>
           <div class="pg-actions">
             <button class="btn btn-primary" onclick="openNotifModal()">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
@@ -866,7 +875,7 @@ table.dt .cell-bold { color: var(--ink); font-weight: 700; }
       <!-- ── Settings ──────────────────────────────────────── -->
       <section class="page" id="page-settings">
         <div class="pg-header">
-          <div class="pg-header-left"><h1>Settings</h1><p class="pg-sub">Organisation profile, payment methods, integrations, and staff roles.</p></div>
+          <div class="pg-header-left"><h1 style="color:var(--orange)">Settings</h1><p class="pg-sub">Organisation profile, payment methods, integrations, and staff roles.</p></div>
         </div>
         <div style="display:flex;gap:16px;align-items:flex-start">
           <div style="width:200px;flex-shrink:0">
@@ -3240,6 +3249,17 @@ function renderBatches() {
     return;
   }
 
+  const STAGE_CHIP = s => {
+    const map = {
+      harvested:  `<span class="chip chip-ghost">Harvested</span>`,
+      warehoused: `<span class="chip chip-teal">Warehoused</span>`,
+      processing: `<span class="chip chip-orange">Processing</span>`,
+      in_transit: `<span class="chip" style="background:rgba(0,21,36,.12);color:var(--ink-60)">In Transit</span>`,
+      exported:   `<span class="chip chip-ink">Exported</span>`,
+    };
+    return map[s] || `<span class="chip chip-ghost">${s}</span>`;
+  };
+
   el.innerHTML = `<table class="data-table">
     <thead><tr>
       <th>Batch #</th><th>Crop</th><th>Farmer</th><th>District</th>
@@ -3247,15 +3267,15 @@ function renderBatches() {
     </tr></thead>
     <tbody>
     ${rows.map(r => `<tr>
-      <td><code style="font-size:11px;background:var(--ink-05);padding:3px 6px;border-radius:4px">${r.batch_number}</code></td>
-      <td>${CROP_LABELS[r.crop] || r.crop}</td>
-      <td>${r.farmer_name || '—'}</td>
+      <td><code style="font-family:monospace;font-size:12px;background:var(--ink-05);padding:3px 6px;border-radius:4px">${r.batch_number}</code></td>
+      <td style="font-size:13.5px;font-weight:600">${CROP_LABELS[r.crop] || r.crop}</td>
+      <td style="font-size:13.5px;font-weight:600">${r.farmer_name || '—'}</td>
       <td>${r.district || '—'}</td>
       <td>${fmtDate(r.harvest_date)}</td>
-      <td>${statusChip(r.current_stage)}</td>
-      <td style="white-space:nowrap">${r.weight_kg ? Number(r.weight_kg).toLocaleString() + ' kg' : '—'}</td>
+      <td>${STAGE_CHIP(r.current_stage)}</td>
+      <td style="white-space:nowrap;font-size:13.5px;font-weight:600">${r.weight_kg ? Number(r.weight_kg).toLocaleString() + ' kg' : '—'}</td>
       <td>${r.destination || '—'}</td>
-      <td><button class="btn btn-ghost btn-sm" onclick="openBatchDrawer('${r.id}')">View</button></td>
+      <td><button class="btn btn-ghost btn-sm" onclick="openBatchDrawer('${r.id}')">👁 View</button></td>
     </tr>`).join('')}
     </tbody>
   </table>`;
@@ -3432,6 +3452,7 @@ window.loadHire = async function() {
 function renderHire() {
   const el = document.getElementById('hire-table-body');
   const CAT_LABELS = { tractor:'Tractors', water_pump:'Water Pumps', thresher:'Threshers', transport:'Transport' };
+  const CAT_ICON   = { tractor:'🚜', water_pump:'💧', thresher:'⚙️', transport:'🚛' };
   const rows = HIRE.rows.filter(r => r.category === HIRE.tab);
 
   if (!rows.length) {
@@ -3443,7 +3464,7 @@ function renderHire() {
   }
 
   const stars = n => Array.from({ length: 5 }).map((_, i) =>
-    `<span style="color:${i < Math.round(n || 0) ? 'var(--orange)' : 'var(--ink-15)'}">★</span>`
+    `<span style="font-size:16px;color:${i < Math.round(n || 0) ? 'var(--orange)' : 'var(--ink-15)'}">★</span>`
   ).join('');
 
   el.innerHTML = `<table class="data-table">
@@ -3456,20 +3477,23 @@ function renderHire() {
       const districts = Array.isArray(r.districts_covered)
         ? r.districts_covered.join(', ')
         : (r.districts_covered || '—');
+      const catIcon = CAT_ICON[r.category] || '';
       return `<tr>
         <td>
-          <div style="font-weight:600">${r.name}</div>
+          <div style="font-weight:600;font-size:13.5px">${catIcon} ${r.name}</div>
           <div style="font-size:11.5px;color:var(--ink-60)">${r.phone}</div>
         </td>
-        <td>${[r.equipment_make, r.equipment_model].filter(Boolean).join(' ') || '—'}</td>
+        <td style="font-size:13.5px;font-weight:600">${[r.equipment_make, r.equipment_model].filter(Boolean).join(' ') || '—'}</td>
         <td>${r.equipment_capacity || '—'}</td>
         <td style="font-size:11.5px">${districts}</td>
         <td style="font-weight:600;white-space:nowrap">${fmtUGX(r.day_rate_ugx)}/day</td>
-        <td><span style="font-size:13px">${stars(r.rating)}</span>
-            <span style="font-size:11px;color:var(--ink-60);margin-left:4px">${r.rating || 0}</span></td>
+        <td><span style="letter-spacing:1px">${stars(r.rating)}</span>
+            <span style="font-size:12px;font-weight:600;color:var(--ink-60);margin-left:4px">${r.rating || 0}</span></td>
         <td>
           ${r.verified ? '<span class="chip chip-teal">Verified</span>' : '<span class="chip chip-ghost">Unverified</span>'}
-          ${!r.active ? ' <span class="chip chip-rust" style="margin-top:2px">Inactive</span>' : ''}
+          ${r.active
+            ? ' <span class="chip chip-teal" style="margin-top:2px">Active</span>'
+            : ' <span class="chip chip-rust" style="margin-top:2px">Inactive</span>'}
         </td>
         <td style="white-space:nowrap">
           <button class="ctx-btn" title="Actions" onclick="openCtxMenu(this, [
@@ -3602,13 +3626,16 @@ window.loadAdvisory = async function() {
 
 function renderAdvisory() {
   const el = document.getElementById('advisory-table-body');
-  const TYPE_ICON = {
-    video:       `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>`,
-    radio:       `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 18v-6a9 9 0 0118 0v6"/><path d="M21 19a2 2 0 01-2 2H5a2 2 0 01-2-2v-3a2 2 0 012-2h14a2 2 0 012 2z"/></svg>`,
-    seasonal_tip:`<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>`,
+  const TYPE_EMOJI = { video:'📹', radio:'📻', seasonal_tip:'🌱' };
+  const LANG = { english:'English', luganda:'Luganda', lusoga:'Lusoga', runyankore:'Runyankore', luo:'Luo' };
+  const langChip = lang => {
+    const label = LANG[lang] || lang || '—';
+    if (lang === 'luganda') return `<span class="chip chip-teal">${label}</span>`;
+    if (lang === 'english') return `<span class="chip chip-ink">${label}</span>`;
+    return `<span class="chip chip-ghost">${label}</span>`;
   };
-  const LANG = { english:'EN', luganda:'Luganda', lusoga:'Lusoga', runyankore:'Runyankore', luo:'Luo' };
   const fmtDur = s => { if (!s) return '—'; return `${Math.floor(s/60)}:${String(s%60).padStart(2,'0')}`; };
+  const fmtNiceDate = d => { if (!d) return '—'; const dt = new Date(d); return dt.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}); };
 
   const rows = ADV.tab === 'draft'
     ? ADV.rows.filter(r => r.visibility === 'draft')
@@ -3628,21 +3655,21 @@ function renderAdvisory() {
     <tbody>
     ${rows.map(r => `<tr>
       <td>
-        <span style="display:flex;align-items:center;gap:5px;color:var(--ink-60);white-space:nowrap;text-transform:capitalize">
-          ${TYPE_ICON[r.type] || ''} ${(r.type || '').replace('_',' ')}
+        <span style="display:flex;align-items:center;gap:6px;color:var(--ink-60);white-space:nowrap;text-transform:capitalize;font-size:13.5px;font-weight:600">
+          <span style="font-size:16px">${TYPE_EMOJI[r.type] || ''}</span> ${(r.type || '').replace('_',' ')}
         </span>
       </td>
       <td>
-        <div style="font-weight:600;max-width:300px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${r.title}</div>
+        <div style="font-weight:600;font-size:13.5px;max-width:300px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${r.title}</div>
         ${r.description ? `<div style="font-size:11.5px;color:var(--ink-60);max-width:300px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${r.description}</div>` : ''}
       </td>
-      <td><span class="chip chip-ghost">${LANG[r.language] || r.language || '—'}</span></td>
-      <td style="white-space:nowrap">${fmtDur(r.duration_seconds)}</td>
-      <td style="white-space:nowrap">${fmtDate(r.published_at)}</td>
+      <td>${langChip(r.language)}</td>
+      <td style="white-space:nowrap;font-weight:600">${fmtDur(r.duration_seconds)}</td>
+      <td style="white-space:nowrap">${fmtNiceDate(r.published_at)}</td>
       <td>${statusChip(r.visibility === 'public' ? 'active' : r.visibility === 'draft' ? 'draft' : 'pending')}</td>
       <td style="white-space:nowrap">
+        ${r.source_url ? `<a href="${r.source_url.replace(/"/g,'&quot;')}" target="_blank" rel="noopener" style="color:var(--teal);font-size:12px;font-weight:600;margin-right:6px">View ↗</a>` : ''}
         <button class="ctx-btn" title="Actions" onclick="openCtxMenu(this, [
-          ${r.source_url ? `{ label: 'View ↗', fn: function(){ window.open('${r.source_url.replace(/'/g,"\\'")}','_blank','noopener') } },` : ''}
           { label: 'Edit', fn: function(){ openAdvisoryModal('${r.id}') } },
           '---',
           { label: 'Delete', danger: true, fn: function(){ deleteAdvisory('${r.id}','${(r.title||'').replace(/'/g,"\\'")}') } }
@@ -3859,22 +3886,27 @@ Always respond in the farmer's preferred language (Luganda, English, etc.). For 
   }
 
   /* Logs tab (default) */
-  const STATUS_CLS = { open:'chip-orange', closed:'chip-teal', escalated:'chip-rust' };
-  const CHAN_LABEL = { whatsapp:'📲 WhatsApp', app:'📱 App', sms:'📨 SMS', web:'🌐 Web' };
+  const STATUS_CLS   = { open:'chip-orange', closed:'chip-ghost', escalated:'chip-rust', resolved:'chip-teal' };
+  const STATUS_LABEL = { open:'Open', closed:'Closed', escalated:'Escalated', resolved:'Resolved' };
+  const CHAN_LABEL   = { whatsapp:'📱 WhatsApp', app:'💬 App', sms:'📟 SMS', web:'🌐 Web' };
 
-  el.innerHTML = `<table class="data-table">
+  el.innerHTML = `
+    <div style="border-left:3px solid var(--teal);background:rgba(21,97,109,.06);padding:10px 14px;border-radius:0 var(--radius-sm) var(--radius-sm) 0;margin-bottom:12px;font-size:13px;color:var(--teal)">
+      Conversation logs from WhatsApp, the app, and SMS. Escalated chats need human follow-up.
+    </div>
+    <table class="data-table">
     <thead><tr>
       <th>Farmer</th><th>Channel</th><th>Last Message</th>
       <th style="text-align:center">Msgs</th><th>Started</th><th>Status</th><th></th>
     </tr></thead>
     <tbody>
     ${CBT.conversations.map(c => `<tr>
-      <td style="font-weight:600">${c.farmer_name || c.user_name || 'Unknown'}</td>
+      <td style="font-weight:600;font-size:13.5px">${c.farmer_name || c.user_name || 'Unknown'}</td>
       <td>${CHAN_LABEL[c.channel] || c.channel || '—'}</td>
-      <td style="font-size:12px;color:var(--ink-60);max-width:240px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${c.last_message || '—'}</td>
-      <td style="text-align:center">${c.message_count || 0}</td>
+      <td style="font-size:12px;color:var(--ink-60);max-width:300px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-style:italic">${c.last_message || '—'}</td>
+      <td style="text-align:center;font-size:13.5px;font-weight:600">${c.message_count || 0}</td>
       <td style="white-space:nowrap">${fmtDatetime(c.created_at)}</td>
-      <td><span class="chip ${STATUS_CLS[c.status] || 'chip-ghost'}">${c.status || '—'}</span></td>
+      <td><span class="chip ${STATUS_CLS[c.status] || 'chip-ghost'}">${STATUS_LABEL[c.status] || c.status || '—'}</span></td>
       <td style="white-space:nowrap">
         ${c.status === 'escalated' ? `<button class="btn btn-ghost btn-sm" onclick="resolveEscalation('${c.id}')">Resolve</button>` : ''}
         ${c.status === 'open'      ? `<button class="btn btn-ghost btn-sm" style="color:var(--rust)" onclick="escalateChat('${c.id}')">Escalate</button>` : ''}
@@ -3947,6 +3979,8 @@ window.loadNotifications = async function() {
 function renderNotifications() {
   const el = document.getElementById('notif-table-body');
   const AUD = { all:'All Users', farmers:'Farmers', agents:'Agents', field_officers:'Field Officers', diaspora:'Diaspora' };
+  const AUD_CLS = { all:'chip-ink', farmers:'chip-teal', agents:'chip-orange', field_officers:'chip-ghost', diaspora:'chip-ghost' };
+  const fmtNiceDt = d => { if (!d) return '—'; const dt = new Date(d); return dt.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}) + ', ' + dt.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'}); };
 
   const filtered = NOTIF.tab === 'scheduled'
     ? NOTIF.rows.filter(r => r.status === 'scheduled')
@@ -3960,22 +3994,28 @@ function renderNotifications() {
     return;
   }
 
-  el.innerHTML = `<table class="data-table">
+  const infoBanner = NOTIF.tab === 'scheduled'
+    ? `<div style="border-left:3px solid var(--teal);background:rgba(21,97,109,.06);padding:10px 14px;border-radius:0 var(--radius-sm) var(--radius-sm) 0;margin-bottom:12px;font-size:13px;color:var(--teal)">Scheduled notifications will be delivered at the set time. Sent notifications cannot be recalled.</div>`
+    : '';
+
+  el.innerHTML = infoBanner + `<table class="data-table">
     <thead><tr>
       <th>Title</th><th>Message</th><th>Audience</th><th>Districts</th>
       <th>${NOTIF.tab === 'sent' ? 'Sent' : 'Scheduled'}</th><th>Status</th><th></th>
     </tr></thead>
     <tbody>
     ${filtered.map(r => {
-      const districts = Array.isArray(r.target_districts)
-        ? r.target_districts.join(', ') || 'All'
-        : (r.target_districts || 'All');
+      const distArr = Array.isArray(r.target_districts) ? r.target_districts : (r.target_districts ? [r.target_districts] : []);
+      const distChips = distArr.length
+        ? distArr.slice(0,2).map(d => `<span class="chip chip-ghost" style="font-size:10px;margin-right:2px">${d}</span>`).join('') +
+          (distArr.length > 2 ? `<span class="chip chip-ghost" style="font-size:10px">+${distArr.length-2} more</span>` : '')
+        : '<span style="color:var(--ink-40);font-size:12px">All</span>';
       return `<tr>
-        <td style="font-weight:600;max-width:180px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${r.title}</td>
+        <td style="font-weight:700;font-size:13.5px;max-width:180px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${r.title}</td>
         <td style="font-size:12px;color:var(--ink-60);max-width:240px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${r.body}</td>
-        <td><span class="chip chip-ghost">${AUD[r.target_audience] || r.target_audience || 'All'}</span></td>
-        <td style="font-size:11.5px;max-width:140px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${districts}</td>
-        <td style="white-space:nowrap">${fmtDatetime(r.sent_at || r.scheduled_at)}</td>
+        <td><span class="chip ${AUD_CLS[r.target_audience] || 'chip-ghost'}">${AUD[r.target_audience] || r.target_audience || 'All'}</span></td>
+        <td style="max-width:160px">${distChips}</td>
+        <td style="white-space:nowrap">${fmtNiceDt(r.sent_at || r.scheduled_at)}</td>
         <td>${statusChip(r.status)}</td>
         <td style="white-space:nowrap">
           ${r.status !== 'sent' ? `
@@ -4756,13 +4796,20 @@ function renderSettings(tab) {
       <table class="data-table">
         <thead><tr><th>Action</th><th>Table</th><th>Record</th><th>Staff</th><th>When</th></tr></thead>
         <tbody>
-        ${SETS.audit.map(a => `<tr>
-          <td><span class="chip ${a.action==='INSERT'?'chip-teal':a.action==='DELETE'?'chip-rust':'chip-orange'}">${a.action||'—'}</span></td>
+        ${SETS.audit.map(a => {
+          const ACT_ICON = { INSERT:'➕', UPDATE:'✏️', DELETE:'🗑️', LOGIN:'🔐', LOGOUT:'🔐' };
+          const actIcon = ACT_ICON[a.action] || (a.action?.toLowerCase().includes('auth') ? '🔐' : '✏️');
+          return `<tr>
+          <td>
+            <span style="margin-right:5px">${actIcon}</span>
+            <span class="chip ${a.action==='INSERT'?'chip-teal':a.action==='DELETE'?'chip-rust':a.action?.includes('AUTH')||a.action?.includes('LOGIN')?'chip-ink':'chip-orange'}">${a.action||'—'}</span>
+          </td>
           <td style="font-family:monospace;font-size:12px">${a.table_name||'—'}</td>
           <td style="font-family:monospace;font-size:11px;color:var(--ink-60)">${String(a.record_id||'—').slice(0,10)}…</td>
           <td style="font-size:12.5px">${a.changed_by||'system'}</td>
           <td style="white-space:nowrap">${fmtDatetime(a.created_at)}</td>
-        </tr>`).join('')}
+        </tr>`;
+        }).join('')}
         </tbody>
       </table>
     </div>`;
@@ -4850,7 +4897,7 @@ function renderSettings(tab) {
         <thead><tr><th>Name</th><th>District</th><th>Phone</th><th>Address</th></tr></thead>
         <tbody>
         ${SETS.outlets.map(o => `<tr>
-          <td style="font-weight:600">${o.name}</td>
+          <td style="font-weight:700;font-size:13.5px">📍 ${o.name}</td>
           <td>${o.district || '—'}</td>
           <td>${o.phone || '—'}</td>
           <td style="font-size:12px;color:var(--ink-60)">${o.address || '—'}</td>
@@ -4865,6 +4912,7 @@ async function loadStaffTab(el) {
   const { data: staff } = await sb.from('staff_profiles').select('*').order('full_name');
   const rows = staff?.length ? staff : SETS_STAFF_FB;
   const ROLE_LABELS = { md:'Managing Director', sales_manager:'Sales Manager', it_admin:'IT Admin', agronomist:'Agronomist', outlet_clerk:'Outlet Clerk' };
+  const ROLE_CLS    = { md:'chip-ink', sales_manager:'chip-teal', it_admin:'chip-orange', agronomist:'chip-teal', outlet_clerk:'chip-ghost' };
 
   el.innerHTML = `
     <div class="card" style="padding:20px;margin-bottom:20px">
@@ -4888,7 +4936,7 @@ async function loadStaffTab(el) {
             </div>
           </td>
           <td style="font-size:12.5px">${s.email || '—'}</td>
-          <td><span class="chip chip-teal">${ROLE_LABELS[s.role] || s.role || '—'}</span></td>
+          <td><span class="chip ${ROLE_CLS[s.role] || 'chip-ghost'}">${ROLE_LABELS[s.role] || s.role || '—'}</span></td>
           <td>${statusChip('active')}</td>
         </tr>`).join('')}
         </tbody>
