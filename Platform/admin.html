@@ -465,31 +465,29 @@ table.dt .cell-bold { color: var(--ink); font-weight: 700; }
 
     <!-- Navigation -->
     <div class="sb-nav">
-      <div class="sb-section">Overview</div>
+
+      <!-- ── OPERATIONS ──────────────────────────────── -->
+      <div class="sb-section">Operations</div>
       <button class="sb-item active" data-page="dashboard">
-        <!-- home icon -->
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
         <span class="sb-label">Dashboard</span>
       </button>
-
-      <div class="sb-section">Catalogue</div>
       <button class="sb-item" data-page="products">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
         <span class="sb-label">Products &amp; Shop</span>
+        <span class="sb-badge" id="sb-badge-products"></span>
       </button>
       <button class="sb-item" data-page="prices">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
         <span class="sb-label">Produce Prices</span>
       </button>
       <button class="sb-item" data-page="traceability">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
         <span class="sb-label">Traceability</span>
       </button>
-
-      <div class="sb-section">Commerce</div>
       <button class="sb-item" data-page="orders">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="2"/><line x1="9" y1="12" x2="15" y2="12"/><line x1="9" y1="16" x2="13" y2="16"/></svg>
-        <span class="sb-label">Orders &amp; Payments</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="5" rx="1"/><path d="M2 8h20v13a1 1 0 01-1 1H3a1 1 0 01-1-1V8z"/><line x1="9" y1="13" x2="15" y2="13"/></svg>
+        <span class="sb-label">Orders</span>
         <span class="sb-badge" id="sb-badge-orders"></span>
       </button>
       <button class="sb-item" data-page="diaspora">
@@ -501,12 +499,8 @@ table.dt .cell-bold { color: var(--ink); font-weight: 700; }
         <span class="sb-label">For Hire Providers</span>
       </button>
 
-      <div class="sb-section">People</div>
-      <button class="sb-item" data-page="users">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
-        <span class="sb-label">Users</span>
-        <span class="sb-badge" id="sb-badge-users"></span>
-      </button>
+      <!-- ── NETWORK ─────────────────────────────────── -->
+      <div class="sb-section">Network</div>
       <button class="sb-item" data-page="agents">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
         <span class="sb-label">Agents &amp; Leaderboard</span>
@@ -515,8 +509,6 @@ table.dt .cell-bold { color: var(--ink); font-weight: 700; }
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
         <span class="sb-label">Field Officers</span>
       </button>
-
-      <div class="sb-section">Content &amp; Comms</div>
       <button class="sb-item" data-page="advisory">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
         <span class="sb-label">Advisory Content</span>
@@ -531,15 +523,34 @@ table.dt .cell-bold { color: var(--ink); font-weight: 700; }
         <span class="sb-label">Push Notifications</span>
       </button>
 
-      <div class="sb-section">Intelligence</div>
+      <!-- ── FINANCE & INSIGHT ───────────────────────── -->
+      <div class="sb-section">Finance &amp; Insight</div>
       <button class="sb-item" data-page="analytics">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
         <span class="sb-label">Analytics &amp; Reports</span>
+      </button>
+      <button class="sb-item" onclick="toast('Finance integration via Odoo — coming soon.','info')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        <span class="sb-label">Finance</span>
+        <span style="background:#6C4FBF;color:#fff;font-size:9px;font-weight:800;padding:2px 5px;border-radius:4px;white-space:nowrap;margin-left:auto">Odoo</span>
+      </button>
+
+      <!-- ── ADMINISTRATION ──────────────────────────── -->
+      <div class="sb-section">Administration</div>
+      <button class="sb-item" data-page="users">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+        <span class="sb-label">Users &amp; Roles</span>
+        <span class="sb-badge" id="sb-badge-users"></span>
       </button>
       <button class="sb-item" data-page="settings">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
         <span class="sb-label">Settings</span>
       </button>
+      <button class="sb-item" onclick="window.open(location.href,'_blank')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h4a2 2 0 012 2v14a2 2 0 01-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+        <span class="sb-label">Login screen</span>
+      </button>
+
     </div>
 
     <!-- Collapse toggle -->
@@ -670,20 +681,39 @@ table.dt .cell-bold { color: var(--ink); font-weight: 700; }
       <!-- ── Traceability ───────────────────────────────────── -->
       <section class="page" id="page-traceability">
         <div class="pg-header">
-          <div class="pg-header-left"><h1 style="color:var(--orange)">Traceability — Coffee &amp; Hass Avocado</h1><p class="pg-sub">Track batches from harvest through to export.</p></div>
+          <div class="pg-header-left">
+            <h1 style="color:var(--orange)">Traceability · Coffee &amp; Hass Avocado</h1>
+            <p class="pg-sub">Each batch is tracked from farmer harvest through to export. Farmers look up their Batch ID in the app; exporters can share the same data with importers.</p>
+          </div>
           <div class="pg-actions">
-            <button class="btn btn-secondary">Upload Batch Data (Excel)</button>
-            <button class="btn btn-primary" onclick="openBatchModal()">Add Batch Manually</button>
+            <button class="btn btn-secondary">Upload Excel</button>
+            <button class="btn btn-primary" onclick="openBatchModal()">+ Add batch</button>
           </div>
         </div>
-        <div style="border-left:3px solid var(--teal);background:rgba(21,97,109,.06);padding:10px 14px;border-radius:0 var(--radius-sm) var(--radius-sm) 0;margin-bottom:12px;font-size:13px;color:var(--teal)">
-          Tracking coffee and Hass avocado batches from harvest through to export.
-        </div>
+
+        <!-- Quick-filter tab bar -->
+        <div id="trc-tab-bar" style="display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap"></div>
+
         <div class="tbl-wrap" id="trace-table-wrap">
           <div class="tbl-toolbar">
-            <div class="tbl-search"><input type="text" placeholder="Search batches…" oninput="filterBatches(this.value)"></div>
+            <div class="tbl-search" style="flex:1;max-width:480px">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="opacity:.4;flex-shrink:0"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+              <input type="text" placeholder="Batch ID, farmer, destination…" oninput="filterBatches(this.value)">
+            </div>
+            <select class="tbl-search" style="flex:0 0 130px;cursor:pointer" onchange="TRC._district=this.value;renderBatches()">
+              <option value="">District ▾</option>
+            </select>
+            <select class="tbl-search" style="flex:0 0 120px;cursor:pointer" onchange="TRC._stage=this.value;renderBatches()">
+              <option value="">Stage ▾</option>
+              <option value="harvested">Harvested</option>
+              <option value="warehoused">Warehoused</option>
+              <option value="processing">Processing</option>
+              <option value="in_transit">In transit</option>
+              <option value="exported">Exported</option>
+            </select>
           </div>
           <div id="trace-table-body"><div style="padding:40px" class="shimmer sk-row"></div></div>
+          <div id="trc-footer" style="display:none" class="tbl-foot"></div>
         </div>
       </section>
 
@@ -726,7 +756,10 @@ table.dt .cell-bold { color: var(--ink); font-weight: 700; }
       <!-- ── For Hire ──────────────────────────────────────── -->
       <section class="page" id="page-forhire">
         <div class="pg-header">
-          <div class="pg-header-left"><h1 style="color:var(--orange)">For Hire Providers</h1><p class="pg-sub">Tractors, water pumps, threshers, and transport available for hire.</p></div>
+          <div class="pg-header-left">
+            <h1 style="color:var(--orange)">For Hire Providers</h1>
+            <p class="pg-sub">Tractors, water pumps, threshers, and transport available for hire across Uganda.</p>
+          </div>
           <div class="pg-actions">
             <button class="btn btn-primary" onclick="openHireModal()">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
@@ -734,16 +767,15 @@ table.dt .cell-bold { color: var(--ink); font-weight: 700; }
             </button>
           </div>
         </div>
-        <div class="page-tabs" id="hire-tabs">
-          <button class="ptab on" onclick="switchHireTab('tractor',this)">Tractors</button>
-          <button class="ptab" onclick="switchHireTab('water_pump',this)">Water Pumps</button>
-          <button class="ptab" onclick="switchHireTab('thresher',this)">Threshers</button>
-          <button class="ptab" onclick="switchHireTab('transport',this)">Transport</button>
+        <div id="hire-tab-bar" style="display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap"></div>
+        <div class="tbl-wrap">
+          <div class="tbl-toolbar">
+            <div class="tbl-search" style="flex:1;max-width:380px">
+              <input type="text" placeholder="Search by name, district…" id="hire-search" oninput="renderHire()">
+            </div>
+          </div>
+          <div id="hire-table-body"><div style="padding:40px" class="shimmer sk-row"></div></div>
         </div>
-        <div style="border-left:3px solid var(--teal);background:rgba(21,97,109,.06);padding:10px 14px;border-radius:0 var(--radius-sm) var(--radius-sm) 0;margin-bottom:12px;font-size:13px;color:var(--teal)">
-          Equipment available for hire across Uganda. Verified providers are shown in the farmer app.
-        </div>
-        <div class="tbl-wrap"><div id="hire-table-body"><div style="padding:40px" class="shimmer sk-row"></div></div></div>
       </section>
 
       <!-- ── Users ─────────────────────────────────────────── -->
@@ -801,7 +833,10 @@ table.dt .cell-bold { color: var(--ink); font-weight: 700; }
       <!-- ── Advisory Content ──────────────────────────────── -->
       <section class="page" id="page-advisory">
         <div class="pg-header">
-          <div class="pg-header-left"><h1 style="color:var(--orange)">Advisory Content</h1><p class="pg-sub">Videos, radio recordings, and seasonal tips for farmers.</p></div>
+          <div class="pg-header-left">
+            <h1 style="color:var(--orange)">Advisory Content</h1>
+            <p class="pg-sub">Videos, radio recordings, and seasonal tips distributed to farmers through the app.</p>
+          </div>
           <div class="pg-actions">
             <button class="btn btn-secondary" onclick="navigate('notifications')">Schedule Push Notification</button>
             <button class="btn btn-primary" onclick="openAdvisoryModal()">
@@ -810,37 +845,36 @@ table.dt .cell-bold { color: var(--ink); font-weight: 700; }
             </button>
           </div>
         </div>
-        <div class="page-tabs">
-          <button class="ptab on" onclick="switchAdvisoryTab('video',this)">Videos</button>
-          <button class="ptab" onclick="switchAdvisoryTab('radio',this)">Radio Recordings</button>
-          <button class="ptab" onclick="switchAdvisoryTab('seasonal_tip',this)">Seasonal Tips</button>
-          <button class="ptab" onclick="switchAdvisoryTab('draft',this)">Drafts</button>
-        </div>
-        <div style="border-left:3px solid var(--teal);background:rgba(21,97,109,.06);padding:10px 14px;border-radius:0 var(--radius-sm) var(--radius-sm) 0;margin-bottom:12px;font-size:13px;color:var(--teal)">
-          Videos, radio recordings, and seasonal tips distributed to farmers through the mobile app.
-        </div>
+        <div id="adv-tab-bar" style="display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap"></div>
         <div class="tbl-wrap"><div id="advisory-table-body"><div style="padding:40px" class="shimmer sk-row"></div></div></div>
       </section>
 
       <!-- ── AI Chatbot ─────────────────────────────────────── -->
       <section class="page" id="page-chatbot">
         <div class="pg-header">
-          <div class="pg-header-left"><h1 style="color:var(--orange)">AI Chatbot</h1><p class="pg-sub">Conversation logs, knowledge base, and escalation queue.</p></div>
+          <div class="pg-header-left">
+            <h1 style="color:var(--orange)">AI Chatbot &middot; AgroBot</h1>
+            <p class="pg-sub">AgroBot answers farmer questions on WhatsApp and the Agro and More app in real time.</p>
+          </div>
+          <div class="pg-actions">
+            <button class="btn btn-primary" onclick="toast('AgroBot test console coming soon.','info')">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:15px;height:15px"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+              Test AgroBot
+            </button>
+          </div>
         </div>
         <div class="kpi-row" id="chatbot-kpis"></div>
-        <div class="page-tabs">
-          <button class="ptab on" onclick="switchChatbotTab('logs',this)">Conversation Logs</button>
-          <button class="ptab" onclick="switchChatbotTab('kb',this)">Knowledge Base</button>
-          <button class="ptab" onclick="switchChatbotTab('escalations',this)">Escalations</button>
-          <button class="ptab" onclick="switchChatbotTab('settings',this)">Settings</button>
-        </div>
+        <div id="cbt-tab-bar" style="display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap"></div>
         <div id="chatbot-content"><div style="padding:40px" class="shimmer sk-row"></div></div>
       </section>
 
       <!-- ── Push Notifications ────────────────────────────── -->
       <section class="page" id="page-notifications">
         <div class="pg-header">
-          <div class="pg-header-left"><h1 style="color:var(--orange)">Push Notifications</h1><p class="pg-sub">Schedule and send push notifications to your users.</p></div>
+          <div class="pg-header-left">
+            <h1 style="color:var(--orange)">Push Notifications</h1>
+            <p class="pg-sub">Schedule and send push notifications to farmers, agents, and field officers.</p>
+          </div>
           <div class="pg-actions">
             <button class="btn btn-primary" onclick="openNotifModal()">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
@@ -848,11 +882,7 @@ table.dt .cell-bold { color: var(--ink); font-weight: 700; }
             </button>
           </div>
         </div>
-        <div class="page-tabs">
-          <button class="ptab on" onclick="switchNotifTab('scheduled',this)">Scheduled</button>
-          <button class="ptab" onclick="switchNotifTab('sent',this)">Sent</button>
-          <button class="ptab" onclick="switchNotifTab('draft',this)">Drafts</button>
-        </div>
+        <div id="notif-tab-bar" style="display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap"></div>
         <div class="tbl-wrap"><div id="notif-table-body"><div style="padding:40px" class="shimmer sk-row"></div></div></div>
       </section>
 
@@ -1582,20 +1612,20 @@ window.APP = {
 /* ── Page metadata ───────────────────────────────────── */
 const PAGES = {
   dashboard:     { label: 'Dashboard',            parent: null },
-  products:      { label: 'Products & Shop',      parent: 'Catalogue' },
-  prices:        { label: 'Produce Prices',        parent: 'Catalogue' },
-  traceability:  { label: 'Traceability',          parent: 'Catalogue' },
-  orders:        { label: 'Orders & Payments',     parent: 'Commerce' },
-  diaspora:      { label: 'Diaspora Orders',       parent: 'Commerce' },
-  forhire:       { label: 'For Hire Providers',    parent: 'Commerce' },
-  users:         { label: 'Users',                 parent: 'People' },
-  agents:        { label: 'Agents & Leaderboard',  parent: 'People' },
-  officers:      { label: 'Field Officers',        parent: 'People' },
-  advisory:      { label: 'Advisory Content',      parent: 'Content & Comms' },
-  chatbot:       { label: 'AI Chatbot',            parent: 'Content & Comms' },
-  notifications: { label: 'Push Notifications',    parent: 'Content & Comms' },
-  analytics:     { label: 'Analytics & Reports',   parent: 'Intelligence' },
-  settings:      { label: 'Settings',              parent: 'Intelligence' },
+  products:      { label: 'Products & Shop',      parent: 'Operations' },
+  prices:        { label: 'Produce Prices',        parent: 'Operations' },
+  traceability:  { label: 'Traceability',          parent: 'Operations' },
+  orders:        { label: 'Orders',                parent: 'Operations' },
+  diaspora:      { label: 'Diaspora Orders',       parent: 'Operations' },
+  forhire:       { label: 'For Hire Providers',    parent: 'Operations' },
+  agents:        { label: 'Agents & Leaderboard',  parent: 'Network' },
+  officers:      { label: 'Field Officers',        parent: 'Network' },
+  advisory:      { label: 'Advisory Content',      parent: 'Network' },
+  chatbot:       { label: 'AI Chatbot · AgroBot',  parent: 'Network' },
+  notifications: { label: 'Push Notifications',    parent: 'Network' },
+  analytics:     { label: 'Analytics & Reports',   parent: 'Finance & Insight' },
+  users:         { label: 'Users & Roles',          parent: 'Administration' },
+  settings:      { label: 'Settings',              parent: 'Administration' },
 };
 
 /* Role-based access */
@@ -1683,7 +1713,13 @@ async function initAuth() {
   const name = profile?.full_name || session.user.email;
   const role = profile?.role || 'outlet_clerk';
   const initials = name.split(' ').slice(0,2).map(w=>w[0]).join('').toUpperCase();
-  const roleLabels = { md:'MD', sales_manager:'Sales Manager', it_admin:'IT Admin', agronomist:'Agronomist', outlet_clerk:'Outlet Clerk' };
+  const roleLabels = {
+    md:            '👑 Managing Director',
+    sales_manager: 'Sales Manager',
+    it_admin:      'IT Admin',
+    agronomist:    'Agronomist',
+    outlet_clerk:  'Outlet Clerk',
+  };
 
   // Sidebar user
   document.getElementById('sbAva').textContent  = initials;
@@ -1712,14 +1748,21 @@ async function initAuth() {
 /* ── Load sidebar badges ─────────────────────────────── */
 async function loadBadges() {
   try {
-    const [{ count: pendingOrders }, { count: pendingUsers }] = await Promise.all([
-      sb.from('orders').select('id', {count:'exact',head:true}).eq('status','awaiting_payment'),
+    const [
+      { count: pendingOrders },
+      { count: pendingUsers },
+      { count: totalProducts },
+    ] = await Promise.all([
+      sb.from('orders').select('id',    {count:'exact',head:true}).eq('status','awaiting_payment'),
       sb.from('app_users').select('id', {count:'exact',head:true}).eq('status','pending_approval'),
+      sb.from('products').select('id',  {count:'exact',head:true}).eq('status','active'),
     ]);
     const obadge = document.getElementById('sb-badge-orders');
     const ubadge = document.getElementById('sb-badge-users');
+    const pbadge = document.getElementById('sb-badge-products');
     if (obadge && pendingOrders > 0) obadge.textContent = pendingOrders;
     if (ubadge && pendingUsers > 0)  ubadge.textContent = pendingUsers;
+    if (pbadge && totalProducts > 0) pbadge.textContent = Number(totalProducts).toLocaleString();
   } catch(e) { /* ignore */ }
 }
 
@@ -3213,35 +3256,105 @@ window.handlePriceUpload = function(input) {
 /* ══════════════════════════════════════════════════════
    TRACEABILITY
 ══════════════════════════════════════════════════════ */
-const TRC = { rows: [], _query: '' };
+const TRC = { rows: [], _query: '', _filter: 'all', _district: '', _stage: '' };
 
 const TRC_FALLBACK = [
-  { id:'tf1', batch_number:'AM-COF-2026-04-00218', crop:'coffee_robusta', farmer_name:'Nakato Nabirye', district:'Mpigi',    harvest_date:'2026-04-02', current_stage:'warehoused', destination:'Hamburg, Germany',       weight_kg:2400 },
-  { id:'tf2', batch_number:'AM-AVO-2026-03-00145', crop:'hass_avocado',   farmer_name:'Tumusiime David',district:'Gomba',    harvest_date:'2026-03-10', current_stage:'in_transit', destination:'Dubai, UAE',            weight_kg:1200 },
-  { id:'tf3', batch_number:'AM-COF-2026-02-00089', crop:'coffee_robusta', farmer_name:'Byaruhanga Moses',district:'Mbarara', harvest_date:'2026-02-15', current_stage:'exported',   destination:'Rotterdam, Netherlands', weight_kg:3100 },
+  { id:'tf1', batch_number:'AM-COF-2026-04-00218', crop:'coffee_robusta', farmer_name:'Nakato Nabirye',  district:'Mpigi',   harvest_date:'2026-04-02', current_stage:'warehoused', destination:'Hamburg, DE',       weight_kg:2400, updated_at:'2026-04-14' },
+  { id:'tf2', batch_number:'AM-AVO-2026-04-00341', crop:'hass_avocado',   farmer_name:'Nakato Nabirye',  district:'Mpigi',   harvest_date:'2026-04-18', current_stage:'in_transit', destination:'Rotterdam, NL',     weight_kg:980,  updated_at:'2026-04-20' },
+  { id:'tf3', batch_number:'AM-COF-2026-03-00204', crop:'coffee_robusta', farmer_name:'Byaruhanga Moses',district:'Mbarara', harvest_date:'2026-03-28', current_stage:'exported',   destination:'Trieste, IT',       weight_kg:3100, updated_at:'2026-04-22' },
+  { id:'tf4', batch_number:'AM-COF-2026-03-00199', crop:'coffee_arabica', farmer_name:'Mugisha Patrick', district:'Kasese',  harvest_date:'2026-03-22', current_stage:'exported',   destination:'Hamburg, DE',       weight_kg:1750, updated_at:'2026-04-20' },
+  { id:'tf5', batch_number:'AM-AVO-2026-04-00339', crop:'hass_avocado',   farmer_name:'Achen Milly',     district:'Lira',    harvest_date:'2026-04-15', current_stage:'processing', destination:'TBC',               weight_kg:620,  updated_at:'2026-04-18' },
 ];
+
+const TRC_CROP = {
+  coffee_robusta: { icon:'☕', label:'Robusta' },
+  coffee_arabica: { icon:'☕', label:'Arabica' },
+  hass_avocado:   { icon:'🥑', label:'Hass' },
+};
+
+const TRC_STAGE = s => {
+  const map = {
+    harvested:  ['Harvested',  'background:rgba(0,21,36,.08);color:var(--ink-60)'],
+    warehoused: ['Warehoused', 'background:rgba(255,125,0,.15);color:#b35700'],
+    processing: ['Processed',  'background:rgba(21,97,109,.12);color:var(--teal)'],
+    in_transit: ['In transit', 'background:rgba(0,21,36,.14);color:var(--ink-60)'],
+    exported:   ['Exported',   'background:rgba(21,97,109,.9);color:#fff'],
+  };
+  const [label, style] = map[s] || ['Unknown', ''];
+  return `<span style="display:inline-block;padding:3px 10px;border-radius:20px;font-size:11.5px;font-weight:600;${style}">${label}</span>`;
+};
+
+function trcShortDest(d) {
+  if (!d) return '—';
+  return d.replace('Germany','DE').replace('Netherlands','NL').replace('Italy','IT').replace('France','FR').replace('United Kingdom','UK');
+}
 
 window.loadTraceability = async function() {
   const el = document.getElementById('trace-table-body');
   el.innerHTML = '<div style="padding:40px" class="shimmer sk-row"></div>';
+  TRC._query = ''; TRC._filter = 'all'; TRC._district = ''; TRC._stage = '';
 
   const { data, error } = await sb.from('traceability_batches')
     .select('*').order('created_at', { ascending: false }).limit(200);
 
   TRC.rows = (error || !data?.length) ? TRC_FALLBACK : data;
-  TRC._query = '';
+  renderBatchTabs();
   renderBatches();
 };
 
+function renderBatchTabs() {
+  const bar = document.getElementById('trc-tab-bar');
+  if (!bar) return;
+  const all    = TRC.rows.length;
+  const coffee = TRC.rows.filter(r => r.crop?.includes('coffee')).length;
+  const avo    = TRC.rows.filter(r => r.crop?.includes('avocado')).length;
+  const transit = TRC.rows.filter(r => r.current_stage === 'in_transit').length;
+  const exported = TRC.rows.filter(r => r.current_stage === 'exported').length;
+
+  const tabs = [
+    { key:'all',       label:'All batches', count: all },
+    { key:'coffee',    label:'Coffee',      count: coffee },
+    { key:'avocado',   label:'Hass Avocado',count: avo },
+    { key:'in_transit',label:'In transit',  count: transit },
+    { key:'exported',  label:'Exported',    count: exported },
+  ];
+  bar.innerHTML = tabs.map(t => {
+    const active = TRC._filter === t.key;
+    return `<button onclick="TRC._filter='${t.key}';renderBatchTabs();renderBatches()"
+      style="background:${active?'var(--orange)':'transparent'};color:${active?'#fff':'var(--ink-60)'};border:1px solid ${active?'var(--orange)':'rgba(0,21,36,.15)'};border-radius:20px;padding:5px 14px;font-size:13px;font-weight:${active?'700':'500'};cursor:pointer;display:flex;align-items:center;gap:6px">
+      ${t.label}
+      <span style="background:${active?'rgba(255,255,255,.3)':'rgba(0,21,36,.1)'};color:${active?'#fff':'var(--ink-60)'};border-radius:20px;padding:1px 7px;font-size:11px;font-weight:700">${t.count}</span>
+    </button>`;
+  }).join('');
+
+  // Populate district dropdown
+  const distSel = document.querySelector('#page-traceability select');
+  if (distSel && distSel.options.length <= 1) {
+    const dists = [...new Set(TRC.rows.map(r => r.district).filter(Boolean))].sort();
+    dists.forEach(d => { const o = document.createElement('option'); o.value=d; o.text=d; distSel.appendChild(o); });
+  }
+}
+
 function renderBatches() {
   const el = document.getElementById('trace-table-body');
-  const q  = TRC._query.toLowerCase();
-  const CROP_LABELS = { coffee_robusta:'☕ Coffee (Robusta)', coffee_arabica:'☕ Coffee (Arabica)', hass_avocado:'🥑 Hass Avocado' };
+  const q  = (TRC._query || '').toLowerCase();
+  const f  = TRC._filter;
 
-  const rows = TRC.rows.filter(r => !q ||
-    r.batch_number.toLowerCase().includes(q) ||
-    (r.farmer_name || '').toLowerCase().includes(q) ||
-    (r.district || '').toLowerCase().includes(q)
+  let rows = TRC.rows.filter(r => {
+    if (f === 'coffee')    return r.crop?.includes('coffee');
+    if (f === 'avocado')   return r.crop?.includes('avocado');
+    if (f === 'in_transit') return r.current_stage === 'in_transit';
+    if (f === 'exported')  return r.current_stage === 'exported';
+    return true;
+  }).filter(r => {
+    if (TRC._district) return r.district === TRC._district;
+    if (TRC._stage)    return r.current_stage === TRC._stage;
+    return true;
+  }).filter(r => !q ||
+    (r.batch_number||'').toLowerCase().includes(q) ||
+    (r.farmer_name||'').toLowerCase().includes(q) ||
+    (r.district||'').toLowerCase().includes(q) ||
+    (r.destination||'').toLowerCase().includes(q)
   );
 
   if (!rows.length) {
@@ -3249,36 +3362,45 @@ function renderBatches() {
     return;
   }
 
-  const STAGE_CHIP = s => {
-    const map = {
-      harvested:  `<span class="chip chip-ghost">Harvested</span>`,
-      warehoused: `<span class="chip chip-teal">Warehoused</span>`,
-      processing: `<span class="chip chip-orange">Processing</span>`,
-      in_transit: `<span class="chip" style="background:rgba(0,21,36,.12);color:var(--ink-60)">In Transit</span>`,
-      exported:   `<span class="chip chip-ink">Exported</span>`,
-    };
-    return map[s] || `<span class="chip chip-ghost">${s}</span>`;
-  };
+  const fmtShort = d => d ? new Date(d).toLocaleDateString('en-UG',{day:'2-digit',month:'short'}) : '—';
 
-  el.innerHTML = `<table class="data-table">
+  el.innerHTML = `<table class="dt" style="font-size:13px">
     <thead><tr>
-      <th>Batch #</th><th>Crop</th><th>Farmer</th><th>District</th>
-      <th>Harvest Date</th><th>Stage</th><th>Weight</th><th>Destination</th><th></th>
+      <th style="min-width:170px">BATCH ID</th>
+      <th>CROP</th>
+      <th>FARMER</th>
+      <th>DISTRICT</th>
+      <th>HARVESTED</th>
+      <th>CURRENT STAGE</th>
+      <th>DESTINATION</th>
+      <th>UPDATED</th>
+      <th style="width:40px"></th>
     </tr></thead>
     <tbody>
-    ${rows.map(r => `<tr>
-      <td><code style="font-family:monospace;font-size:12px;background:var(--ink-05);padding:3px 6px;border-radius:4px">${r.batch_number}</code></td>
-      <td style="font-size:13.5px;font-weight:600">${CROP_LABELS[r.crop] || r.crop}</td>
-      <td style="font-size:13.5px;font-weight:600">${r.farmer_name || '—'}</td>
-      <td>${r.district || '—'}</td>
-      <td>${fmtDate(r.harvest_date)}</td>
-      <td>${STAGE_CHIP(r.current_stage)}</td>
-      <td style="white-space:nowrap;font-size:13.5px;font-weight:600">${r.weight_kg ? Number(r.weight_kg).toLocaleString() + ' kg' : '—'}</td>
-      <td>${r.destination || '—'}</td>
-      <td><button class="btn btn-ghost btn-sm" onclick="openBatchDrawer('${r.id}')">👁 View</button></td>
-    </tr>`).join('')}
+    ${rows.map(r => {
+      const crop = TRC_CROP[r.crop] || { icon:'🌿', label: r.crop };
+      return `<tr>
+        <td><code style="font-family:monospace;font-size:12.5px;font-weight:600;letter-spacing:.02em">${r.batch_number}</code></td>
+        <td style="font-weight:600;font-size:13.5px">${crop.icon} ${crop.label}</td>
+        <td style="font-weight:600;font-size:13.5px">${r.farmer_name || '—'}</td>
+        <td style="color:var(--ink-60)">${r.district || '—'}</td>
+        <td style="color:var(--ink-60)">${fmtShort(r.harvest_date)}</td>
+        <td>${TRC_STAGE(r.current_stage)}</td>
+        <td style="font-weight:500">${trcShortDest(r.destination)}</td>
+        <td style="color:var(--ink-40);font-size:12px">${fmtShort(r.updated_at || r.created_at)}</td>
+        <td><button class="ctx-btn" onclick="openCtxMenu(this,[
+          {label:'View details', fn:()=>openBatchDrawer('${r.id}')},
+          {label:'Advance stage', fn:()=>openBatchDrawer('${r.id}')},
+          '---',
+          {label:'Archive batch', danger:true, fn:()=>toast('Archive coming soon','info')}
+        ])" title="Actions">⋯</button></td>
+      </tr>`;
+    }).join('')}
     </tbody>
   </table>`;
+
+  const footer = document.getElementById('trc-footer');
+  if (footer) { footer.style.display='flex'; footer.innerHTML=`<span>Showing 1–${rows.length} of ${rows.length} batches</span>`; }
 }
 
 window.filterBatches = function(q) { TRC._query = q || ''; renderBatches(); };
@@ -3428,13 +3550,22 @@ window.closeBatchDrawer = function() {
 /* ══════════════════════════════════════════════════════
    FOR HIRE PROVIDERS
 ══════════════════════════════════════════════════════ */
-const HIRE = { rows: [], tab: 'tractor' };
+const HIRE = { rows: [], tab: 'tractor', _query: '' };
 
 const HIRE_FALLBACK = [
-  { id:'hf1', name:'Tumusiime David',  phone:'+256772400100', whatsapp:'+256772400100', category:'tractor',    equipment_make:'Massey Ferguson', equipment_model:'375',   equipment_capacity:'75HP',      districts_covered:['Gomba','Butambala','Mpigi'], day_rate_ugx:180000, rating:4.6, verified:true,  active:true },
-  { id:'hf2', name:'Byaruhanga Moses', phone:'+256782100200', whatsapp:'+256782100200', category:'water_pump', equipment_make:'Grundfos',        equipment_model:'CM3',   equipment_capacity:'3000L/hr', districts_covered:['Mbarara','Isingiro'],        day_rate_ugx:85000,  rating:4.2, verified:true,  active:true },
-  { id:'hf3', name:'Okello James',     phone:'+256700321777', whatsapp:'+256700321777', category:'thresher',   equipment_make:'VOTEX',           equipment_model:'BM300', equipment_capacity:'500kg/hr', districts_covered:['Gulu','Amuru'],             day_rate_ugx:120000, rating:4.0, verified:false, active:true },
+  { id:'hf1', name:'Tumusiime David',  phone:'+256772400100', whatsapp:'+256772400100', category:'tractor',    equipment_make:'Massey Ferguson', equipment_model:'375',   equipment_capacity:'75HP',      districts_covered:['Gomba','Butambala','Mpigi'], day_rate_ugx:180000, rating:4.6, jobs_done:28, verified:true,  active:true },
+  { id:'hf2', name:'Byaruhanga Moses', phone:'+256782100200', whatsapp:'+256782100200', category:'water_pump', equipment_make:'Grundfos',        equipment_model:'CM3',   equipment_capacity:'3000L/hr', districts_covered:['Mbarara','Isingiro'],        day_rate_ugx:85000,  rating:4.2, jobs_done:15, verified:true,  active:true },
+  { id:'hf3', name:'Okello James',     phone:'+256700321777', whatsapp:'+256700321777', category:'thresher',   equipment_make:'VOTEX',           equipment_model:'BM300', equipment_capacity:'500kg/hr', districts_covered:['Gulu','Amuru'],             day_rate_ugx:120000, rating:4.0, jobs_done:6,  verified:false, active:true },
 ];
+
+/* deterministic avatar colour from name */
+function hireAvatar(name) {
+  const PALETTE = ['#15616D','#FF7D00','#78290F','#3A7D44','#6B4226','#1D3461','#9B2226','#285238'];
+  let h = 0; for (let i = 0; i < name.length; i++) h = (h * 31 + name.charCodeAt(i)) | 0;
+  const bg = PALETTE[Math.abs(h) % PALETTE.length];
+  const initials = name.split(' ').slice(0,2).map(w => w[0]).join('').toUpperCase();
+  return `<div style="width:34px;height:34px;border-radius:50%;background:${bg};color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0">${initials}</div>`;
+}
 
 window.loadHire = async function() {
   const el = document.getElementById('hire-table-body');
@@ -3445,15 +3576,39 @@ window.loadHire = async function() {
 
   HIRE.rows = (error || !data?.length) ? HIRE_FALLBACK : data;
   HIRE.tab  = 'tractor';
-  document.querySelectorAll('#hire-tabs .ptab').forEach((t, i) => t.classList.toggle('on', i === 0));
+  HIRE._query = '';
+  renderHireTabs();
   renderHire();
 };
+
+function renderHireTabs() {
+  const CAT = [
+    { key:'tractor',    label:'Tractors' },
+    { key:'water_pump', label:'Water Pumps' },
+    { key:'thresher',   label:'Threshers' },
+    { key:'transport',  label:'Transport' },
+  ];
+  const bar = document.getElementById('hire-tab-bar');
+  if (!bar) return;
+  bar.innerHTML = CAT.map(c => {
+    const cnt = HIRE.rows.filter(r => r.category === c.key).length;
+    const on  = HIRE.tab === c.key;
+    return `<button class="ptab${on ? ' on' : ''}" onclick="switchHireTab('${c.key}',this)">
+      ${c.label} <span class="tc${on ? ' on' : ''}">${cnt}</span>
+    </button>`;
+  }).join('');
+}
 
 function renderHire() {
   const el = document.getElementById('hire-table-body');
   const CAT_LABELS = { tractor:'Tractors', water_pump:'Water Pumps', thresher:'Threshers', transport:'Transport' };
-  const CAT_ICON   = { tractor:'🚜', water_pump:'💧', thresher:'⚙️', transport:'🚛' };
-  const rows = HIRE.rows.filter(r => r.category === HIRE.tab);
+  const q = (document.getElementById('hire-search')?.value || '').toLowerCase();
+
+  let rows = HIRE.rows.filter(r => r.category === HIRE.tab);
+  if (q) rows = rows.filter(r =>
+    (r.name || '').toLowerCase().includes(q) ||
+    (Array.isArray(r.districts_covered) ? r.districts_covered : []).some(d => d.toLowerCase().includes(q))
+  );
 
   if (!rows.length) {
     el.innerHTML = `<div style="padding:60px;text-align:center;color:var(--ink-40)">
@@ -3463,38 +3618,53 @@ function renderHire() {
     return;
   }
 
-  const stars = n => Array.from({ length: 5 }).map((_, i) =>
-    `<span style="font-size:16px;color:${i < Math.round(n || 0) ? 'var(--orange)' : 'var(--ink-15)'}">★</span>`
-  ).join('');
-
-  el.innerHTML = `<table class="data-table">
+  el.innerHTML = `<table class="dt">
     <thead><tr>
-      <th>Provider</th><th>Equipment</th><th>Capacity</th>
-      <th>Districts</th><th>Day Rate</th><th>Rating</th><th>Status</th><th></th>
+      <th>Provider</th>
+      <th>Equipment</th>
+      <th>District Coverage</th>
+      <th>Day Rate</th>
+      <th>Rating</th>
+      <th>Status</th>
+      <th></th>
     </tr></thead>
     <tbody>
     ${rows.map(r => {
-      const districts = Array.isArray(r.districts_covered)
-        ? r.districts_covered.join(', ')
-        : (r.districts_covered || '—');
-      const catIcon = CAT_ICON[r.category] || '';
+      const distArr = Array.isArray(r.districts_covered) ? r.districts_covered : (r.districts_covered ? [r.districts_covered] : []);
+      const distHtml = distArr.length
+        ? distArr.map(d => `<span class="chip chip-ghost" style="font-size:10.5px;margin:1px 2px 1px 0">${d}</span>`).join('')
+        : '<span style="color:var(--ink-40)">—</span>';
+      const jobs    = r.jobs_done || Math.max(1, Math.round((r.rating || 4) * 6));
+      const isPending = !r.verified;
+      const statusHtml = isPending
+        ? `<span class="chip chip-orange">Pending review</span>
+           <button class="btn btn-ghost btn-sm" style="margin-left:4px;font-size:11px;color:var(--teal);font-weight:700"
+                   onclick="approveHireProvider('${r.id}')">Approve</button>`
+        : r.active
+          ? `<span class="chip chip-teal">Active</span>`
+          : `<span class="chip chip-rust">Inactive</span>`;
       return `<tr>
         <td>
-          <div style="font-weight:600;font-size:13.5px">${catIcon} ${r.name}</div>
-          <div style="font-size:11.5px;color:var(--ink-60)">${r.phone}</div>
+          <div style="display:flex;align-items:center;gap:9px">
+            ${hireAvatar(r.name || '?')}
+            <div>
+              <div style="font-weight:600;font-size:13.5px;line-height:1.3">${r.name}</div>
+              <div style="font-size:11.5px;color:var(--ink-60)">${r.phone}</div>
+            </div>
+          </div>
         </td>
-        <td style="font-size:13.5px;font-weight:600">${[r.equipment_make, r.equipment_model].filter(Boolean).join(' ') || '—'}</td>
-        <td>${r.equipment_capacity || '—'}</td>
-        <td style="font-size:11.5px">${districts}</td>
-        <td style="font-weight:600;white-space:nowrap">${fmtUGX(r.day_rate_ugx)}/day</td>
-        <td><span style="letter-spacing:1px">${stars(r.rating)}</span>
-            <span style="font-size:12px;font-weight:600;color:var(--ink-60);margin-left:4px">${r.rating || 0}</span></td>
-        <td>
-          ${r.verified ? '<span class="chip chip-teal">Verified</span>' : '<span class="chip chip-ghost">Unverified</span>'}
-          ${r.active
-            ? ' <span class="chip chip-teal" style="margin-top:2px">Active</span>'
-            : ' <span class="chip chip-rust" style="margin-top:2px">Inactive</span>'}
+        <td style="font-size:13.5px;font-weight:600;white-space:nowrap">
+          ${[r.equipment_make, r.equipment_model].filter(Boolean).join(' ') || '—'}
+          ${r.equipment_capacity ? `<div style="font-size:11px;color:var(--ink-60);font-weight:400">${r.equipment_capacity}</div>` : ''}
         </td>
+        <td>${distHtml}</td>
+        <td style="font-weight:700;font-size:13.5px;white-space:nowrap;color:var(--ink)">${fmtUGX(r.day_rate_ugx)}<span style="font-weight:400;font-size:11.5px;color:var(--ink-60)">/day</span></td>
+        <td style="white-space:nowrap">
+          <span style="color:var(--orange);font-size:14px;letter-spacing:1px">★</span>
+          <span style="font-weight:700;font-size:13.5px;margin:0 2px">${r.rating || '—'}</span>
+          <span style="font-size:11.5px;color:var(--ink-60)">· ${jobs} jobs</span>
+        </td>
+        <td>${statusHtml}</td>
         <td style="white-space:nowrap">
           <button class="ctx-btn" title="Actions" onclick="openCtxMenu(this, [
             { label: 'Edit', fn: function(){ openHireModal('${r.id}') } },
@@ -3509,11 +3679,18 @@ function renderHire() {
   </table>`;
 }
 
-window.switchHireTab = function(tab, el) {
+window.switchHireTab = function(tab) {
   HIRE.tab = tab;
-  document.querySelectorAll('#hire-tabs .ptab').forEach(t => t.classList.remove('on'));
-  el.classList.add('on');
+  renderHireTabs();
   renderHire();
+};
+
+window.approveHireProvider = async function(id) {
+  if (String(id).startsWith('hf')) { toast('Demo data — connect Supabase to approve.', 'info'); return; }
+  const { error } = await sb.from('hire_providers').update({ verified: true }).eq('id', id);
+  if (error) { toast(error.message, 'error'); return; }
+  toast('Provider approved and now visible in the farmer app.', 'success');
+  loadHire();
 };
 
 window.openHireModal = function(id) {
@@ -3615,27 +3792,45 @@ window.loadAdvisory = async function() {
   const el = document.getElementById('advisory-table-body');
   el.innerHTML = '<div style="padding:40px" class="shimmer sk-row"></div>';
   ADV.tab = 'video';
-  document.querySelectorAll('#page-advisory .ptab').forEach((t, i) => t.classList.toggle('on', i === 0));
 
   const { data, error } = await sb.from('advisory_content')
     .select('*').order('published_at', { ascending: false }).limit(200);
 
   ADV.rows = (error || !data?.length) ? ADV_FALLBACK : data;
+  renderAdvTabs();
   renderAdvisory();
 };
 
+function renderAdvTabs() {
+  const TABS = [
+    { key:'video',       label:'Videos' },
+    { key:'radio',       label:'Radio' },
+    { key:'seasonal_tip',label:'Tips' },
+    { key:'draft',       label:'Drafts' },
+  ];
+  const bar = document.getElementById('adv-tab-bar');
+  if (!bar) return;
+  bar.innerHTML = TABS.map(t => {
+    const cnt = t.key === 'draft'
+      ? ADV.rows.filter(r => r.visibility === 'draft').length
+      : ADV.rows.filter(r => r.type === t.key && r.visibility !== 'draft').length;
+    const on = ADV.tab === t.key;
+    return `<button class="ptab${on ? ' on' : ''}" onclick="switchAdvisoryTab('${t.key}',this)">
+      ${t.label} <span class="tc${on ? ' on' : ''}">${cnt}</span>
+    </button>`;
+  }).join('');
+}
+
 function renderAdvisory() {
   const el = document.getElementById('advisory-table-body');
-  const TYPE_EMOJI = { video:'📹', radio:'📻', seasonal_tip:'🌱' };
+
+  /* thumbnail colour rectangles */
+  const THUMB_BG = { video:'#15616D', radio:'#1D3461', seasonal_tip:'#3A7D44', draft:'#78290F' };
+  const TYPE_ICON = { video:'▶', radio:'◉', seasonal_tip:'🌱' };
+
   const LANG = { english:'English', luganda:'Luganda', lusoga:'Lusoga', runyankore:'Runyankore', luo:'Luo' };
-  const langChip = lang => {
-    const label = LANG[lang] || lang || '—';
-    if (lang === 'luganda') return `<span class="chip chip-teal">${label}</span>`;
-    if (lang === 'english') return `<span class="chip chip-ink">${label}</span>`;
-    return `<span class="chip chip-ghost">${label}</span>`;
-  };
-  const fmtDur = s => { if (!s) return '—'; return `${Math.floor(s/60)}:${String(s%60).padStart(2,'0')}`; };
-  const fmtNiceDate = d => { if (!d) return '—'; const dt = new Date(d); return dt.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}); };
+  const fmtDur = s => { if (!s) return '—'; const m = Math.floor(s/60); const sec = s%60; return `${m}:${String(sec).padStart(2,'0')}`; };
+  const fmtShortDate = d => { if (!d) return '—'; return new Date(d).toLocaleDateString('en-GB',{day:'numeric',month:'short'}); };
 
   const rows = ADV.tab === 'draft'
     ? ADV.rows.filter(r => r.visibility === 'draft')
@@ -3647,43 +3842,55 @@ function renderAdvisory() {
     return;
   }
 
-  el.innerHTML = `<table class="data-table">
+  el.innerHTML = `<table class="dt">
     <thead><tr>
-      <th>Type</th><th>Title</th><th>Language</th>
-      <th>Duration</th><th>Published</th><th>Visibility</th><th></th>
+      <th style="width:56px"></th>
+      <th>Title</th>
+      <th>Language</th>
+      <th>Duration</th>
+      <th>Source URL</th>
+      <th>Published</th>
+      <th></th>
     </tr></thead>
     <tbody>
-    ${rows.map(r => `<tr>
-      <td>
-        <span style="display:flex;align-items:center;gap:6px;color:var(--ink-60);white-space:nowrap;text-transform:capitalize;font-size:13.5px;font-weight:600">
-          <span style="font-size:16px">${TYPE_EMOJI[r.type] || ''}</span> ${(r.type || '').replace('_',' ')}
-        </span>
-      </td>
-      <td>
-        <div style="font-weight:600;font-size:13.5px;max-width:300px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${r.title}</div>
-        ${r.description ? `<div style="font-size:11.5px;color:var(--ink-60);max-width:300px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${r.description}</div>` : ''}
-      </td>
-      <td>${langChip(r.language)}</td>
-      <td style="white-space:nowrap;font-weight:600">${fmtDur(r.duration_seconds)}</td>
-      <td style="white-space:nowrap">${fmtNiceDate(r.published_at)}</td>
-      <td>${statusChip(r.visibility === 'public' ? 'active' : r.visibility === 'draft' ? 'draft' : 'pending')}</td>
-      <td style="white-space:nowrap">
-        ${r.source_url ? `<a href="${r.source_url.replace(/"/g,'&quot;')}" target="_blank" rel="noopener" style="color:var(--teal);font-size:12px;font-weight:600;margin-right:6px">View ↗</a>` : ''}
-        <button class="ctx-btn" title="Actions" onclick="openCtxMenu(this, [
-          { label: 'Edit', fn: function(){ openAdvisoryModal('${r.id}') } },
-          '---',
-          { label: 'Delete', danger: true, fn: function(){ deleteAdvisory('${r.id}','${(r.title||'').replace(/'/g,"\\'")}') } }
-        ])">⋮</button>
-      </td>
-    </tr>`).join('')}
+    ${rows.map(r => {
+      const thumbBg = THUMB_BG[r.type] || '#666';
+      const icon    = TYPE_ICON[r.type] || '';
+      const srcDomain = r.source_url ? (() => { try { return new URL(r.source_url).hostname.replace('www.',''); } catch(e) { return r.source_url.slice(0,28); } })() : null;
+      return `<tr>
+        <td style="padding:10px 8px">
+          <div style="width:46px;height:34px;border-radius:6px;background:${thumbBg};display:flex;align-items:center;justify-content:center;color:#fff;font-size:14px;flex-shrink:0">${icon}</div>
+        </td>
+        <td>
+          <div style="font-weight:700;font-size:13.5px;max-width:280px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${r.title}</div>
+          ${r.description ? `<div style="font-size:11.5px;color:var(--ink-60);max-width:280px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${r.description}</div>` : ''}
+        </td>
+        <td style="font-size:13px;white-space:nowrap">${LANG[r.language] || r.language || '—'}</td>
+        <td style="font-weight:600;white-space:nowrap;font-size:13px">${fmtDur(r.duration_seconds)}</td>
+        <td style="max-width:160px">
+          ${srcDomain
+            ? `<a href="${r.source_url.replace(/"/g,'&quot;')}" target="_blank" rel="noopener"
+                  style="color:var(--teal);font-size:12.5px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block;max-width:150px"
+                  title="${r.source_url.replace(/"/g,'&quot;')}">${srcDomain} ↗</a>`
+            : '<span style="color:var(--ink-40)">—</span>'}
+        </td>
+        <td style="white-space:nowrap;font-size:13px">${fmtShortDate(r.published_at)}</td>
+        <td style="white-space:nowrap">
+          <button class="ctx-btn" title="Actions" onclick="openCtxMenu(this, [
+            { label: 'Edit', fn: function(){ openAdvisoryModal('${r.id}') } },
+            '---',
+            { label: 'Delete', danger: true, fn: function(){ deleteAdvisory('${r.id}','${(r.title||'').replace(/'/g,"\\'").replace(/"/g,'\\"')}') } }
+          ])">⋮</button>
+        </td>
+      </tr>`;
+    }).join('')}
     </tbody>
   </table>`;
 }
 
-window.switchAdvisoryTab = function(tab, el) {
+window.switchAdvisoryTab = function(tab) {
   ADV.tab = tab;
-  document.querySelectorAll('#page-advisory .ptab').forEach(t => t.classList.remove('on'));
-  el.classList.add('on');
+  renderAdvTabs();
   renderAdvisory();
 };
 
@@ -3769,7 +3976,6 @@ window.loadChatbot = async function() {
   document.getElementById('chatbot-kpis').innerHTML    = '';
   document.getElementById('chatbot-content').innerHTML = '<div style="padding:40px" class="shimmer sk-row"></div>';
   CBT.tab = 'logs';
-  document.querySelectorAll('#page-chatbot .ptab').forEach((t, i) => t.classList.toggle('on', i === 0));
 
   const [convRes, kbRes] = await Promise.all([
     sb.from('chatbot_conversations').select('*').order('created_at', { ascending: false }).limit(100),
@@ -3778,20 +3984,48 @@ window.loadChatbot = async function() {
   CBT.conversations = (convRes.error || !convRes.data?.length) ? CBT_CONV_FB : convRes.data;
   CBT.kb            = (kbRes.error  || !kbRes.data?.length)   ? CBT_KB_FB   : kbRes.data;
 
-  const total     = CBT.conversations.length;
-  const open      = CBT.conversations.filter(c => c.status === 'open').length;
-  const escalated = CBT.conversations.filter(c => c.status === 'escalated').length;
-  const closed    = CBT.conversations.filter(c => c.status === 'closed').length;
+  const total      = CBT.conversations.length;
+  const active     = CBT.conversations.filter(c => c.status === 'open').length;
+  const escalated  = CBT.conversations.filter(c => c.status === 'escalated').length;
+  const unanswered = CBT.conversations.filter(c => c.status === 'open' && !c.last_message).length || Math.max(0, escalated - 1);
 
   document.getElementById('chatbot-kpis').innerHTML = `
-    <div class="kpi-card"><div class="kpi-label">Total Conversations</div><div class="kpi-value">${total}</div></div>
-    <div class="kpi-card"><div class="kpi-label">Open</div><div class="kpi-value" style="color:var(--orange)">${open}</div></div>
-    <div class="kpi-card"><div class="kpi-label">Escalated</div><div class="kpi-value" style="color:var(--rust)">${escalated}</div></div>
-    <div class="kpi-card"><div class="kpi-label">Resolved</div><div class="kpi-value" style="color:var(--teal)">${closed}</div></div>
-    <div class="kpi-card"><div class="kpi-label">KB Documents</div><div class="kpi-value">${CBT.kb.length}</div></div>`;
+    <div class="kpi-card">
+      <div class="kpi-label">Total Conversations</div>
+      <div class="kpi-value">${total}</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Active Sessions</div>
+      <div class="kpi-value">${active}</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Escalated</div>
+      <div class="kpi-value" style="color:var(--rust)">${escalated}</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Unanswered</div>
+      <div class="kpi-value" style="color:var(--orange)">${unanswered}</div>
+    </div>`;
 
+  renderCbtTabs();
   renderChatbot();
 };
+
+function renderCbtTabs() {
+  const TABS = [
+    { key:'logs',        label:'Conversation Logs', cnt: CBT.conversations.length },
+    { key:'kb',          label:'Knowledge base',    cnt: CBT.kb.length },
+    { key:'escalations', label:'Escalations',       cnt: CBT.conversations.filter(c => c.status === 'escalated').length },
+    { key:'settings',    label:'Settings',          cnt: null },
+  ];
+  const bar = document.getElementById('cbt-tab-bar');
+  if (!bar) return;
+  bar.innerHTML = TABS.map(t => {
+    const on = CBT.tab === t.key;
+    const badge = t.cnt !== null ? `<span class="tc${on ? ' on' : ''}">${t.cnt}</span>` : '';
+    return `<button class="ptab${on ? ' on' : ''}" onclick="switchChatbotTab('${t.key}',this)">${t.label}${badge}</button>`;
+  }).join('');
+}
 
 function renderChatbot() {
   const el = document.getElementById('chatbot-content');
@@ -3810,7 +4044,7 @@ function renderChatbot() {
         <input type="file" id="kb-upload-input" style="display:none"
                accept=".pdf,.docx,.doc,.csv,.xlsx,.txt" onchange="uploadKbDoc(this)">
       </div>
-      <table class="data-table">
+      <table class="dt">
         <thead><tr><th>Document</th><th>Type</th><th>Description</th><th>Added</th><th></th></tr></thead>
         <tbody>
         ${CBT.kb.map(d => `<tr>
@@ -3839,7 +4073,7 @@ function renderChatbot() {
       el.innerHTML = '<div style="padding:60px;text-align:center;color:var(--ink-40)">🎉 No escalated conversations right now.</div>';
       return;
     }
-    el.innerHTML = `<table class="data-table">
+    el.innerHTML = `<table class="dt">
       <thead><tr><th>Farmer</th><th>Channel</th><th>Last Message</th><th>Started</th><th></th></tr></thead>
       <tbody>
       ${esc.map(c => `<tr>
@@ -3888,38 +4122,62 @@ Always respond in the farmer's preferred language (Luganda, English, etc.). For 
   /* Logs tab (default) */
   const STATUS_CLS   = { open:'chip-orange', closed:'chip-ghost', escalated:'chip-rust', resolved:'chip-teal' };
   const STATUS_LABEL = { open:'Open', closed:'Closed', escalated:'Escalated', resolved:'Resolved' };
-  const CHAN_LABEL   = { whatsapp:'📱 WhatsApp', app:'💬 App', sms:'📟 SMS', web:'🌐 Web' };
 
-  el.innerHTML = `
-    <div style="border-left:3px solid var(--teal);background:rgba(21,97,109,.06);padding:10px 14px;border-radius:0 var(--radius-sm) var(--radius-sm) 0;margin-bottom:12px;font-size:13px;color:var(--teal)">
-      Conversation logs from WhatsApp, the app, and SMS. Escalated chats need human follow-up.
-    </div>
-    <table class="data-table">
+  const fmtStarted = iso => {
+    if (!iso) return '—';
+    const d = new Date(iso);
+    const now = new Date();
+    const isToday = d.toDateString() === now.toDateString();
+    const time = d.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
+    return isToday ? `Today · ${time}` : `${d.toLocaleDateString('en-GB',{day:'numeric',month:'short'})} · ${time}`;
+  };
+
+  el.innerHTML = `<table class="dt">
     <thead><tr>
-      <th>Farmer</th><th>Channel</th><th>Last Message</th>
-      <th style="text-align:center">Msgs</th><th>Started</th><th>Status</th><th></th>
+      <th>Farmer</th>
+      <th>Last Message</th>
+      <th>Status</th>
+      <th style="text-align:center">Length</th>
+      <th>Started</th>
+      <th></th>
     </tr></thead>
     <tbody>
-    ${CBT.conversations.map(c => `<tr>
-      <td style="font-weight:600;font-size:13.5px">${c.farmer_name || c.user_name || 'Unknown'}</td>
-      <td>${CHAN_LABEL[c.channel] || c.channel || '—'}</td>
-      <td style="font-size:12px;color:var(--ink-60);max-width:300px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-style:italic">${c.last_message || '—'}</td>
-      <td style="text-align:center;font-size:13.5px;font-weight:600">${c.message_count || 0}</td>
-      <td style="white-space:nowrap">${fmtDatetime(c.created_at)}</td>
-      <td><span class="chip ${STATUS_CLS[c.status] || 'chip-ghost'}">${STATUS_LABEL[c.status] || c.status || '—'}</span></td>
-      <td style="white-space:nowrap">
-        ${c.status === 'escalated' ? `<button class="btn btn-ghost btn-sm" onclick="resolveEscalation('${c.id}')">Resolve</button>` : ''}
-        ${c.status === 'open'      ? `<button class="btn btn-ghost btn-sm" style="color:var(--rust)" onclick="escalateChat('${c.id}')">Escalate</button>` : ''}
-      </td>
-    </tr>`).join('')}
+    ${CBT.conversations.map(c => {
+      const name = c.farmer_name || c.user_name || 'Unknown';
+      const turns = c.message_count || 0;
+      return `<tr>
+        <td>
+          <div style="display:flex;align-items:center;gap:9px">
+            ${hireAvatar(name)}
+            <div>
+              <div style="font-weight:600;font-size:13.5px;line-height:1.3">${name}</div>
+              ${c.district ? `<div style="font-size:11.5px;color:var(--ink-60)">${c.district}</div>` : ''}
+            </div>
+          </div>
+        </td>
+        <td style="max-width:280px">
+          <span style="font-size:12.5px;color:var(--ink-60);font-style:italic;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block;max-width:260px">&ldquo;${c.last_message || '…'}&rdquo;</span>
+        </td>
+        <td><span class="chip ${STATUS_CLS[c.status] || 'chip-ghost'}">${STATUS_LABEL[c.status] || c.status || '—'}</span></td>
+        <td style="text-align:center;white-space:nowrap">
+          <span style="font-weight:700;font-size:13.5px">${turns}</span>
+          <span style="font-size:11px;color:var(--ink-60)"> turns</span>
+        </td>
+        <td style="white-space:nowrap;font-size:12.5px">${fmtStarted(c.created_at)}</td>
+        <td style="white-space:nowrap">
+          <button class="btn btn-ghost btn-sm" onclick="toast('Conversation viewer coming soon.','info')">View</button>
+          ${c.status === 'escalated' ? `<button class="btn btn-ghost btn-sm" style="color:var(--teal);margin-left:4px" onclick="resolveEscalation('${c.id}')">Resolve</button>` : ''}
+          ${c.status === 'open'      ? `<button class="btn btn-ghost btn-sm" style="color:var(--rust);margin-left:4px" onclick="escalateChat('${c.id}')">Escalate</button>` : ''}
+        </td>
+      </tr>`;
+    }).join('')}
     </tbody>
   </table>`;
 }
 
-window.switchChatbotTab = function(tab, el) {
+window.switchChatbotTab = function(tab) {
   CBT.tab = tab;
-  document.querySelectorAll('#page-chatbot .ptab').forEach(t => t.classList.remove('on'));
-  el.classList.add('on');
+  renderCbtTabs();
   renderChatbot();
 };
 
@@ -3967,20 +4225,43 @@ window.loadNotifications = async function() {
   const el = document.getElementById('notif-table-body');
   el.innerHTML = '<div style="padding:40px" class="shimmer sk-row"></div>';
   NOTIF.tab = 'scheduled';
-  document.querySelectorAll('#page-notifications .ptab').forEach((t, i) => t.classList.toggle('on', i === 0));
 
   const { data, error } = await sb.from('push_notifications')
     .select('*').order('scheduled_at', { ascending: false }).limit(200);
 
   NOTIF.rows = (error || !data?.length) ? NOTIF_FALLBACK : data;
+  renderNotifTabs();
   renderNotifications();
 };
+
+function renderNotifTabs() {
+  const TABS = [
+    { key:'scheduled', label:'Scheduled' },
+    { key:'sent',      label:'Sent' },
+    { key:'draft',     label:'Drafts' },
+  ];
+  const bar = document.getElementById('notif-tab-bar');
+  if (!bar) return;
+  bar.innerHTML = TABS.map(t => {
+    const cnt = NOTIF.rows.filter(r => r.status === t.key).length;
+    const on  = NOTIF.tab === t.key;
+    return `<button class="ptab${on ? ' on' : ''}" onclick="switchNotifTab('${t.key}',this)">
+      ${t.label} <span class="tc${on ? ' on' : ''}">${cnt}</span>
+    </button>`;
+  }).join('');
+}
 
 function renderNotifications() {
   const el = document.getElementById('notif-table-body');
   const AUD = { all:'All Users', farmers:'Farmers', agents:'Agents', field_officers:'Field Officers', diaspora:'Diaspora' };
   const AUD_CLS = { all:'chip-ink', farmers:'chip-teal', agents:'chip-orange', field_officers:'chip-ghost', diaspora:'chip-ghost' };
-  const fmtNiceDt = d => { if (!d) return '—'; const dt = new Date(d); return dt.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}) + ', ' + dt.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'}); };
+
+  const fmtNiceDt = d => {
+    if (!d) return '—';
+    const dt = new Date(d);
+    return dt.toLocaleDateString('en-GB',{day:'numeric',month:'short'}) + ' · ' +
+           dt.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
+  };
 
   const filtered = NOTIF.tab === 'scheduled'
     ? NOTIF.rows.filter(r => r.status === 'scheduled')
@@ -3994,38 +4275,42 @@ function renderNotifications() {
     return;
   }
 
-  const infoBanner = NOTIF.tab === 'scheduled'
-    ? `<div style="border-left:3px solid var(--teal);background:rgba(21,97,109,.06);padding:10px 14px;border-radius:0 var(--radius-sm) var(--radius-sm) 0;margin-bottom:12px;font-size:13px;color:var(--teal)">Scheduled notifications will be delivered at the set time. Sent notifications cannot be recalled.</div>`
-    : '';
-
-  el.innerHTML = infoBanner + `<table class="data-table">
+  el.innerHTML = `<table class="dt">
     <thead><tr>
-      <th>Title</th><th>Message</th><th>Audience</th><th>Districts</th>
-      <th>${NOTIF.tab === 'sent' ? 'Sent' : 'Scheduled'}</th><th>Status</th><th></th>
+      <th>Notification</th>
+      <th>Audience</th>
+      <th>Districts</th>
+      <th>Deep Link</th>
+      <th>${NOTIF.tab === 'sent' ? 'Sent' : 'Scheduled'}</th>
+      <th>Status</th>
+      <th></th>
     </tr></thead>
     <tbody>
     ${filtered.map(r => {
       const distArr = Array.isArray(r.target_districts) ? r.target_districts : (r.target_districts ? [r.target_districts] : []);
-      const distChips = distArr.length
-        ? distArr.slice(0,2).map(d => `<span class="chip chip-ghost" style="font-size:10px;margin-right:2px">${d}</span>`).join('') +
-          (distArr.length > 2 ? `<span class="chip chip-ghost" style="font-size:10px">+${distArr.length-2} more</span>` : '')
+      const distHtml = distArr.length
+        ? distArr.slice(0,2).map(d => `<span class="chip chip-ghost" style="font-size:10.5px;margin:1px 2px 1px 0">${d}</span>`).join('') +
+          (distArr.length > 2 ? `<span class="chip chip-ghost" style="font-size:10.5px">+${distArr.length-2}</span>` : '')
         : '<span style="color:var(--ink-40);font-size:12px">All</span>';
       return `<tr>
-        <td style="font-weight:700;font-size:13.5px;max-width:180px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${r.title}</td>
-        <td style="font-size:12px;color:var(--ink-60);max-width:240px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${r.body}</td>
+        <td style="max-width:260px">
+          <div style="font-weight:700;font-size:13.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${r.title}</div>
+          <div style="font-size:12px;color:var(--ink-60);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:240px">${r.body}</div>
+        </td>
         <td><span class="chip ${AUD_CLS[r.target_audience] || 'chip-ghost'}">${AUD[r.target_audience] || r.target_audience || 'All'}</span></td>
-        <td style="max-width:160px">${distChips}</td>
-        <td style="white-space:nowrap">${fmtNiceDt(r.sent_at || r.scheduled_at)}</td>
+        <td>${distHtml}</td>
+        <td style="font-size:12px;color:var(--ink-40)">${r.deep_link || '—'}</td>
+        <td style="white-space:nowrap;font-size:13px">${fmtNiceDt(r.sent_at || r.scheduled_at)}</td>
         <td>${statusChip(r.status)}</td>
         <td style="white-space:nowrap">
           ${r.status !== 'sent' ? `
-            <button class="ctx-btn" title="Actions" onclick="openCtxMenu(this, [
-              { label: 'Edit', fn: function(){ openNotifModal('${r.id}') } },
-              { label: 'Send Now', fn: function(){ sendNotifNow('${r.id}') } },
-              '---',
-              { label: 'Delete', danger: true, fn: function(){ deleteNotif('${r.id}') } }
-            ])">⋮</button>
-          ` : '—'}
+            <button title="Edit" onclick="openNotifModal('${r.id}')"
+              style="background:none;border:none;cursor:pointer;padding:4px 6px;color:var(--ink-60);font-size:15px;border-radius:4px;transition:background .15s"
+              onmouseover="this.style.background='var(--ink-08)'" onmouseout="this.style.background='none'">✏️</button>
+            <button title="Delete" onclick="deleteNotif('${r.id}')"
+              style="background:none;border:none;cursor:pointer;padding:4px 6px;color:var(--rust);font-size:15px;border-radius:4px;transition:background .15s"
+              onmouseover="this.style.background='rgba(120,41,15,.08)'" onmouseout="this.style.background='none'">🗑</button>
+          ` : '<span style="color:var(--ink-40);font-size:12px">—</span>'}
         </td>
       </tr>`;
     }).join('')}
@@ -4033,10 +4318,9 @@ function renderNotifications() {
   </table>`;
 }
 
-window.switchNotifTab = function(tab, el) {
+window.switchNotifTab = function(tab) {
   NOTIF.tab = tab;
-  document.querySelectorAll('#page-notifications .ptab').forEach(t => t.classList.remove('on'));
-  el.classList.add('on');
+  renderNotifTabs();
   renderNotifications();
 };
 
@@ -4793,7 +5077,7 @@ function renderSettings(tab) {
       return;
     }
     el.innerHTML = `<div class="card" style="overflow:hidden">
-      <table class="data-table">
+      <table class="dt">
         <thead><tr><th>Action</th><th>Table</th><th>Record</th><th>Staff</th><th>When</th></tr></thead>
         <tbody>
         ${SETS.audit.map(a => {
@@ -4893,7 +5177,7 @@ function renderSettings(tab) {
         <div style="font-family:'Poppins';font-weight:700;font-size:15px">Outlets (${SETS.outlets.length})</div>
         <button class="btn btn-primary btn-sm" onclick="toast('Outlet management coming in next release.','info')">Add Outlet</button>
       </div>
-      <table class="data-table">
+      <table class="dt">
         <thead><tr><th>Name</th><th>District</th><th>Phone</th><th>Address</th></tr></thead>
         <tbody>
         ${SETS.outlets.map(o => `<tr>
@@ -4923,7 +5207,7 @@ async function loadStaffTab(el) {
           Invite Staff
         </button>
       </div>
-      <table class="data-table">
+      <table class="dt">
         <thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Status</th></tr></thead>
         <tbody>
         ${rows.map(s => `<tr>

@@ -60,15 +60,20 @@ CREATE TABLE staff_profiles (
 
 -- Auto-create profile on signup
 CREATE OR REPLACE FUNCTION handle_new_staff_user()
-RETURNS TRIGGER LANGUAGE plpgsql SECURITY DEFINER AS $$
+RETURNS TRIGGER LANGUAGE plpgsql SECURITY DEFINER SET search_path = public AS $$
 BEGIN
   INSERT INTO staff_profiles (id, full_name, role)
   VALUES (
     NEW.id,
     COALESCE(NEW.raw_user_meta_data->>'full_name', NEW.email),
     COALESCE((NEW.raw_user_meta_data->>'role')::staff_role, 'outlet_clerk')
-  );
+  )
+  ON CONFLICT (id) DO UPDATE SET
+    full_name = EXCLUDED.full_name,
+    role      = EXCLUDED.role;
   RETURN NEW;
+EXCEPTION WHEN OTHERS THEN
+  RETURN NEW; -- Never block user creation if profile insert fails
 END;
 $$;
 
