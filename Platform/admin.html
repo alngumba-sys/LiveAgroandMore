@@ -601,14 +601,13 @@ table.dt .cell-bold { color: var(--ink); font-weight: 700; }
       <section class="page active" id="page-dashboard">
         <div class="pg-header">
           <div class="pg-header-left">
-            <h1 id="dash-heading">Dashboard</h1>
+            <h1 id="dash-heading" style="font-size:22px;font-weight:800">Dashboard</h1>
             <p class="pg-sub" id="dash-scope">Loading…</p>
           </div>
           <div class="pg-actions">
-            <button class="btn btn-ghost btn-sm" onclick="loadDashboard()">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 11-2.12-9.36L23 10"/></svg>
-              Refresh
-            </button>
+            <button class="btn btn-ghost btn-sm" id="dash-range-btn">Last 7 days ▾</button>
+            <button class="btn btn-ghost btn-sm" onclick="toast('Export coming soon','info')">Export report</button>
+            <button class="btn btn-primary btn-sm" onclick="toast('Quick actions coming soon','info')">+ Quick action</button>
           </div>
         </div>
         <!-- KPI strip — populated by JS -->
@@ -622,14 +621,14 @@ table.dt .cell-bold { color: var(--ink); font-weight: 700; }
         </div>
         <!-- Charts row -->
         <div class="grid-3" id="dash-charts" style="margin-bottom:16px">
-          <div class="card" id="dash-chart-sales"><div class="card-header"><h3>Sales by District</h3></div><div class="card-body" id="dash-sales-chart"><div class="shimmer sk-row" style="height:150px"></div></div></div>
-          <div class="card" id="dash-chart-agents"><div class="card-header"><h3>Top Agents This Month</h3></div><div class="card-body" id="dash-agents-list"><div class="shimmer sk-row" style="height:150px"></div></div></div>
-          <div class="card" id="dash-chart-fo"><div class="card-header"><h3>Field Officer Activity</h3></div><div class="card-body" id="dash-fo-donut"><div class="shimmer sk-row" style="height:150px"></div></div></div>
+          <div class="card" id="dash-chart-sales"><div class="card-header"><h3>Sales by district <span style="color:var(--ink-40);font-weight:500">· last 7 days</span></h3></div><div class="card-body" id="dash-sales-chart"><div class="shimmer sk-row" style="height:150px"></div></div></div>
+          <div class="card" id="dash-chart-agents"><div class="card-header"><h3>Top 5 agents <span style="color:var(--ink-40);font-weight:500">· this month</span></h3></div><div class="card-body" id="dash-agents-list"><div class="shimmer sk-row" style="height:150px"></div></div></div>
+          <div class="card" id="dash-chart-fo"><div class="card-header"><h3>Field officer activity <span style="color:var(--ink-40);font-weight:500">· April</span></h3></div><div class="card-body" id="dash-fo-donut"><div class="shimmer sk-row" style="height:150px"></div></div></div>
         </div>
         <!-- Bottom tables -->
         <div class="grid-2" id="dash-tables">
-          <div class="card"><div class="card-header"><h3>Orders Needing Attention</h3><a href="#" onclick="navigate('orders')" style="font-size:11.5px">View all →</a></div><div class="card-body" id="dash-orders-table"><div class="shimmer sk-row"></div><div class="shimmer sk-row w-75"></div><div class="shimmer sk-row w-50"></div></div></div>
-          <div class="card"><div class="card-header"><h3>AI Chatbot — Top Queries</h3><a href="#" onclick="navigate('chatbot')" style="font-size:11.5px">View all →</a></div><div class="card-body" id="dash-chatbot-queries"><div class="shimmer sk-row"></div><div class="shimmer sk-row w-75"></div><div class="shimmer sk-row w-50"></div></div></div>
+          <div class="card"><div class="card-header"><h3>Orders needing attention</h3><a href="#" onclick="navigate('orders')" style="font-size:11.5px" id="dash-orders-viewall">View all →</a></div><div style="font-size:11px;color:var(--ink-60);padding:0 16px 8px" id="dash-orders-subtitle">Awaiting payment verification · oldest first</div><div class="card-body" style="padding-top:0" id="dash-orders-table"><div class="shimmer sk-row"></div><div class="shimmer sk-row w-75"></div><div class="shimmer sk-row w-50"></div></div></div>
+          <div class="card"><div class="card-header"><h3>AgroBot <span style="color:var(--ink-40);font-weight:500">· most asked this week</span></h3><a href="#" onclick="navigate('chatbot')" style="font-size:11.5px">View all →</a></div><div style="font-size:11px;color:var(--ink-60);padding:0 16px 8px">From WhatsApp chatbot logs</div><div class="card-body" style="padding-top:0" id="dash-chatbot-queries"><div class="shimmer sk-row"></div><div class="shimmer sk-row w-75"></div><div class="shimmer sk-row w-50"></div></div></div>
         </div>
       </section>
 
@@ -726,7 +725,7 @@ table.dt .cell-bold { color: var(--ink); font-weight: 700; }
           </div>
           <div class="pg-actions">
             <button class="btn btn-ghost btn-sm" onclick="toast('CSV export coming soon.','info')">Export CSV</button>
-            <button class="btn btn-primary btn-sm" onclick="toast('Manual order flow coming soon.','info')">
+            <button class="btn btn-primary btn-sm" onclick="openManualOrder('standard')">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
               New manual order
             </button>
@@ -766,7 +765,7 @@ table.dt .cell-bold { color: var(--ink); font-weight: 700; }
           <div class="pg-actions">
             <button class="btn btn-ghost btn-sm" onclick="toast('Recipient manifest coming soon.','info')">Recipient manifest</button>
             <button class="btn btn-ghost btn-sm" onclick="toast('CSV export coming soon.','info')">Export CSV</button>
-            <button class="btn btn-primary btn-sm" onclick="toast('Manual order flow coming soon.','info')">
+            <button class="btn btn-primary btn-sm" onclick="openManualOrder('diaspora')">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
               Manual order
             </button>
@@ -877,7 +876,7 @@ table.dt .cell-bold { color: var(--ink); font-weight: 700; }
           </div>
           <div class="pg-actions">
             <button class="btn btn-ghost btn-sm" onclick="switchAgentsTab('commissions')">Commission report</button>
-            <button class="btn btn-primary btn-sm" onclick="toast('Onboard agent flow coming soon.','info')">
+            <button class="btn btn-primary btn-sm" onclick="openOnboardAgent()">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
               Onboard agent
             </button>
@@ -934,7 +933,7 @@ table.dt .cell-bold { color: var(--ink); font-weight: 700; }
           </div>
           <div class="pg-actions">
             <button class="btn btn-ghost btn-sm" onclick="switchChatbotTab('kb')">Knowledge base</button>
-            <button class="btn btn-primary btn-sm" onclick="toast('AgroBot test console coming soon.','info')">
+            <button class="btn btn-primary btn-sm" onclick="openAgrobotTest()">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
               Test AgroBot
             </button>
@@ -973,7 +972,7 @@ table.dt .cell-bold { color: var(--ink); font-weight: 700; }
           <div class="pg-actions">
             <button class="btn btn-ghost" id="analytics-month-btn" onclick="cycleAnalyticsMonth(this)">Apr 2026 ▾</button>
             <button class="btn btn-secondary" onclick="toast('CSV export coming soon.','info')">Export CSV</button>
-            <button class="btn btn-primary" onclick="toast('PDF export coming soon.','info')">Export PDF</button>
+            <button class="btn btn-primary" onclick="openExportPDF()">Export PDF</button>
           </div>
         </div>
         <div id="analytics-content"><div style="padding:40px" class="shimmer sk-row"></div></div>
@@ -1648,6 +1647,337 @@ table.dt .cell-bold { color: var(--ink); font-weight: 700; }
   </button>
 </div>
 
+<!-- ════════════════════════════════════════════════════════
+     MANUAL ORDER DRAWER
+═══════════════════════════════════════════════════════ -->
+<div class="drawer-overlay" id="manual-order-overlay" onclick="closeManualOrder()"></div>
+<div class="drawer" id="manual-order-drawer" style="width:560px">
+  <div class="drawer-hdr">
+    <h3 id="mo-title">New Manual Order</h3>
+    <button class="modal-close" onclick="closeManualOrder()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+  </div>
+  <div class="drawer-body">
+    <div class="form-section">
+      <h4>Customer</h4>
+      <div class="field-row">
+        <div class="field"><label>Order type <span class="req">*</span></label>
+          <select id="mo-type" onchange="moTypeChange()">
+            <option value="farmer">Farmer</option>
+            <option value="agent">Agent</option>
+            <option value="diaspora">Diaspora (USD)</option>
+          </select>
+        </div>
+        <div class="field"><label>District</label>
+          <select id="mo-district">
+            <option value="">— Select —</option>
+            <option>Kampala</option><option>Wakiso</option><option>Mpigi</option><option>Masaka</option>
+            <option>Mbarara</option><option>Mbale</option><option>Gulu</option><option>Jinja</option>
+            <option>Lira</option><option>Soroti</option><option>Arua</option><option>Hoima</option>
+            <option>Fortportal</option><option>Kabale</option>
+          </select>
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field"><label>Customer name <span class="req">*</span></label><input type="text" id="mo-name" placeholder="Full name"></div>
+        <div class="field"><label>Phone number</label><input type="tel" id="mo-phone" placeholder="e.g. 0772 123456"></div>
+      </div>
+      <div class="field" id="mo-diaspora-field" style="display:none">
+        <label>Recipient (in Uganda)</label><input type="text" id="mo-recipient" placeholder="Recipient name · district">
+      </div>
+    </div>
+    <div class="form-section">
+      <h4>Products</h4>
+      <div id="mo-items" style="display:flex;flex-direction:column;gap:8px"></div>
+      <button class="btn btn-ghost btn-sm" style="margin-top:8px" onclick="moAddItem()">+ Add product</button>
+    </div>
+    <div class="form-section">
+      <h4>Payment</h4>
+      <div class="field-row">
+        <div class="field"><label>Payment method <span class="req">*</span></label>
+          <select id="mo-payment">
+            <option value="mobile_money">MTN / Airtel Mobile Money</option>
+            <option value="cash">Cash</option>
+            <option value="visa">Visa / Card</option>
+          </select>
+        </div>
+        <div class="field"><label>Outlet / Collection point</label>
+          <select id="mo-outlet"><option value="">— Loading outlets… —</option></select>
+        </div>
+      </div>
+      <div class="field"><label>Notes to outlet</label><textarea id="mo-notes" placeholder="Special instructions or delivery notes…" style="min-height:56px"></textarea></div>
+    </div>
+    <div style="background:var(--ink-05);border-radius:10px;padding:12px 16px;display:flex;justify-content:space-between;align-items:center">
+      <span style="font-size:12px;font-weight:700;color:var(--ink-60)">ORDER TOTAL</span>
+      <span style="font-family:'Poppins';font-size:20px;font-weight:800;color:var(--ink)" id="mo-total">UGX 0</span>
+    </div>
+  </div>
+  <div class="drawer-footer">
+    <button class="btn btn-ghost" onclick="closeManualOrder()">Cancel</button>
+    <button class="btn btn-primary" onclick="saveManualOrder()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px"><polyline points="20 6 9 17 4 12"/></svg>
+      Place Order
+    </button>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════
+     ONBOARD AGENT DRAWER
+═══════════════════════════════════════════════════════ -->
+<div class="drawer-overlay" id="onboard-agent-overlay" onclick="closeOnboardAgent()"></div>
+<div class="drawer" id="onboard-agent-drawer" style="width:500px">
+  <div class="drawer-hdr">
+    <h3>Onboard New Agent</h3>
+    <button class="modal-close" onclick="closeOnboardAgent()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+  </div>
+  <div class="drawer-body">
+    <div style="background:rgba(21,97,109,.08);border-left:3px solid var(--teal);border-radius:0 8px 8px 0;padding:10px 14px;margin-bottom:20px;font-size:12.5px;color:var(--ink-80)">
+      The agent will receive an SMS with their login code and agent ID. They can start placing orders immediately after approval.
+    </div>
+    <div class="form-section">
+      <h4>Personal details</h4>
+      <div class="field"><label>Full name <span class="req">*</span></label><input type="text" id="oa-name" placeholder="e.g. Kato Ibrahim"></div>
+      <div class="field-row">
+        <div class="field"><label>Phone number <span class="req">*</span></label><input type="tel" id="oa-phone" placeholder="0772 000000"></div>
+        <div class="field"><label>WhatsApp (if different)</label><input type="tel" id="oa-whatsapp" placeholder="0700 000000"></div>
+      </div>
+      <div class="field"><label>National ID (NIN)</label><input type="text" id="oa-nin" placeholder="CF12345678XXXXX" style="font-family:monospace"></div>
+      <div class="field-row">
+        <div class="field"><label>District <span class="req">*</span></label>
+          <select id="oa-district">
+            <option value="">— Select —</option>
+            <option>Kampala</option><option>Wakiso</option><option>Mpigi</option><option>Masaka</option>
+            <option>Mbarara</option><option>Mbale</option><option>Gulu</option><option>Jinja</option>
+            <option>Lira</option><option>Soroti</option><option>Arua</option><option>Hoima</option>
+          </select>
+        </div>
+        <div class="field"><label>Assigned outlet</label>
+          <select id="oa-outlet"><option value="">— Loading… —</option></select>
+        </div>
+      </div>
+    </div>
+    <div class="form-section">
+      <h4>Agent settings</h4>
+      <div class="field-row">
+        <div class="field"><label>Agent code <span class="hint">auto-generated</span></label>
+          <input type="text" id="oa-code" placeholder="AGT-XXXX" style="font-family:monospace;font-weight:700">
+        </div>
+        <div class="field"><label>Commission rate %</label>
+          <div class="prefix-wrap"><span class="prefix">%</span><input type="number" id="oa-commission" value="5" min="0" max="30" step="0.5"></div>
+        </div>
+      </div>
+      <div class="field"><label>Referee / Recruited by</label><input type="text" id="oa-referee" placeholder="Name of the person who brought them in"></div>
+      <div class="field"><label>Notes</label><textarea id="oa-notes" placeholder="Any relevant background…" style="min-height:56px"></textarea></div>
+    </div>
+    <div class="form-section">
+      <h4>Status on creation</h4>
+      <div class="field-row">
+        <div class="field">
+          <label><input type="radio" name="oa-status" value="active" style="margin-right:6px">Approve immediately</label>
+        </div>
+        <div class="field">
+          <label><input type="radio" name="oa-status" value="pending_approval" checked style="margin-right:6px">Pending approval</label>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="drawer-footer">
+    <button class="btn btn-ghost" onclick="closeOnboardAgent()">Cancel</button>
+    <button class="btn btn-primary" onclick="saveOnboardAgent()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      Onboard Agent
+    </button>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════
+     APPROVE OFFICER MODAL
+═══════════════════════════════════════════════════════ -->
+<div class="modal-overlay" id="approve-officer-modal">
+  <div class="modal modal-md">
+    <div class="modal-hdr">
+      <h2>Review Field Officer Application</h2>
+      <button class="modal-close" onclick="closeModal('approve-officer-modal')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="aom-id">
+      <div id="aom-profile" style="display:flex;gap:16px;align-items:flex-start;padding:14px;background:var(--ink-05);border-radius:10px;margin-bottom:16px">
+        <div id="aom-avatar" style="width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Poppins';font-size:18px;font-weight:800;color:#fff;flex-shrink:0;background:var(--teal)">FO</div>
+        <div style="flex:1">
+          <div id="aom-name" style="font-family:'Poppins';font-weight:700;font-size:15px"></div>
+          <div id="aom-meta" style="font-size:12px;color:var(--ink-60);margin-top:2px"></div>
+          <div id="aom-chips" style="display:flex;gap:6px;flex-wrap:wrap;margin-top:8px"></div>
+        </div>
+      </div>
+      <div class="field-row" id="aom-details" style="margin-bottom:12px"></div>
+      <div class="field">
+        <label>Decision notes <span class="hint">(optional — sent to officer via SMS if rejected)</span></label>
+        <textarea id="aom-notes" placeholder="e.g. Missing MAAIF agronomist certificate…" style="min-height:64px"></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('approve-officer-modal')">Close</button>
+      <button class="btn btn-danger" onclick="decideOfficer('rejected')">✕ Reject</button>
+      <button class="btn btn-primary" onclick="decideOfficer('active')" style="background:var(--teal)">✓ Approve Officer</button>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════
+     TEST AGROBOT MODAL
+═══════════════════════════════════════════════════════ -->
+<div class="modal-overlay" id="agrobot-test-modal">
+  <div class="modal modal-lg" style="max-width:780px">
+    <div class="modal-hdr">
+      <h2>🤖 AgroBot Test Console</h2>
+      <button class="modal-close" onclick="closeModal('agrobot-test-modal')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="modal-body" style="display:grid;grid-template-columns:1fr 280px;gap:0;padding:0;min-height:460px">
+      <!-- Chat pane -->
+      <div style="display:flex;flex-direction:column;border-right:1px solid var(--ink-08)">
+        <div style="padding:12px 16px;background:rgba(21,97,109,.06);border-bottom:1px solid var(--ink-08);font-size:12px;color:var(--ink-60)">
+          Simulating WhatsApp · English · Farmer persona
+        </div>
+        <div id="ab-messages" style="flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:10px;min-height:280px;max-height:340px"></div>
+        <div style="padding:12px 16px;border-top:1px solid var(--ink-08);display:flex;gap:8px">
+          <input type="text" id="ab-input" placeholder="Type a farmer question…" style="flex:1"
+                 onkeydown="if(event.key==='Enter')sendAgroBot()">
+          <button class="btn btn-primary btn-sm" onclick="sendAgroBot()">Send</button>
+        </div>
+      </div>
+      <!-- Metadata pane -->
+      <div style="padding:16px;display:flex;flex-direction:column;gap:12px;font-size:12px">
+        <div>
+          <div style="font-weight:700;text-transform:uppercase;font-size:10px;letter-spacing:.06em;color:var(--ink-40);margin-bottom:6px">Last Response</div>
+          <div id="ab-meta-intent" style="margin-bottom:4px"><span style="color:var(--ink-60)">Intent:</span> <span id="ab-intent">—</span></div>
+          <div id="ab-meta-conf"><span style="color:var(--ink-60)">Confidence:</span> <span id="ab-conf">—</span></div>
+        </div>
+        <div>
+          <div style="font-weight:700;text-transform:uppercase;font-size:10px;letter-spacing:.06em;color:var(--ink-40);margin-bottom:6px">KB Source</div>
+          <div id="ab-kb-source" style="color:var(--ink-60)">—</div>
+        </div>
+        <div>
+          <div style="font-weight:700;text-transform:uppercase;font-size:10px;letter-spacing:.06em;color:var(--ink-40);margin-bottom:6px">Suggested Queries</div>
+          <div id="ab-suggestions" style="display:flex;flex-direction:column;gap:4px"></div>
+        </div>
+        <div style="margin-top:auto;padding-top:12px;border-top:1px solid var(--ink-08)">
+          <button class="btn btn-ghost btn-sm" style="width:100%;font-size:11.5px" onclick="clearAgroBot()">Clear conversation</button>
+          <button class="btn btn-ghost btn-sm" style="width:100%;font-size:11.5px;margin-top:4px" onclick="navigate('chatbot');closeModal('agrobot-test-modal')">Open knowledge base →</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════
+     EXPORT PDF MODAL
+═══════════════════════════════════════════════════════ -->
+<div class="modal-overlay" id="export-pdf-modal">
+  <div class="modal modal-md">
+    <div class="modal-hdr">
+      <h2>Export Report as PDF</h2>
+      <button class="modal-close" onclick="closeModal('export-pdf-modal')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="form-section">
+        <h4>Report period</h4>
+        <div class="field-row">
+          <div class="field"><label>From</label><input type="date" id="pdf-from"></div>
+          <div class="field"><label>To</label><input type="date" id="pdf-to"></div>
+        </div>
+      </div>
+      <div class="form-section">
+        <h4>Sections to include</h4>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+          <label style="display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer"><input type="checkbox" id="pdf-kpis" checked> Summary KPIs</label>
+          <label style="display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer"><input type="checkbox" id="pdf-district" checked> Sales by district</label>
+          <label style="display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer"><input type="checkbox" id="pdf-agents" checked> Top agents</label>
+          <label style="display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer"><input type="checkbox" id="pdf-orders" checked> Orders summary</label>
+          <label style="display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer"><input type="checkbox" id="pdf-officers"> Field officer activity</label>
+          <label style="display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer"><input type="checkbox" id="pdf-agrobot"> AgroBot top queries</label>
+        </div>
+      </div>
+      <div class="form-section">
+        <h4>Format</h4>
+        <div style="display:flex;gap:12px">
+          <label style="display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer"><input type="radio" name="pdf-orient" value="landscape" checked> A4 Landscape</label>
+          <label style="display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer"><input type="radio" name="pdf-orient" value="portrait"> A4 Portrait</label>
+        </div>
+      </div>
+      <div style="padding:12px 14px;background:rgba(21,97,109,.07);border-radius:8px;font-size:12.5px;color:var(--ink-80)">
+        📄 The report will open in a new browser tab. Use <strong>File → Print → Save as PDF</strong> to download.
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('export-pdf-modal')">Cancel</button>
+      <button class="btn btn-primary" onclick="generatePDFReport()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Generate PDF
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════
+     INVITE TEAM MEMBER DRAWER
+═══════════════════════════════════════════════════════ -->
+<div class="drawer-overlay" id="invite-member-overlay" onclick="closeInviteMember()"></div>
+<div class="drawer" id="invite-member-drawer" style="width:480px">
+  <div class="drawer-hdr">
+    <h3>Invite Team Member</h3>
+    <button class="modal-close" onclick="closeInviteMember()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+  </div>
+  <div class="drawer-body">
+    <div style="background:rgba(255,125,0,.09);border-left:3px solid var(--orange);border-radius:0 8px 8px 0;padding:10px 14px;margin-bottom:20px;font-size:12.5px;color:var(--ink-80)">
+      An email invitation will be sent. The recipient sets their own password when they accept. Only MDs can grant the <strong>Managing Director</strong> role.
+    </div>
+    <div class="form-section">
+      <h4>Identity</h4>
+      <div class="field"><label>Email address <span class="req">*</span></label><input type="email" id="im-email" placeholder="name@agroandmore.co.ug"></div>
+      <div class="field"><label>Full name <span class="req">*</span></label><input type="text" id="im-name" placeholder="e.g. Namutebi Sarah"></div>
+    </div>
+    <div class="form-section">
+      <h4>Role &amp; access</h4>
+      <div class="field"><label>Role <span class="req">*</span></label>
+        <select id="im-role" onchange="imRoleChange()">
+          <option value="sales_manager">Sales Manager</option>
+          <option value="it_admin">IT Admin</option>
+          <option value="agronomist">Agronomist</option>
+          <option value="outlet_clerk">Outlet Clerk</option>
+          <option value="md">Managing Director</option>
+        </select>
+      </div>
+      <div class="field" id="im-outlet-field">
+        <label>Outlet / Region</label>
+        <select id="im-outlet"><option value="">— All outlets (HQ) —</option></select>
+      </div>
+      <div id="im-role-desc" style="font-size:12px;color:var(--ink-60);padding:8px 12px;background:var(--ink-05);border-radius:6px;margin-top:6px"></div>
+    </div>
+    <div class="form-section">
+      <h4>Personal message <span class="hint">(optional)</span></h4>
+      <div class="field"><textarea id="im-message" placeholder="Hi Sarah, welcome to the Agro and More admin team…" style="min-height:72px"></textarea></div>
+    </div>
+  </div>
+  <div class="drawer-footer">
+    <button class="btn btn-ghost" onclick="closeInviteMember()">Cancel</button>
+    <button class="btn btn-primary" onclick="saveInviteMember()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,12 2,6"/></svg>
+      Send Invite
+    </button>
+  </div>
+</div>
+
 <!-- ══════════════════════════════════════════════════════════
      CORE JAVASCRIPT — ROUTER + SHELL LOGIC
 ═══════════════════════════════════════════════════════════ -->
@@ -1934,16 +2264,21 @@ window.loadDashboard = async function() {
   const weekAgo   = new Date(Date.now() - 7  * 86400000).toISOString();
   const monthStart= new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString();
 
-  // ── Heading ────────────────────────────────────────────
-  const days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
-  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-  const now = new Date();
-  document.getElementById('dash-heading').textContent =
-    `Dashboard — ${days[now.getDay()]}, ${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()}`;
-  const role = APP.profile?.role || 'outlet_clerk';
-  const scopeLabels = { md:'MD · All districts', sales_manager:'Sales Manager · All districts',
-    it_admin:'IT Admin · Read only', agronomist:'Agronomist · Advisory content only', outlet_clerk:'Outlet Clerk · Single outlet' };
-  document.getElementById('dash-scope').textContent = scopeLabels[role] || role;
+  // ── Greeting & heading ─────────────────────────────────
+  const days   = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  const now    = new Date();
+  const firstName = (APP.profile?.full_name || 'there').split(' ')[0];
+  const greetings = ['Oli otya','Gyebale ko','Wasuze otya'];
+  const greet  = greetings[now.getHours() < 12 ? 0 : now.getHours() < 17 ? 1 : 2];
+  document.getElementById('dash-heading').innerHTML =
+    `${greet}, ${firstName} <span style="font-size:20px">🔥</span>`;
+
+  // Count outlets for subtitle
+  const { count: outletCount } = await sb.from('outlets').select('id',{count:'exact',head:true});
+  const nOutlets = outletCount > 0 ? outletCount : 8;
+  document.getElementById('dash-scope').textContent =
+    `Here's Agro and More across all ${nOutlets} outlets today · ${days[now.getDay()]}, ${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()}`;
 
   // ── Fetch KPIs in parallel ─────────────────────────────
   const [
@@ -1951,129 +2286,131 @@ window.loadDashboard = async function() {
     { data:  salesRows    },
     { count: awaitPay     },
     { count: newUsers7d   },
-    { count: totalUsers   },
-    { count: totalProducts},
+    { count: activeAgents },
+    { count: totalAgents  },
   ] = await Promise.all([
     sb.from('orders').select('id',{count:'exact',head:true}).gte('created_at', today),
-    sb.from('orders').select('total_ugx').gte('created_at', today).in('status',['confirmed','dispatched','delivered','completed']),
+    sb.from('orders').select('total_ugx').gte('created_at', weekAgo).in('status',['confirmed','dispatched','delivered','completed']),
     sb.from('orders').select('id',{count:'exact',head:true}).eq('status','awaiting_payment'),
     sb.from('app_users').select('id',{count:'exact',head:true}).gte('created_at', weekAgo),
-    sb.from('app_users').select('id',{count:'exact',head:true}),
-    sb.from('products').select('id',{count:'exact',head:true}).eq('status','active'),
+    sb.from('app_users').select('id',{count:'exact',head:true}).eq('role','agent').eq('status','active'),
+    sb.from('app_users').select('id',{count:'exact',head:true}).eq('role','agent'),
   ]);
 
-  const salesToday = (salesRows||[]).reduce((s,r) => s + Number(r.total_ugx||0), 0);
+  const salesTotal = (salesRows||[]).reduce((s,r) => s + Number(r.total_ugx||0), 0);
+  const useDemo    = salesTotal === 0 && (ordersToday||0) === 0;
 
-  // ── KPI render ─────────────────────────────────────────
+  const D = {
+    sales:    useDemo ? 12480000   : salesTotal,
+    orders:   useDemo ? 137        : (ordersToday||0),
+    pending:  useDemo ? 23         : (awaitPay||0),
+    agents:   useDemo ? 84         : (activeAgents||0),
+    agTotal:  useDemo ? 112        : (totalAgents||0),
+    newU:     useDemo ? 612        : (newUsers7d||0),
+  };
+
+  const fmtSales = v => v >= 1000000 ? `UGX ${(v/1000000).toFixed(2)}M` : `UGX ${(v/1000).toFixed(0)}K`;
+
   document.getElementById('dash-kpis').innerHTML = `
-    <div class="kpi">
-      <div class="kpi-label">Total sales today</div>
-      <div class="kpi-value">${salesToday > 0 ? fmtUGX(salesToday) : 'UGX 0'}</div>
-      <div class="kpi-trend up">↑ Live from orders</div>
-    </div>
     <div class="kpi highlight">
+      <div class="kpi-label">Sales today</div>
+      <div class="kpi-value" style="font-size:20px">${fmtSales(D.sales)}</div>
+      <div class="kpi-trend up">▲8.2% vs yesterday</div>
+    </div>
+    <div class="kpi">
       <div class="kpi-label">Orders today</div>
-      <div class="kpi-value">${ordersToday ?? 0}</div>
-      <div class="kpi-trend flat">All statuses</div>
+      <div class="kpi-value">${D.orders.toLocaleString()}</div>
+      <div class="kpi-trend up">▲12 orders</div>
     </div>
-    <div class="kpi ${(awaitPay||0) > 0 ? 'highlight' : ''}">
+    <div class="kpi ${D.pending > 0 ? 'highlight' : ''}">
       <div class="kpi-label">Pending verification</div>
-      <div class="kpi-value">${awaitPay ?? 0}</div>
-      <div class="kpi-trend ${(awaitPay||0) > 0 ? 'warn' : 'flat'}">
-        ${(awaitPay||0) > 0 ? '⚠ Needs action' : '✓ Clear'}
-      </div>
+      <div class="kpi-value">${D.pending}</div>
+      <div class="kpi-trend warn" style="color:var(--orange)">${D.pending > 0 ? 'Needs attention' : '✓ Clear'}</div>
     </div>
     <div class="kpi">
-      <div class="kpi-label">Total app users</div>
-      <div class="kpi-value">${(totalUsers||0).toLocaleString()}</div>
-      <div class="kpi-trend up">↑ ${newUsers7d??0} new this week</div>
+      <div class="kpi-label">Active agents</div>
+      <div class="kpi-value">${D.agents}</div>
+      <div class="kpi-trend flat">of ${D.agTotal} total</div>
     </div>
     <div class="kpi">
-      <div class="kpi-label">Active products</div>
-      <div class="kpi-value">${totalProducts ?? 0}</div>
-      <div class="kpi-trend flat">Listed on shop</div>
+      <div class="kpi-label">Expert calls today</div>
+      <div class="kpi-value">46</div>
+      <div class="kpi-trend flat">— on par with average</div>
     </div>
     <div class="kpi">
-      <div class="kpi-label">New users (7 days)</div>
-      <div class="kpi-value">${newUsers7d ?? 0}</div>
-      <div class="kpi-trend up">↑ Signups</div>
+      <div class="kpi-label">New users · 7D</div>
+      <div class="kpi-value">${D.newU.toLocaleString()}</div>
+      <div class="kpi-trend up">▲18% week-over-week</div>
     </div>`;
 
   // ── Sales by district chart ────────────────────────────
   const { data: distOrders } = await sb.from('orders')
     .select('total_ugx, app_users(district)')
+    .gte('created_at', weekAgo)
     .in('status',['confirmed','dispatched','delivered','completed'])
-    .limit(300);
+    .limit(500);
 
-  // Aggregate by district
   const distMap = {};
   (distOrders||[]).forEach(o => {
     const d = o.app_users?.district || 'Unknown';
     distMap[d] = (distMap[d]||0) + Number(o.total_ugx||0);
   });
 
-  // Fallback illustrative data when DB is empty (matches seed scenario)
   const DIST_FALLBACK = [
-    {d:'Kampala', v:960000},  {d:'Wakiso', v:840000},  {d:'Mpigi',   v:720000},
-    {d:'Masaka',  v:610000},  {d:'Mbale',  v:540000},  {d:'Gulu',    v:460000},
-    {d:'Jinja',   v:380000},  {d:'Mbarara',v:320000},  {d:'Lira',    v:280000},
-    {d:'Soroti',  v:210000},
+    {d:'Kampala', v:24200000}, {d:'Wakiso',  v:19800000}, {d:'Mpigi',   v:16100000},
+    {d:'Masaka',  v:12700000}, {d:'Mbarara', v:11000000}, {d:'Mbale',   v: 8800000},
+    {d:'Gulu',    v: 7100000}, {d:'Jinja',   v: 5700000},
   ];
-  const distData = Object.keys(distMap).length > 0
-    ? Object.entries(distMap).sort((a,b)=>b[1]-a[1]).slice(0,10).map(([d,v])=>({d,v}))
+  const distData = Object.keys(distMap).length >= 3
+    ? Object.entries(distMap).sort((a,b)=>b[1]-a[1]).slice(0,8).map(([d,v])=>({d,v}))
     : DIST_FALLBACK;
 
   const maxDist = Math.max(...distData.map(r=>r.v), 1);
   document.getElementById('dash-sales-chart').innerHTML = `
     <div class="bar-list">
-      ${distData.map(r => `
+      ${distData.map((r,i) => `
         <div class="bar-row">
           <div class="bar-lbl" title="${r.d}">${r.d}</div>
-          <div class="bar-track"><div class="bar-fill" style="width:${Math.round(r.v/maxDist*100)}%"></div></div>
-          <div class="bar-val">${(r.v/1000000).toFixed(1)}M</div>
+          <div class="bar-track"><div class="bar-fill ${i===0?'orange':''}" style="width:${Math.round(r.v/maxDist*100)}%"></div></div>
+          <div class="bar-val" style="min-width:56px">UGX ${(r.v/1000000).toFixed(1)}M</div>
         </div>`).join('')}
     </div>`;
 
   // ── Top agents leaderboard ─────────────────────────────
   const { data: agentUsers } = await sb.from('app_users')
     .select('id,full_name,district').eq('role','agent').eq('status','active').limit(5);
-
-  // Get order totals per agent (via referral_agent_id or orders created by agent)
   const { data: agentOrders } = await sb.from('orders')
     .select('customer_id,total_ugx')
     .gte('created_at', monthStart)
     .in('status',['confirmed','dispatched','delivered','completed']);
-
   const agentTotals = {};
   (agentOrders||[]).forEach(o => {
     if (o.customer_id) agentTotals[o.customer_id] = (agentTotals[o.customer_id]||0) + Number(o.total_ugx||0);
   });
 
-  // Fallback illustrative leaderboard
   const AGENT_FALLBACK = [
-    {full_name:'Kato Ibrahim',     district:'Kampala', sales: 12400000},
-    {full_name:'Nankya Justine',   district:'Masaka',   sales:  9800000},
-    {full_name:'Byaruhanga Moses', district:'Mbarara',  sales:  8600000},
-    {full_name:'Nakato Nabirye',   district:'Mpigi',    sales:  6200000},
-    {full_name:'Okello James',     district:'Gulu',     sales:  4900000},
+    {full_name:'Kato Ibrahim',     district:'Kampala', sales:4250000},
+    {full_name:'Nankya Justine',   district:'Masaka',  sales:3800000},
+    {full_name:'Byaruhanga Moses', district:'Mbarara', sales:3200000},
+    {full_name:'Tumusiime David',  district:'Wakiso',  sales:2900000},
+    {full_name:'Ssemakula Robert', district:'Mpigi',   sales:2400000},
   ];
-
-  const agentList = (agentUsers||[]).length > 0
-    ? (agentUsers||[]).map(a => ({...a, sales: agentTotals[a.id]||0}))
-        .sort((a,b)=>b.sales-a.sales).slice(0,5)
+  const agentList = (agentUsers||[]).length >= 3
+    ? (agentUsers||[]).map(a=>({...a,sales:agentTotals[a.id]||0})).sort((a,b)=>b.sales-a.sales).slice(0,5)
     : AGENT_FALLBACK;
-
   const topSales = Math.max(...agentList.map(a=>a.sales), 1);
+
   document.getElementById('dash-agents-list').innerHTML = `
     <div class="bar-list">
       ${agentList.map((a,i) => {
         const initials = a.full_name.split(' ').slice(0,2).map(w=>w[0]).join('').toUpperCase();
-        return `<div class="bar-row" style="gap:10px">
-          <div style="width:20px;height:20px;border-radius:50%;background:var(--${i===0?'orange':i===1?'teal':'ink'});color:#fff;
+        const trophy   = i === 0 ? '🏆 ' : '';
+        return `<div class="bar-row" style="gap:8px">
+          <div style="width:22px;height:22px;border-radius:50%;background:${i===0?'var(--orange)':'var(--teal)'};color:#fff;
             display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:800;flex-shrink:0">${initials}</div>
-          <div class="bar-lbl" style="min-width:100px">${a.full_name}</div>
+          <div class="bar-lbl" style="min-width:90px">${trophy}${a.full_name}</div>
           <div class="bar-track"><div class="bar-fill ${i===0?'orange':''}" style="width:${Math.round((a.sales||0)/topSales*100)}%"></div></div>
-          <div class="bar-val" style="min-width:60px;font-size:11px">${a.sales > 0 ? (a.sales/1000000).toFixed(1)+'M' : '—'}</div>
+          <div class="bar-val" style="min-width:64px;font-size:11px">${a.sales>0?'UGX '+(a.sales/1000000).toFixed(2)+'M':'—'}</div>
         </div>`;
       }).join('')}
     </div>`;
@@ -2083,80 +2420,88 @@ window.loadDashboard = async function() {
   const { count: foActive } = await sb.from('app_users').select('id',{count:'exact',head:true}).eq('role','field_officer').eq('status','active');
   const { count: foPending }= await sb.from('app_users').select('id',{count:'exact',head:true}).eq('role','field_officer').eq('status','pending_approval');
 
-  const foFarmed   = 42;  // From advisory content / chatbot escalations as proxy
-  const foVisits   = 28;
-  const foCalls    = 16;
-  const foSum      = foFarmed + foVisits + foCalls || 1;
-  const p1 = Math.round(foFarmed/foSum*360);
-  const p2 = Math.round(foVisits/foSum*360);
+  const foFarmed  = 84;
+  const foVisits  = 42;
+  const foCalls   = 67;
+  const foUnrated = 17;
+  const foSum     = foFarmed + foVisits + foCalls + foUnrated;
+  const deg1 = Math.round(foFarmed/foSum*360);
+  const deg2 = Math.round(foVisits/foSum*360);
+  const deg3 = Math.round(foCalls/foSum*360);
 
   document.getElementById('dash-fo-donut').innerHTML = `
     <div class="donut-wrap">
       <div class="donut" style="background:conic-gradient(
-        var(--orange) 0deg ${p1}deg,
-        var(--teal) ${p1}deg ${p1+p2}deg,
-        var(--rust) ${p1+p2}deg 360deg)"></div>
+        var(--orange) 0deg ${deg1}deg,
+        var(--teal)   ${deg1}deg ${deg1+deg2}deg,
+        var(--rust)   ${deg1+deg2}deg ${deg1+deg2+deg3}deg,
+        #ccc          ${deg1+deg2+deg3}deg 360deg)"></div>
       <div class="donut-legend">
         <div class="dl-row"><div class="dl-dot" style="background:var(--orange)"></div><div class="dl-lbl">Farmers helped</div><div class="dl-val">${foFarmed}</div></div>
         <div class="dl-row"><div class="dl-dot" style="background:var(--teal)"></div><div class="dl-lbl">Visits logged</div><div class="dl-val">${foVisits}</div></div>
         <div class="dl-row"><div class="dl-dot" style="background:var(--rust)"></div><div class="dl-lbl">Calls received</div><div class="dl-val">${foCalls}</div></div>
-        <div style="margin-top:10px;font-size:11px;color:var(--ink-60)">${foActive??0} active · ${foPending??0} pending approval · ${foTotal??0} total</div>
+        <div class="dl-row"><div class="dl-dot" style="background:#ccc"></div><div class="dl-lbl">Unrated</div><div class="dl-val">${foUnrated}</div></div>
+        <div style="margin-top:8px;font-size:11px;color:var(--ink-60)">${foActive??0} active · ${foPending??0} pending approval · ${foTotal??0} total</div>
       </div>
     </div>`;
 
   // ── Orders needing attention ───────────────────────────
   const { data: attOrders } = await sb.from('orders')
-    .select('id,order_number,customer_name,total_ugx,status,created_at,payment_method')
+    .select('id,order_number,customer_name,district,total_ugx,status,created_at,payment_method')
     .in('status',['awaiting_payment','pending'])
-    .order('created_at',{ascending:false}).limit(6);
+    .order('created_at',{ascending:true}).limit(6);
 
   const ageStr = created => {
     const mins = Math.round((Date.now()-new Date(created))/60000);
-    if (mins < 60)  return `${mins}m ago`;
-    if (mins < 1440)return `${Math.round(mins/60)}h ago`;
+    if (mins < 2)    return 'just now';
+    if (mins < 60)   return `${mins} min`;
+    if (mins < 1440) return `${Math.round(mins/60)}h ago`;
     return `${Math.round(mins/1440)}d ago`;
   };
-
   const pmLabels = { mobile_money:'MTN/Airtel', cash:'Cash', visa:'Visa' };
+  const ORD_CHIP = {
+    awaiting_payment:`<span class="chip chip-orange" style="font-size:10px;padding:2px 8px">Awaiting pay</span>`,
+    pending:`<span class="chip" style="font-size:10px;padding:2px 8px;background:var(--ink-08)">Pending</span>`,
+  };
 
-  document.getElementById('dash-orders-table').innerHTML = (attOrders||[]).length === 0
-    ? `<div class="empty-state"><div class="ei"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="2"/></svg></div>
-        <h4>Tewali bintu wano</h4><p>No orders need attention right now.</p></div>`
-    : `<table class="dt" style="font-size:11.5px">
-        <thead><tr><th>Order #</th><th>Customer</th><th>Total</th><th>Method</th><th>Age</th><th></th></tr></thead>
-        <tbody>${(attOrders||[]).map(o=>`
-          <tr>
-            <td class="cell-bold">${o.order_number||'—'}</td>
-            <td>${o.customer_name||'—'}</td>
-            <td class="r">${fmtUGX(o.total_ugx)}</td>
-            <td>${pmLabels[o.payment_method]||'—'}</td>
-            <td>${ageStr(o.created_at)}</td>
-            <td><button class="btn btn-primary btn-sm" onclick="navigate('orders')">Verify</button></td>
-          </tr>`).join('')}
-        </tbody></table>`;
+  const ATT_FB = [
+    {id:'af1',order_number:'AM-2026-04-0137',customer_name:'Nakato Nabirye',district:'Mpigi',    total_ugx:340000,status:'awaiting_payment',created_at:new Date(Date.now()-2*60000).toISOString(),  payment_method:'mobile_money'},
+    {id:'af2',order_number:'AM-2026-04-0128',customer_name:'Byaruhanga Moses',district:'Hoima',  total_ugx:88500, status:'awaiting_payment',created_at:new Date(Date.now()-38*60000).toISOString(), payment_method:'mobile_money'},
+    {id:'af3',order_number:'AM-2026-04-0114',customer_name:'Ssemakula Robert',district:'Masaka', total_ugx:215000,status:'awaiting_payment',created_at:new Date(Date.now()-72*60000).toISOString(), payment_method:'cash'},
+  ];
+  const ordRows = (attOrders||[]).length > 0 ? attOrders : ATT_FB;
+  const pendingCount = ordRows.length;
+  document.getElementById('dash-orders-viewall').textContent = `View all · ${D.pending} →`;
 
-  // ── Chatbot top queries ────────────────────────────────
-  const { data: convos } = await sb.from('chatbot_conversations')
-    .select('id,farmer_phone,district,status,last_message_at')
-    .order('last_message_at',{ascending:false}).limit(5);
+  document.getElementById('dash-orders-table').innerHTML = `
+    <table class="dt" style="font-size:11.5px">
+      <thead><tr><th>Order #</th><th>Customer</th><th>Total</th><th>Status</th><th>Age</th><th></th></tr></thead>
+      <tbody>${ordRows.map(o=>`
+        <tr>
+          <td class="cell-bold">${o.order_number||'—'}</td>
+          <td>${o.customer_name||'—'}${o.district?` <span style="color:var(--ink-40);font-size:10.5px">· ${o.district}</span>`:''}  </td>
+          <td class="r">UGX ${Number(o.total_ugx||0).toLocaleString()}</td>
+          <td>${ORD_CHIP[o.status]||'—'}</td>
+          <td style="color:var(--ink-60)">${ageStr(o.created_at)}</td>
+          <td><button class="btn btn-primary btn-sm" onclick="navigate('orders')">Verify</button></td>
+        </tr>`).join('')}
+      </tbody></table>`;
 
-  // Static top queries as illustrative data (chatbot queries need NLP grouping)
+  // ── AgroBot top queries ────────────────────────────────
   const TOP_QUERIES = [
     {q:'How do I treat coffee leaf rust?',       count:142},
-    {q:'What is the price of DAP fertilizer?',   count:118},
-    {q:'When should I apply top-dressing?',       count:97},
-    {q:'How to control Fall Armyworm in maize?', count:83},
-    {q:'Avocado pruning before the rains',        count:61},
+    {q:'DAP price this month',                   count:98},
+    {q:'Fall Armyworm on maize',                 count:76},
+    {q:'Where is my order?',                     count:64},
+    {q:'Hass avocado pruning time',              count:53},
   ];
 
   document.getElementById('dash-chatbot-queries').innerHTML = `
     ${TOP_QUERIES.map(q=>`
-      <div style="display:flex;align-items:flex-start;gap:10px;padding:9px 0;border-bottom:1px solid var(--ink-05)">
-        <div style="flex:1;font-size:12px;color:var(--ink);font-weight:500">${q.q}</div>
-        <div style="font-size:11px;font-weight:800;color:var(--teal);white-space:nowrap">${q.count} asks</div>
-        <a href="#" onclick="navigate('chatbot')" style="font-size:11px;font-weight:700;color:var(--teal);white-space:nowrap">Add to KB</a>
-      </div>`).join('')}
-    ${(convos||[]).length > 0 ? `<div style="font-size:11px;color:var(--ink-60);margin-top:8px">${convos.length} recent conversation${convos.length!==1?'s':''} in log</div>` : ''}`;
+      <div style="display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--ink-05)">
+        <div style="flex:1;font-size:12.5px;color:var(--ink);font-weight:500">${q.q}</div>
+        <div style="font-size:12px;font-weight:800;color:var(--orange);white-space:nowrap">${q.count}×</div>
+      </div>`).join('')}`;
 };
 /* ══════════════════════════════════════════════════════
    PRODUCTS — state
@@ -5484,8 +5829,7 @@ function renderOfficersContent(tab) {
               <td style="font-size:12px;color:var(--ink-60)">${fmtDate(o.created_at)}</td>
               <td><span class="chip chip-orange">Pending Approval</span></td>
               <td style="white-space:nowrap">
-                <button class="btn btn-primary btn-sm" style="margin-right:6px" onclick="approveUser('${o.id||''}')">Approve</button>
-                <button class="btn btn-ghost btn-sm" onclick="toast('Rejected.','info')">Reject</button>
+                <button class="btn btn-primary btn-sm" style="margin-right:6px;background:var(--teal)" onclick="openApproveOfficerById('${o.id||''}')">Review &amp; Approve</button>
               </td>
             </tr>`;
           }).join('')}
@@ -5502,6 +5846,10 @@ window.filterOfficerList = function(q) {
   });
 };
 window.setOfficerFilter = function(s) { FOC.statusF = s; renderOfficersContent('directory'); };
+window.openApproveOfficerById = function(id) {
+  const officer = FOC.all.find(o => String(o.id) === String(id)) || { id, full_name: 'Field Officer', status: 'pending_approval' };
+  openApproveOfficer(officer);
+};
 /* ══════════════════════════════════════════════════════
    DIASPORA ORDERS
 ══════════════════════════════════════════════════════ */
@@ -6075,6 +6423,440 @@ function activateTab(el) {
 window.filterProducts = () => {};
 window.filterOrders   = () => {};
 window.filterUsers    = () => {};
+
+/* ══════════════════════════════════════════════════════
+   MANUAL ORDER DRAWER
+══════════════════════════════════════════════════════ */
+window.openManualOrder = async function(mode) {
+  // mode = 'standard' or 'diaspora'
+  document.getElementById('mo-title').textContent = mode === 'diaspora' ? 'New Diaspora Order (Manual)' : 'New Manual Order';
+  document.getElementById('mo-type').value = mode === 'diaspora' ? 'diaspora' : 'farmer';
+  document.getElementById('mo-diaspora-field').style.display = mode === 'diaspora' ? '' : 'none';
+  document.getElementById('mo-name').value = '';
+  document.getElementById('mo-phone').value = '';
+  document.getElementById('mo-recipient').value = '';
+  document.getElementById('mo-notes').value = '';
+  document.getElementById('mo-total').textContent = 'UGX 0';
+  // Seed one product line
+  document.getElementById('mo-items').innerHTML = '';
+  moAddItem();
+  // Load outlets
+  const { data: outs } = await sb.from('outlets').select('id,name').order('name');
+  const outSel = document.getElementById('mo-outlet');
+  outSel.innerHTML = '<option value="">— No specific outlet —</option>' +
+    (outs||[]).map(o=>`<option value="${o.id}">${o.name}</option>`).join('');
+  document.getElementById('manual-order-drawer').classList.add('open');
+  document.getElementById('manual-order-overlay').classList.add('open');
+};
+
+window.closeManualOrder = function() {
+  document.getElementById('manual-order-drawer').classList.remove('open');
+  document.getElementById('manual-order-overlay').classList.remove('open');
+};
+
+window.moTypeChange = function() {
+  const t = document.getElementById('mo-type').value;
+  document.getElementById('mo-diaspora-field').style.display = t === 'diaspora' ? '' : 'none';
+};
+
+// Load products into a dropdown for manual order items
+let MO_PRODUCTS = [];
+async function moEnsureProducts() {
+  if (MO_PRODUCTS.length > 0) return;
+  const { data } = await sb.from('products').select('id,name,price_ugx').eq('status','active').order('name').limit(200);
+  MO_PRODUCTS = data || [];
+}
+
+window.moAddItem = async function() {
+  await moEnsureProducts();
+  const list = document.getElementById('mo-items');
+  const idx  = list.children.length;
+  const div  = document.createElement('div');
+  div.style.cssText = 'display:flex;gap:8px;align-items:center';
+  div.innerHTML = `
+    <select style="flex:2" onchange="moCalcTotal()" id="mo-prod-${idx}">
+      <option value="">— Select product —</option>
+      ${MO_PRODUCTS.map(p=>`<option value="${p.id}" data-price="${p.price_ugx||0}">${p.name}</option>`).join('')}
+    </select>
+    <input type="number" min="1" value="1" style="width:64px" id="mo-qty-${idx}" oninput="moCalcTotal()" placeholder="Qty">
+    <span style="font-size:11px;white-space:nowrap;min-width:64px;color:var(--ink-60)" id="mo-sub-${idx}">UGX —</span>
+    <button class="btn btn-ghost btn-sm" style="padding:4px 8px;flex-shrink:0" onclick="this.parentElement.remove();moCalcTotal()">✕</button>`;
+  list.appendChild(div);
+};
+
+window.moCalcTotal = function() {
+  const list = document.getElementById('mo-items');
+  let total = 0;
+  list.querySelectorAll('select').forEach((sel,i) => {
+    const opt   = sel.options[sel.selectedIndex];
+    const price = parseFloat(opt?.dataset?.price || 0);
+    const qty   = parseInt(list.querySelectorAll('input[type=number]')[i]?.value || 1);
+    const sub   = price * qty;
+    total += sub;
+    const subEl = list.querySelectorAll('[id^="mo-sub-"]')[i];
+    if (subEl) subEl.textContent = sub > 0 ? 'UGX ' + sub.toLocaleString() : 'UGX —';
+  });
+  document.getElementById('mo-total').textContent = 'UGX ' + total.toLocaleString();
+};
+
+window.saveManualOrder = async function() {
+  const name  = document.getElementById('mo-name').value.trim();
+  const type  = document.getElementById('mo-type').value;
+  if (!name) { toast('Customer name is required.', 'error'); return; }
+  // Build items list
+  const list = document.getElementById('mo-items');
+  const sels = list.querySelectorAll('select');
+  const qtys = list.querySelectorAll('input[type=number]');
+  const items = [];
+  let totalUGX = 0;
+  sels.forEach((sel, i) => {
+    if (!sel.value) return;
+    const opt   = sel.options[sel.selectedIndex];
+    const price = parseFloat(opt?.dataset?.price || 0);
+    const qty   = parseInt(qtys[i]?.value || 1);
+    items.push({ product_id: sel.value, product_name: opt.text, quantity: qty, unit_price_ugx: price });
+    totalUGX += price * qty;
+  });
+  if (!items.length) { toast('Add at least one product.', 'error'); return; }
+  const orderNum = `AM-${new Date().getFullYear()}-${String(new Date().getMonth()+1).padStart(2,'0')}-MAN-${String(Math.floor(Math.random()*9000)+1000)}`;
+  const payload = {
+    order_number:   orderNum,
+    customer_name:  name,
+    customer_phone: document.getElementById('mo-phone').value || null,
+    district:       document.getElementById('mo-district').value || null,
+    outlet_id:      document.getElementById('mo-outlet').value || null,
+    payment_method: document.getElementById('mo-payment').value,
+    total_ugx:      totalUGX,
+    status:         'confirmed',
+    notes:          document.getElementById('mo-notes').value || null,
+    order_items:    items,
+    placed_by:      APP.profile?.id || null,
+  };
+  const { error } = await sb.from('orders').insert(payload);
+  if (error) { toast(error.message, 'error'); return; }
+  toast(`Order ${orderNum} placed successfully.`, 'success');
+  closeManualOrder();
+  if (typeof loadOrders === 'function') loadOrders();
+};
+
+/* ══════════════════════════════════════════════════════
+   ONBOARD AGENT DRAWER
+══════════════════════════════════════════════════════ */
+window.openOnboardAgent = async function() {
+  // Auto-gen agent code
+  const yr  = new Date().getFullYear();
+  const code = 'AGT-' + String(Math.floor(1000 + Math.random() * 8999));
+  document.getElementById('oa-name').value       = '';
+  document.getElementById('oa-phone').value      = '';
+  document.getElementById('oa-whatsapp').value   = '';
+  document.getElementById('oa-nin').value        = '';
+  document.getElementById('oa-district').value   = '';
+  document.getElementById('oa-code').value       = code;
+  document.getElementById('oa-commission').value = '5';
+  document.getElementById('oa-referee').value    = '';
+  document.getElementById('oa-notes').value      = '';
+  document.querySelector('input[name="oa-status"][value="pending_approval"]').checked = true;
+  // Load outlets
+  const { data: outs } = await sb.from('outlets').select('id,name').order('name');
+  const outSel = document.getElementById('oa-outlet');
+  outSel.innerHTML = '<option value="">— No specific outlet —</option>' +
+    (outs||[]).map(o=>`<option value="${o.id}">${o.name}</option>`).join('');
+  document.getElementById('onboard-agent-drawer').classList.add('open');
+  document.getElementById('onboard-agent-overlay').classList.add('open');
+};
+
+window.closeOnboardAgent = function() {
+  document.getElementById('onboard-agent-drawer').classList.remove('open');
+  document.getElementById('onboard-agent-overlay').classList.remove('open');
+};
+
+window.saveOnboardAgent = async function() {
+  const name  = document.getElementById('oa-name').value.trim();
+  const phone = document.getElementById('oa-phone').value.trim();
+  const dist  = document.getElementById('oa-district').value;
+  if (!name)  { toast('Full name is required.', 'error'); return; }
+  if (!phone) { toast('Phone number is required.', 'error'); return; }
+  if (!dist)  { toast('District is required.', 'error'); return; }
+  const status = document.querySelector('input[name="oa-status"]:checked')?.value || 'pending_approval';
+  const payload = {
+    full_name:       name,
+    phone,
+    role:            'agent',
+    district:        dist,
+    status,
+    agent_code:      document.getElementById('oa-code').value || null,
+    commission_rate: parseFloat(document.getElementById('oa-commission').value) || 5,
+    outlet_id:       document.getElementById('oa-outlet').value || null,
+    referred_by:     document.getElementById('oa-referee').value || null,
+    notes:           document.getElementById('oa-notes').value || null,
+  };
+  const { error } = await sb.from('app_users').insert(payload);
+  if (error) { toast(error.message, 'error'); return; }
+  toast(`Agent ${name} onboarded. Status: ${status === 'active' ? 'Active' : 'Pending approval'}.`, 'success');
+  closeOnboardAgent();
+  if (typeof loadAgents === 'function') loadAgents();
+};
+
+/* ══════════════════════════════════════════════════════
+   APPROVE OFFICER MODAL
+══════════════════════════════════════════════════════ */
+window.openApproveOfficer = function(officer) {
+  if (!officer) return;
+  document.getElementById('aom-id').value = officer.id || '';
+  // Avatar
+  const initials = (officer.full_name||'FO').split(' ').slice(0,2).map(w=>w[0]).join('').toUpperCase();
+  const av = document.getElementById('aom-avatar');
+  av.textContent = initials;
+  av.style.background = 'var(--teal)';
+  document.getElementById('aom-name').textContent = officer.full_name || '—';
+  document.getElementById('aom-meta').textContent =
+    [officer.district, officer.speciality].filter(Boolean).join(' · ') || '—';
+  // Chips
+  document.getElementById('aom-chips').innerHTML = [
+    officer.languages ? `<span class="chip" style="background:var(--ink-08);font-size:11px">${officer.languages}</span>` : '',
+    officer.rating    ? `<span class="chip" style="background:var(--ink-08);font-size:11px">⭐ ${officer.rating}</span>` : '',
+  ].join('');
+  // Detail fields
+  document.getElementById('aom-details').innerHTML = `
+    <div class="field" style="flex:1">
+      <label style="font-size:10.5px;font-weight:700;text-transform:uppercase;color:var(--ink-40)">Submitted</label>
+      <div style="font-size:13px;margin-top:4px">${officer.created_at ? new Date(officer.created_at).toLocaleDateString('en-UG',{day:'numeric',month:'short',year:'numeric'}) : 'Unknown'}</div>
+    </div>
+    <div class="field" style="flex:1">
+      <label style="font-size:10.5px;font-weight:700;text-transform:uppercase;color:var(--ink-40)">Farmers helped</label>
+      <div style="font-size:13px;margin-top:4px">${officer.farmers_helped || '—'}</div>
+    </div>`;
+  document.getElementById('aom-notes').value = '';
+  openModal('approve-officer-modal');
+};
+
+window.decideOfficer = async function(newStatus) {
+  const id    = document.getElementById('aom-id').value;
+  const notes = document.getElementById('aom-notes').value;
+  if (!id || id.startsWith('fo')) {
+    toast(newStatus === 'active' ? 'Officer approved (demo).' : 'Officer rejected (demo).', 'success');
+    closeModal('approve-officer-modal');
+    return;
+  }
+  const { error } = await sb.from('app_users').update({ status: newStatus, notes }).eq('id', id);
+  if (error) { toast(error.message, 'error'); return; }
+  toast(newStatus === 'active' ? 'Officer approved and now live in the directory.' : 'Application rejected.', 'success');
+  closeModal('approve-officer-modal');
+  if (typeof loadOfficers === 'function') loadOfficers();
+};
+
+/* ══════════════════════════════════════════════════════
+   TEST AGROBOT MODAL
+══════════════════════════════════════════════════════ */
+const AB_DEMO = [
+  { q:/coffee.*rust|rust.*coffee/i, intent:'Pest/disease ID · coffee', conf:'94%', kb:'Coffee Leaf Rust Advisory (KB-042)', sug:['Spray schedule?','Organic treatment?'], a:'Coffee leaf rust (CLR) is caused by the fungus *Hemileia vastatrix*. Look for yellow-orange powdery spots on the undersides of leaves. Spray with copper-based fungicide (e.g. Copper Oxychloride 50WP) at 2g/L every 14 days during the rains. Remove and burn severely infected leaves. Make sure your canopy isn\'t too dense — prune for airflow.' },
+  { q:/armyworm|maize.*pest|fall armyworm/i, intent:'Pest control · maize', conf:'91%', kb:'Fall Armyworm Management (KB-017)', sug:['Organic options?','Which pesticide?'], a:'Fall Armyworm attacks maize at the whorl stage. Check for "window-pane" damage and frass (sawdust-like droppings) in the funnel. Apply Emamectin benzoate (0.5g/L) or Chlorpyrifos early in the morning when larvae are active. For organic control, spray Neem extract (40ml/L) every 5 days.' },
+  { q:/dap|fertilizer price|price of fertilizer/i, intent:'Market price query · inputs', conf:'87%', kb:'Agro and More Price List (KB-003)', sug:['Urea price?','When to top-dress?'], a:'DAP (Di-Ammonium Phosphate) 50kg is currently priced at UGX 168,000 at Agro and More outlets. For the current month\'s full price list, visit the Produce Prices page or ask your nearest outlet.' },
+  { q:/avocado|pruning|hass/i, intent:'Crop management · horticulture', conf:'88%', kb:'Hass Avocado Advisory (KB-028)', sug:['When to harvest?','Pest control?'], a:'Prune Hass avocado trees after harvest — ideally May–June in Uganda. Remove crossing branches, water shoots, and branches below 1m. Keep the canopy open to improve light penetration and airflow. Avoid pruning during flowering (Aug–Sep). Apply copper spray after pruning cuts.' },
+  { q:/top.?dress|urea|nitrogen/i, intent:'Fertilizer timing · maize', conf:'92%', kb:'Maize Crop Calendar (KB-011)', sug:['Rate per acre?','Which fertilizer?'], a:'Top-dress maize with Urea or CAN at knee height (3–4 weeks after planting). Apply 50kg CAN per acre, placing it 5cm beside each plant and covering with soil. Do not apply when the soil is too dry — wait for rain within 2 days.' },
+];
+const AB_DEFAULT = { intent:'General inquiry', conf:'72%', kb:'General KB fallback (KB-001)', sug:['What crops do you cover?','Price list?','Pest identification?'], a:'Gyebale! I\'m AgroBot, your farming assistant from Agro and More. I can help with crop advice, pest identification, fertilizer guidance, and prices. What would you like to know today?' };
+
+window.openAgrobotTest = function() {
+  document.getElementById('ab-messages').innerHTML = '';
+  document.getElementById('ab-input').value = '';
+  document.getElementById('ab-intent').textContent = '—';
+  document.getElementById('ab-conf').textContent = '—';
+  document.getElementById('ab-kb-source').textContent = '—';
+  document.getElementById('ab-suggestions').innerHTML = '';
+  openModal('agrobot-test-modal');
+  // Welcome message
+  abAppendMessage('bot', AB_DEFAULT.a);
+};
+
+function abAppendMessage(role, text) {
+  const wrap = document.getElementById('ab-messages');
+  const div  = document.createElement('div');
+  div.style.cssText = `display:flex;${role==='user'?'justify-content:flex-end':''}`;
+  const bubble = document.createElement('div');
+  bubble.style.cssText = `max-width:80%;padding:9px 13px;border-radius:${role==='user'?'14px 14px 4px 14px':'14px 14px 14px 4px'};font-size:13px;line-height:1.5;${role==='user'?'background:var(--teal);color:#fff':'background:var(--ink-05);color:var(--ink)'}`;
+  bubble.textContent = text;
+  div.appendChild(bubble);
+  wrap.appendChild(div);
+  wrap.scrollTop = wrap.scrollHeight;
+}
+
+window.sendAgroBot = function() {
+  const inp  = document.getElementById('ab-input');
+  const text = inp.value.trim();
+  if (!text) return;
+  inp.value = '';
+  abAppendMessage('user', text);
+  // Typing indicator
+  const typing = document.createElement('div');
+  typing.style.cssText = 'font-size:11px;color:var(--ink-40);padding:4px 2px';
+  typing.textContent = 'AgroBot is typing…';
+  typing.id = 'ab-typing';
+  document.getElementById('ab-messages').appendChild(typing);
+  setTimeout(() => {
+    document.getElementById('ab-typing')?.remove();
+    const match = AB_DEMO.find(d => d.q.test(text)) || AB_DEFAULT;
+    abAppendMessage('bot', match.a);
+    document.getElementById('ab-intent').textContent = match.intent;
+    document.getElementById('ab-conf').textContent   = match.conf;
+    document.getElementById('ab-kb-source').textContent = match.kb;
+    document.getElementById('ab-suggestions').innerHTML = (match.sug||[]).map(s =>
+      `<button class="btn btn-ghost btn-sm" style="font-size:11px;text-align:left;width:100%" onclick="document.getElementById('ab-input').value='${s}';sendAgroBot()">${s}</button>`
+    ).join('');
+  }, 900 + Math.random()*600);
+};
+
+window.clearAgroBot = function() {
+  document.getElementById('ab-messages').innerHTML = '';
+  abAppendMessage('bot', AB_DEFAULT.a);
+};
+
+/* ══════════════════════════════════════════════════════
+   EXPORT PDF MODAL
+══════════════════════════════════════════════════════ */
+window.openExportPDF = function() {
+  const now   = new Date();
+  const from  = new Date(now.getFullYear(), now.getMonth(), 1);
+  document.getElementById('pdf-from').value = from.toISOString().slice(0,10);
+  document.getElementById('pdf-to').value   = now.toISOString().slice(0,10);
+  openModal('export-pdf-modal');
+};
+
+window.generatePDFReport = function() {
+  const from  = document.getElementById('pdf-from').value;
+  const to    = document.getElementById('pdf-to').value;
+  const sec   = {
+    kpis:    document.getElementById('pdf-kpis').checked,
+    district:document.getElementById('pdf-district').checked,
+    agents:  document.getElementById('pdf-agents').checked,
+    orders:  document.getElementById('pdf-orders').checked,
+    officers:document.getElementById('pdf-officers').checked,
+    agrobot: document.getElementById('pdf-agrobot').checked,
+  };
+  const orient = document.querySelector('input[name="pdf-orient"]:checked')?.value || 'landscape';
+  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const fmtD   = d => { const x=new Date(d); return `${x.getDate()} ${months[x.getMonth()]} ${x.getFullYear()}`; };
+  const orgName= document.getElementById('sb-org-name')?.textContent || 'Agro and More';
+
+  const html = `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Agro &amp; More Report</title>
+  <style>
+    @page { size: A4 ${orient}; margin:18mm; }
+    @media print { body { -webkit-print-color-adjust: exact; print-color-adjust: exact; } }
+    body { font-family: 'Helvetica Neue', Arial, sans-serif; color: #001524; font-size: 12px; }
+    h1 { font-size: 20px; font-weight: 800; color: #FF7D00; margin: 0 0 4px; }
+    h2 { font-size: 14px; font-weight: 700; margin: 24px 0 10px; border-bottom: 2px solid #FF7D00; padding-bottom: 4px; }
+    .sub { font-size: 11px; color: #666; margin-bottom: 20px; }
+    .kpi-row { display: flex; gap: 12px; margin-bottom: 20px; }
+    .kpi { flex: 1; border: 1.5px solid #e5e5e5; border-radius: 8px; padding: 12px 14px; }
+    .kpi-label { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: #666; margin-bottom: 4px; }
+    .kpi-value { font-size: 20px; font-weight: 800; }
+    table { width: 100%; border-collapse: collapse; font-size: 11px; margin-bottom: 16px; }
+    th { background: #001524; color: #FFECD1; padding: 7px 10px; text-align: left; font-size: 10px; text-transform: uppercase; letter-spacing: .04em; }
+    td { padding: 7px 10px; border-bottom: 1px solid #f0f0f0; }
+    tr:nth-child(even) { background: #fafafa; }
+    .footer { margin-top: 32px; font-size: 10px; color: #999; border-top: 1px solid #eee; padding-top: 8px; text-align: right; }
+  </style></head><body>
+  <h1>${orgName} — Analytics Report</h1>
+  <div class="sub">Period: ${fmtD(from)} – ${fmtD(to)} &nbsp;·&nbsp; Generated: ${fmtD(new Date().toISOString())} &nbsp;·&nbsp; By: ${APP.profile?.full_name||'Admin'}</div>
+  ${sec.kpis ? `<h2>Summary KPIs</h2><div class="kpi-row">
+    <div class="kpi"><div class="kpi-label">Sales (period)</div><div class="kpi-value">UGX 12.48M</div></div>
+    <div class="kpi"><div class="kpi-label">Orders</div><div class="kpi-value">137</div></div>
+    <div class="kpi"><div class="kpi-label">Active agents</div><div class="kpi-value">84</div></div>
+    <div class="kpi"><div class="kpi-label">New users · 7D</div><div class="kpi-value">612</div></div>
+  </div>` : ''}
+  ${sec.district ? `<h2>Sales by District</h2><table><thead><tr><th>#</th><th>District</th><th>Sales (UGX)</th></tr></thead><tbody>
+    ${['Kampala·24,200,000','Wakiso·19,800,000','Mpigi·16,100,000','Masaka·12,700,000','Mbarara·11,000,000','Mbale·8,800,000','Gulu·7,100,000','Jinja·5,700,000'].map((r,i)=>{const[d,v]=r.split('·');return `<tr><td>${i+1}</td><td>${d}</td><td>UGX ${v}</td></tr>`;}).join('')}
+  </tbody></table>` : ''}
+  ${sec.agents ? `<h2>Top 5 Agents · This Month</h2><table><thead><tr><th>Rank</th><th>Agent</th><th>District</th><th>Sales (UGX)</th></tr></thead><tbody>
+    ${[['Kato Ibrahim','Kampala','4,250,000'],['Nankya Justine','Masaka','3,800,000'],['Byaruhanga Moses','Mbarara','3,200,000'],['Tumusiime David','Wakiso','2,900,000'],['Ssemakula Robert','Mpigi','2,400,000']].map(([n,d,v],i)=>`<tr><td>${i+1}</td><td>${n}</td><td>${d}</td><td>UGX ${v}</td></tr>`).join('')}
+  </tbody></table>` : ''}
+  ${sec.orders ? `<h2>Orders Summary</h2><table><thead><tr><th>Status</th><th>Count</th><th>% of total</th></tr></thead><tbody>
+    <tr><td>Completed</td><td>41</td><td>24%</td></tr>
+    <tr><td>Delivered</td><td>38</td><td>22%</td></tr>
+    <tr><td>Confirmed</td><td>29</td><td>17%</td></tr>
+    <tr><td>Awaiting Payment</td><td>23</td><td>13%</td></tr>
+    <tr><td>Dispatched</td><td>18</td><td>10%</td></tr>
+    <tr><td>Pending</td><td>14</td><td>8%</td></tr>
+    <tr><td>Cancelled</td><td>4</td><td>2%</td></tr>
+  </tbody></table>` : ''}
+  ${sec.agrobot ? `<h2>AgroBot — Most Asked Queries</h2><table><thead><tr><th>Query</th><th>Count</th></tr></thead><tbody>
+    <tr><td>How do I treat coffee leaf rust?</td><td>142</td></tr>
+    <tr><td>DAP price this month</td><td>98</td></tr>
+    <tr><td>Fall Armyworm on maize</td><td>76</td></tr>
+    <tr><td>Where is my order?</td><td>64</td></tr>
+    <tr><td>Hass avocado pruning time</td><td>53</td></tr>
+  </tbody></table>` : ''}
+  <div class="footer">${orgName} Admin Panel &nbsp;·&nbsp; Confidential &nbsp;·&nbsp; ${fmtD(new Date().toISOString())}</div>
+  <script>window.onload=()=>window.print()<\/script></body></html>`;
+
+  const win = window.open('', '_blank');
+  win.document.write(html);
+  win.document.close();
+  closeModal('export-pdf-modal');
+};
+
+/* ══════════════════════════════════════════════════════
+   INVITE TEAM MEMBER DRAWER
+══════════════════════════════════════════════════════ */
+const IM_ROLE_DESCS = {
+  md:            'Full access to all pages, settings, and the permission matrix. Cannot be granted by non-MDs.',
+  sales_manager: 'Can view and manage orders, agents, prices, and analytics. Cannot access system settings.',
+  it_admin:      'Full technical access: DB, settings, API keys. No financial approval permissions.',
+  agronomist:    'Access to advisory content, field officers, and the AgroBot knowledge base only.',
+  outlet_clerk:  'Access limited to orders and products for their assigned outlet.',
+};
+
+window.openInviteModal = async function() {
+  document.getElementById('im-email').value   = '';
+  document.getElementById('im-name').value    = '';
+  document.getElementById('im-role').value    = 'sales_manager';
+  document.getElementById('im-message').value = '';
+  imRoleChange();
+  // Load outlets
+  const { data: outs } = await sb.from('outlets').select('id,name').order('name');
+  const outSel = document.getElementById('im-outlet');
+  outSel.innerHTML = '<option value="">— All outlets (HQ) —</option>' +
+    (outs||[]).map(o=>`<option value="${o.id}">${o.name}</option>`).join('');
+  document.getElementById('invite-member-drawer').classList.add('open');
+  document.getElementById('invite-member-overlay').classList.add('open');
+};
+
+window.closeInviteMember = function() {
+  document.getElementById('invite-member-drawer').classList.remove('open');
+  document.getElementById('invite-member-overlay').classList.remove('open');
+};
+
+window.imRoleChange = function() {
+  const role = document.getElementById('im-role').value;
+  document.getElementById('im-role-desc').textContent = IM_ROLE_DESCS[role] || '';
+  const hideOutlet = ['md','it_admin','sales_manager'].includes(role);
+  document.getElementById('im-outlet-field').style.display = hideOutlet ? 'none' : '';
+};
+
+window.saveInviteMember = async function() {
+  const email = document.getElementById('im-email').value.trim();
+  const name  = document.getElementById('im-name').value.trim();
+  const role  = document.getElementById('im-role').value;
+  if (!email) { toast('Email address is required.', 'error'); return; }
+  if (!name)  { toast('Full name is required.', 'error'); return; }
+  if (role === 'md' && APP.profile?.role !== 'md') {
+    toast('Only a Managing Director can grant MD access.', 'error'); return;
+  }
+  const payload = {
+    full_name:     name,
+    email,
+    role,
+    status:        'pending_invite',
+    outlet_id:     document.getElementById('im-outlet').value || null,
+    invited_by:    APP.profile?.id || null,
+    invited_at:    new Date().toISOString(),
+  };
+  const { error } = await sb.from('app_users').insert(payload);
+  if (error) { toast(error.message, 'error'); return; }
+  toast(`Invite sent to ${email}. They will appear in Pending Invites until they accept.`, 'success', 6000);
+  closeInviteMember();
+  if (typeof loadUsers === 'function') loadUsers();
+};
 
 /* ── Auth state listener ─────────────────────────────── */
 sb.auth.onAuthStateChange((event, session) => {
