@@ -1,0 +1,39 @@
+[build]
+  publish = "."        # serve the Platform/ folder as-is (no build step)
+
+# ── Clean URL aliases ──────────────────────────────────────────────
+[[redirects]]
+  from = "/admin"
+  to   = "/admin.html"
+  status = 200
+
+[[redirects]]
+  from = "/setup"
+  to   = "/setup.html"
+  status = 200
+
+[[redirects]]
+  from = "/reset-password"
+  to   = "/password-reset.html"
+  status = 200
+
+# ── Security headers on every response ────────────────────────────
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options            = "DENY"
+    X-Content-Type-Options     = "nosniff"
+    Referrer-Policy            = "strict-origin-when-cross-origin"
+    Permissions-Policy         = "camera=(), microphone=(), geolocation=()"
+
+# ── Never cache HTML (JS/CSS are inlined so no cache-busting needed)
+[[headers]]
+  for = "*.html"
+  [headers.values]
+    Cache-Control = "no-cache, no-store, must-revalidate"
+
+# ── Cache brand assets for 1 week ─────────────────────────────────
+[[headers]]
+  for = "/brand/*"
+  [headers.values]
+    Cache-Control = "public, max-age=604800, immutable"

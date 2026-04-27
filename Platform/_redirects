@@ -1,0 +1,6 @@
+# Agro and More Admin — Netlify redirects
+# netlify.toml takes precedence; this file is a fallback
+
+/admin          /admin.html           200
+/setup          /setup.html           200
+/reset-password /password-reset.html  200
