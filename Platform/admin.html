@@ -1839,14 +1839,14 @@ window.loadDashboard = async function() {
 
   // Fallback illustrative data when DB is empty (matches seed scenario)
   const DIST_FALLBACK = [
-    {d:'Kampala',960000},  {d:'Wakiso',840000},   {d:'Mpigi',720000},
-    {d:'Masaka', 610000},  {d:'Mbale', 540000},   {d:'Gulu',  460000},
-    {d:'Jinja',  380000},  {d:'Mbarara',320000},  {d:'Lira',  280000},
-    {d:'Soroti', 210000},
+    {d:'Kampala', v:960000},  {d:'Wakiso', v:840000},  {d:'Mpigi',   v:720000},
+    {d:'Masaka',  v:610000},  {d:'Mbale',  v:540000},  {d:'Gulu',    v:460000},
+    {d:'Jinja',   v:380000},  {d:'Mbarara',v:320000},  {d:'Lira',    v:280000},
+    {d:'Soroti',  v:210000},
   ];
   const distData = Object.keys(distMap).length > 0
     ? Object.entries(distMap).sort((a,b)=>b[1]-a[1]).slice(0,10).map(([d,v])=>({d,v}))
-    : DIST_FALLBACK.map(r => ({d:r[0], v:r[1]}));
+    : DIST_FALLBACK;
 
   const maxDist = Math.max(...distData.map(r=>r.v), 1);
   document.getElementById('dash-sales-chart').innerHTML = `
