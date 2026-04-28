@@ -20,19 +20,14 @@ body{font-family:'Inter',sans-serif;background:var(--cream);color:var(--ink);min
 }
 .left-bg{
   position:absolute;inset:0;
-  background:linear-gradient(135deg,rgba(0,21,36,0.85) 0%,rgba(21,97,109,0.7) 100%);
+  background:linear-gradient(160deg,rgba(0,21,36,0.82) 0%,rgba(0,21,36,0.55) 60%,rgba(21,97,109,0.45) 100%);
   z-index:0;
 }
 .left-farm{
   position:absolute;inset:0;z-index:-1;
-  background:linear-gradient(180deg,#0a2535 0%,#15616D 60%,#2a8a5c 100%);
+  background:url('https://images.unsplash.com/photo-1566385101042-1a0aa0c1268c?w=1200&q=80&fit=crop') center center / cover no-repeat;
 }
-/* Decorative farm illustration via CSS */
-.left-farm::after{
-  content:"";position:absolute;bottom:0;left:0;right:0;height:200px;
-  background:repeating-linear-gradient(90deg,rgba(21,97,109,0.3) 0px,rgba(21,97,109,0.3) 40px,transparent 40px,transparent 60px);
-  mask-image:linear-gradient(transparent,rgba(0,0,0,0.5));
-}
+.left-farm::after{ content:none; }
 .left-top{position:relative;z-index:1;display:flex;align-items:center;gap:12px}
 .left-logo{height:40px;filter:brightness(0) invert(1)}
 .left-bottom{position:relative;z-index:1}
