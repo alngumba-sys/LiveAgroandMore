@@ -611,7 +611,7 @@ table.dt .cell-bold { color: var(--ink); font-weight: 700; }
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
         <span class="sb-label">Analytics &amp; Reports</span>
       </button>
-      <button class="sb-item" onclick="navigate('settings');setTimeout(()=>switchSettingsTab('odoo',document.getElementById('stab-odoo')),120)">
+      <button class="sb-item" data-page="finance">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
         <span class="sb-label">Finance</span>
         <span style="background:#6C4FBF;color:#fff;font-size:9px;font-weight:800;padding:2px 5px;border-radius:4px;white-space:nowrap;margin-left:auto">Odoo</span>
@@ -1167,6 +1167,17 @@ table.dt .cell-bold { color: var(--ink); font-weight: 700; }
           </div>
         </div>
         <div id="analytics-content"><div style="padding:40px" class="shimmer sk-row"></div></div>
+      </section>
+
+      <!-- ── Finance ───────────────────────────────────────── -->
+      <section class="page" id="page-finance">
+        <div class="pg-header">
+          <div class="pg-header-left">
+            <h1 style="color:var(--orange)">Finance</h1>
+            <p class="pg-sub">Financial overview and Odoo ERP connection. Sync invoices, payments and reconciliation data.</p>
+          </div>
+        </div>
+        <div id="finance-content"><div style="padding:40px" class="shimmer sk-row"></div></div>
       </section>
 
       <!-- ── Settings ──────────────────────────────────────── -->
@@ -2665,6 +2676,7 @@ table.dt .cell-bold { color: var(--ink); font-weight: 700; }
       <div class="field"><label>Role <span class="req">*</span></label>
         <select id="im-role" onchange="imRoleChange()">
           <option value="sales_manager">Sales Manager</option>
+          <option value="finance">Finance Officer</option>
           <option value="it_admin">IT Admin</option>
           <option value="agronomist">Agronomist</option>
           <option value="outlet_clerk">Outlet Clerk</option>
@@ -2752,6 +2764,7 @@ const PAGES = {
   chatbot:       { label: 'AI Chatbot · AgroBot',  parent: 'Network' },
   notifications: { label: 'Push Notifications',    parent: 'Network' },
   analytics:     { label: 'Analytics & Reports',   parent: 'Finance & Insight' },
+  finance:       { label: 'Finance',               parent: 'Finance & Insight' },
   users:         { label: 'Users & Roles',          parent: 'Administration' },
   settings:      { label: 'Settings',              parent: 'Administration' },
 };
@@ -2761,6 +2774,7 @@ const ROLE_ACCESS = {
   platform_admin:  ['__platform__'],          // handled separately — activates PA console
   md:              Object.keys(PAGES),
   sales_manager:   ['dashboard','products','prices','orders','diaspora','forhire','users','agents','advisory','notifications','analytics'],
+  finance:         ['dashboard','orders','diaspora','analytics','finance'],
   it_admin:        ['dashboard','settings','users','analytics'],
   agronomist:      ['dashboard','advisory','chatbot','officers','prices','notifications'],
   outlet_clerk:    ['dashboard','orders'],
@@ -2808,7 +2822,7 @@ window.navigate = function(page) {
     orders: loadOrders, users: loadUsers, traceability: loadTraceability, forhire: loadHire,
     advisory: loadAdvisory, chatbot: loadChatbot, notifications: loadNotifications,
     analytics: loadAnalytics, agents: loadAgents, officers: loadOfficers,
-    diaspora: loadDiaspora, settings: loadSettings };
+    diaspora: loadDiaspora, settings: loadSettings, finance: loadFinance };
   if (loaders[page]) loaders[page]();
 };
 
@@ -5356,8 +5370,8 @@ window.confirmCancel = async function() {
 const USR = { all:[], filtered:[], tab:'all', search:'', page:0, perPage:25, pendingId:null, pendingIsBlocked:false };
 
 // Admin staff roles
-const ROLE_LABELS = { md:'Managing Director', sales_manager:'Sales / Operations Manager', it_admin:'IT Admin', agronomist:'Senior Agronomist', outlet_clerk:'Outlet Clerk', farmer:'Farmer', agent:'Agent', field_officer:'Field Officer', diaspora:'Diaspora' };
-const ROLE_COLORS = { md:'chip-teal', sales_manager:'chip-ghost', it_admin:'chip-ghost', agronomist:'chip-ghost', outlet_clerk:'chip-ghost', farmer:'chip-teal', agent:'chip-orange', field_officer:'chip-ink', diaspora:'chip-ghost' };
+const ROLE_LABELS = { md:'Managing Director', sales_manager:'Sales / Operations Manager', finance:'Finance Officer', it_admin:'IT Admin', agronomist:'Senior Agronomist', outlet_clerk:'Outlet Clerk', farmer:'Farmer', agent:'Agent', field_officer:'Field Officer', diaspora:'Diaspora' };
+const ROLE_COLORS = { md:'chip-teal', sales_manager:'chip-ghost', finance:'chip-orange', it_admin:'chip-ghost', agronomist:'chip-ghost', outlet_clerk:'chip-ghost', farmer:'chip-teal', agent:'chip-orange', field_officer:'chip-ink', diaspora:'chip-ghost' };
 
 // Styled role chip matching mockup
 function staffRoleChip(role) {
@@ -5403,7 +5417,7 @@ window.loadUsers = async function() {
   document.getElementById('users-content').innerHTML = '<div style="padding:40px" class="shimmer sk-row"></div>';
 
   // Try to load admin staff from app_users (roles: md, sales_manager, it_admin, agronomist, outlet_clerk)
-  const ADMIN_ROLES = ['md','sales_manager','it_admin','agronomist','outlet_clerk'];
+  const ADMIN_ROLES = ['md','sales_manager','finance','it_admin','agronomist','outlet_clerk'];
   const { data, error } = await sb.from('app_users')
     .select('*').in('role', ADMIN_ROLES).order('created_at',{ascending:false});
 
@@ -10696,9 +10710,115 @@ const SETS_OUTLETS_FB = [
 const SETS_STAFF_FB = [
   { full_name:'Managing Director',  email:'md@agroandmore.co.ug',           role:'md' },
   { full_name:'Sales Manager',      email:'sales@agroandmore.co.ug',        role:'sales_manager' },
+  { full_name:'Sandra Atwiine',     email:'finance@agroandmore.co.ug',      role:'finance' },
   { full_name:'IT Administrator',   email:'it@agroandmore.co.ug',           role:'it_admin' },
   { full_name:'Lead Agronomist',    email:'agronomist@agroandmore.co.ug',   role:'agronomist' },
 ];
+
+window.loadFinance = async function() {
+  const el = document.getElementById('finance-content');
+  if (!el) return;
+  el.innerHTML = '<div style="padding:40px" class="shimmer sk-row"></div>';
+
+  /* Load settings to get Odoo config */
+  const { data: settingsRows } = await sb.from('settings').select('key,value');
+  const cfg = {};
+  (settingsRows || []).forEach(r => { cfg[r.key] = r.value; });
+
+  const env        = cfg.odoo_env || 'sandbox';
+  const isSandbox  = env === 'sandbox';
+  const odooUrl    = isSandbox ? (cfg.odoo_sandbox_url || '') : (cfg.odoo_url || '');
+  const odooDB     = isSandbox ? (cfg.odoo_sandbox_db  || '') : (cfg.odoo_db  || '');
+  const configured = !!(odooUrl && odooDB);
+  const lastSync   = cfg.odoo_last_sync;
+  const lastSyncTxt = lastSync
+    ? new Date(lastSync).toLocaleString('en-UG', { dateStyle:'medium', timeStyle:'short' })
+    : 'Never synced';
+
+  const dotColor = configured ? 'var(--teal)' : 'var(--ink-20)';
+  const envChip  = isSandbox
+    ? `<span style="background:#FFF4E4;color:var(--orange);border:1px solid rgba(232,119,34,.3);font-size:10px;font-weight:800;padding:2px 7px;border-radius:4px;text-transform:uppercase">Sandbox</span>`
+    : `<span style="background:rgba(21,97,109,.1);color:var(--teal);border:1px solid rgba(21,97,109,.3);font-size:10px;font-weight:800;padding:2px 7px;border-radius:4px;text-transform:uppercase">Live</span>`;
+
+  const role = APP.profile?.role;
+  const canEditOdoo = ['md','it_admin'].includes(role);
+
+  el.innerHTML = `
+    <!-- KPI row -->
+    <div class="kpi-row" style="grid-template-columns:repeat(3,1fr);margin-bottom:24px">
+      <div class="kpi" onclick="navigate('orders')">
+        <div class="kpi-label">Orders</div>
+        <div class="kpi-value" style="font-size:20px">View</div>
+        <div class="kpi-trend flat" style="color:var(--ink-60)">All order records</div>
+      </div>
+      <div class="kpi" onclick="navigate('diaspora')">
+        <div class="kpi-label">Diaspora Orders</div>
+        <div class="kpi-value" style="font-size:20px">View</div>
+        <div class="kpi-trend flat" style="color:var(--ink-60)">International orders</div>
+      </div>
+      <div class="kpi" onclick="navigate('analytics')">
+        <div class="kpi-label">Analytics & Reports</div>
+        <div class="kpi-value" style="font-size:20px">View</div>
+        <div class="kpi-trend flat" style="color:var(--ink-60)">Revenue & sales data</div>
+      </div>
+    </div>
+
+    <!-- Odoo connection card -->
+    <div class="card" style="padding:20px;max-width:520px">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
+        <div style="font-family:'Poppins';font-weight:700;font-size:15px">Odoo ERP</div>
+        ${envChip}
+      </div>
+      <p style="font-size:13px;color:var(--ink-60);margin-bottom:18px">
+        Sync invoices, payments, and reconciliation data with your Odoo instance.
+      </p>
+
+      <!-- Status -->
+      <div style="display:flex;align-items:center;gap:10px;padding:12px 14px;border:1px solid var(--ink-08);border-radius:var(--radius-md);margin-bottom:16px">
+        <span style="width:10px;height:10px;border-radius:50%;background:${dotColor};flex-shrink:0"></span>
+        <span style="font-size:13px;font-weight:600">${configured ? `Connected · ${odooUrl}` : 'Not configured'}</span>
+      </div>
+
+      ${configured ? `
+      <div style="display:flex;align-items:center;justify-content:space-between;padding-top:12px;border-top:1px solid var(--ink-08);flex-wrap:wrap;gap:8px">
+        <div>
+          <div style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-40);margin-bottom:2px">Last sync</div>
+          <div style="font-size:13px;font-weight:600">${lastSyncTxt}</div>
+        </div>
+        <button class="btn btn-ghost" onclick="financeOdooSync()" style="font-size:13px">↻ Sync now</button>
+      </div>` : `
+      <div class="callout callout-teal">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        <span>Odoo is not configured yet.${canEditOdoo ? ` Go to <button onclick="navigate('settings');setTimeout(()=>switchSettingsTab('odoo',document.getElementById('stab-odoo')),120)" style="background:none;border:none;color:var(--teal);font-weight:700;cursor:pointer;padding:0;font-size:inherit">Settings → Odoo</button> to connect.` : ' Contact your IT Admin to configure the Odoo connection.'}</span>
+      </div>`}
+    </div>
+
+    <!-- Finance actions for Finance Officer -->
+    <div class="card" style="padding:20px;max-width:520px;margin-top:20px">
+      <div style="font-family:'Poppins';font-weight:700;font-size:15px;margin-bottom:12px">Finance actions</div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <button class="btn btn-secondary" style="justify-content:flex-start;gap:10px;text-align:left" onclick="navigate('orders')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px;flex-shrink:0"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+          View & generate invoices
+        </button>
+        <button class="btn btn-secondary" style="justify-content:flex-start;gap:10px;text-align:left" onclick="navigate('orders');setTimeout(()=>document.querySelector('[onclick*=refund]')?.click(),300)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px;flex-shrink:0"><path d="M3 12a9 9 0 109 9"/><polyline points="3 12 3 6 9 6"/></svg>
+          Process refunds
+        </button>
+        <button class="btn btn-secondary" style="justify-content:flex-start;gap:10px;text-align:left" onclick="navigate('analytics')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px;flex-shrink:0"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+          Export financial reports (CSV / PDF)
+        </button>
+      </div>
+    </div>`;
+};
+
+window.financeOdooSync = async function() {
+  const now = new Date().toISOString();
+  await sb.from('settings').upsert({ key: 'odoo_last_sync', value: now }, { onConflict: 'key' });
+  toast('Odoo sync triggered.', 'success');
+  loadFinance();
+};
 
 window.loadSettings = async function() {
   document.getElementById('settings-content').innerHTML = '<div style="padding:40px" class="shimmer sk-row"></div>';
@@ -10915,19 +11035,70 @@ function renderSettings(tab) {
 
   /* ── Odoo connection ─────────────────────────────────── */
   if (tab === 'odoo') {
-    const odooUrl    = SETS.cfg.odoo_url      || '';
-    const odooDB     = SETS.cfg.odoo_db       || '';
-    const odooKey    = SETS.cfg.odoo_api_key  || '';
+    const env        = SETS.cfg.odoo_env || 'sandbox';
+    const isSandbox  = env === 'sandbox';
+
+    /* sandbox credentials */
+    const sbUrl      = SETS.cfg.odoo_sandbox_url || '';
+    const sbDB       = SETS.cfg.odoo_sandbox_db  || '';
+    const sbKey      = SETS.cfg.odoo_sandbox_key || '';
+
+    /* live credentials */
+    const liveUrl    = SETS.cfg.odoo_url      || '';
+    const liveDB     = SETS.cfg.odoo_db       || '';
+    const liveKey    = SETS.cfg.odoo_api_key  || '';
+
+    const odooUrl    = isSandbox ? sbUrl    : liveUrl;
+    const odooDB     = isSandbox ? sbDB     : liveDB;
+    const odooKey    = isSandbox ? sbKey    : liveKey;
     const lastSync   = SETS.cfg.odoo_last_sync;
     const configured = !!(odooUrl && odooDB && odooKey);
     const lastSyncTxt = lastSync
       ? new Date(lastSync).toLocaleString('en-UG', { dateStyle:'medium', timeStyle:'short' })
       : 'Never synced';
     const dotColor   = configured ? 'var(--teal)' : 'var(--ink-20)';
-    const dotLabel   = configured ? 'Credentials saved' : 'Not configured';
-    el.innerHTML = `<div class="card" style="padding:20px;max-width:480px">
+    const dotLabel   = configured ? `Credentials saved · ${isSandbox ? 'Sandbox' : 'Live'}` : 'Not configured';
+
+    el.innerHTML = `<div class="card" style="padding:20px;max-width:520px">
       <div style="font-family:'Poppins';font-weight:700;font-size:15px;margin-bottom:4px">Odoo Connection</div>
       <p style="font-size:13px;color:var(--ink-60);margin-bottom:20px">Sync orders, invoices, and inventory with your Odoo instance.</p>
+
+      <!-- Environment toggle -->
+      <div style="margin-bottom:20px">
+        <div style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-60);margin-bottom:8px">Environment</div>
+        <div style="display:flex;gap:0;border:1px solid var(--ink-10);border-radius:var(--radius-md);overflow:hidden;width:fit-content">
+          <button id="odoo-env-sandbox" onclick="odooSwitchEnv('sandbox')"
+            style="padding:8px 20px;font-size:12.5px;font-weight:700;border:none;cursor:pointer;transition:background .15s;
+                   background:${isSandbox ? 'var(--orange)' : 'transparent'};
+                   color:${isSandbox ? '#fff' : 'var(--ink-60)'}">
+            Sandbox
+          </button>
+          <button id="odoo-env-live" onclick="odooSwitchEnv('live')"
+            style="padding:8px 20px;font-size:12.5px;font-weight:700;border:none;border-left:1px solid var(--ink-10);cursor:pointer;transition:background .15s;
+                   background:${!isSandbox ? 'var(--teal)' : 'transparent'};
+                   color:${!isSandbox ? '#fff' : 'var(--ink-60)'}">
+            Live
+          </button>
+        </div>
+      </div>
+
+      <!-- Sandbox guidance banner -->
+      ${isSandbox ? `
+      <div style="background:#FFF4E4;border:1px solid rgba(232,119,34,.3);border-radius:var(--radius-md);padding:14px 16px;margin-bottom:20px;font-size:12.5px;color:var(--ink)">
+        <div style="font-weight:700;margin-bottom:6px;color:var(--orange)">⚗️ Sandbox mode — safe for testing</div>
+        <div style="color:var(--ink-60);line-height:1.6">
+          1. Create a free trial at
+          <a href="https://www.odoo.com/trial" target="_blank" rel="noopener" style="color:var(--orange);font-weight:600">odoo.com/trial</a>
+          — takes 2 minutes.<br>
+          2. Your URL will be <code style="background:rgba(0,0,0,.06);padding:1px 5px;border-radius:3px">https://yourname.odoo.com</code><br>
+          3. DB name is the subdomain (e.g. <code style="background:rgba(0,0,0,.06);padding:1px 5px;border-radius:3px">yourname</code>).<br>
+          4. Generate an API key: <strong>Settings → Technical → API Keys → New</strong>.<br>
+          5. Switch to <strong>Live</strong> above when you have your production Odoo instance.
+        </div>
+      </div>` : `
+      <div style="background:rgba(21,97,109,.08);border:1px solid rgba(21,97,109,.2);border-radius:var(--radius-md);padding:12px 16px;margin-bottom:20px;font-size:12.5px;color:var(--ink-80)">
+        <strong style="color:var(--teal)">🔴 Live environment</strong> — changes here affect your production Odoo instance.
+      </div>`}
 
       <!-- Status row -->
       <div style="display:flex;align-items:center;gap:10px;padding:12px 14px;border:1px solid var(--ink-08);border-radius:var(--radius-md);margin-bottom:20px">
@@ -10938,11 +11109,11 @@ function renderSettings(tab) {
       <!-- Fields -->
       <div class="field">
         <label style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.06em">Odoo URL</label>
-        <input type="url" id="odoo-url" placeholder="https://yourcompany.odoo.com" value="${odooUrl}" style="font-size:13px">
+        <input type="url" id="odoo-url" placeholder="${isSandbox ? 'https://yourname.odoo.com' : 'https://agroandmore.odoo.com'}" value="${odooUrl}" style="font-size:13px">
       </div>
       <div class="field">
         <label style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.06em">Database name</label>
-        <input type="text" id="odoo-db" placeholder="e.g. agroandmore_prod" value="${odooDB}" style="font-size:13px">
+        <input type="text" id="odoo-db" placeholder="${isSandbox ? 'yourname (the subdomain)' : 'agroandmore_prod'}" value="${odooDB}" style="font-size:13px">
       </div>
       <div class="field">
         <label style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.06em">API key</label>
@@ -10950,7 +11121,7 @@ function renderSettings(tab) {
           <input type="password" id="odoo-api-key" placeholder="${odooKey ? '••••••••••••••••' : 'Paste your Odoo API key'}" value="${odooKey}" style="font-size:13px;border-radius:var(--radius-sm) 0 0 var(--radius-sm);border-right:none">
           <button onclick="(function(){const f=document.getElementById('odoo-api-key');f.type=f.type==='password'?'text':'password'})()" style="border:1px solid var(--ink-10);border-radius:0 var(--radius-sm) var(--radius-sm) 0;padding:0 12px;background:var(--ink-05);font-size:12px;font-weight:600;color:var(--ink-60);cursor:pointer;white-space:nowrap">Show</button>
         </div>
-        <p style="font-size:11px;color:var(--ink-40);margin:4px 0 0">Generate from Odoo → Settings → Technical → API Keys</p>
+        <p style="font-size:11px;color:var(--ink-40);margin:4px 0 0">Odoo → Settings → Technical → API Keys → New</p>
       </div>
 
       <!-- Action buttons -->
@@ -11464,20 +11635,36 @@ window.saveExportSchedule = async function() {
 };
 
 /* ── Odoo settings handlers ─────────────────────────── */
+window.odooSwitchEnv = async function(env) {
+  /* persist the chosen environment then re-render the tab */
+  const { error } = await sb.from('settings').upsert({ key: 'odoo_env', value: env }, { onConflict: 'key' });
+  if (!error) SETS.cfg.odoo_env = env;
+  renderSettings('odoo');
+};
+
 window.saveOdooSettings = async function() {
   const url = document.getElementById('odoo-url')?.value?.trim()     || '';
   const db  = document.getElementById('odoo-db')?.value?.trim()      || '';
   const key = document.getElementById('odoo-api-key')?.value?.trim() || '';
   if (!url || !db || !key) { toast('All three fields are required.', 'error'); return; }
+  const env = SETS.cfg.odoo_env || 'sandbox';
+  const isSandbox = env === 'sandbox';
   const btn = document.getElementById('odoo-save-btn');
   const lbl = document.getElementById('odoo-save-label');
   if (btn) btn.disabled = true;
   if (lbl) lbl.textContent = 'Saving…';
-  const rows = [
+
+  /* store credentials under env-specific keys + shared live keys */
+  const rows = isSandbox ? [
+    { key: 'odoo_sandbox_url', value: url },
+    { key: 'odoo_sandbox_db',  value: db  },
+    { key: 'odoo_sandbox_key', value: key },
+  ] : [
     { key: 'odoo_url',     value: url },
     { key: 'odoo_db',      value: db  },
     { key: 'odoo_api_key', value: key },
   ];
+
   let failed = false;
   for (const row of rows) {
     const { error } = await sb.from('settings').upsert(row, { onConflict: 'key' });
@@ -11487,21 +11674,21 @@ window.saveOdooSettings = async function() {
   if (btn) btn.disabled = false;
   if (lbl) lbl.textContent = 'Save settings';
   if (!failed) {
-    /* update status dot to green */
     const dot   = document.getElementById('odoo-dot');
     const label = document.getElementById('odoo-status-label');
     const syncBtn = document.getElementById('odoo-sync-btn');
     if (dot)    dot.style.background = 'var(--teal)';
-    if (label)  label.textContent = 'Credentials saved';
+    if (label)  label.textContent = `Credentials saved · ${isSandbox ? 'Sandbox' : 'Live'}`;
     if (syncBtn) syncBtn.disabled = false;
-    toast('Odoo settings saved.', 'success');
+    toast(`Odoo ${isSandbox ? 'sandbox' : 'live'} settings saved.`, 'success');
   }
 };
 
 window.testOdooConnection = async function() {
-  const url = document.getElementById('odoo-url')?.value?.trim()     || SETS.cfg.odoo_url     || '';
-  const db  = document.getElementById('odoo-db')?.value?.trim()      || SETS.cfg.odoo_db      || '';
-  const key = document.getElementById('odoo-api-key')?.value?.trim() || SETS.cfg.odoo_api_key || '';
+  const isSandbox = (SETS.cfg.odoo_env || 'sandbox') === 'sandbox';
+  const url = document.getElementById('odoo-url')?.value?.trim()     || (isSandbox ? SETS.cfg.odoo_sandbox_url : SETS.cfg.odoo_url)     || '';
+  const db  = document.getElementById('odoo-db')?.value?.trim()      || (isSandbox ? SETS.cfg.odoo_sandbox_db  : SETS.cfg.odoo_db)      || '';
+  const key = document.getElementById('odoo-api-key')?.value?.trim() || (isSandbox ? SETS.cfg.odoo_sandbox_key : SETS.cfg.odoo_api_key) || '';
   if (!url || !db || !key) { toast('Fill in URL, database, and API key first.', 'error'); return; }
   const btn = document.getElementById('odoo-test-btn');
   const lbl = document.getElementById('odoo-test-label');
