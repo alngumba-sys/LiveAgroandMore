@@ -137,9 +137,39 @@ body{font-family:'Inter',sans-serif;background:var(--cream);color:var(--ink);min
 .demo-acc .pass{opacity:.6}
 .demo-fill{cursor:pointer;color:var(--orange);font-size:10.5px;font-weight:700;padding:2px 6px;background:rgba(255,125,0,.1);border-radius:4px}
 
-@media(max-width:768px){
+/* ── Responsive ────────────────────────────────────────── */
+
+/* Tablet portrait and below: hide hero panel, full-width form */
+@media(max-width:900px){
   .left{display:none}
-  .right{min-height:100vh}
+  .right{min-height:100vh;align-items:flex-start;padding-top:48px}
+}
+
+/* Tablet landscape (901–1100px): OTP boxes tighten slightly */
+@media(max-width:1100px){
+  .otp-boxes{gap:6px}
+  .otp-boxes input{width:46px;height:54px;font-size:22px}
+}
+
+/* Mobile (≤480px) */
+@media(max-width:480px){
+  .right{padding:32px 20px;align-items:flex-start;padding-top:40px}
+  .otp-boxes{gap:5px}
+  .otp-boxes input{width:40px;height:50px;font-size:18px}
+  .card-header h1{font-size:24px}
+}
+
+/* Very small (≤360px) */
+@media(max-width:360px){
+  .right{padding:24px 16px}
+  .otp-boxes input{width:36px;height:46px;font-size:16px}
+  .otp-boxes{gap:4px}
+}
+
+/* Demo account rows — prevent email overflow */
+.demo-acc .email{
+  min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+  flex:1;margin-right:8px;
 }
 </style>
 </head>

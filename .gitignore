@@ -1,0 +1,14 @@
+# Netlify local state
+.netlify
+
+# Mac OS
+.DS_Store
+**/.DS_Store
+
+# Large non-deployable assets
+*.docx
+*.pdf
+Agro_and_More_Farmer_Home_Screens.html
+Agro_and_More_Onboarding_Mockups.html
+Stitch_Instructions_*.md
+DEPLOY.md

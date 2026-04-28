@@ -1,0 +1,39 @@
+{
+  "name": "Agro and More · kisoboka",
+  "short_name": "Agro & More",
+  "description": "Agro and More — agri-business platform for smallholder farmers, agro-dealers, field officers and diaspora clients in Uganda.",
+  "start_url": "./app.html?mode=app",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#FFECD1",
+  "theme_color": "#001524",
+  "lang": "en-UG",
+  "categories": ["business", "productivity", "education"],
+  "icons": [
+    {
+      "src": "icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-maskable-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "icons/icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}

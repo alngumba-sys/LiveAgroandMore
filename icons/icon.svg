@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <!-- Rounded square ink background -->
+  <rect width="512" height="512" rx="96" ry="96" fill="#001524"/>
+
+  <!-- Cream inner panel for warmth -->
+  <rect x="56" y="56" width="400" height="400" rx="64" ry="64" fill="#FFECD1"/>
+
+  <!-- Stylised twin-leaf mark, centered upper-half -->
+  <g transform="translate(256 200)">
+    <!-- Outer (lighter green) leaf -->
+    <path d="M -90 24 Q -150 -22, -120 -78 Q -56 -120, -8 -78 Q 14 -32, -8 8 Q -42 38, -90 24 Z" fill="#7CC04A"/>
+    <!-- Inner (deeper green) leaf -->
+    <path d="M -36 -30 Q -64 -88, -16 -120 Q 38 -130, 60 -86 Q 64 -38, 36 -10 Q 0 -2, -36 -30 Z" fill="#1F8A3A"/>
+    <!-- Stem -->
+    <path d="M -50 28 Q -68 -8, -32 -56" stroke="#1F8A3A" stroke-width="8" fill="none" stroke-linecap="round"/>
+    <!-- Orange "fruit" dot -->
+    <circle cx="92" cy="-12" r="32" fill="#FF7D00"/>
+    <path d="M82 -22 Q 78 -12, 84 -2 Q 96 -4, 100 -14 Q 98 -22, 84 -22 Z" fill="#1F8A3A"/>
+  </g>
+
+  <!-- Wordmark -->
+  <text x="256" y="370" text-anchor="middle"
+        font-family="Fredoka, Poppins, Inter, sans-serif"
+        font-weight="700" font-size="80" font-style="italic"
+        fill="#001524" letter-spacing="-3">agmore</text>
+
+  <!-- Tagline -->
+  <text x="256" y="416" text-anchor="middle"
+        font-family="Inter, sans-serif"
+        font-weight="600" font-size="22" font-style="italic"
+        fill="#FF7D00" letter-spacing="1">kisoboka...</text>
+</svg>
