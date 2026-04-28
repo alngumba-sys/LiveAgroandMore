@@ -11003,6 +11003,104 @@ function renderSettings(tab) {
     return;
   }
 
+  /* ── My Account — password & security ───────────────── */
+  if (tab === 'account') {
+    const u = APP.profile || {};
+    const initials = (u.full_name || 'U').split(' ').slice(0,2).map(w=>w[0]).join('').toUpperCase();
+    const ROLE_LABELS = { md:'Managing Director', sales_manager:'Sales Manager', it_admin:'IT Admin',
+      agronomist:'Agronomist', finance:'Finance Officer', support:'Support Agent' };
+    el.innerHTML = `
+      <div class="card" style="margin-bottom:16px">
+        <div class="card-header"><h3>Your Profile</h3></div>
+        <div class="card-body" style="display:flex;align-items:center;gap:16px">
+          <div style="width:52px;height:52px;border-radius:50%;background:var(--teal);color:#fff;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:800;flex-shrink:0">${initials}</div>
+          <div style="flex:1">
+            <div style="font-weight:800;font-size:16px;margin-bottom:2px">${u.full_name || '—'}</div>
+            <div style="font-size:12.5px;color:var(--ink-60);margin-bottom:4px">${u.email || '—'}</div>
+            <span style="background:rgba(21,97,109,.1);color:var(--teal);padding:2px 8px;border-radius:4px;font-size:11px;font-weight:700">${ROLE_LABELS[u.role] || u.role || 'Admin'}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header" style="display:flex;align-items:center;gap:8px">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px;color:var(--teal)"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+          <h3>Change Password</h3>
+        </div>
+        <div class="card-body">
+          <div class="callout callout-teal" style="margin-bottom:20px">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            <span>Enter your current password to verify your identity, then set a new one. Use at least 8 characters with a mix of letters and numbers.</span>
+          </div>
+
+          <div class="form-row" style="margin-bottom:16px">
+            <label class="form-label">Current password</label>
+            <div style="position:relative">
+              <input type="password" class="form-input" id="pw-current" placeholder="Enter your current password" autocomplete="current-password">
+              <button type="button" onclick="togglePwVis('pw-current',this)" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--ink-40);padding:4px">
+                <svg id="pw-current-eye" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:15px;height:15px"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+              </button>
+            </div>
+          </div>
+
+          <div class="form-row" style="margin-bottom:8px">
+            <label class="form-label">New password</label>
+            <div style="position:relative">
+              <input type="password" class="form-input" id="pw-new" placeholder="At least 8 characters" autocomplete="new-password" oninput="updatePwStrength(this.value)">
+              <button type="button" onclick="togglePwVis('pw-new',this)" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--ink-40);padding:4px">
+                <svg id="pw-new-eye" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:15px;height:15px"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+              </button>
+            </div>
+          </div>
+
+          <div style="margin-bottom:16px">
+            <div style="display:flex;gap:4px;margin-bottom:4px">
+              <div id="pws-bar-1" style="flex:1;height:4px;border-radius:2px;background:var(--ink-08);transition:background .2s"></div>
+              <div id="pws-bar-2" style="flex:1;height:4px;border-radius:2px;background:var(--ink-08);transition:background .2s"></div>
+              <div id="pws-bar-3" style="flex:1;height:4px;border-radius:2px;background:var(--ink-08);transition:background .2s"></div>
+              <div id="pws-bar-4" style="flex:1;height:4px;border-radius:2px;background:var(--ink-08);transition:background .2s"></div>
+            </div>
+            <div id="pws-label" style="font-size:11px;color:var(--ink-40)">Enter a new password</div>
+          </div>
+
+          <div class="form-row" style="margin-bottom:20px">
+            <label class="form-label">Confirm new password</label>
+            <input type="password" class="form-input" id="pw-confirm" placeholder="Repeat your new password" autocomplete="new-password">
+          </div>
+
+          <div style="display:flex;justify-content:flex-end">
+            <button class="btn btn-primary" id="pw-save-btn" onclick="changePassword()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+              <span id="pw-save-label">Update Password</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top:16px">
+        <div class="card-header"><h3>Active Sessions</h3></div>
+        <div class="card-body">
+          <div style="display:flex;align-items:center;gap:12px;padding:12px 0">
+            <div style="width:36px;height:36px;border-radius:8px;background:var(--ink-05);display:flex;align-items:center;justify-content:center">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:18px;height:18px;color:var(--ink-60)"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+            </div>
+            <div style="flex:1">
+              <div style="font-weight:700;font-size:13px">Current session</div>
+              <div style="font-size:11.5px;color:var(--ink-60)">Web browser · Signed in now</div>
+            </div>
+            <span style="background:#dcfce7;color:#15803d;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:700">Active</span>
+          </div>
+          <div style="margin-top:8px;padding-top:12px;border-top:1px solid var(--ink-05)">
+            <button class="btn btn-danger btn-sm" onclick="confirmSignOut()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:13px;height:13px"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+              Sign out of this session
+            </button>
+          </div>
+        </div>
+      </div>`;
+    return;
+  }
+
   /* ── Organisation Profile (default) ─────────────────── */
   const s = SETS.cfg;
   el.innerHTML = `
@@ -11108,105 +11206,6 @@ async function loadStaffTab(el) {
         <a href="https://supabase.com/dashboard/project/nqyutflqzjjueemirgzr/auth/users" target="_blank" rel="noopener">Supabase Auth dashboard</a>.
       </span>
     </div>`;
-
-  // ── MY ACCOUNT — password & security ─────────────────
-  } else if (tab === 'account') {
-    const u = APP.profile || {};
-    const initials = (u.full_name || 'U').split(' ').slice(0,2).map(w=>w[0]).join('').toUpperCase();
-    const ROLE_LABELS = { md:'Managing Director', sales_manager:'Sales Manager', it_admin:'IT Admin',
-      agronomist:'Agronomist', finance:'Finance Officer', support:'Support Agent' };
-    el.innerHTML = `
-      <div class="card" style="margin-bottom:16px">
-        <div class="card-header"><h3>Your Profile</h3></div>
-        <div class="card-body" style="display:flex;align-items:center;gap:16px">
-          <div style="width:52px;height:52px;border-radius:50%;background:var(--teal);color:#fff;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:800;flex-shrink:0">${initials}</div>
-          <div style="flex:1">
-            <div style="font-weight:800;font-size:16px;margin-bottom:2px">${u.full_name || '—'}</div>
-            <div style="font-size:12.5px;color:var(--ink-60);margin-bottom:4px">${u.email || '—'}</div>
-            <span style="background:rgba(21,97,109,.1);color:var(--teal);padding:2px 8px;border-radius:4px;font-size:11px;font-weight:700">${ROLE_LABELS[u.role] || u.role || 'Admin'}</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="card-header" style="display:flex;align-items:center;gap:8px">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px;color:var(--teal)"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
-          <h3>Change Password</h3>
-        </div>
-        <div class="card-body">
-          <div class="callout callout-teal" style="margin-bottom:20px">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-            <span>Enter your current password to verify your identity, then set a new one. Use at least 8 characters with a mix of letters and numbers.</span>
-          </div>
-
-          <div class="form-row" style="margin-bottom:16px">
-            <label class="form-label">Current password</label>
-            <div style="position:relative">
-              <input type="password" class="form-input" id="pw-current" placeholder="Enter your current password" autocomplete="current-password">
-              <button type="button" onclick="togglePwVis('pw-current',this)" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--ink-40);padding:4px">
-                <svg id="pw-current-eye" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:15px;height:15px"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-              </button>
-            </div>
-          </div>
-
-          <div class="form-row" style="margin-bottom:8px">
-            <label class="form-label">New password</label>
-            <div style="position:relative">
-              <input type="password" class="form-input" id="pw-new" placeholder="At least 8 characters" autocomplete="new-password" oninput="updatePwStrength(this.value)">
-              <button type="button" onclick="togglePwVis('pw-new',this)" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--ink-40);padding:4px">
-                <svg id="pw-new-eye" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:15px;height:15px"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-              </button>
-            </div>
-          </div>
-
-          <!-- Password strength meter -->
-          <div style="margin-bottom:16px">
-            <div style="display:flex;gap:4px;margin-bottom:4px">
-              <div id="pws-bar-1" style="flex:1;height:4px;border-radius:2px;background:var(--ink-08);transition:background .2s"></div>
-              <div id="pws-bar-2" style="flex:1;height:4px;border-radius:2px;background:var(--ink-08);transition:background .2s"></div>
-              <div id="pws-bar-3" style="flex:1;height:4px;border-radius:2px;background:var(--ink-08);transition:background .2s"></div>
-              <div id="pws-bar-4" style="flex:1;height:4px;border-radius:2px;background:var(--ink-08);transition:background .2s"></div>
-            </div>
-            <div id="pws-label" style="font-size:11px;color:var(--ink-40)">Enter a new password</div>
-          </div>
-
-          <div class="form-row" style="margin-bottom:20px">
-            <label class="form-label">Confirm new password</label>
-            <input type="password" class="form-input" id="pw-confirm" placeholder="Repeat your new password" autocomplete="new-password">
-          </div>
-
-          <div style="display:flex;justify-content:flex-end">
-            <button class="btn btn-primary" id="pw-save-btn" onclick="changePassword()">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
-              <span id="pw-save-label">Update Password</span>
-            </button>
-          </div>
-        </div>
-      </div>
-
-      <div class="card" style="margin-top:16px">
-        <div class="card-header"><h3>Active Sessions</h3></div>
-        <div class="card-body">
-          <div style="display:flex;align-items:center;gap:12px;padding:12px 0">
-            <div style="width:36px;height:36px;border-radius:8px;background:var(--ink-05);display:flex;align-items:center;justify-content:center">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:18px;height:18px;color:var(--ink-60)"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
-            </div>
-            <div style="flex:1">
-              <div style="font-weight:700;font-size:13px">Current session</div>
-              <div style="font-size:11.5px;color:var(--ink-60)">Web browser · Signed in now</div>
-            </div>
-            <span style="background:#dcfce7;color:#15803d;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:700">Active</span>
-          </div>
-          <div style="margin-top:8px;padding-top:12px;border-top:1px solid var(--ink-05)">
-            <button class="btn btn-danger btn-sm" onclick="confirmSignOut()">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:13px;height:13px"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
-              Sign out of this session
-            </button>
-          </div>
-        </div>
-      </div>`;
-    return;
-  }
 }
 
 window.switchSettingsTab = function(tab, el) {
