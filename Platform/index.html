@@ -18,31 +18,34 @@ body{font-family:'Inter',sans-serif;background:var(--cream);color:var(--ink);min
   display:flex;flex-direction:column;justify-content:space-between;padding:32px;
   overflow:hidden;
 }
-.left-bg{
-  position:absolute;inset:0;
-  background:linear-gradient(160deg,rgba(0,21,36,0.82) 0%,rgba(0,21,36,0.55) 60%,rgba(21,97,109,0.45) 100%);
-  z-index:0;
-}
 .left-farm{
-  position:absolute;inset:0;z-index:-1;
-  background:url('https://images.unsplash.com/photo-1500382017468-9049fed747ef?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80') center center / cover no-repeat;
+  position:absolute;inset:0;z-index:0;
+  background:#001524 center center / cover no-repeat;
 }
-.left-farm::after{ content:none; }
-.left-top{position:relative;z-index:1;display:flex;align-items:center;gap:12px}
+/* Semi-transparent overlay — keeps text readable over any photo */
+.left-bg{
+  position:absolute;inset:0;z-index:1;
+  background:linear-gradient(160deg,rgba(0,21,36,0.62) 0%,rgba(0,21,36,0.38) 60%,rgba(21,97,109,0.30) 100%);
+}
+.left-top{position:relative;z-index:2;display:flex;align-items:center;gap:12px}
 .left-logo{height:40px;filter:brightness(0) invert(1)}
-.left-bottom{position:relative;z-index:1}
-.left-tagline{font-family:'Poppins';font-size:32px;font-weight:800;color:#fff;line-height:1.2;margin-bottom:12px}
+.left-bottom{
+  position:relative;z-index:2;
+  background:rgba(0,21,36,0.50);
+  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  border:1px solid rgba(255,255,255,0.10);
+  border-radius:16px;
+  padding:24px 26px;
+}
+.left-tagline{font-family:'Poppins';font-size:30px;font-weight:800;color:#fff;line-height:1.2;margin-bottom:10px}
 .left-tagline span{color:var(--orange)}
-.left-sub{font-size:13px;color:rgba(255,236,209,0.75);line-height:1.6;max-width:380px}
-.left-stats{display:flex;gap:24px;margin-top:24px}
-.left-stat .num{font-family:'Poppins';font-size:22px;font-weight:800;color:var(--orange)}
-.left-stat .lbl{font-size:11px;color:rgba(255,236,209,0.6);margin-top:2px}
+.left-sub{font-size:13px;color:rgba(255,236,209,0.80);line-height:1.6;max-width:380px}
+.left-stats{display:flex;gap:28px;margin-top:18px;padding-top:16px;border-top:1px solid rgba(255,255,255,0.12)}
+.left-stat .num{font-family:'Poppins';font-size:20px;font-weight:800;color:var(--orange)}
+.left-stat .lbl{font-size:11px;color:rgba(255,236,209,0.65);margin-top:2px}
 .left-caption{
-  position:absolute;bottom:32px;left:32px;right:32px;z-index:1;
-  background:rgba(0,21,36,0.5);border:1px solid rgba(255,236,209,0.1);
-  border-radius:10px;padding:12px 16px;
-  font-size:11.5px;color:rgba(255,236,209,0.7);font-style:italic;
-  backdrop-filter:blur(4px);
+  position:absolute;bottom:16px;left:32px;right:32px;z-index:2;
+  font-size:10.5px;color:rgba(255,236,209,0.45);font-style:italic;text-align:center;
 }
 
 /* Right / form */
@@ -116,21 +119,6 @@ body{font-family:'Inter',sans-serif;background:var(--cream);color:var(--ink);min
 .back-link{text-align:center;margin-top:16px;font-size:12px}
 .back-link a{color:var(--teal);font-weight:600;cursor:pointer;text-decoration:none}
 
-/* Demo accounts hint */
-.demo-hint{
-  margin-top:20px;padding:12px 14px;background:rgba(21,97,109,.08);
-  border:1px solid rgba(21,97,109,.15);border-radius:8px;
-}
-.demo-hint p{font-size:11px;color:var(--teal);font-weight:700;text-transform:uppercase;letter-spacing:.04em;margin-bottom:8px}
-.demo-accounts{display:flex;flex-direction:column;gap:4px}
-.demo-acc{
-  display:flex;justify-content:space-between;font-size:11.5px;
-  padding:4px 0;border-bottom:1px dashed rgba(21,97,109,.1);color:var(--ink);
-}
-.demo-acc:last-child{border-bottom:none}
-.demo-acc .email{color:var(--teal);font-weight:600}
-.demo-acc .pass{opacity:.6}
-.demo-fill{cursor:pointer;color:var(--orange);font-size:10.5px;font-weight:700;padding:2px 6px;background:rgba(255,125,0,.1);border-radius:4px}
 
 /* ── Responsive ────────────────────────────────────────── */
 
@@ -161,11 +149,6 @@ body{font-family:'Inter',sans-serif;background:var(--cream);color:var(--ink);min
   .otp-boxes{gap:4px}
 }
 
-/* Demo account rows — prevent email overflow */
-.demo-acc .email{
-  min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
-  flex:1;margin-right:8px;
-}
 </style>
 </head>
 <body>
@@ -185,7 +168,7 @@ body{font-family:'Inter',sans-serif;background:var(--cream);color:var(--ink);min
     <div class="left-sub">
       The Agro and More admin platform — manage products, orders, field officers, and advisory content across all eight outlets.
     </div>
-    <div class="left-sub" style="margin-top:10px;font-style:italic;opacity:0.7;font-size:12px">
+    <div class="left-sub" style="margin-top:8px;font-style:italic;font-size:11.5px;color:rgba(255,236,209,0.55)">
       "Okulima n'okuwuluka"
     </div>
     <div class="left-stats">
@@ -228,36 +211,6 @@ body{font-family:'Inter',sans-serif;background:var(--cream);color:var(--ink);min
       </button>
       <p class="helper">Two-factor verification will be sent to your registered phone after the first step.</p>
 
-      <div class="demo-hint" id="demoHint">
-        <p>Demo accounts</p>
-        <div class="demo-accounts">
-          <div class="demo-acc">
-            <span class="email">md@agroandmore.co.ug</span>
-            <span class="pass">Demo1234!</span>
-            <span class="demo-fill" onclick="fillDemo('md@agroandmore.co.ug','Demo1234!')">Fill</span>
-          </div>
-          <div class="demo-acc">
-            <span class="email">sales@agroandmore.co.ug</span>
-            <span class="pass">Demo1234!</span>
-            <span class="demo-fill" onclick="fillDemo('sales@agroandmore.co.ug','Demo1234!')">Fill</span>
-          </div>
-          <div class="demo-acc">
-            <span class="email">it@agroandmore.co.ug</span>
-            <span class="pass">Demo1234!</span>
-            <span class="demo-fill" onclick="fillDemo('it@agroandmore.co.ug','Demo1234!')">Fill</span>
-          </div>
-          <div class="demo-acc">
-            <span class="email">agronomist@agroandmore.co.ug</span>
-            <span class="pass">Demo1234!</span>
-            <span class="demo-fill" onclick="fillDemo('agronomist@agroandmore.co.ug','Demo1234!')">Fill</span>
-          </div>
-          <div class="demo-acc">
-            <span class="email">finance@agroandmore.co.ug</span>
-            <span class="pass">Demo1234!</span>
-            <span class="demo-fill" onclick="fillDemo('finance@agroandmore.co.ug','Demo1234!')">Fill</span>
-          </div>
-        </div>
-      </div>
     </div>
 
     <!-- OTP / 2FA screen -->
@@ -299,6 +252,23 @@ sb.auth.getSession().then(({ data }) => {
   if (data.session) window.location.href = 'admin.html';
 });
 
+// Apply custom login background image from public config.json in Storage
+// (No auth or RLS needed — the file is in a public bucket)
+(async () => {
+  try {
+    const STORAGE = 'https://nqyutflqzjjueemirgzr.supabase.co/storage/v1/object/public/platform-assets/config.json';
+    const res = await fetch(STORAGE + '?t=' + Date.now()); // cache-bust
+    if (!res.ok) return;
+    const cfg = await res.json();
+    const url = cfg?.login_bg_url?.trim();
+    // Only allow https:// — blocks javascript: URIs and CSS injection
+    if (url && /^https?:\/\//i.test(url)) {
+      const panel = document.querySelector('.left-farm');
+      if (panel) panel.style.backgroundImage = `url(${JSON.stringify(url)})`;
+    }
+  } catch(_) { /* silently fallback to default dark background */ }
+})();
+
 window.doLogin = async function() {
   const email = document.getElementById('emailInput').value.trim();
   const password = document.getElementById('passwordInput').value;
@@ -323,8 +293,42 @@ window.doLogin = async function() {
     errEl.classList.add('show'); return;
   }
 
-  // Successful login — go to admin
-  window.location.href = 'admin.html';
+  /* Password OK. Check if this user has MFA enrolled — if so, we must
+     elevate the session to AAL2 by verifying a TOTP code before we
+     can grant access to admin.html. */
+  let aal = null, factors = null;
+  try {
+    aal     = await sb.auth.mfa.getAuthenticatorAssuranceLevel();
+    factors = await sb.auth.mfa.listFactors();
+  } catch(e) { /* non-MFA-aware project — fall through */ }
+
+  const verifiedFactor = factors?.data?.totp?.find(f => f.status === 'verified');
+  const needsMfa = verifiedFactor &&
+                   aal?.data?.currentLevel === 'aal1' &&
+                   aal?.data?.nextLevel    === 'aal2';
+
+  if (!needsMfa) {
+    window.location.href = 'admin.html';
+    return;
+  }
+
+  /* Stash the factor id for verifyOtp() and reveal the OTP screen. */
+  window.__pendingMfaFactor = verifiedFactor;
+  document.getElementById('loginScreen').classList.add('hide');
+  document.getElementById('otpScreen').classList.add('show');
+  /* Adjust copy on the OTP screen — the existing template assumes SMS;
+     for TOTP we point users at their authenticator app. */
+  const otpHdr = document.querySelector('#otpScreen p');
+  if (otpHdr) otpHdr.textContent = 'Open your authenticator app and enter the 6-digit code.';
+  const helper = document.querySelector('#otpScreen .helper');
+  if (helper) helper.textContent = 'Codes refresh every 30 seconds — make sure you type the current one.';
+  const cd = document.getElementById('countdown');
+  if (cd) cd.style.display = 'none';
+  document.getElementById('otpError').classList.remove('show');
+  document.getElementById('otpError').textContent = '';
+  /* Clear any leftover digits, focus the first box. */
+  document.querySelectorAll('#otpBoxes input').forEach(i => i.value = '');
+  setTimeout(() => document.querySelectorAll('#otpBoxes input')[0]?.focus(), 60);
 };
 
 window.togglePw = function() {
@@ -347,10 +351,6 @@ window.showForgot = async function() {
   errEl.classList.add('show');
 };
 
-window.fillDemo = function(email, pass) {
-  document.getElementById('emailInput').value = email;
-  document.getElementById('passwordInput').value = pass;
-};
 
 window.showLogin = function() {
   document.getElementById('loginScreen').classList.remove('hide');
@@ -369,8 +369,51 @@ window.otpBack = function(e, idx) {
     document.querySelectorAll('#otpBoxes input')[idx-1].focus();
   }
 };
-window.verifyOtp = function() {
-  window.location.href = 'admin.html';
+window.verifyOtp = async function() {
+  const btn  = document.getElementById('otpBtn');
+  const errEl = document.getElementById('otpError');
+  errEl.classList.remove('show');
+  errEl.textContent = '';
+
+  const code = Array.from(document.querySelectorAll('#otpBoxes input'))
+    .map(i => i.value.replace(/\D/g, ''))
+    .join('');
+  if (code.length !== 6) {
+    errEl.textContent = 'Enter all 6 digits.';
+    errEl.classList.add('show');
+    return;
+  }
+  if (!window.__pendingMfaFactor) {
+    /* Should never happen — we only show the OTP screen after a password
+       login. If a user navigates here directly without a session,
+       bounce them back to the login form. */
+    showLogin();
+    return;
+  }
+
+  btn.classList.add('loading'); btn.disabled = true;
+  try {
+    const ch = await sb.auth.mfa.challenge({ factorId: window.__pendingMfaFactor.id });
+    if (ch.error) throw ch.error;
+    const v = await sb.auth.mfa.verify({
+      factorId:    window.__pendingMfaFactor.id,
+      challengeId: ch.data.id,
+      code:        code,
+    });
+    if (v.error) throw v.error;
+    /* Session is now AAL2 — go to admin. */
+    window.__pendingMfaFactor = null;
+    window.location.href = 'admin.html';
+  } catch(e) {
+    btn.classList.remove('loading'); btn.disabled = false;
+    errEl.textContent = (e.message || '').toLowerCase().includes('invalid')
+      ? "That code didn't match. Check the current 6-digit code in your authenticator app."
+      : 'Verification failed: ' + (e.message || 'unknown');
+    errEl.classList.add('show');
+    /* Clear inputs and refocus the first box for retry. */
+    document.querySelectorAll('#otpBoxes input').forEach(i => i.value = '');
+    document.querySelectorAll('#otpBoxes input')[0]?.focus();
+  }
 };
 
 // Enter key on login

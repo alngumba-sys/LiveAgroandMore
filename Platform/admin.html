@@ -800,6 +800,10 @@ table.dt .cell-bold { color: var(--ink); font-weight: 700; }
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 16 12 12 8 16"/><line x1="12" y1="12" x2="12" y2="21"/><path d="M20.39 18.39A5 5 0 0018 9h-1.26A8 8 0 103 16.3"/></svg>
               Bulk Upload (Excel)
             </button>
+            <button class="btn btn-secondary" id="manage-categories-btn" onclick="openManageCategoriesModal()" style="display:none">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+              Manage Categories
+            </button>
             <button class="btn btn-primary" onclick="openProductModal()">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
               Add Product
@@ -1051,7 +1055,7 @@ table.dt .cell-bold { color: var(--ink); font-weight: 700; }
         <div class="pg-header">
           <div class="pg-header-left">
             <h1 style="color:var(--orange)">Users &amp; Roles</h1>
-            <p class="pg-sub">Invite your team, assign roles, and control exactly what each person can see and change. Only Managing Directors can edit the permission matrix.</p>
+            <p class="pg-sub">Invite your team, assign roles, and control exactly what each person can see and change.</p>
           </div>
           <div class="pg-actions">
             <button class="btn btn-ghost btn-sm" onclick="exportUsersCSV()">Export team CSV</button>
@@ -1108,14 +1112,18 @@ table.dt .cell-bold { color: var(--ink); font-weight: 700; }
         <div class="pg-header">
           <div class="pg-header-left">
             <h1 style="color:var(--orange)">Field Officers</h1>
-            <p class="pg-sub">12 qualified agronomists appearing in the "Talk to an Expert" directory. GPS-verified visits, farmer ratings, and district coverage.</p>
+            <p class="pg-sub"><span id="officers-count-sub">—</span> agronomists appearing in the "Talk to an Expert" directory. GPS-verified visits, farmer ratings, and district coverage.</p>
           </div>
           <div class="pg-actions">
             <button class="btn btn-ghost btn-sm" onclick="exportOfficersCSV()">Export CSV</button>
             <button class="btn btn-ghost btn-sm" onclick="switchOfficersTab('heatmap')">Heat-map view</button>
-            <button class="btn btn-primary btn-sm" onclick="switchOfficersTab('pending')">
+            <button class="btn btn-secondary btn-sm" onclick="switchOfficersTab('pending')">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px"><polyline points="20 6 9 17 4 12"/></svg>
               Approve officer
+            </button>
+            <button class="btn btn-primary btn-sm" onclick="openOnboardOfficer()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              Add officer
             </button>
           </div>
         </div>
@@ -1194,12 +1202,32 @@ table.dt .cell-bold { color: var(--ink); font-weight: 700; }
             <h1 style="color:var(--orange)">Analytics &amp; Reports</h1>
             <p class="pg-sub">Cross-cutting analytics built from the mobile-app backend. For financial reports, see the Finance tab which pulls from Odoo directly.</p>
           </div>
-          <div class="pg-actions">
-            <div style="display:flex;align-items:center;gap:0;border:1px solid var(--ink-16);border-radius:8px;overflow:hidden">
-              <button class="btn btn-ghost" style="padding:6px 10px;border-radius:0;border:none;font-size:16px;line-height:1" onclick="shiftAnalyticsMonth(-1)">‹</button>
-              <span id="analytics-month-btn" style="min-width:82px;text-align:center;font-size:13px;font-weight:600;color:var(--ink);padding:0 4px">Apr 2026</span>
-              <button class="btn btn-ghost" style="padding:6px 10px;border-radius:0;border:none;font-size:16px;line-height:1" onclick="shiftAnalyticsMonth(1)">›</button>
+          <div class="pg-actions" style="flex-wrap:wrap;gap:8px">
+            <!-- Period toggle: Month / Quarter / Year / Custom -->
+            <div id="analytics-period-toggle" style="display:flex;align-items:center;gap:0;border:1px solid var(--ink-16);border-radius:8px;overflow:hidden">
+              <button class="btn btn-ghost an-period" data-period="month"   style="padding:6px 12px;border-radius:0;border:none;font-size:12px;font-weight:700;background:var(--ink);color:var(--cream)" onclick="setAnalyticsPeriod('month')">Month</button>
+              <button class="btn btn-ghost an-period" data-period="quarter" style="padding:6px 12px;border-radius:0;border:none;font-size:12px;font-weight:700" onclick="setAnalyticsPeriod('quarter')">Quarter</button>
+              <button class="btn btn-ghost an-period" data-period="year"    style="padding:6px 12px;border-radius:0;border:none;font-size:12px;font-weight:700" onclick="setAnalyticsPeriod('year')">Year</button>
+              <button class="btn btn-ghost an-period" data-period="custom"  style="padding:6px 12px;border-radius:0;border:none;font-size:12px;font-weight:700" onclick="setAnalyticsPeriod('custom')">Custom</button>
             </div>
+            <!-- Period stepper: ‹  Apr 2026  › (hidden when Custom is active) -->
+            <div id="analytics-stepper" style="display:flex;align-items:center;gap:0;border:1px solid var(--ink-16);border-radius:8px;overflow:hidden">
+              <button class="btn btn-ghost" style="padding:6px 10px;border-radius:0;border:none;font-size:16px;line-height:1" onclick="shiftAnalyticsPeriod(-1)">‹</button>
+              <span id="analytics-period-label" style="min-width:92px;text-align:center;font-size:13px;font-weight:600;color:var(--ink);padding:0 4px">Apr 2026</span>
+              <button class="btn btn-ghost" style="padding:6px 10px;border-radius:0;border:none;font-size:16px;line-height:1" onclick="shiftAnalyticsPeriod(1)">›</button>
+            </div>
+            <!-- Custom date pickers (hidden unless Custom is selected) -->
+            <div id="analytics-custom" style="display:none;align-items:center;gap:6px;border:1px solid var(--ink-16);border-radius:8px;padding:4px 8px">
+              <input type="date" id="an-custom-from" style="font-size:12px;padding:4px 6px;border:1px solid var(--ink-12);border-radius:6px">
+              <span style="color:var(--ink-40);font-size:11px">to</span>
+              <input type="date" id="an-custom-to"   style="font-size:12px;padding:4px 6px;border:1px solid var(--ink-12);border-radius:6px">
+              <button class="btn btn-primary" style="padding:4px 10px;font-size:11.5px" onclick="applyCustomRange()">Apply</button>
+            </div>
+            <!-- Compare-to-previous toggle -->
+            <label id="analytics-compare-wrap" style="display:flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:var(--ink);background:var(--ink-05);border:1px solid var(--ink-16);border-radius:8px;padding:6px 10px;cursor:pointer;user-select:none">
+              <input type="checkbox" id="an-compare-toggle" onchange="toggleCompare(this.checked)" style="margin:0">
+              <span>Compare vs previous</span>
+            </label>
             <button class="btn btn-secondary" onclick="exportAnalyticsCSV()">Export CSV</button>
             <button class="btn btn-primary" onclick="openExportPDF()">Export PDF</button>
           </div>
@@ -1240,6 +1268,8 @@ table.dt .cell-bold { color: var(--ink); font-weight: 700; }
               <button class="sb-item" id="stab-odoo"            style="color:var(--ink);font-size:12.5px" onclick="switchSettingsTab('odoo',this)">Odoo connection</button>
               <button class="sb-item" id="stab-export"          style="color:var(--ink);font-size:12.5px" onclick="switchSettingsTab('export',this)">Data export schedule</button>
               <button class="sb-item" id="stab-audit"           style="color:var(--ink);font-size:12.5px" onclick="switchSettingsTab('audit',this)">Audit log</button>
+              <button class="sb-item" id="stab-knowledge_base" style="color:var(--ink);font-size:12.5px;display:flex;align-items:center;gap:7px" onclick="switchSettingsTab('knowledge_base',this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;flex-shrink:0"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg> Knowledge Base</button>
+              <button class="sb-item" id="stab-images" style="color:var(--ink);font-size:12.5px;display:flex;align-items:center;gap:7px" onclick="switchSettingsTab('images',this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;flex-shrink:0"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-5-5L5 21"/></svg> Images &amp; Media</button>
               <div style="height:1px;background:var(--ink-08);margin:6px 8px"></div>
               <div style="font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-40);padding:4px 10px 2px">My Account</div>
               <button class="sb-item" id="stab-account" style="color:var(--ink);font-size:12.5px" onclick="switchSettingsTab('account',this)">
@@ -1380,6 +1410,48 @@ table.dt .cell-bold { color: var(--ink); font-weight: 700; }
     <div class="modal-footer">
       <button class="btn btn-ghost" onclick="closeModal('product-delete-modal')">Cancel</button>
       <button class="btn btn-danger" id="del-confirm-btn" onclick="confirmArchiveProduct()">Archive</button>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════════════
+     PERMANENT DELETE MODAL (separate from Archive)
+     Requires the admin to type the product name exactly before the
+     Delete button enables — safety net against accidental clicks on
+     a row that has order history / invoices / stock movements.
+═════════════════════════════════════════════════════════════════ -->
+<div class="modal-overlay modal-sm" id="product-perm-delete-modal">
+  <div class="modal modal-sm">
+    <div class="modal-hdr">
+      <h2 style="color:#dc2626">Permanently delete product?</h2>
+      <button class="modal-close" onclick="closeModal('product-perm-delete-modal')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div style="background:#FFF6EE;border-left:3px solid #dc2626;padding:12px 14px;border-radius:6px;margin-bottom:14px;font-size:12.5px;color:var(--ink);line-height:1.5">
+        <strong>This cannot be undone.</strong> The product, its images, stock records and category
+        links will be removed from the database. If the product appears on past orders, those
+        order lines will keep their snapshot data (name, price) but lose the link.
+        <br><br>
+        If you just want to hide it from the shop, click Cancel and use <strong>Archive</strong>
+        from the row menu instead.
+      </div>
+      <p style="font-size:12.5px;color:var(--ink-60);margin:0 0 6px">
+        Type <strong id="perm-del-name-target" style="color:var(--ink);font-family:monospace"></strong>
+        to confirm:
+      </p>
+      <input type="text" id="perm-del-name-input" autocomplete="off"
+             placeholder="Type the product name…"
+             oninput="updatePermDeleteBtn()"
+             style="width:100%;box-sizing:border-box;padding:10px 12px;border:1.5px solid var(--ink-12);border-radius:8px;font-size:13px;font-family:inherit">
+      <div id="perm-del-refs-line"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('product-perm-delete-modal')">Cancel</button>
+      <button class="btn btn-danger" id="perm-del-confirm-btn" disabled
+              style="background:#dc2626;opacity:.45;cursor:not-allowed"
+              onclick="confirmPermDeleteProduct()">Delete forever</button>
     </div>
   </div>
 </div>
@@ -1702,6 +1774,60 @@ table.dt .cell-bold { color: var(--ink); font-weight: 700; }
   </div>
 </div>
 
+<!-- Manage Product Categories modal (MD only) -->
+<div class="modal-overlay modal-md" id="manage-categories-modal">
+  <div class="modal">
+    <div class="modal-hdr" style="background:var(--ink);border-radius:var(--radius-lg) var(--radius-lg) 0 0">
+      <div>
+        <h2 style="color:#fff">Manage Product Categories</h2>
+        <p style="color:rgba(255,255,255,.6);font-size:12px;margin:3px 0 0;font-weight:400">Add or remove categories shown across the platform</p>
+      </div>
+      <button class="modal-close" onclick="closeModal('manage-categories-modal')" style="background:rgba(255,255,255,.15);color:#fff">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div style="font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--ink-40);margin-bottom:8px">Current categories</div>
+      <div id="mc-list" style="border:1px solid var(--ink-10);border-radius:8px;overflow:hidden;margin-bottom:20px;background:#fff"></div>
+      <div style="font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--ink-40);margin-bottom:8px">Add new category</div>
+      <div style="display:flex;gap:8px">
+        <input type="text" id="mc-new-input" placeholder="e.g. Aquaculture" style="flex:1" onkeydown="if(event.key==='Enter')addProductCategory()">
+        <button class="btn btn-secondary" onclick="addProductCategory()">+ Add</button>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('manage-categories-modal')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveProductCategories()">Save Categories</button>
+    </div>
+  </div>
+</div>
+
+<!-- Set Field Officer Commission modal -->
+<div class="modal-overlay modal-sm" id="set-fo-commission-modal">
+  <div class="modal">
+    <div class="modal-hdr">
+      <h2>Set Commission Rate</h2>
+      <button class="modal-close" onclick="closeModal('set-fo-commission-modal')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <p style="font-size:13px;color:var(--ink-60);margin-bottom:16px">
+        Setting a rate for <strong id="sfc-officer-name">this officer</strong> overrides the platform default for their commission calculations.
+      </p>
+      <label>Commission Rate (%)</label>
+      <div class="prefix-wrap"><span class="prefix">%</span>
+        <input type="number" id="sfc-rate" min="0" max="30" step="0.5" placeholder="e.g. 3">
+      </div>
+      <p style="font-size:11.5px;color:var(--ink-40);margin-top:8px">Leave blank to use the platform default field officer rate.</p>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('set-fo-commission-modal')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveFOCommission()">Save Rate</button>
+    </div>
+  </div>
+</div>
+
 <!-- Set Agent Commission modal -->
 <div class="modal-overlay modal-sm" id="set-commission-modal">
   <div class="modal modal-sm">
@@ -1726,6 +1852,31 @@ table.dt .cell-bold { color: var(--ink); font-weight: 700; }
     <div class="modal-footer">
       <button class="btn btn-ghost" onclick="closeModal('set-commission-modal')">Cancel</button>
       <button class="btn btn-primary" onclick="saveAgentCommission()">Save Rate</button>
+    </div>
+  </div>
+</div>
+
+<!-- Manage My Roles modal (MD only) -->
+<div class="modal-overlay modal-sm" id="my-roles-modal">
+  <div class="modal modal-sm" style="max-width:420px">
+    <div class="modal-hdr">
+      <h2>My Roles</h2>
+      <button class="modal-close" onclick="closeModal('my-roles-modal')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <p style="font-size:12.5px;color:var(--ink-60);margin-bottom:16px">
+        Your account always carries <strong>Managing Director</strong> access. Add any extra roles below to unlock their pages and features alongside your MD access.
+      </p>
+      <div id="my-roles-list" style="display:flex;flex-direction:column;gap:10px"></div>
+      <div style="margin-top:14px;padding:10px 12px;background:var(--ink-05);border-radius:8px;font-size:11.5px;color:var(--ink-60)">
+        Changes take effect immediately on next page navigation. A full refresh applies them everywhere.
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('my-roles-modal')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveMyRoles()">Save Roles</button>
     </div>
   </div>
 </div>
@@ -2539,6 +2690,78 @@ table.dt .cell-bold { color: var(--ink); font-weight: 700; }
 </div>
 
 <!-- ════════════════════════════════════════════════════════
+     ONBOARD FIELD OFFICER DRAWER
+     Used by the "+ Add officer" button on the Field Officers page.
+     Inserts a brand-new row into app_users with role='field_officer'.
+═══════════════════════════════════════════════════════ -->
+<div class="drawer-overlay" id="onboard-officer-overlay" onclick="closeOnboardOfficer()"></div>
+<div class="drawer" id="onboard-officer-drawer" style="width:500px">
+  <div class="drawer-hdr">
+    <h3>Add new Field Officer</h3>
+    <button class="modal-close" onclick="closeOnboardOfficer()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+  </div>
+  <div class="drawer-body">
+    <div style="background:rgba(21,97,109,.08);border-left:3px solid var(--teal);border-radius:0 8px 8px 0;padding:10px 14px;margin-bottom:20px;font-size:12.5px;color:var(--ink-80)">
+      Once approved, this officer appears in the mobile app's "Talk to an Expert" directory for farmers in their district.
+    </div>
+    <div class="form-section">
+      <h4>Personal details</h4>
+      <div class="field"><label>Full name <span class="req">*</span></label><input type="text" id="of-name" placeholder="e.g. Achieng Grace"></div>
+      <div class="field-row">
+        <div class="field"><label>Phone number <span class="req">*</span></label><input type="tel" id="of-phone" placeholder="0772 000000"></div>
+        <div class="field"><label>Email</label><input type="email" id="of-email" placeholder="officer@example.com"></div>
+      </div>
+      <div class="field-row">
+        <div class="field"><label>District <span class="req">*</span></label>
+          <select id="of-district">
+            <option value="">— Select —</option>
+            <option>Kampala</option><option>Wakiso</option><option>Mpigi</option><option>Masaka</option>
+            <option>Mbarara</option><option>Mbale</option><option>Gulu</option><option>Jinja</option>
+            <option>Lira</option><option>Soroti</option><option>Arua</option><option>Hoima</option>
+            <option>Apac</option><option>Kitgum</option><option>Tororo</option><option>Fort Portal</option>
+          </select>
+        </div>
+        <div class="field"><label>Languages</label><input type="text" id="of-languages" placeholder="English · Luganda · Lusoga"></div>
+      </div>
+    </div>
+    <div class="form-section">
+      <h4>Expertise</h4>
+      <div class="field"><label>Speciality</label><input type="text" id="of-speciality" placeholder="e.g. Coffee · Banana · Soil health"></div>
+      <div class="field-row">
+        <div class="field"><label>Off day</label>
+          <select id="of-off-day">
+            <option value="">— None —</option>
+            <option>Mon</option><option>Tue</option><option>Wed</option><option>Thu</option>
+            <option>Fri</option><option>Sat</option><option>Sun</option>
+          </select>
+        </div>
+        <div class="field"><label>Commission rate %</label>
+          <div class="prefix-wrap"><span class="prefix">%</span><input type="number" id="of-commission" value="0" min="0" max="30" step="0.5"></div>
+        </div>
+      </div>
+      <div class="field"><label>Notes</label><textarea id="of-notes" placeholder="Background, training, certifications…" style="min-height:56px"></textarea></div>
+    </div>
+    <div class="form-section">
+      <h4>Status on creation</h4>
+      <div class="field-row">
+        <div class="field">
+          <label><input type="radio" name="of-status" value="active" checked style="margin-right:6px">Live in directory immediately</label>
+        </div>
+        <div class="field">
+          <label><input type="radio" name="of-status" value="pending_approval" style="margin-right:6px">Pending approval</label>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="drawer-footer" style="justify-content:flex-end">
+    <button class="btn btn-ghost" onclick="closeOnboardOfficer()">Cancel</button>
+    <button class="btn btn-primary" id="of-save-btn" onclick="saveOnboardOfficer()">Add officer</button>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════
      APPROVE OFFICER DRAWER
 ═══════════════════════════════════════════════════════ -->
 <div class="drawer-overlay" id="approve-officer-overlay" onclick="closeApproveOfficerDrawer()"></div>
@@ -2742,6 +2965,13 @@ table.dt .cell-bold { color: var(--ink); font-weight: 700; }
       <h4>Identity</h4>
       <div class="field"><label>Email address <span class="req">*</span></label><input type="email" id="im-email" placeholder="name@agroandmore.co.ug"></div>
       <div class="field"><label>Full name <span class="req">*</span></label><input type="text" id="im-name" placeholder="e.g. Namutebi Sarah"></div>
+      <div class="field">
+        <label>Phone <span class="hint">(optional — Uganda mobile, 9 digits starting with 7)</span></label>
+        <div style="display:flex;gap:6px;align-items:center">
+          <span style="background:var(--cream);border-radius:6px;padding:6px 10px;font-size:12px;font-weight:700;color:var(--ink);flex-shrink:0">+256</span>
+          <input type="tel" id="im-phone" placeholder="772 456 123" style="flex:1">
+        </div>
+      </div>
     </div>
     <div class="form-section">
       <h4>Role &amp; access</h4>
@@ -2871,10 +3101,18 @@ const ROLE_ACCESS = {
   outlet_clerk:    ['dashboard','orders'],
 };
 
+/* Combined access for accounts with multiple roles */
+function getEffectiveAccess(profile) {
+  const primary = profile?.role || 'outlet_clerk';
+  const extras  = Array.isArray(profile?.extra_roles) ? profile.extra_roles : [];
+  const allRoles = [primary, ...extras.filter(r => r && r !== primary)];
+  const pages = new Set(allRoles.flatMap(r => ROLE_ACCESS[r] || []));
+  return { allRoles, allowed: [...pages] };
+}
+
 /* ── Router ──────────────────────────────────────────── */
 window.navigate = function(page) {
-  const role = APP.profile?.role || 'outlet_clerk';
-  const allowed = ROLE_ACCESS[role] || [];
+  const { allowed } = getEffectiveAccess(APP.profile);
   if (!allowed.includes(page)) {
     toast('Not available for your role.', 'error'); return;
   }
@@ -2978,12 +3216,50 @@ async function initAuth() {
     return; // do not render normal admin UI
   }
 
-  // Grey out restricted nav items
-  const allowed = ROLE_ACCESS[role] || [];
+  // Grey out restricted nav items (respects extra_roles)
+  const { allRoles, allowed } = getEffectiveAccess(profile);
   document.querySelectorAll('.sb-item[data-page]').forEach(btn => {
     const pg = btn.dataset.page;
     if (!allowed.includes(pg)) btn.setAttribute('data-restricted','1');
   });
+
+  // Show multi-role badge in sidebar/topbar when MD has extra roles
+  if (role === 'md' && allRoles.length > 1) {
+    const extraLabels = allRoles.slice(1).map(r => roleLabels[r] || r).join(' · ');
+    document.getElementById('sbRole').textContent = '👑 MD · ' + extraLabels;
+    document.getElementById('tbRole').textContent = '👑 MD · ' + extraLabels;
+  }
+
+  // Inject "Manage my roles" into profile menu for MDs
+  if (role === 'md') {
+    const pmMenu = document.getElementById('profile-menu');
+    const signOutBtn = pmMenu?.querySelector('button[onclick="doLogout()"]');
+    if (signOutBtn) {
+      const rolesBtn = document.createElement('button');
+      rolesBtn.onclick = openMyRoles;
+      rolesBtn.style.cssText = 'width:100%;text-align:left;padding:10px 14px;border:none;background:transparent;font-size:12.5px;cursor:pointer;display:flex;align-items:center;gap:8px;font-family:inherit';
+      rolesBtn.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 010 14.14M4.93 4.93a10 10 0 000 14.14"/></svg> Manage my roles`;
+      pmMenu.insertBefore(rolesBtn, signOutBtn);
+    }
+  }
+
+  // Show Manage Categories button for MD
+  if (role === 'md') {
+    const mcBtn = document.getElementById('manage-categories-btn');
+    if (mcBtn) mcBtn.style.display = '';
+    // Load saved categories from settings
+    sb.from('settings').select('value').eq('key','product_categories').limit(1).then(({data}) => {
+      if (data?.[0]?.value) {
+        try {
+          const saved = JSON.parse(data[0].value);
+          if (Array.isArray(saved) && saved.length) {
+            CATEGORIES.length = 0;
+            saved.forEach(c => CATEGORIES.push(c));
+          }
+        } catch(e) { /* use defaults */ }
+      }
+    });
+  }
 
   // Start on dashboard
   navigate('dashboard');
@@ -4103,12 +4379,17 @@ function renderProductsTable() {
               ? '<span class="chip chip-teal">Live</span>'
               : '<span class="chip chip-ghost">Draft</span>';
           const kebabItems = isArchiveView
-            ? `[{ label: 'Restore', fn: function(){ restoreProduct('${p.id}','${p.name.replace(/'/g,"\\'")}') } }]`
+            ? `[
+                { label: 'Restore', fn: function(){ restoreProduct('${p.id}','${p.name.replace(/'/g,"\\'")}') } },
+                '---',
+                { label: 'Delete permanently', danger: true, fn: function(){ promptPermDeleteProduct('${p.id}','${p.name.replace(/'/g,"\\'")}') } }
+              ]`
             : `[
                 { label: 'Edit', fn: function(){ openProductModal('${p.id}') } },
                 { label: 'Duplicate', fn: function(){ duplicateProduct('${p.id}') } },
                 '---',
-                { label: 'Archive', danger: true, fn: function(){ promptArchiveProduct('${p.id}','${p.name.replace(/'/g,"\\'")}') } }
+                { label: 'Archive', danger: true, fn: function(){ promptArchiveProduct('${p.id}','${p.name.replace(/'/g,"\\'")}') } },
+                { label: 'Delete permanently', danger: true, fn: function(){ promptPermDeleteProduct('${p.id}','${p.name.replace(/'/g,"\\'")}') } }
               ]`;
           return `<tr style="cursor:${isArchiveView?'default':'pointer'}" onclick="prodRowClick(event,'${p.id}')">
             <td onclick="event.stopPropagation()"><input type="checkbox" class="prod-cb" value="${p.id}" onchange="updateBulkBar()"></td>
@@ -4153,7 +4434,15 @@ window.toggleAllProducts = function(cb) {
 window.openProductModal = async function(id) {
   document.getElementById('pd-id').value     = id || '';
   document.getElementById('pd-title').textContent = id ? 'Edit Product' : 'Add Product';
-  document.getElementById('pd-save-txt').textContent = id ? 'Save Changes' : 'Save & Publish';
+  /* Defensive: rebuild the save button's inner span from scratch every
+     time the drawer opens. The save flow's success path re-enables this
+     too, but if any future bug leaves the button disabled/spinning, this
+     guarantees the next open recovers — no "drawer won't open" lockup. */
+  const saveBtn = document.getElementById('pd-save-btn');
+  if (saveBtn) {
+    saveBtn.disabled = false;
+    saveBtn.innerHTML = `<span id="pd-save-txt">${id ? 'Save Changes' : 'Save & Publish'}</span>`;
+  }
 
   // Reset form
   ['pd-name','pd-brand','pd-sku','pd-desc-en','pd-desc-lg',
@@ -4162,9 +4451,12 @@ window.openProductModal = async function(id) {
     const el = document.getElementById(f);
     if (el) el.value = '';
   });
-  ['pd-show-shop','pd-show-diaspora','pd-feature-home'].forEach(f => {
-    document.getElementById(f).checked = false;
-  });
+  /* Defaults for a brand-new product: visible on the farmer shop (the whole
+     point of clicking "Save & Publish"), but not yet shown on diaspora /
+     featured home — admin opts those in explicitly. */
+  document.getElementById('pd-show-shop').checked     = true;
+  document.getElementById('pd-show-diaspora').checked = false;
+  document.getElementById('pd-feature-home').checked  = false;
   document.getElementById('pd-category').value = '';
   document.getElementById('pd-crop-section').style.display = 'none';
   document.getElementById('pd-images-list').innerHTML = '';
@@ -4252,14 +4544,47 @@ window.closeProductDrawer = function() {
 
 /* ── Save product ───────────────────────────────────── */
 window.saveProduct = async function(status) {
-  const id       = document.getElementById('pd-id').value;
-  const name     = document.getElementById('pd-name').value.trim();
-  const category = document.getElementById('pd-category').value;
-  const price    = parseFloat(document.getElementById('pd-price').value) || 0;
+  const id          = document.getElementById('pd-id').value;
+  const name        = document.getElementById('pd-name').value.trim();
+  const category    = document.getElementById('pd-category').value;
+  const price       = parseFloat(document.getElementById('pd-price').value)       || 0;
+  const agentPrice  = parseFloat(document.getElementById('pd-agent-price').value) || 0;
+  const usdPrice    = parseFloat(document.getElementById('pd-usd-price').value)   || 0;
+  const stock       = parseInt(document.getElementById('pd-stock').value, 10);
+  const skuTyped    = document.getElementById('pd-sku').value.trim();
 
-  if (!name)     { toast('Product name is required.','error'); return; }
-  if (!category) { toast('Please select a category.','error'); return; }
-  if (price <= 0){ toast('Price must be greater than 0.','error'); return; }
+  /* ── Client-side validation ─────────────────────────── */
+  if (!name)               { toast('Product name is required.','error'); return; }
+  if (name.length > 120)   { toast('Product name is too long (max 120 chars).','error'); return; }
+  if (!category)           { toast('Please select a category.','error'); return; }
+  if (price <= 0)          { toast('Price (UGX) must be greater than 0.','error'); return; }
+  if (price > 50_000_000)  { toast('Price looks unreasonably high — double-check.','error'); return; }
+  if (agentPrice && agentPrice > price) {
+    toast('Agent price should be less than or equal to the retail price.','error'); return;
+  }
+  if (usdPrice && usdPrice < 0.10) {
+    toast('USD price looks too low — set at least 0.10.','error'); return;
+  }
+  if (!Number.isNaN(stock) && stock < 0) {
+    toast('Stock cannot be negative.','error'); return;
+  }
+  if (skuTyped) {
+    if (!/^[A-Z0-9._\-]+$/i.test(skuTyped)) {
+      toast('SKU can only contain letters, digits, dot, dash, underscore.','error'); return;
+    }
+    /* Check SKU uniqueness against the DB before we hit the constraint. */
+    try {
+      const { data: dupes } = await sb.from('products')
+        .select('id,name')
+        .eq('sku', skuTyped)
+        .neq('id', id || '00000000-0000-0000-0000-000000000000')
+        .limit(1);
+      if (dupes && dupes.length) {
+        toast('That SKU is already in use by "' + dupes[0].name + '". Pick a different one.','error', 6000);
+        return;
+      }
+    } catch(e) { console.warn('[saveProduct] SKU dup check failed', e); }
+  }
 
   const btn = document.getElementById('pd-save-btn');
   btn.disabled = true;
@@ -4280,6 +4605,9 @@ window.saveProduct = async function(status) {
     diaspora_price_usd:parseFloat(document.getElementById('pd-usd-price').value)   || null,
     total_stock:       parseInt(document.getElementById('pd-stock').value) || 0,
     status:            status === 'active' ? 'active' : 'draft',
+    /* "Save as Draft"  → always hidden (drafts are private).
+       "Save & Publish" → honour the toggle (default true for new products,
+       admin can untick if they want to publish-but-hide for some reason).  */
     show_on_shop:      status === 'active' && document.getElementById('pd-show-shop').checked,
     show_diaspora:     document.getElementById('pd-show-diaspora').checked,
     feature_home:      document.getElementById('pd-feature-home').checked,
@@ -4322,6 +4650,13 @@ window.saveProduct = async function(status) {
     await sb.from('product_images').insert(images.map((url,i) => ({ product_id: productId, url, sort_order: i })));
   }
 
+  /* Re-enable + restore the save button on success — without this, the
+     button stays disabled with a spinner, and the next "+ Add Product"
+     click throws "Cannot set properties of null" on pd-save-txt and the
+     drawer silently refuses to reopen. */
+  btn.disabled = false;
+  btn.innerHTML = `<span id="pd-save-txt">${id ? 'Save Changes' : 'Save & Publish'}</span>`;
+
   toast(id ? 'Product updated.' : 'Product created and published.', 'success');
   closeProductDrawer();
   loadProducts();
@@ -4363,6 +4698,97 @@ window.restoreProduct = async function(id, name) {
   const { error } = await sb.from('products').update({ status:'draft', show_on_shop:false }).eq('id', id);
   if (error) { toast('Restore failed: '+error.message,'error'); return; }
   toast(`"${name}" restored as Draft.`,'success');
+  loadProducts();
+};
+
+/* ── Permanently delete product (type-to-confirm) ──── */
+window.promptPermDeleteProduct = async function(id, name) {
+  PROD.permDeletePendingId   = id;
+  PROD.permDeletePendingName = name;
+  PROD.permDeleteOrderRefs   = 0;
+  document.getElementById('perm-del-name-target').textContent = name;
+  const inp = document.getElementById('perm-del-name-input');
+  if (inp) { inp.value = ''; setTimeout(() => inp.focus(), 50); }
+  updatePermDeleteBtn();
+  openModal('product-perm-delete-modal');
+
+  /* Look up how many order_items reference this product so we can show
+     the MD a clear warning. order_items snapshots product_name + price,
+     so the historical order detail is preserved when we sever the FK. */
+  const refsEl = document.getElementById('perm-del-refs-line');
+  if (refsEl) refsEl.innerHTML = '<span style="color:var(--ink-40)">Checking order history…</span>';
+  try {
+    const { count, error } = await sb
+      .from('order_items')
+      .select('id', { count: 'exact', head: true })
+      .eq('product_id', id);
+    if (error) throw error;
+    const n = count || 0;
+    PROD.permDeleteOrderRefs = n;
+    if (refsEl) {
+      if (n > 0) {
+        refsEl.innerHTML = `<div style="background:#FFF7E6;border-left:3px solid #F59E0B;padding:10px 12px;border-radius:6px;margin-top:10px;font-size:12px;color:var(--ink);line-height:1.5">
+          <strong>Heads-up:</strong> this product appears on <strong>${n} order line${n!==1?'s':''}</strong>.
+          Those lines will keep their snapshot data (name + price + qty)
+          but the product link will be cleared on delete.
+        </div>`;
+      } else {
+        refsEl.innerHTML = '<div style="font-size:11.5px;color:var(--ink-40);margin-top:8px">No order history references this product.</div>';
+      }
+    }
+  } catch (e) {
+    if (refsEl) refsEl.innerHTML = `<div style="font-size:11.5px;color:var(--rust);margin-top:8px">Couldn't check order history: ${e.message||e}</div>`;
+  }
+};
+window.updatePermDeleteBtn = function() {
+  const typed = (document.getElementById('perm-del-name-input')?.value || '').trim();
+  const want  = (PROD.permDeletePendingName || '').trim();
+  const btn   = document.getElementById('perm-del-confirm-btn');
+  if (!btn) return;
+  const match = typed.length > 0 && typed.toLowerCase() === want.toLowerCase();
+  btn.disabled = !match;
+  btn.style.opacity = match ? '1' : '0.45';
+  btn.style.cursor  = match ? 'pointer' : 'not-allowed';
+};
+window.confirmPermDeleteProduct = async function() {
+  const id = PROD.permDeletePendingId;
+  const name = PROD.permDeletePendingName;
+  if (!id) return;
+  const btn = document.getElementById('perm-del-confirm-btn');
+  if (btn) { btn.disabled = true; btn.textContent = 'Deleting…'; }
+
+  /* Step 1: sever the FK on order_items so the products row can be deleted.
+     order_items.product_id is nullable AND the row already snapshots
+     product_name + unit_price_ugx + quantity + total_ugx, so historical
+     order detail is preserved when we set product_id = null. */
+  const unlinkRes = await sb.from('order_items').update({ product_id: null }).eq('product_id', id);
+  if (unlinkRes.error) {
+    if (btn) { btn.disabled = false; btn.textContent = 'Delete forever'; }
+    toast('Couldn\'t unlink order history: ' + unlinkRes.error.message, 'error');
+    return;
+  }
+
+  /* Step 2: remove dependent child rows that don't preserve history. */
+  try { await sb.from('product_images').delete().eq('product_id', id); } catch (_) {}
+  try { await sb.from('product_outlet_stock').delete().eq('product_id', id); } catch (_) {}
+
+  /* Step 3: delete the product row itself. */
+  const { error } = await sb.from('products').delete().eq('id', id);
+  if (btn) btn.textContent = 'Delete forever';
+  if (error) {
+    toast('Delete failed: ' + error.message, 'error');
+    if (btn) btn.disabled = false;
+    return;
+  }
+  closeModal('product-perm-delete-modal');
+  const refs = PROD.permDeleteOrderRefs || 0;
+  toast(refs > 0
+    ? `"${name}" deleted permanently. ${refs} historical order line${refs!==1?'s':''} kept (link cleared).`
+    : `"${name}" deleted permanently.`,
+    'success');
+  PROD.permDeletePendingId = null;
+  PROD.permDeletePendingName = null;
+  PROD.permDeleteOrderRefs = 0;
   loadProducts();
 };
 
@@ -5663,7 +6089,12 @@ function renderUsersContent() {
                   </div>
                 </div>
               </td>
-              <td>${staffRoleChip(u.role)}</td>
+              <td>
+                ${staffRoleChip(u.role)}
+                ${(Array.isArray(u.extra_roles) ? u.extra_roles : []).map(r =>
+                  `<span class="chip" style="background:var(--ink-05);color:var(--ink-60);border:1px solid var(--ink-10);font-size:10px;margin-left:3px">${ROLE_LABELS[r]||r}</span>`
+                ).join('')}
+              </td>
               <td style="font-size:12.5px">${u.outlet||u.district||'—'}</td>
               <td style="font-size:12.5px;color:var(--ink-60)">${relTime(u.last_active_at)}</td>
               <td style="font-size:12px">${u.tfa||'Phone OTP'}</td>
@@ -5696,10 +6127,6 @@ function renderUsersContent() {
       {role:'Outlet Clerk',          icon:'🏪', desc:'Traceability, orders for assigned outlet only. Read-only.',           canInvite:false, canExport:false, canDelete:false},
     ];
     container.innerHTML = `
-      <div class="callout callout-teal" style="margin-bottom:16px">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-        <span>Only <strong>Managing Directors</strong> can edit the permission matrix. Contact your MD to change role permissions.</span>
-      </div>
       <div class="tbl-wrap">
         <table class="dt">
           <thead><tr><th>ROLE</th><th>DESCRIPTION</th><th>CAN INVITE</th><th>CAN EXPORT</th><th>CAN DELETE</th></tr></thead>
@@ -5994,6 +6421,119 @@ window.saveAgentCommission = async function() {
   toast(`Commission set to ${val}%.`, 'success');
   // Refresh whichever agents view is active
   loadAgents();
+};
+
+/* ── Field Officer Commission ────────────────────────── */
+const _SFC = { id: null, isDemo: false };
+
+window.openSetFOCommission = function(id, name, currentRate) {
+  _SFC.id     = id;
+  _SFC.isDemo = String(id).startsWith('fo') || String(id).startsWith('fp');
+  document.getElementById('sfc-officer-name').textContent = name;
+  const globalFORate = parseFloat(SETS?.cfg?.fo_commission_rate) || 3;
+  document.getElementById('sfc-rate').value = currentRate != null ? currentRate : globalFORate;
+  openModal('set-fo-commission-modal');
+};
+
+window.saveFOCommission = async function() {
+  const val = parseFloat(document.getElementById('sfc-rate').value);
+  if (isNaN(val) || val < 0 || val > 30) { toast('Enter a value between 0 and 30.', 'error'); return; }
+  if (_SFC.isDemo) { toast('Demo data — connect Supabase to save changes.', 'info'); closeModal('set-fo-commission-modal'); return; }
+  const { error } = await sb.from('app_users')
+    .update({ commission_rate: val, updated_at: new Date().toISOString() })
+    .eq('id', _SFC.id);
+  closeModal('set-fo-commission-modal');
+  if (error) { toast('Error: ' + error.message, 'error'); return; }
+  toast(`Commission set to ${val}%.`, 'success');
+  loadOfficers();
+};
+
+/* ══════════════════════════════════════════════════════
+   MANAGE MY ROLES (MD self-service)
+══════════════════════════════════════════════════════ */
+const EXTRA_ROLE_OPTIONS = [
+  { value:'sales_manager', label:'Sales / Operations Manager', desc:'Products, orders, agents, advisory' },
+  { value:'finance',       label:'Finance Officer',            desc:'Orders, diaspora, analytics, finance' },
+  { value:'it_admin',      label:'IT Admin',                   desc:'Settings, integrations, user management' },
+  { value:'agronomist',    label:'Senior Agronomist',          desc:'Advisory content, chatbot KB, prices' },
+  { value:'outlet_clerk',  label:'Outlet Clerk',               desc:'Dashboard and orders only' },
+];
+
+window.openMyRoles = function() {
+  closeProfileMenu();
+  const currentExtras = Array.isArray(APP.profile?.extra_roles) ? APP.profile.extra_roles : [];
+  const list = document.getElementById('my-roles-list');
+  list.innerHTML = `
+    <!-- MD always-on chip -->
+    <label style="display:flex;align-items:flex-start;gap:10px;padding:10px 12px;border-radius:8px;background:rgba(21,97,109,.07);border:1px solid rgba(21,97,109,.2);cursor:default">
+      <input type="checkbox" checked disabled style="margin-top:3px;accent-color:var(--teal)">
+      <div>
+        <div style="font-weight:700;font-size:13px">🌱 Managing Director</div>
+        <div style="font-size:11.5px;color:var(--ink-60)">Full access — always active on your account</div>
+      </div>
+    </label>
+    ${EXTRA_ROLE_OPTIONS.map(r => `
+    <label style="display:flex;align-items:flex-start;gap:10px;padding:10px 12px;border-radius:8px;background:#fff;border:1px solid var(--ink-10);cursor:pointer" id="mr-lbl-${r.value}">
+      <input type="checkbox" id="mr-${r.value}" value="${r.value}" ${currentExtras.includes(r.value)?'checked':''}
+        style="margin-top:3px;accent-color:var(--teal)" onchange="mrHighlight('${r.value}')">
+      <div>
+        <div style="font-weight:600;font-size:13px">${r.label}</div>
+        <div style="font-size:11.5px;color:var(--ink-60)">${r.desc}</div>
+      </div>
+    </label>`).join('')}
+  `;
+  // Highlight already-checked ones
+  currentExtras.forEach(r => mrHighlight(r));
+  openModal('my-roles-modal');
+};
+
+window.mrHighlight = function(val) {
+  const cb  = document.getElementById('mr-' + val);
+  const lbl = document.getElementById('mr-lbl-' + val);
+  if (!cb || !lbl) return;
+  if (cb.checked) {
+    lbl.style.background = 'rgba(21,97,109,.06)';
+    lbl.style.borderColor = 'rgba(21,97,109,.3)';
+  } else {
+    lbl.style.background = '#fff';
+    lbl.style.borderColor = 'var(--ink-10)';
+  }
+};
+
+window.saveMyRoles = async function() {
+  const extras = EXTRA_ROLE_OPTIONS
+    .filter(r => document.getElementById('mr-' + r.value)?.checked)
+    .map(r => r.value);
+
+  const { error } = await sb.from('staff_profiles')
+    .update({ extra_roles: extras, updated_at: new Date().toISOString() })
+    .eq('id', APP.profile.id);
+
+  if (error) { toast('Error saving roles: ' + error.message, 'error'); return; }
+
+  // Update local profile
+  APP.profile.extra_roles = extras;
+
+  // Re-compute nav access
+  const { allRoles, allowed } = getEffectiveAccess(APP.profile);
+  document.querySelectorAll('.sb-item[data-page]').forEach(btn => {
+    const pg = btn.dataset.page;
+    if (allowed.includes(pg)) {
+      btn.removeAttribute('data-restricted');
+    } else {
+      btn.setAttribute('data-restricted','1');
+    }
+  });
+
+  // Update role label
+  const roleLabels2 = { sales_manager:'Sales Manager', finance:'Finance Officer', it_admin:'IT Admin', agronomist:'Agronomist', outlet_clerk:'Outlet Clerk' };
+  const extraLabel = extras.length ? ' · ' + extras.map(r=>roleLabels2[r]||r).join(' · ') : '';
+  const label = '👑 MD' + extraLabel;
+  document.getElementById('sbRole').textContent = label;
+  document.getElementById('tbRole').textContent = label;
+
+  closeModal('my-roles-modal');
+  toast('Roles updated. Some pages may now be available in the sidebar.', 'success');
 };
 
 /* ══════════════════════════════════════════════════════
@@ -8853,18 +9393,11 @@ window.deleteNotif = async function(id) {
    ANALYTICS & REPORTS
 ══════════════════════════════════════════════════════ */
 
-/* Illustrative fallbacks — realistic Ugandan agri-business numbers */
-const AN_PROD_FB = [
-  ['DAP Fertilizer 50kg',4840000],['Longe 5 OPV Maize Seed 5kg',2520000],
-  ['Urea 50kg',1950000],['Mancozeb 80WP 1kg',1260000],
-  ['Round-up Herbicide 1L',980000],['Watermaster Drip Kit',760000],
-  ['NABE 15 Bean Seed 2kg',495000],['Agrolyser Sprayer 16L',360000],
-];
-const AN_DIST_FB = [
-  ['Mpigi',9.2],['Kampala',7.8],['Wakiso',6.4],['Mbarara',5.1],
-  ['Gomba',4.8],['Butambala',4.2],['Gulu',3.6],['Masaka',3.1],
-  ['Jinja',2.7],['Lira',2.2],
-];
+/* No illustrative fallbacks in Analytics — we render whatever Supabase
+   actually returns, including empty states. If a section has zero rows
+   we show a small "No data yet for this month" hint instead of fake
+   figures. Removing the fallbacks also stops downstream PDF/CSV exports
+   from including misleading numbers. */
 
 function anBarChart(items, color, maxVal) {
   return items.map(([label, val]) => `
@@ -8880,7 +9413,177 @@ function anBarChart(items, color, maxVal) {
 }
 
 const AN_MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-const AN_STATE  = { month: new Date().getMonth(), year: new Date().getFullYear() };
+/* Analytics period state. `period` ∈ {month, quarter, year, custom}.
+   - month   uses month + year
+   - quarter uses quarter (1-4) + year, derived from month on switch
+   - year    uses year only
+   - custom  uses customFrom + customTo (ISO YYYY-MM-DD strings) */
+const AN_STATE = {
+  period:    'month',
+  month:     new Date().getMonth(),
+  year:      new Date().getFullYear(),
+  quarter:   Math.floor(new Date().getMonth() / 3) + 1,
+  customFrom:'',
+  customTo:  '',
+  compare:   false,           // when true, fetch previous period + show deltas
+};
+
+/* Format a date as "23 May 2026". */
+function anFmtDate(d) {
+  return `${d.getDate()} ${AN_MONTHS[d.getMonth()]} ${d.getFullYear()}`;
+}
+
+/* Resolve current period to a {from, to, label, csvSlug} bundle. */
+function analyticsRange() {
+  const Y = AN_STATE.year;
+  if (AN_STATE.period === 'year') {
+    return {
+      from:    new Date(Y, 0, 1),
+      to:      new Date(Y, 11, 31, 23, 59, 59),
+      label:   String(Y),
+      csvSlug: String(Y),
+    };
+  }
+  if (AN_STATE.period === 'quarter') {
+    const q = AN_STATE.quarter;          // 1-4
+    const m0 = (q - 1) * 3;              // 0,3,6,9
+    return {
+      from:    new Date(Y, m0, 1),
+      to:      new Date(Y, m0 + 3, 0, 23, 59, 59),
+      label:   `Q${q} ${Y}`,
+      csvSlug: `Q${q}_${Y}`,
+    };
+  }
+  if (AN_STATE.period === 'custom' && AN_STATE.customFrom && AN_STATE.customTo) {
+    /* Custom range: parse the YYYY-MM-DD strings to local midnight (from) and
+       end-of-day (to). */
+    const from = new Date(AN_STATE.customFrom + 'T00:00:00');
+    const to   = new Date(AN_STATE.customTo   + 'T23:59:59');
+    return {
+      from, to,
+      label:   `${anFmtDate(from)} → ${anFmtDate(to)}`,
+      csvSlug: `${AN_STATE.customFrom}_to_${AN_STATE.customTo}`,
+    };
+  }
+  // month (default)
+  const M = AN_STATE.month;
+  return {
+    from:    new Date(Y, M, 1),
+    to:      new Date(Y, M + 1, 0, 23, 59, 59),
+    label:   `${AN_MONTHS[M]} ${Y}`,
+    csvSlug: `${AN_MONTHS[M]}_${Y}`,
+  };
+}
+
+/* Resolve the *previous* period for comparison. The previous period is
+   the range of the same length immediately before `current.from`. */
+function previousRange(current) {
+  if (AN_STATE.period === 'month') {
+    const Y = AN_STATE.year, M = AN_STATE.month;
+    const prevM = M === 0 ? 11 : M - 1;
+    const prevY = M === 0 ? Y - 1 : Y;
+    return {
+      from:  new Date(prevY, prevM, 1),
+      to:    new Date(prevY, prevM + 1, 0, 23, 59, 59),
+      label: `${AN_MONTHS[prevM]} ${prevY}`,
+    };
+  }
+  if (AN_STATE.period === 'quarter') {
+    const Y = AN_STATE.year, q = AN_STATE.quarter;
+    const pQ = q === 1 ? 4 : q - 1;
+    const pY = q === 1 ? Y - 1 : Y;
+    const m0 = (pQ - 1) * 3;
+    return {
+      from:  new Date(pY, m0, 1),
+      to:    new Date(pY, m0 + 3, 0, 23, 59, 59),
+      label: `Q${pQ} ${pY}`,
+    };
+  }
+  if (AN_STATE.period === 'year') {
+    const Y = AN_STATE.year;
+    return {
+      from:  new Date(Y - 1, 0, 1),
+      to:    new Date(Y - 1, 11, 31, 23, 59, 59),
+      label: String(Y - 1),
+    };
+  }
+  /* Custom: same-length window immediately before `current.from`. */
+  const len = current.to.getTime() - current.from.getTime();
+  const prevTo   = new Date(current.from.getTime() - 1);
+  const prevFrom = new Date(prevTo.getTime() - len);
+  return {
+    from:  prevFrom,
+    to:    prevTo,
+    label: `${anFmtDate(prevFrom)} → ${anFmtDate(prevTo)}`,
+  };
+}
+
+/* % change pill — green for growth, red for decline, grey if no prior data. */
+function anDeltaPill(curr, prev) {
+  curr = Number(curr || 0); prev = Number(prev || 0);
+  if (!prev && !curr) return '';
+  if (!prev) return `<span style="display:inline-block;font-size:10.5px;font-weight:700;padding:1.5px 6px;border-radius:3px;background:rgba(21,97,109,.12);color:var(--teal);letter-spacing:.03em;margin-left:6px">NEW</span>`;
+  const pct = ((curr - prev) / prev) * 100;
+  const up  = pct >= 0;
+  const color = Math.abs(pct) < 0.5 ? 'var(--ink-60)' : (up ? '#15803d' : '#b91c1c');
+  const bg    = Math.abs(pct) < 0.5 ? 'rgba(0,0,0,.06)' : (up ? 'rgba(21,128,61,.12)' : 'rgba(185,28,28,.12)');
+  const arrow = Math.abs(pct) < 0.5 ? '—' : (up ? '↑' : '↓');
+  return `<span title="vs previous period" style="display:inline-block;font-size:10.5px;font-weight:700;padding:1.5px 6px;border-radius:3px;background:${bg};color:${color};letter-spacing:.03em;margin-left:6px">${arrow} ${Math.abs(pct).toFixed(1)}%</span>`;
+}
+
+/* Apply Custom range — invoked from the Apply button. */
+window.applyCustomRange = function() {
+  const f = document.getElementById('an-custom-from')?.value;
+  const t = document.getElementById('an-custom-to')?.value;
+  if (!f || !t) { toast('Pick both a From and a To date.', 'error'); return; }
+  if (new Date(f) > new Date(t)) { toast('From date must be on or before To date.', 'error'); return; }
+  AN_STATE.customFrom = f;
+  AN_STATE.customTo   = t;
+  loadAnalytics();
+};
+
+window.toggleCompare = function(on) {
+  AN_STATE.compare = !!on;
+  loadAnalytics();
+};
+
+window.setAnalyticsPeriod = function(period) {
+  if (!['month','quarter','year','custom'].includes(period)) return;
+  AN_STATE.period = period;
+  /* Keep the year fixed; sync quarter from month so toggling between
+     month/quarter on the same point in time feels natural. */
+  if (period === 'quarter') {
+    AN_STATE.quarter = Math.floor(AN_STATE.month / 3) + 1;
+  } else if (period === 'month') {
+    /* Snap month to the start of the quarter if user was on quarter view. */
+    AN_STATE.month = (AN_STATE.quarter - 1) * 3;
+  } else if (period === 'custom') {
+    /* Seed the date inputs from the current period if they're empty so the
+       MD doesn't see two blank pickers on first click. */
+    const r = analyticsRange();
+    if (!AN_STATE.customFrom) AN_STATE.customFrom = r.from.toISOString().slice(0,10);
+    if (!AN_STATE.customTo)   AN_STATE.customTo   = r.to.toISOString().slice(0,10);
+    const fromEl = document.getElementById('an-custom-from');
+    const toEl   = document.getElementById('an-custom-to');
+    if (fromEl) fromEl.value = AN_STATE.customFrom;
+    if (toEl)   toEl.value   = AN_STATE.customTo;
+  }
+  /* Re-paint period toggle states */
+  document.querySelectorAll('.an-period').forEach(btn => {
+    const on = btn.dataset.period === period;
+    btn.style.background = on ? 'var(--ink)' : '';
+    btn.style.color      = on ? 'var(--cream)' : '';
+  });
+  /* Show the right controls: stepper for month/quarter/year, date inputs for custom. */
+  const stepper = document.getElementById('analytics-stepper');
+  const custom  = document.getElementById('analytics-custom');
+  if (stepper) stepper.style.display = (period === 'custom') ? 'none' : '';
+  if (custom)  custom.style.display  = (period === 'custom') ? 'flex' : 'none';
+  /* Only reload if we have enough state. For Custom on first click, wait for Apply. */
+  if (period !== 'custom' || (AN_STATE.customFrom && AN_STATE.customTo)) {
+    loadAnalytics();
+  }
+};
 
 window.exportAnalyticsCSV = function() {
   const AN = window._AN_DATA;
@@ -8915,68 +9618,191 @@ window.exportAnalyticsCSV = function() {
   const blob = new Blob([sections.join('\n')], { type:'text/csv' });
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
-  a.download = `analytics_${AN.monthLabel.replace(' ','_')}.csv`;
+  a.download = `analytics_${(AN.monthLabel||'period').replace(/[^A-Za-z0-9]+/g,'_')}.csv`;
   a.click();
   toast('Analytics CSV downloaded.', 'success');
 };
 
-window.shiftAnalyticsMonth = function(delta) {
-  let m = AN_STATE.month + delta, y = AN_STATE.year;
-  if (m > 11) { m = 0; y++; }
-  if (m < 0)  { m = 11; y--; }
+/* Step the current period (month / quarter / year) by ±1, with bounds
+   so the user can't navigate past the current period. */
+window.shiftAnalyticsPeriod = function(delta) {
   const now = new Date();
-  if (y > now.getFullYear() || (y === now.getFullYear() && m > now.getMonth())) return;
-  AN_STATE.month = m; AN_STATE.year = y;
+  const nowY = now.getFullYear();
+  const nowM = now.getMonth();
+  const nowQ = Math.floor(nowM / 3) + 1;
+
+  if (AN_STATE.period === 'year') {
+    const y = AN_STATE.year + delta;
+    if (y > nowY) return;
+    AN_STATE.year = y;
+  } else if (AN_STATE.period === 'quarter') {
+    let q = AN_STATE.quarter + delta, y = AN_STATE.year;
+    if (q > 4) { q = 1; y++; }
+    if (q < 1) { q = 4; y--; }
+    if (y > nowY || (y === nowY && q > nowQ)) return;
+    AN_STATE.quarter = q; AN_STATE.year = y;
+    AN_STATE.month = (q - 1) * 3;       // keep month roughly in sync
+  } else {
+    let m = AN_STATE.month + delta, y = AN_STATE.year;
+    if (m > 11) { m = 0; y++; }
+    if (m < 0)  { m = 11; y--; }
+    if (y > nowY || (y === nowY && m > nowM)) return;
+    AN_STATE.month = m; AN_STATE.year = y;
+    AN_STATE.quarter = Math.floor(m / 3) + 1;
+  }
   loadAnalytics();
 };
+/* Back-compat — older inline onclick="shiftAnalyticsMonth(...)" calls still work. */
+window.shiftAnalyticsMonth = function(delta) { return window.shiftAnalyticsPeriod(delta); };
 
 window.loadAnalytics = async function() {
   const el = document.getElementById('analytics-content');
   el.innerHTML = '<div style="padding:40px" class="shimmer sk-row"></div>';
 
-  const monthLabel = `${AN_MONTHS[AN_STATE.month]} ${AN_STATE.year}`;
-  const monthBtn = document.getElementById('analytics-month-btn');
+  /* Resolve the active period (month / quarter / year) to a date range +
+     human-readable label. All downstream labels reference `monthLabel`
+     (legacy name) but it's actually the *period* label now. */
+  const rng = analyticsRange();
+  const monthLabel = rng.label;
+  const from = rng.from;
+  const to   = rng.to;
+
+  /* Sync the header label + the new period-label span. */
+  const periodLabelEl = document.getElementById('analytics-period-label');
+  if (periodLabelEl) periodLabelEl.textContent = monthLabel;
+  const monthBtn = document.getElementById('analytics-month-btn'); // legacy id, may exist on older deploys
   if (monthBtn) monthBtn.textContent = monthLabel;
 
-  const from = new Date(AN_STATE.year, AN_STATE.month, 1);
-  const to   = new Date(AN_STATE.year, AN_STATE.month + 1, 0, 23, 59, 59);
-  const daysInMonth = to.getDate();
+  /* daysInMonth previously controlled the daily-revenue x-axis bucket count.
+     For quarter/year we still want a daily series across the full range. */
+  const daysInMonth = Math.round((to - from) / 86400000) + 1;
 
-  const [ordersRes, allOrdersRes, usersRes, itemsRes, batchRes, agentOrdersRes] = await Promise.all([
-    sb.from('orders').select('id,total_ugx,status,created_at,payment_method,customer_district')
+  /* When compare-to-previous is enabled, pre-fetch the previous period's
+     metrics in parallel so we can show ↑/↓ deltas on every section
+     (KPI cards, status table, district bars, products, channels, chart). */
+  const prevRng = AN_STATE.compare ? previousRange(rng) : null;
+  let prevSummary = null;
+  if (prevRng) {
+    try {
+      const [prevOrdRes, prevAllRes, prevItemsRes, prevUsersRes] = await Promise.all([
+        sb.from('orders')
+          .select('id,total_ugx,status,created_at,payment_method,customer:app_users!customer_id(district)')
+          .gte('created_at', prevRng.from.toISOString())
+          .lte('created_at', prevRng.to.toISOString())
+          .in('status', ['confirmed','dispatched','delivered','completed']),
+        sb.from('orders')
+          .select('id,status,total_ugx')
+          .gte('created_at', prevRng.from.toISOString())
+          .lte('created_at', prevRng.to.toISOString()),
+        sb.from('order_items')
+          .select('product_name,total_ugx,orders!inner(created_at)')
+          .gte('orders.created_at', prevRng.from.toISOString())
+          .lte('orders.created_at', prevRng.to.toISOString()),
+        sb.from('app_users')
+          .select('id,role,created_at')
+          .gte('created_at', prevRng.from.toISOString())
+          .lte('created_at', prevRng.to.toISOString()),
+      ]);
+      const pOrders = prevOrdRes.data   || [];
+      const pAll    = prevAllRes.data   || [];
+      const pItems  = prevItemsRes.data || [];
+      const pUsers  = prevUsersRes.data || [];
+      const pRevenue = pOrders.reduce((s,o) => s + (o.total_ugx || 0), 0);
+      const pAvg     = pOrders.length ? Math.round(pRevenue / pOrders.length) : 0;
+
+      /* Build the same shape of breakdown maps as the current period so each
+         render block can lookup the prev value by key in O(1). */
+      const pStatus = {};
+      pAll.forEach(o => {
+        const s = o.status || 'unknown';
+        if (!pStatus[s]) pStatus[s] = { count:0, revenue:0 };
+        pStatus[s].count++;
+        if (['confirmed','dispatched','delivered','completed'].includes(s))
+          pStatus[s].revenue += o.total_ugx || 0;
+      });
+      const pDistrict = {};
+      pOrders.forEach(o => {
+        const d = o.customer?.district || 'Unknown';
+        if (!pDistrict[d]) pDistrict[d] = { count:0, revenue:0 };
+        pDistrict[d].count++;
+        pDistrict[d].revenue += o.total_ugx || 0;
+      });
+      const pProd = {};
+      pItems.forEach(it => {
+        const k = it.product_name || 'Unknown';
+        pProd[k] = (pProd[k] || 0) + (it.total_ugx || 0);
+      });
+      const pChan = { mobile_money:0, agent:0, diaspora_visa:0 };
+      pOrders.forEach(o => {
+        const c = o.payment_method;
+        if (c === 'mobile_money') pChan.mobile_money += o.total_ugx || 0;
+        else if (c === 'agent')   pChan.agent        += o.total_ugx || 0;
+        else if (c === 'diaspora_visa' || c === 'visa') pChan.diaspora_visa += o.total_ugx || 0;
+      });
+      const pUserCounts = { farmer:0, agent:0, field_officer:0, diaspora:0 };
+      pUsers.forEach(u => { if (pUserCounts[u.role] != null) pUserCounts[u.role]++; });
+
+      /* Daily prev series — same length as current dayKeys, indexed by offset
+         from `from` (NOT calendar date), so the overlay aligns visually. */
+      const pDayMap = {};
+      pOrders.forEach(o => {
+        const d = (o.created_at || '').slice(0,10);
+        pDayMap[d] = (pDayMap[d] || 0) + (o.total_ugx || 0);
+      });
+      const pDayKeys = (() => {
+        const out = [];
+        const cur = new Date(prevRng.from.getFullYear(), prevRng.from.getMonth(), prevRng.from.getDate());
+        while (cur <= prevRng.to) { out.push(cur.toISOString().slice(0,10)); cur.setDate(cur.getDate()+1); }
+        return out;
+      })();
+      const pDayVals = pDayKeys.map(d => pDayMap[d] || 0);
+
+      prevSummary = {
+        revenue:        pRevenue,
+        orderCount:     pOrders.length,
+        avgOrderVal:    pAvg,
+        totalAllOrders: pAll.length,
+        label:          prevRng.label,
+        statusMap:      pStatus,
+        districtMap:    pDistrict,
+        prodMap:        pProd,
+        chanMap:        pChan,
+        userCounts:     pUserCounts,
+        dayVals:        pDayVals,
+      };
+    } catch (e) {
+      console.warn('[analytics] previous-period fetch failed', e);
+    }
+  }
+
+  /* Fetch real data only — no illustrative fallbacks.
+     The orders table doesn't have customer_district or agent_id columns;
+     district comes from app_users via the customer_id FK and is joined
+     in PostgREST. order_items are scoped to the month via an inner-join
+     filter on the orders.created_at range. */
+  const [ordersRes, allOrdersRes, usersRes, itemsRes, batchRes] = await Promise.all([
+    sb.from('orders')
+      .select('id,total_ugx,status,created_at,payment_method,customer:app_users!customer_id(district)')
       .gte('created_at', from.toISOString())
       .lte('created_at', to.toISOString())
       .in('status', ['confirmed','dispatched','delivered','completed']),
-    sb.from('orders').select('id,total_ugx,status,created_at,customer_district,agent_id')
+    sb.from('orders')
+      .select('id,total_ugx,status,created_at,customer:app_users!customer_id(district)')
       .gte('created_at', from.toISOString())
       .lte('created_at', to.toISOString()),
-    sb.from('app_users').select('id,role'),
-    sb.from('order_items').select('product_name,total_ugx'),
-    sb.from('traceability_batches').select('id,crop,current_stage,updated_at').limit(200),
-    sb.from('orders').select('agent_id,total_ugx,status')
-      .not('agent_id','is',null)
-      .in('status',['confirmed','dispatched','delivered','completed'])
-      .gte('created_at', from.toISOString())
-      .lte('created_at', to.toISOString()),
+    sb.from('app_users').select('id,role,created_at'),
+    sb.from('order_items')
+      .select('product_name,total_ugx,orders!inner(created_at)')
+      .gte('orders.created_at', from.toISOString())
+      .lte('orders.created_at', to.toISOString()),
+    sb.from('traceability_batches').select('id,crop,current_stage,updated_at').limit(500),
   ]);
 
-  /* Illustrative fallback orders */
-  const AN_ORDERS_FB = Array.from({length: daysInMonth}).map((_,i) => ({
-    id:`ao${i}`, total_ugx: Math.round(200000 + Math.sin(i*0.7)*180000 + i*40000),
-    status:'completed', payment_method: i%3===0?'diaspora_visa': i%2===0?'mobile_money':'agent',
-    created_at: new Date(AN_STATE.year, AN_STATE.month, i+1).toISOString(),
-  }));
-
-  const useOrdersFB = !ordersRes.data?.length;
-  const useUsersFB  = !usersRes.data?.length;
-  const useItemsFB  = !itemsRes.data?.length;
-  const useDemo = useOrdersFB || useUsersFB || useItemsFB;
-
-  const orders    = useOrdersFB ? AN_ORDERS_FB : ordersRes.data;
-  const allOrders = allOrdersRes.data || (useOrdersFB ? AN_ORDERS_FB : []);
-  const users     = usersRes.data  || [];
-  const items     = itemsRes.data  || [];
-  const batches   = batchRes.data  || [];
+  const orders    = ordersRes.data    || [];
+  const allOrders = allOrdersRes.data || [];
+  const users     = usersRes.data     || [];
+  const items     = itemsRes.data     || [];
+  const batches   = batchRes.data     || [];
 
   /* ── Orders by status breakdown ──────────────────────── */
   const STATUS_LABELS = { completed:'Completed', delivered:'Delivered', dispatched:'Dispatched',
@@ -8997,28 +9823,30 @@ window.loadAnalytics = async function() {
   );
   const avgOrderVal = orders.length ? Math.round(orders.reduce((s,o)=>s+(o.total_ugx||0),0)/orders.length) : 0;
 
-  /* ── Sales by district ────────────────────────────────── */
+  /* ── Sales by district (resolved via app_users join) ────── */
   const districtMap = {};
   orders.forEach(o => {
-    const d = o.customer_district || 'Unknown';
+    const d = o.customer?.district || 'Unknown';
     if (!districtMap[d]) districtMap[d] = { count:0, revenue:0 };
     districtMap[d].count++;
     districtMap[d].revenue += o.total_ugx || 0;
   });
   const districtRows = Object.entries(districtMap)
     .sort((a,b) => b[1].revenue - a[1].revenue).slice(0,8);
-  if (useOrdersFB || !districtRows.length) {
-    const fbDistricts = [['Kampala',{count:47,revenue:24200000}],['Wakiso',{count:38,revenue:19800000}],
-      ['Mpigi',{count:29,revenue:16100000}],['Masaka',{count:24,revenue:12700000}],
-      ['Mbarara',{count:21,revenue:11000000}],['Mbale',{count:18,revenue:8800000}],
-      ['Gulu',{count:15,revenue:7100000}],['Jinja',{count:12,revenue:5700000}]];
-    districtRows.splice(0, districtRows.length, ...fbDistricts);
-  }
   const districtMax = Math.max(...districtRows.map(d=>d[1].revenue),1);
 
-  /* ── Revenue per day (full month) → smooth line chart ─────── */
-  const dayKeys = Array.from({length: daysInMonth}).map((_,i) =>
-    new Date(AN_STATE.year, AN_STATE.month, i+1).toISOString().slice(0,10));
+  /* ── Revenue per day across the active period → smooth line chart.
+        Walks `from` → `to` day-by-day so quarter (90d) and year (365d)
+        views work too, not just month. ─────────────────────────── */
+  const dayKeys = (() => {
+    const out = [];
+    const cur = new Date(from.getFullYear(), from.getMonth(), from.getDate());
+    while (cur <= to) {
+      out.push(cur.toISOString().slice(0,10));
+      cur.setDate(cur.getDate() + 1);
+    }
+    return out;
+  })();
   const dayMap = {};
   orders.forEach(o => {
     const d = (o.created_at||'').slice(0,10);
@@ -9028,14 +9856,29 @@ window.loadAnalytics = async function() {
   const maxDV   = Math.max(...dayVals, 1);
   const totalRevenue = dayVals.reduce((a,b)=>a+b,0);
 
-  /* SVG line chart */
-  const W=600, H=90, pts = dayVals.map((v,i) => ({
+  /* SVG line chart. When comparing, overlay the previous period's daily
+     series as a dashed grey line so MD can see day-by-day shape change. */
+  const W=600, H=90;
+  /* Shared Y scale so both lines are comparable. */
+  const prevDayValsForChart = prevSummary ? prevSummary.dayVals : [];
+  const yMax = Math.max(maxDV, ...(prevDayValsForChart.length ? prevDayValsForChart : [1]));
+  const pts = dayVals.map((v,i) => ({
     x: Math.round(i/(Math.max(dayVals.length-1,1))*W),
-    y: Math.round(H - (v/maxDV)*H),
+    y: Math.round(H - (v/yMax)*H),
   }));
   const polyline = pts.map(p=>`${p.x},${p.y}`).join(' ');
   const area     = `${pts[0].x},${H} ` + polyline + ` ${pts[pts.length-1].x},${H}`;
   const dotPt    = pts[pts.length-1];
+  /* Previous-period overlay — align by index so day 1 of prev = day 1 of curr. */
+  const prevOverlay = (() => {
+    if (!prevSummary || !prevDayValsForChart.length) return '';
+    const ptsPrev = prevDayValsForChart.map((v,i) => ({
+      x: Math.round(i/(Math.max(prevDayValsForChart.length-1,1))*W),
+      y: Math.round(H - (v/yMax)*H),
+    }));
+    const poly = ptsPrev.map(p=>`${p.x},${p.y}`).join(' ');
+    return `<polyline points="${poly}" fill="none" stroke="#9ca3af" stroke-width="1.6" stroke-dasharray="4 3" stroke-linejoin="round" stroke-linecap="round"/>`;
+  })();
 
   const lineChart = `
     <svg viewBox="0 0 ${W} ${H+10}" style="width:100%;height:110px;overflow:visible">
@@ -9046,9 +9889,14 @@ window.loadAnalytics = async function() {
         </linearGradient>
       </defs>
       <polygon points="${area}" fill="url(#anGrad)"/>
+      ${prevOverlay}
       <polyline points="${polyline}" fill="none" stroke="var(--teal)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>
       <circle cx="${dotPt.x}" cy="${dotPt.y}" r="5" fill="var(--orange)" stroke="#fff" stroke-width="2"/>
-    </svg>`;
+    </svg>
+    ${prevSummary ? `<div style="display:flex;gap:14px;font-size:10.5px;color:var(--ink-60);margin-top:4px;align-items:center">
+      <span style="display:flex;align-items:center;gap:5px"><span style="width:10px;height:2px;background:var(--teal);border-radius:1px"></span>${monthLabel}</span>
+      <span style="display:flex;align-items:center;gap:5px"><span style="width:14px;height:1.5px;border-top:1.5px dashed #9ca3af"></span>${prevSummary.label}</span>
+    </div>` : ''}`;
 
   /* ── Revenue by channel ───────────────────────────────── */
   const chanMap = { mobile_money:0, agent:0, diaspora_visa:0 };
@@ -9057,9 +9905,9 @@ window.loadAnalytics = async function() {
     if (ch === 'mobile_money') chanMap.mobile_money += o.total_ugx||0;
     else if (ch === 'agent')   chanMap.agent         += o.total_ugx||0;
     else if (ch === 'diaspora_visa' || ch === 'visa') chanMap.diaspora_visa += o.total_ugx||0;
-    else chanMap.mobile_money += o.total_ugx||0;
+    /* Unknown channels (cash, other) are not counted in the breakdown
+       — they show up under Revenue and Order Count but not in this chart. */
   });
-  if (useOrdersFB) { chanMap.mobile_money=24800000; chanMap.agent=18100000; chanMap.diaspora_visa=8300000; }
   const chanMax = Math.max(...Object.values(chanMap), 1);
   const CHAN = [
     { key:'mobile_money',  label:'Direct · farmer',    color:'var(--teal)' },
@@ -9067,18 +9915,26 @@ window.loadAnalytics = async function() {
     { key:'diaspora_visa', label:'Diaspora · Visa',    color:'var(--ink)' },
   ];
 
-  /* ── Top products ─────────────────────────────────────── */
+  /* ── Top products (this month) ────────────────────────── */
   const prodMap = {};
   items.forEach(it => { const k=it.product_name||'Unknown'; prodMap[k]=(prodMap[k]||0)+(it.total_ugx||0); });
-  const topProds = Object.entries(prodMap).sort((a,b)=>b[1]-a[1]).slice(0,8);
-  const prodList = (useItemsFB || !topProds.length) ? AN_PROD_FB.slice(0,8) : topProds;
+  const prodList = Object.entries(prodMap).sort((a,b)=>b[1]-a[1]).slice(0,8);
   const maxProd  = Math.max(...prodList.map(p=>p[1]), 1);
 
-  /* ── User counts ──────────────────────────────────────── */
+  /* ── User counts (real DB only) ───────────────────────── */
   const uc = { farmer:0, agent:0, field_officer:0, diaspora:0 };
   users.forEach(u => { if(uc[u.role]!==undefined) uc[u.role]++; });
-  if (useUsersFB) { uc.farmer=28384; uc.agent=112; uc.field_officer=12; uc.diaspora=438; }
   const ucTotal = Object.values(uc).reduce((a,b)=>a+b,0)||1;
+  /* New signups in current period (used for the compare footnote so users see
+     period-scoped growth rather than just a cumulative donut). */
+  const fromMs = from.getTime(), toMs = to.getTime();
+  const newSignupsThisPeriod = users.filter(u => {
+    const t = u.created_at ? new Date(u.created_at).getTime() : 0;
+    return t >= fromMs && t <= toMs;
+  }).length;
+  const prevNewSignups = prevSummary
+    ? Object.values(prevSummary.userCounts).reduce((a,b)=>a+b,0)
+    : 0;
   const UC_COLOR = { farmer:'#15616D', agent:'#FF7D00', field_officer:'#78290F', diaspora:'#001524' };
   const UC_LABEL = { farmer:'Farmers', agent:'Agents', field_officer:'Officers', diaspora:'Diaspora' };
 
@@ -9105,54 +9961,63 @@ window.loadAnalytics = async function() {
     if (!b.updated_at) return false;
     return (Date.now() - new Date(b.updated_at)) / 864e5 > 14;
   }).length;
-  const coffeeBatches = batches.filter(b => (b.crop||'').toLowerCase().includes('coffee')).length  || 42;
-  const hassBatches   = batches.filter(b => (b.crop||'').toLowerCase().includes('avocado')).length || 18;
+  const coffeeBatches = batches.filter(b => (b.crop||'').toLowerCase().includes('coffee')).length;
+  const hassBatches   = batches.filter(b => (b.crop||'').toLowerCase().includes('avocado')).length;
 
   /* ── Cache computed data for PDF / CSV export ────────── */
   window._AN_DATA = {
     monthLabel, from: from.toISOString().slice(0,10), to: to.toISOString().slice(0,10),
     totalRevenue, orderCount: orders.length,
     uc, UC_LABEL, UC_COLOR, chanMap, CHAN,
-    prodList, overdue, coffeeBatches, hassBatches, useDemo,
+    prodList, overdue, coffeeBatches, hassBatches, useDemo: false,
     dayKeys, dayVals,
     statusRows, STATUS_LABELS, totalAllOrders, completionRate, avgOrderVal,
     districtRows, districtMax,
   };
 
-  /* ── DEMO banner ──────────────────────────────────────── */
-  const demoBanner = useDemo
-    ? `<div style="background:rgba(220,120,20,.08);border-left:3px solid var(--orange);padding:10px 16px;border-radius:4px;font-size:12.5px;color:var(--orange);margin-bottom:16px">
-        ⚠ Illustrative data — connect Supabase to load live analytics.
-      </div>` : '';
+  /* No more "Illustrative data — connect Supabase" banner: every panel
+     now reflects what's actually in your database. Empty states render
+     as a small "—" or "No data yet for this month" inside each card. */
+  const demoBanner = '';
 
   const STATUS_COLOR = { completed:'var(--teal)', delivered:'#15803d', dispatched:'var(--orange)',
     confirmed:'#6C4FBF', awaiting_payment:'#FF7D00', cancelled:'var(--rust)', refunded:'var(--ink-40)' };
 
   el.innerHTML = demoBanner + `
 
-    <!-- ── Executive KPI summary ──────────────────────────── -->
+    <!-- ── Executive KPI summary (with optional vs-previous deltas) ────── -->
     <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px">
       <div class="card" style="padding:16px;border-top:3px solid var(--orange)">
         <div style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--orange);margin-bottom:4px">Total Revenue</div>
-        <div style="font-family:'Poppins';font-weight:800;font-size:20px">${fmtUGX(totalRevenue)}</div>
-        <div style="font-size:11px;color:var(--ink-60);margin-top:3px">${monthLabel}</div>
+        <div style="font-family:'Poppins';font-weight:800;font-size:20px;display:flex;align-items:baseline;flex-wrap:wrap">
+          <span>${fmtUGX(totalRevenue)}</span>
+          ${prevSummary ? anDeltaPill(totalRevenue, prevSummary.revenue) : ''}
+        </div>
+        <div style="font-size:11px;color:var(--ink-60);margin-top:3px">${monthLabel}${prevSummary ? ` · vs ${prevSummary.label}: ${fmtUGX(prevSummary.revenue)}` : ''}</div>
       </div>
       <div class="card" style="padding:16px;border-top:3px solid var(--teal)">
         <div style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--teal);margin-bottom:4px">Completed Orders</div>
-        <div style="font-family:'Poppins';font-weight:800;font-size:20px">${orders.length.toLocaleString()}</div>
-        <div style="font-size:11px;color:var(--ink-60);margin-top:3px">${totalAllOrders} total incl. pending</div>
+        <div style="font-family:'Poppins';font-weight:800;font-size:20px;display:flex;align-items:baseline;flex-wrap:wrap">
+          <span>${orders.length.toLocaleString()}</span>
+          ${prevSummary ? anDeltaPill(orders.length, prevSummary.orderCount) : ''}
+        </div>
+        <div style="font-size:11px;color:var(--ink-60);margin-top:3px">${totalAllOrders} total incl. pending${prevSummary ? ` · prev: ${prevSummary.orderCount}` : ''}</div>
       </div>
       <div class="card" style="padding:16px;border-top:3px solid #6C4FBF">
         <div style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:#6C4FBF;margin-bottom:4px">Avg Order Value</div>
-        <div style="font-family:'Poppins';font-weight:800;font-size:20px">${fmtUGX(avgOrderVal)}</div>
-        <div style="font-size:11px;color:var(--ink-60);margin-top:3px">per confirmed order</div>
+        <div style="font-family:'Poppins';font-weight:800;font-size:20px;display:flex;align-items:baseline;flex-wrap:wrap">
+          <span>${fmtUGX(avgOrderVal)}</span>
+          ${prevSummary ? anDeltaPill(avgOrderVal, prevSummary.avgOrderVal) : ''}
+        </div>
+        <div style="font-size:11px;color:var(--ink-60);margin-top:3px">per confirmed order${prevSummary ? ` · prev: ${fmtUGX(prevSummary.avgOrderVal)}` : ''}</div>
       </div>
       <div class="card" style="padding:16px;border-top:3px solid #15803d">
         <div style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:#15803d;margin-bottom:4px">Top District</div>
-        <div style="font-family:'Poppins';font-weight:800;font-size:20px">${districtRows[0]?.[0] || 'Kampala'}</div>
-        <div style="font-size:11px;color:var(--ink-60);margin-top:3px">${fmtUGX(districtRows[0]?.[1]?.revenue || 0)} revenue</div>
+        <div style="font-family:'Poppins';font-weight:800;font-size:20px">${districtRows[0]?.[0] || '—'}</div>
+        <div style="font-size:11px;color:var(--ink-60);margin-top:3px">${districtRows[0] ? fmtUGX(districtRows[0][1].revenue) + ' revenue' : 'No sales yet this period'}</div>
       </div>
     </div>
+    ${prevSummary ? `<div style="font-size:11.5px;color:var(--ink-60);margin:-8px 0 16px"><strong>Comparing</strong> ${monthLabel} vs <strong>${prevSummary.label}</strong>. Green = growth, red = decline.</div>` : ''}
 
     <!-- ── Row 1: Daily sales + Revenue by channel ────────── -->
     <div style="display:grid;grid-template-columns:1.4fr 1fr;gap:20px;margin-bottom:20px">
@@ -9171,12 +10036,12 @@ window.loadAnalytics = async function() {
           <div style="margin-bottom:14px">
             <div style="display:flex;justify-content:space-between;font-size:12.5px;margin-bottom:5px">
               <span style="font-weight:600;color:var(--ink)">${c.label}</span>
-              <span style="font-weight:700;color:var(--ink)">${fmtUGX(chanMap[c.key])}</span>
+              <span style="font-weight:700;color:var(--ink);display:inline-flex;align-items:center">${fmtUGX(chanMap[c.key])}${prevSummary ? anDeltaPill(chanMap[c.key], prevSummary.chanMap[c.key]) : ''}</span>
             </div>
             <div style="height:7px;background:var(--ink-08);border-radius:4px">
               <div style="height:100%;background:${c.color};border-radius:4px;width:${Math.max(Math.round(chanMap[c.key]/chanMax*100),2)}%"></div>
             </div>
-            <div style="font-size:10px;color:var(--ink-40);margin-top:2px">${Math.round(chanMap[c.key]/Math.max(totalRevenue,1)*100)}% of total</div>
+            <div style="font-size:10px;color:var(--ink-40);margin-top:2px">${Math.round(chanMap[c.key]/Math.max(totalRevenue,1)*100)}% of total${prevSummary ? ` · prev: ${fmtUGX(prevSummary.chanMap[c.key])}` : ''}</div>
           </div>`).join('')}
       </div>
     </div>
@@ -9195,34 +10060,40 @@ window.loadAnalytics = async function() {
             </tr>
           </thead>
           <tbody>
-            ${statusRows.map(([status,data]) => `
+            ${statusRows.map(([status,data]) => {
+              const prevD = prevSummary?.statusMap?.[status] || { count:0, revenue:0 };
+              return `
               <tr style="border-bottom:1px solid var(--ink-05)">
                 <td style="padding:7px 0;display:flex;align-items:center;gap:6px">
                   <span style="width:8px;height:8px;border-radius:50%;background:${STATUS_COLOR[status]||'var(--ink-20)'};flex-shrink:0"></span>
                   <span style="font-weight:600">${STATUS_LABELS[status]||status}</span>
                 </td>
-                <td style="text-align:right;padding:7px 0;font-variant-numeric:tabular-nums">${data.count}</td>
+                <td style="text-align:right;padding:7px 0;font-variant-numeric:tabular-nums">${data.count}${prevSummary ? anDeltaPill(data.count, prevD.count) : ''}</td>
                 <td style="text-align:right;padding:7px 0;color:var(--ink-60)">${data.revenue>0?fmtUGX(data.revenue):'—'}</td>
                 <td style="text-align:right;padding:7px 0;color:var(--ink-40)">${Math.round(data.count/totalAllOrders*100)}%</td>
-              </tr>`).join('')}
+              </tr>`;
+            }).join('')}
           </tbody>
         </table>
       </div>
       <div class="card" style="padding:20px">
         <div style="font-family:'Poppins';font-weight:700;font-size:14px;margin-bottom:14px">Sales by district · ${monthLabel}</div>
-        ${districtRows.map(([district,data],i) => `
+        ${districtRows.length ? districtRows.map(([district,data],i) => {
+          const prevD = prevSummary?.districtMap?.[district] || { revenue:0 };
+          return `
           <div style="margin-bottom:10px">
             <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px">
               <span style="font-weight:600;display:flex;align-items:center;gap:6px">
                 <span style="font-size:10px;font-weight:800;color:var(--ink-40);width:14px">${i+1}</span>
                 ${district}
               </span>
-              <span style="color:var(--ink-60);font-weight:600">${fmtUGX(data.revenue)} <span style="color:var(--ink-40);font-size:10px">(${data.count} orders)</span></span>
+              <span style="color:var(--ink-60);font-weight:600;display:inline-flex;align-items:center">${fmtUGX(data.revenue)} <span style="color:var(--ink-40);font-size:10px;margin-left:4px">(${data.count} orders)</span>${prevSummary ? anDeltaPill(data.revenue, prevD.revenue) : ''}</span>
             </div>
             <div style="height:6px;background:var(--ink-08);border-radius:3px">
               <div style="height:100%;background:${i===0?'var(--orange)':i===1?'var(--teal)':'var(--ink-20)'};border-radius:3px;width:${Math.max(Math.round(data.revenue/districtMax*100),2)}%"></div>
             </div>
-          </div>`).join('')}
+          </div>`;
+        }).join('') : `<div style="padding:18px 0;text-align:center;color:var(--ink-40);font-size:12.5px">No district sales recorded for ${monthLabel} yet.</div>`}
       </div>
     </div>
 
@@ -9230,16 +10101,19 @@ window.loadAnalytics = async function() {
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:20px">
       <div class="card" style="padding:20px">
         <div style="font-family:'Poppins';font-weight:700;font-size:14px;margin-bottom:14px">Top products · ${monthLabel}</div>
-        ${prodList.map(([name, val]) => `
+        ${prodList.length ? prodList.map(([name, val]) => {
+          const prevV = prevSummary?.prodMap?.[name] || 0;
+          return `
           <div style="margin-bottom:9px">
             <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:3px">
               <span style="font-weight:600;max-width:58%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${name}</span>
-              <span style="color:var(--ink-60);font-weight:600">${fmtUGX(val)}</span>
+              <span style="color:var(--ink-60);font-weight:600;display:inline-flex;align-items:center">${fmtUGX(val)}${prevSummary ? anDeltaPill(val, prevV) : ''}</span>
             </div>
             <div style="height:5px;background:var(--ink-08);border-radius:3px">
               <div style="height:100%;background:var(--orange);border-radius:3px;width:${Math.max(Math.round(val/maxProd*100),2)}%"></div>
             </div>
-          </div>`).join('')}
+          </div>`;
+        }).join('') : `<div style="padding:18px 0;text-align:center;color:var(--ink-40);font-size:12.5px">No products sold yet this month.</div>`}
       </div>
       <div class="card" style="padding:20px">
         <div style="font-family:'Poppins';font-weight:700;font-size:14px;margin-bottom:18px">User breakdown</div>
@@ -9255,6 +10129,16 @@ window.loadAnalytics = async function() {
               </div>`).join('')}
           </div>
         </div>
+        ${prevSummary ? `
+        <div style="margin-top:14px;padding-top:12px;border-top:1px solid var(--ink-08);display:flex;align-items:center;justify-content:space-between;font-size:11.5px;color:var(--ink-60)">
+          <span>New signups this period</span>
+          <span style="display:inline-flex;align-items:center">
+            <strong style="color:var(--ink);font-weight:700">${newSignupsThisPeriod.toLocaleString()}</strong>
+            ${anDeltaPill(newSignupsThisPeriod, prevNewSignups)}
+          </span>
+        </div>
+        <div style="font-size:10px;color:var(--ink-40);margin-top:4px">Donut shows all-time totals · ${prevNewSignups.toLocaleString()} new in ${prevSummary.label}</div>
+        ` : ''}
       </div>
     </div>
 
@@ -9272,13 +10156,17 @@ window.loadAnalytics = async function() {
         </div>
         <div style="padding:0 20px;border-right:1px solid var(--ink-08)">
           <div style="font-size:12px;color:var(--ink-60);margin-bottom:2px">Overdue in stage</div>
-          <div style="font-weight:800;font-size:16px;color:${overdue>0?'var(--rust)':'var(--teal)'}">${overdue||3} <span style="font-size:12px;font-weight:500">batches</span></div>
+          <div style="font-weight:800;font-size:16px;color:${overdue>0?'var(--rust)':'var(--teal)'}">${overdue} <span style="font-size:12px;font-weight:500">batches</span></div>
         </div>
         <div style="padding:0 0 0 20px">
           <div style="font-size:12px;color:var(--ink-60);margin-bottom:2px">Export destinations</div>
           <div style="font-size:11px;font-weight:600;line-height:1.6;color:var(--ink)">Hamburg · Rotterdam<br>Trieste · Mombasa</div>
         </div>
       </div>
+      ${prevSummary ? `
+      <div style="margin-top:14px;padding-top:12px;border-top:1px solid var(--ink-08);font-size:11px;color:var(--ink-40);line-height:1.5">
+        Traceability values are point-in-time snapshots of current active batches, so they are not period-over-period comparable. Use the metrics above for growth/decline.
+      </div>` : ''}
     </div>`;
 };
 /* ══════════════════════════════════════════════════════
@@ -10005,6 +10893,66 @@ window.generateCommReport = function() {
 ══════════════════════════════════════════════════════ */
 const FOC = { all:[], currentTab:'directory', statusF:'', _useDemo:false };
 
+/* Uganda district → approximate centroid coordinates [lat, lng].
+   Used to place officer markers on the GPS heat-map when an officer
+   row doesn't carry explicit lat/lng (which is the common case for
+   newly-added officers — we only capture their district at creation).
+   Mirror of WX_COORDS in app.html. */
+const UG_DISTRICT_COORDS = {
+  'Kampala':    [0.3476, 32.5825],
+  'Wakiso':     [0.4044, 32.4595],
+  'Mukono':     [0.3536, 32.7574],
+  'Mpigi':      [0.2249, 32.3225],
+  'Jinja':      [0.4250, 33.2042],
+  'Mbale':      [1.0820, 34.1750],
+  'Mbarara':   [-0.6062, 30.6587],
+  'Gulu':       [2.7747, 32.2990],
+  'Lira':       [2.2499, 32.8997],
+  'Soroti':     [1.7147, 33.6111],
+  'Masaka':    [-0.3289, 31.7350],
+  'Mityana':    [0.4170, 32.0432],
+  'Butambala':  [0.1944, 32.1019],
+  'Luwero':     [0.8493, 32.4724],
+  'Kabale':    [-1.2480, 29.9892],
+  'Hoima':      [1.4356, 31.3526],
+  'Arua':       [3.0203, 30.9111],
+  'Kasese':     [0.1833, 30.0833],
+  'Fort Portal':[0.6710, 30.2750],
+  'Tororo':     [0.6925, 34.1810],
+  'Iganga':     [0.6094, 33.4694],
+  'Kayunga':    [0.7028, 32.8889],
+  'Apac':       [1.9774, 32.5375],
+  'Kitgum':     [3.2780, 32.8870],
+  'Bushenyi':  [-0.5859, 30.1900],
+};
+/* Stable colour per district name — every officer in Gulu gets one
+   colour, Wakiso another, etc., so on the map you can immediately
+   tell "these dots are the same district team". */
+const FOC_DIST_PALETTE = ['#15616D','#FF7D00','#78290F','#001524','#3A7D44','#6B4226','#9B2226','#285238','#2E4057','#774936','#5F0F40','#0F4C5C','#A4243B','#1F3A5F'];
+function focDistrictColor(name) {
+  if (!name) return '#999';
+  let h = 0; for (let i = 0; i < name.length; i++) h = (h * 31 + name.charCodeAt(i)) | 0;
+  return FOC_DIST_PALETTE[Math.abs(h) % FOC_DIST_PALETTE.length];
+}
+/* Tiny deterministic jitter so multiple officers in the same district
+   don't render exactly on top of each other. ±~5 km radius, derived
+   from the officer id so each officer's position is stable. */
+function focJitter(id, base) {
+  if (!id) return base;
+  let h1 = 0, h2 = 0;
+  for (let i = 0; i < id.length; i++) { h1 = (h1 * 31 + id.charCodeAt(i)) | 0; h2 = (h2 * 17 + id.charCodeAt(i)) | 0; }
+  return [ base[0] + ((h1 % 1000) / 1000 - 0.5) * 0.08,
+           base[1] + ((h2 % 1000) / 1000 - 0.5) * 0.08 ];
+}
+/* Resolve the (lat, lng) for an officer: explicit row coords win;
+   otherwise fall back to the district centroid (jittered by id). */
+function focResolveCoord(o) {
+  if (o.lat != null && o.lng != null) return [o.lat, o.lng];
+  const base = UG_DISTRICT_COORDS[o.district];
+  if (!base) return null;
+  return focJitter(String(o.id || o.full_name || ''), base);
+}
+
 const FOC_FALLBACK = [
   {id:'fo1', full_name:'Okello James',      district:'Butambala', status:'active',           phone:'+256700321777', speciality:'Coffee & Cocoa',         languages:'English · Luganda · Acholi',  farmers_helped:84,  visits:42, rating:4.7, availability:'available', senior:false, lat:0.20,   lng:32.00},
   {id:'fo2', full_name:'Achieng Grace',     district:'Mbale',     status:'active',           phone:'+256712900400', speciality:'Horticulture · Hass',     languages:'English · Luganda · Luo',     farmers_helped:112, visits:58, rating:4.9, availability:'available', senior:true,  lat:1.08,   lng:34.18},
@@ -10039,6 +10987,13 @@ window.loadOfficers = async function() {
     .select('*').eq('role','field_officer').order('status').order('full_name');
   FOC._useDemo = !(!error && data?.length);
   FOC.all = FOC._useDemo ? FOC_FALLBACK : data;
+  /* Live subtitle count — only active (approved) officers count toward the
+     "appearing in the Talk to an Expert directory" copy. */
+  const sub = document.getElementById('officers-count-sub');
+  if (sub) {
+    const active = FOC.all.filter(o => (o.status||'active') === 'active').length;
+    sub.textContent = active === 0 ? 'No' : active.toLocaleString('en-UG');
+  }
   renderOfficersTabs();
   renderOfficersContent(FOC.currentTab);
 };
@@ -10155,6 +11110,83 @@ window.openOfficerDetail = function(id) {
     </div>`;
 };
 
+/* ── Add officer drawer (new) ──────────────────────────── */
+window.openOnboardOfficer = function() {
+  /* Reset form */
+  ['of-name','of-phone','of-email','of-languages','of-speciality','of-notes'].forEach(id => {
+    const el = document.getElementById(id); if (el) el.value = '';
+  });
+  document.getElementById('of-district').value = '';
+  document.getElementById('of-off-day').value  = '';
+  document.getElementById('of-commission').value = '0';
+  const r = document.querySelector('input[name="of-status"][value="active"]');
+  if (r) r.checked = true;
+  document.getElementById('onboard-officer-drawer').classList.add('open');
+  document.getElementById('onboard-officer-overlay').classList.add('open');
+  setTimeout(() => { const f = document.getElementById('of-name'); if (f) f.focus(); }, 100);
+};
+window.closeOnboardOfficer = function() {
+  document.getElementById('onboard-officer-drawer').classList.remove('open');
+  document.getElementById('onboard-officer-overlay').classList.remove('open');
+};
+window.saveOnboardOfficer = async function() {
+  const name      = (document.getElementById('of-name').value || '').trim();
+  const phone     = (document.getElementById('of-phone').value || '').trim();
+  const email     = (document.getElementById('of-email').value || '').trim() || null;
+  const district  = document.getElementById('of-district').value || null;
+  const languages = (document.getElementById('of-languages').value || '').trim() || null;
+  const specialty = (document.getElementById('of-speciality').value || '').trim() || null;
+  const offDay    = document.getElementById('of-off-day').value || null;
+  const commRaw   = parseFloat(document.getElementById('of-commission').value);
+  const commRate  = isNaN(commRaw) ? 0 : commRaw;
+  const status    = (document.querySelector('input[name="of-status"]:checked') || {}).value || 'active';
+  const notes     = (document.getElementById('of-notes').value || '').trim() || null;
+
+  if (!name)     { toast('Full name is required.', 'error');  return; }
+  if (!phone)    { toast('Phone number is required.', 'error'); return; }
+  if (!district) { toast('District is required.', 'error');     return; }
+
+  const btn = document.getElementById('of-save-btn');
+  if (btn) { btn.disabled = true; btn.textContent = 'Saving…'; }
+
+  const payload = {
+    full_name:        name,
+    phone:            phone,
+    email:            email,
+    role:             'field_officer',
+    district:         district,
+    languages:        languages,
+    speciality:       specialty,    /* legacy spelling kept for backward compat with FOC schema */
+    specialty:        specialty,    /* and the corrected spelling — different installs have different schemas */
+    off_day:          offDay,
+    commission_rate:  commRate,
+    availability:     'available',  /* may not exist in older schemas; auto-stripped on retry */
+    status:           status,
+    notes:            notes,
+  };
+  /* The app_users schema varies between installs (speciality vs specialty,
+     availability/off_day may be missing entirely). Loop: try insert, if
+     Postgres complains about a specific column, drop that key and retry.
+     Cap at 8 attempts so a real error doesn't loop forever. */
+  let error = null;
+  for (let attempt = 0; attempt < 8; attempt++) {
+    const res = await sb.from('app_users').insert(payload);
+    error = res.error || null;
+    if (!error) break;
+    const m = (error.message || '').match(/(?:column|find the)\s+['"]?([a-zA-Z_]+)['"]?\s+(?:column\s+of\s+'app_users'\s+in\s+the\s+schema\s+cache|does not exist)/i);
+    if (m && m[1] && payload.hasOwnProperty(m[1])) {
+      delete payload[m[1]];
+      continue;  /* retry without the offending column */
+    }
+    break;  /* unrelated error — surface to user */
+  }
+  if (btn) { btn.disabled = false; btn.textContent = 'Add officer'; }
+  if (error) { toast('Could not add officer: ' + error.message, 'error'); return; }
+  toast(`✓ ${name} added` + (status === 'active' ? ' and live in the directory.' : '. Awaiting approval.'), 'success');
+  closeOnboardOfficer();
+  loadOfficers();
+};
+
 window.editOfficer = function(id) {
   if (!id) return;
   const o = FOC.all.find(x => String(x.id) === String(id));
@@ -10174,6 +11206,20 @@ window.toggleOfficerStatus = async function(id, newStatus, name) {
   const { error } = await sb.from('app_users').update({ status: newStatus }).eq('id', id);
   if (error) { toast(error.message, 'error'); return; }
   toast(`${name} ${newStatus==='inactive'?'deactivated':'activated'}.`, 'success');
+  loadOfficers();
+};
+
+window.removeOfficer = async function(id, name) {
+  if (!id) { toast('Officer id missing.', 'error'); return; }
+  if (String(id).startsWith('fo') || String(id).startsWith('fp')) {
+    toast('Demo data — connect Supabase to remove officers.', 'info'); return;
+  }
+  /* Two-step confirm: a destructive permanent delete deserves a real prompt
+     where the user types the name. confirm() is enough for the warning. */
+  if (!confirm(`Remove ${name} permanently?\n\nThis deletes their row from app_users and cannot be undone. Past orders & visits stay in history but won't link back to a user.`)) return;
+  const { error } = await sb.from('app_users').delete().eq('id', id);
+  if (error) { toast('Could not remove: ' + error.message, 'error'); return; }
+  toast(`${name} removed.`, 'success');
   loadOfficers();
 };
 
@@ -10254,8 +11300,10 @@ function renderOfficersContent(tab) {
               <td onclick="event.stopPropagation()"><button class="ctx-btn" onclick="openCtxMenu(this,[
                 {label:'View profile',fn:function(){openOfficerDetail('${o.id||''}')}},
                 {label:'Edit',fn:function(){editOfficer('${o.id||''}')}},
+                {label:'Set commission',fn:function(){openSetFOCommission('${o.id||''}','${safeName}',${o.commission_rate != null ? o.commission_rate : 'null'})}},
                 '---',
-                {label:'${isActive?'Deactivate':'Activate'}',danger:${isActive},fn:function(){toggleOfficerStatus('${o.id||''}','${isActive?'inactive':'active'}','${safeName}')}}
+                {label:'${isActive?'Deactivate':'Activate'}',danger:${isActive},fn:function(){toggleOfficerStatus('${o.id||''}','${isActive?'inactive':'active'}','${safeName}')}},
+                {label:'Remove permanently',danger:true,fn:function(){removeOfficer('${o.id||''}','${safeName}')}}
               ])">⋮</button></td>
             </tr>`;
           }).join('')}
@@ -10268,10 +11316,16 @@ function renderOfficersContent(tab) {
 
   // ── GPS HEAT-MAP ─────────────────────────────────────────
   } else if (tab === 'heatmap') {
-    const officers = FOC.all.filter(o => o.lat && o.lng);
-    const activeOfficers = officers.filter(o => o.status === 'active');
+    /* Resolve every officer to a lat/lng: explicit row coords first,
+       district centroid (with id-stable jitter) otherwise. Officers
+       added through "+ Add officer" only have a district, so this
+       fallback is the common path. */
+    const officers = FOC.all
+      .map(o => ({...o, _coord: focResolveCoord(o)}))
+      .filter(o => o._coord);
+    const activeOfficers = officers.filter(o => (o.status||'active') === 'active');
     const districtCounts = {};
-    activeOfficers.forEach(o => { districtCounts[o.district] = (districtCounts[o.district]||0) + 1; });
+    activeOfficers.forEach(o => { districtCounts[o.district||'—'] = (districtCounts[o.district||'—']||0) + 1; });
     const topDistrict = Object.entries(districtCounts).sort((a,b)=>b[1]-a[1])[0];
 
     container.innerHTML = `
@@ -10295,12 +11349,11 @@ function renderOfficersContent(tab) {
         </div>
       </div>
       <div class="card" style="overflow:hidden">
-        <div class="card-header" style="display:flex;justify-content:space-between;align-items:center">
+        <div class="card-header" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px">
           <h3>Officer Coverage Map — Uganda</h3>
-          <div style="display:flex;gap:8px;font-size:11.5px;align-items:center">
-            <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:50%;background:#15616D;display:inline-block"></span>Active</span>
-            <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:50%;background:#FF7D00;display:inline-block"></span>Off-duty</span>
-            <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:50%;background:#999;display:inline-block"></span>Pending</span>
+          <div style="display:flex;gap:10px;font-size:11.5px;align-items:center;flex-wrap:wrap">
+            ${Object.keys(districtCounts).sort().map(d => `<span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:50%;background:${focDistrictColor(d)};display:inline-block;border:1.5px solid #fff;box-shadow:0 0 0 1px rgba(0,0,0,.1)"></span>${d} <span style="color:var(--ink-40);font-weight:600">·${districtCounts[d]}</span></span>`).join('')}
+            <span style="display:flex;align-items:center;gap:4px;padding-left:8px;border-left:1px solid var(--ink-08)"><span style="width:10px;height:10px;border-radius:50%;background:#fff;border:2px dashed #999;display:inline-block"></span>Off-duty / pending</span>
           </div>
         </div>
         <div id="foc-map" style="height:480px;width:100%;background:#e8f4f8"></div>
@@ -10311,8 +11364,10 @@ function renderOfficersContent(tab) {
           <thead><tr><th>Name</th><th>District</th><th>Speciality</th><th>Visits</th><th>Farmers</th><th>Status</th></tr></thead>
           <tbody>
             ${officers.map(o=>`<tr>
-              <td style="font-weight:600">${o.full_name}</td>
-              <td>${o.district}</td>
+              <td style="font-weight:600">
+                <span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${focDistrictColor(o.district)};margin-right:6px;vertical-align:middle"></span>${o.full_name}
+              </td>
+              <td>${o.district||'—'}</td>
               <td style="font-size:12px;color:var(--ink-60)">${o.speciality||'—'}</td>
               <td>${o.visits||0}</td>
               <td>${o.farmers_helped||0}</td>
@@ -10365,8 +11420,9 @@ function renderOfficersContent(tab) {
         maxZoom: 18
       }).addTo(map);
 
-      // Heat layer — intensity weighted by visits
-      const heatPoints = officers.map(o => [o.lat, o.lng, Math.min(1, (o.visits||1)/60)]);
+      // Heat layer — intensity weighted by visits (uses _coord which already
+      // falls back to district centroid when no explicit GPS).
+      const heatPoints = officers.map(o => [o._coord[0], o._coord[1], Math.min(1, (o.visits||1)/60)]);
       L.heatLayer(heatPoints, {
         radius: 35,
         blur: 25,
@@ -10374,25 +11430,36 @@ function renderOfficersContent(tab) {
         gradient: { 0.2: '#15616D', 0.5: '#FF7D00', 0.8: '#C1121F' }
       }).addTo(map);
 
-      // Individual officer markers
+      // Individual officer markers — coloured by district (so all officers
+      // in a given district share a colour), with a hollow / dashed-border
+      // variant for pending-approval and off-duty officers so the active
+      // ones still pop visually.
       officers.forEach(o => {
-        const color = o.status === 'active' ? '#15616D' : o.status === 'pending_approval' ? '#999' : '#FF7D00';
+        const districtColor = focDistrictColor(o.district);
+        const isLive = (o.status||'active') === 'active';
+        const dotStyle = isLive
+          ? `background:${districtColor};border:2.5px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.35)`
+          : `background:#fff;border:2.5px dashed ${districtColor};box-shadow:0 1px 4px rgba(0,0,0,.2)`;
         const icon = L.divIcon({
           className: '',
-          html: `<div style="width:14px;height:14px;border-radius:50%;background:${color};border:2.5px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.35)"></div>`,
-          iconSize: [14,14], iconAnchor: [7,7]
+          html: `<div style="width:16px;height:16px;border-radius:50%;${dotStyle}"></div>`,
+          iconSize: [16,16], iconAnchor: [8,8]
         });
-        L.marker([o.lat, o.lng], {icon})
+        L.marker([o._coord[0], o._coord[1]], {icon})
           .addTo(map)
           .bindPopup(`
-            <div style="font-family:inherit;min-width:180px">
-              <div style="font-weight:700;font-size:13px;margin-bottom:4px">${o.full_name}</div>
-              <div style="font-size:11.5px;color:#555;margin-bottom:6px">${o.district} · ${o.speciality||'—'}</div>
+            <div style="font-family:inherit;min-width:200px">
+              <div style="display:flex;align-items:center;gap:6px;margin-bottom:4px">
+                <span style="width:10px;height:10px;border-radius:50%;background:${districtColor};display:inline-block;border:1.5px solid #fff;box-shadow:0 0 0 1px rgba(0,0,0,.1)"></span>
+                <span style="font-weight:700;font-size:13px">${o.full_name}</span>
+              </div>
+              <div style="font-size:11.5px;color:#555;margin-bottom:6px">${o.district||'—'} · ${o.speciality||'—'}</div>
               <div style="display:flex;gap:12px;font-size:11.5px">
                 <span>📍 ${o.visits||0} visits</span>
                 <span>👩‍🌾 ${o.farmers_helped||0} farmers</span>
               </div>
               ${o.rating ? `<div style="margin-top:6px;font-size:11.5px;color:#FF7D00;font-weight:700">★ ${Number(o.rating).toFixed(1)}</div>` : ''}
+              ${(o.lat == null || o.lng == null) ? `<div style="margin-top:6px;font-size:10.5px;color:#888;font-style:italic">Pinned at ${o.district||'district'} centroid (no GPS visit recorded yet).</div>` : ''}
             </div>
           `);
       });
@@ -11169,6 +12236,18 @@ function renderSettings(tab) {
   SETS.tab = tab;
   const el = document.getElementById('settings-content');
 
+  /* ── Knowledge Base ─────────────────────────────────── */
+  if (tab === 'knowledge_base') {
+    loadKnowledgeBase(el);
+    return;
+  }
+
+  /* ── Images & Media ─────────────────────────────────── */
+  if (tab === 'images') {
+    loadCmsImagesPanel(el);
+    return;
+  }
+
   /* ── FX Rate ─────────────────────────────────────────── */
   if (tab === 'fx') {
     el.innerHTML = `
@@ -11254,16 +12333,40 @@ function renderSettings(tab) {
   /* ── SMS & WhatsApp ──────────────────────────────────── */
   if (tab === 'sms') {
     const cfg = SETS.cfg;
-    el.innerHTML = `<div class="card" style="padding:20px;max-width:580px">
-      <div style="font-family:'Poppins';font-weight:700;font-size:15px;margin-bottom:16px">SMS &amp; WhatsApp</div>
-      <div style="border:1px solid var(--ink-08);border-radius:var(--radius-md);padding:16px;margin-bottom:12px">
+    const isConfigured = !!(cfg.at_api_key && cfg.at_username);
+    el.innerHTML = `<div class="card" style="padding:20px;max-width:620px">
+      <div style="font-family:'Poppins';font-weight:700;font-size:15px;margin-bottom:4px">SMS Provider</div>
+      <p style="font-size:12.5px;color:var(--ink-60);margin-bottom:16px">
+        Used for sending login OTP codes via SMS (alongside email). Credentials are read by the
+        <code>send-sms-otp</code> and <code>verify-sms-otp</code> Netlify Functions on every call —
+        no deploy needed when you change them here.
+      </p>
+      <div style="border:1px solid var(--ink-08);border-radius:var(--radius-md);padding:16px;margin-bottom:14px">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
-          <div style="font-weight:700">Africa's Talking (SMS)</div>
-          <span class="chip chip-teal">Connected</span>
+          <div style="font-weight:700">Africa's Talking</div>
+          ${isConfigured
+            ? '<span class="chip chip-teal">Configured</span>'
+            : '<span class="chip chip-ghost" style="color:var(--rust)">Not configured</span>'}
         </div>
-        <div class="field"><label>Sender ID</label><input type="text" value="AgroMore" readonly style="background:var(--ink-05)"></div>
-        <div class="field"><label>API Key</label><input type="password" value="atsk_live_xxxxxxxxxxxx" readonly style="background:var(--ink-05)"></div>
+        <div class="field" style="margin-bottom:12px">
+          <label>Username <span style="color:var(--ink-40);font-weight:500">· "sandbox" for testing, your AT username for production</span></label>
+          <input type="text" id="s-at-username" value="${cfg.at_username||''}" placeholder="sandbox">
+        </div>
+        <div class="field" style="margin-bottom:12px">
+          <label>API Key <span style="color:var(--ink-40);font-weight:500">· starts with <code>atsk_</code></span></label>
+          <input type="password" id="s-at-api-key" value="${cfg.at_api_key||''}" placeholder="atsk_live_xxxxxxxxxxxx" autocomplete="off">
+        </div>
+        <div class="field">
+          <label>Sender ID <span style="color:var(--ink-40);font-weight:500">· registered alphanumeric ID, e.g. "AgroMore" — leave blank to use the AT default shortcode</span></label>
+          <input type="text" id="s-at-sender-id" value="${cfg.at_sender_id||''}" placeholder="AgroMore">
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;margin-top:16px;flex-wrap:wrap">
+          <button class="btn btn-primary" onclick="saveAtSettings()">Save credentials</button>
+          <button class="btn btn-secondary" onclick="testAtSms()">Send test SMS to me</button>
+          <span id="at-status" style="font-size:12px;color:var(--ink-60)"></span>
+        </div>
       </div>
+
       <div style="border:1px solid var(--ink-08);border-radius:var(--radius-md);padding:16px">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
           <div style="font-weight:700">WhatsApp Business API (Meta)</div>
@@ -11355,11 +12458,12 @@ function renderSettings(tab) {
 
   /* ── Commission rate ─────────────────────────────────── */
   if (tab === 'commission') {
-    const current = parseFloat(SETS.cfg.commission_rate) || 5;
+    const current   = parseFloat(SETS.cfg.commission_rate) || 5;
+    const currentFO = parseFloat(SETS.cfg.fo_commission_rate) || 3;
     el.innerHTML = `
     <div style="display:flex;flex-direction:column;gap:16px;max-width:520px">
       <div class="card" style="padding:20px">
-        <div style="font-family:'Poppins';font-weight:700;font-size:15px;margin-bottom:4px">Default Commission Rate</div>
+        <div style="font-family:'Poppins';font-weight:700;font-size:15px;margin-bottom:4px">Agent Default Commission Rate</div>
         <p style="font-size:13px;color:var(--ink-60);margin-bottom:20px">
           Applied to all agents unless a per-agent rate is set. Changing this does not override individual agent rates already saved.
         </p>
@@ -11375,6 +12479,23 @@ function renderSettings(tab) {
           </button>
         </div>
       </div>
+      <div class="card" style="padding:20px">
+        <div style="font-family:'Poppins';font-weight:700;font-size:15px;margin-bottom:4px">Field Officer Default Commission Rate</div>
+        <p style="font-size:13px;color:var(--ink-60);margin-bottom:20px">
+          Applied to all field officers unless a per-officer rate is set. Changing this does not override individual rates already saved.
+        </p>
+        <div class="field-row" style="align-items:flex-end;gap:12px">
+          <div class="field" style="flex:1;margin:0">
+            <label>Default Rate (%)</label>
+            <div class="prefix-wrap"><span class="prefix">%</span>
+              <input type="number" id="s-fo-commission-rate" value="${currentFO}" min="0" max="30" step="0.5">
+            </div>
+          </div>
+          <button class="btn btn-primary" id="s-fo-commission-btn" onclick="saveFOCommissionRate()" style="margin-bottom:2px">
+            <span id="s-fo-commission-label">Save</span>
+          </button>
+        </div>
+      </div>
       <div class="card" style="padding:16px 20px">
         <div style="font-family:'Poppins';font-weight:700;font-size:13.5px;margin-bottom:6px">Per-Agent Rate Overrides</div>
         <p style="font-size:12.5px;color:var(--ink-60);margin-bottom:12px">
@@ -11384,6 +12505,16 @@ function renderSettings(tab) {
         </p>
         <button class="btn btn-ghost btn-sm" onclick="navigate('agents');setTimeout(()=>switchAgentsTab('commissions'),200)">
           Open Commission Reports →
+        </button>
+      </div>
+      <div class="card" style="padding:16px 20px">
+        <div style="font-family:'Poppins';font-weight:700;font-size:13.5px;margin-bottom:6px">Per-Field-Officer Rate Overrides</div>
+        <p style="font-size:12.5px;color:var(--ink-60);margin-bottom:12px">
+          Individual field officers can have their own rate that overrides the default above.
+          Set or edit these from the <strong>Field Officers</strong> section — use the <em>⋮ → Set commission</em> menu on any officer row.
+        </p>
+        <button class="btn btn-ghost btn-sm" onclick="navigate('officers')">
+          Open Field Officers →
         </button>
       </div>
     </div>`;
@@ -11636,6 +12767,27 @@ function renderSettings(tab) {
           </div>
         </div>
 
+        <!-- ────── Two-Factor Authentication card (occupies left column under
+                   the password form). renderMfaCard() hydrates this with the
+                   right state on mount: not enrolled / enrolling / enrolled. -->
+        <div class="card" id="mfa-card" style="grid-column:1">
+          <div style="padding:20px 20px 4px">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px">
+              <div style="width:34px;height:34px;border-radius:9px;background:rgba(255,125,0,.10);display:flex;align-items:center;justify-content:center;flex-shrink:0">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px;color:var(--orange)"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+              </div>
+              <div>
+                <div style="font-family:'Poppins';font-weight:700;font-size:14px">Two-Factor Authentication</div>
+                <div style="font-size:11.5px;color:var(--ink-50);margin-top:1px">Require a code from your authenticator app at sign-in</div>
+              </div>
+            </div>
+          </div>
+          <div style="height:1px;background:var(--ink-05);margin:0 20px"></div>
+          <div id="mfa-body" style="padding:20px">
+            <div style="font-size:12.5px;color:var(--ink-60)">Loading…</div>
+          </div>
+        </div>
+
         <!-- Right column: tips + active session -->
         <div style="display:flex;flex-direction:column;gap:14px">
 
@@ -11689,6 +12841,11 @@ function renderSettings(tab) {
         </div><!-- /right col -->
       </div><!-- /grid -->
     `;
+    /* Hydrate the MFA card asynchronously — it reads from Supabase
+       (mfa.listFactors) so we do it AFTER the static HTML is in place. */
+    if (typeof window.renderMfaCard === 'function') {
+      window.renderMfaCard().catch(e => console.warn('[mfa] render err', e));
+    }
     return;
   }
 
@@ -11804,6 +12961,710 @@ window.signOut = async function() {
   window.location.href = 'index.html';
 };
 
+/* ════════════════════════════════════════════════════════
+   KNOWLEDGE BASE — Settings tab
+════════════════════════════════════════════════════════ */
+const KB_CATS = [
+  { key: 'agronomy',      label: 'Agronomy Advice' },
+  { key: 'products',      label: 'Products & Inputs' },
+  { key: 'market_prices', label: 'Market Prices' },
+  { key: 'services',      label: 'Our Services' },
+  { key: 'weather',       label: 'Weather & Climate' },
+  { key: 'faq',           label: 'FAQ' },
+];
+
+// ── 2-D SVG icon paths per category ──────────────────────────────────────────
+const KB_SVG_PATHS = {
+  agronomy:     `<path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/>`,
+  products:     `<path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/>`,
+  market_prices:`<line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>`,
+  services:     `<path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>`,
+  weather:      `<path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"/>`,
+  faq:          `<circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/>`,
+};
+function kbCatIcon(key, sz, color) {
+  const paths  = KB_SVG_PATHS[key] || KB_SVG_PATHS.faq;
+  const stroke = color || 'currentColor';
+  const size   = sz   || '18px';
+  return `<svg viewBox="0 0 24 24" fill="none" stroke="${stroke}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:${size};height:${size};flex-shrink:0">${paths}</svg>`;
+}
+
+async function loadKnowledgeBase(el) {
+  el.innerHTML = `<div class="shimmer sk-row" style="height:60px;border-radius:12px"></div>`;
+  const { data: articles, error } = await sb
+    .from('knowledge_base')
+    .select('*')
+    .order('created_at', { ascending: false });
+
+  if (error) {
+    el.innerHTML = `<div class="card" style="padding:32px;text-align:center;color:var(--rust)">Failed to load knowledge base: ${error.message}</div>`;
+    return;
+  }
+
+  window._kbArticles = articles;
+  window._kbGrouped  = false;
+
+  const catLabel  = k => (KB_CATS.find(c => c.key === k) || { label: k }).label;
+  const catBadge  = k => `<span style="display:inline-block;font-size:10px;padding:2px 8px;border-radius:20px;background:rgba(21,97,109,.1);color:var(--teal);font-weight:700;white-space:nowrap">${catLabel(k)}</span>`;
+  const thSt      = `text-align:left;padding:9px 14px;font-size:10.5px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-60)`;
+
+  const catFilterOpts = KB_CATS.map(c =>
+    `<option value="${c.key}">${c.label}</option>`
+  ).join('');
+
+  el.innerHTML = `
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+      <div>
+        <div style="display:flex;align-items:center;gap:8px;font-family:'Poppins';font-weight:800;font-size:18px">${kbCatIcon('agronomy','20px','var(--teal)')} Knowledge Base</div>
+        <div id="kb-count-label" style="font-size:12.5px;color:var(--ink-60);margin-top:2px">${articles.length} article${articles.length !== 1 ? 's' : ''} — shown in the mobile app chat</div>
+      </div>
+      <button class="btn btn-primary" onclick="kbNewArticle()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:14px;height:14px"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Add Article
+      </button>
+    </div>
+
+    <!-- ── Toolbar ── -->
+    <div class="card" style="padding:10px 14px;margin-bottom:12px">
+      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+        <div style="flex:1;min-width:180px;position:relative">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="position:absolute;left:10px;top:50%;transform:translateY(-50%);width:13px;height:13px;color:var(--ink-40);pointer-events:none"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input id="kb-search" type="text" placeholder="Search articles…" oninput="kbRender()"
+            style="width:100%;height:34px;padding:0 10px 0 32px;border:1px solid var(--ink-15);border-radius:8px;font-size:13px;background:var(--bg);color:var(--ink);outline:none;font-family:inherit"
+            onfocus="this.style.borderColor='var(--teal)';this.style.boxShadow='0 0 0 3px rgba(21,97,109,.1)'"
+            onblur="this.style.borderColor='var(--ink-15)';this.style.boxShadow='none'">
+        </div>
+        <select id="kb-filter-cat" onchange="kbRender()"
+          style="height:34px;padding:0 10px;border:1px solid var(--ink-15);border-radius:8px;font-size:12.5px;font-family:inherit;background:var(--bg);color:var(--ink);outline:none;cursor:pointer">
+          <option value="">All Categories</option>
+          ${catFilterOpts}
+        </select>
+        <select id="kb-filter-status" onchange="kbRender()"
+          style="height:34px;padding:0 10px;border:1px solid var(--ink-15);border-radius:8px;font-size:12.5px;font-family:inherit;background:var(--bg);color:var(--ink);outline:none;cursor:pointer">
+          <option value="">All Status</option>
+          <option value="active">✅ Active</option>
+          <option value="hidden">🚫 Hidden</option>
+        </select>
+        <select id="kb-sort" onchange="kbRender()"
+          style="height:34px;padding:0 10px;border:1px solid var(--ink-15);border-radius:8px;font-size:12.5px;font-family:inherit;background:var(--bg);color:var(--ink);outline:none;cursor:pointer">
+          <option value="newest">Newest first</option>
+          <option value="oldest">Oldest first</option>
+          <option value="az">A → Z</option>
+          <option value="za">Z → A</option>
+        </select>
+        <button id="kb-group-btn" onclick="kbToggleGroup()"
+          style="height:34px;padding:0 12px;border:1px solid var(--ink-15);border-radius:8px;font-size:12.5px;font-weight:600;background:var(--bg);color:var(--ink-60);cursor:pointer;display:flex;align-items:center;gap:6px;white-space:nowrap;transition:all .15s"
+          onmouseover="if(!window._kbGrouped){this.style.borderColor='var(--teal)';this.style.color='var(--teal)'}"
+          onmouseout="if(!window._kbGrouped){this.style.borderColor='var(--ink-15)';this.style.color='var(--ink-60)'}">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:13px;height:13px"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+          Group
+        </button>
+      </div>
+    </div>
+
+    <div id="kb-content-area"></div>`;
+
+  // ── Single article row ────────────────────────────────────────────────────
+  const kbRow = (a, showCat) => {
+    const safeTitle = escHtml(a.title).replace(/'/g, "\\'");
+    return `<tr style="border-bottom:1px solid var(--ink-05)">
+      <td style="padding:10px 14px;max-width:260px">
+        <div style="font-weight:600;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${escHtml(a.title)}</div>
+        <div style="font-size:11.5px;color:var(--ink-60);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:240px">${escHtml((a.content||'').slice(0,80))}…</div>
+      </td>
+      ${showCat ? `<td style="padding:10px 14px;white-space:nowrap">${catBadge(a.category)}</td>` : ''}
+      <td style="padding:10px 14px">
+        <span style="display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:700;color:${a.is_active ? 'var(--teal)' : 'var(--ink-40)'}">
+          <span style="width:7px;height:7px;border-radius:50%;background:${a.is_active ? 'var(--teal)' : 'var(--ink-20)'}"></span>
+          ${a.is_active ? 'Active' : 'Hidden'}
+        </span>
+      </td>
+      <td style="padding:10px 14px;white-space:nowrap">
+        <button class="btn btn-ghost btn-sm" onclick="kbEditArticle('${a.id}')">Edit</button>
+        <button class="btn btn-danger btn-sm" style="margin-left:6px" onclick="kbDeleteArticle('${a.id}','${safeTitle}')">Delete</button>
+      </td>
+    </tr>`;
+  };
+
+  // ── Flat table view ───────────────────────────────────────────────────────
+  const kbRenderTable = list => {
+    const tbody = list.length
+      ? list.map(a => kbRow(a, true)).join('')
+      : `<tr><td colspan="4" style="padding:40px;text-align:center;color:var(--ink-40)">No articles match your search or filters.</td></tr>`;
+    return `<div class="card" style="overflow:hidden">
+      <table style="width:100%;border-collapse:collapse">
+        <thead><tr style="background:var(--ink-05)">
+          <th style="${thSt}">Article</th>
+          <th style="${thSt}">Category</th>
+          <th style="${thSt}">Status</th>
+          <th style="${thSt}">Actions</th>
+        </tr></thead>
+        <tbody>${tbody}</tbody>
+      </table>
+    </div>`;
+  };
+
+  // ── Grouped sections view ─────────────────────────────────────────────────
+  const kbRenderGrouped = list => {
+    const groups = {};
+    KB_CATS.forEach(c => { groups[c.key] = []; });
+    list.forEach(a => { if (groups[a.category]) groups[a.category].push(a); else groups[a.category] = [a]; });
+
+    const sections = KB_CATS
+      .filter(c => (groups[c.key]||[]).length > 0)
+      .map(c => {
+        const items = groups[c.key];
+        const icon  = kbCatIcon(c.key, '18px', 'var(--teal)');
+        const rows  = items.map(a => kbRow(a, false)).join('');
+        return `<div class="card" style="overflow:hidden;margin-bottom:10px">
+          <div onclick="kbCollapseSection('${c.key}')" style="display:flex;align-items:center;gap:10px;padding:11px 16px;background:var(--ink-03);cursor:pointer;user-select:none;border-bottom:1px solid var(--ink-05)">
+            <span style="display:flex;align-items:center;color:var(--teal)">${icon}</span>
+            <span style="font-family:'Poppins';font-weight:700;font-size:13px;color:var(--ink)">${c.label}</span>
+            <span style="font-size:10.5px;font-weight:700;background:rgba(21,97,109,.1);color:var(--teal);padding:1px 8px;border-radius:20px;margin-left:2px">${items.length}</span>
+            <svg id="kb-chev-${c.key}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:14px;height:14px;margin-left:auto;color:var(--ink-40);transition:transform .2s"><polyline points="6 9 12 15 18 9"/></svg>
+          </div>
+          <div id="kb-grp-${c.key}">
+            <table style="width:100%;border-collapse:collapse">
+              <thead><tr style="background:var(--ink-03)">
+                <th style="${thSt}">Article</th>
+                <th style="${thSt}">Status</th>
+                <th style="${thSt}">Actions</th>
+              </tr></thead>
+              <tbody>${rows}</tbody>
+            </table>
+          </div>
+        </div>`;
+      });
+
+    return sections.length
+      ? sections.join('')
+      : `<div class="card" style="padding:40px;text-align:center;color:var(--ink-40)">No articles match your search or filters.</div>`;
+  };
+
+  // ── Window-level functions ────────────────────────────────────────────────
+  window.kbRender = function() {
+    const q     = (document.getElementById('kb-search')?.value || '').toLowerCase().trim();
+    const catF  = document.getElementById('kb-filter-cat')?.value  || '';
+    const statF = document.getElementById('kb-filter-status')?.value || '';
+    const sort  = document.getElementById('kb-sort')?.value || 'newest';
+    const area  = document.getElementById('kb-content-area');
+    if (!area) return;
+
+    let list = (window._kbArticles || []).filter(a => {
+      if (catF  && a.category !== catF) return false;
+      if (statF === 'active' && !a.is_active) return false;
+      if (statF === 'hidden' &&  a.is_active) return false;
+      if (q) {
+        const hay = (a.title + ' ' + (a.content||'') + ' ' + (a.tags||[]).join(' ')).toLowerCase();
+        if (!hay.includes(q)) return false;
+      }
+      return true;
+    });
+
+    list = [...list].sort((a, b) => {
+      if (sort === 'newest') return new Date(b.created_at) - new Date(a.created_at);
+      if (sort === 'oldest') return new Date(a.created_at) - new Date(b.created_at);
+      if (sort === 'az')     return (a.title||'').localeCompare(b.title||'');
+      if (sort === 'za')     return (b.title||'').localeCompare(a.title||'');
+      return 0;
+    });
+
+    const total = (window._kbArticles||[]).length;
+    const lbl = document.getElementById('kb-count-label');
+    if (lbl) lbl.textContent = list.length === total
+      ? `${total} article${total !== 1 ? 's' : ''} — shown in the mobile app chat`
+      : `Showing ${list.length} of ${total} articles`;
+
+    area.innerHTML = window._kbGrouped ? kbRenderGrouped(list) : kbRenderTable(list);
+  };
+
+  window.kbToggleGroup = function() {
+    window._kbGrouped = !window._kbGrouped;
+    const btn = document.getElementById('kb-group-btn');
+    if (btn) {
+      btn.style.background  = window._kbGrouped ? 'rgba(21,97,109,.1)' : 'var(--bg)';
+      btn.style.color       = window._kbGrouped ? 'var(--teal)'        : 'var(--ink-60)';
+      btn.style.borderColor = window._kbGrouped ? 'var(--teal)'        : 'var(--ink-15)';
+    }
+    window.kbRender();
+  };
+
+  window.kbCollapseSection = function(catKey) {
+    const body    = document.getElementById('kb-grp-'  + catKey);
+    const chevron = document.getElementById('kb-chev-' + catKey);
+    if (!body) return;
+    const isHidden = body.style.display === 'none';
+    body.style.display = isHidden ? '' : 'none';
+    if (chevron) chevron.style.transform = isHidden ? '' : 'rotate(-90deg)';
+  };
+
+  window.kbRender();
+}
+
+function kbArticleModal(article = null) {
+  const isEdit = !!article;
+  const catOpts = KB_CATS.map(c =>
+    `<option value="${c.key}" ${article?.category === c.key ? 'selected' : ''}>${c.label}</option>`
+  ).join('');
+
+  const existing = document.getElementById('kb-modal-overlay');
+  if (existing) existing.remove();
+
+  const currentCat  = article?.category || 'agronomy';
+  const currentIcon = kbCatIcon(currentCat, '20px', 'rgba(255,255,255,.92)');
+  const updatedAt = isEdit && article?.updated_at
+    ? new Date(article.updated_at).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'})
+    : null;
+  const initCharCount = (article?.content || '').length;
+  const initTags = (article?.tags || []).map(t =>
+    `<span style="display:inline-flex;align-items:center;background:rgba(21,97,109,.09);color:var(--teal);font-size:10.5px;font-weight:600;padding:1px 8px;border-radius:4px;line-height:20px">${escHtml(t)}</span>`
+  ).join('');
+
+  /* ── field label helper ── */
+  const lbl = (text, req=false, hint='') => `
+    <div style="display:flex;align-items:baseline;gap:6px;margin-bottom:5px">
+      <span style="font-size:10.5px;font-weight:800;text-transform:uppercase;letter-spacing:.07em;color:var(--ink-60)">${text}${req ? `<span style="color:var(--orange);margin-left:2px">*</span>` : ''}</span>
+      ${hint ? `<span style="font-size:11px;font-weight:400;color:var(--ink-40);text-transform:none;letter-spacing:0">${hint}</span>` : ''}
+    </div>`;
+
+  const overlay = document.createElement('div');
+  overlay.id = 'kb-modal-overlay';
+  overlay.style.cssText = 'position:fixed;inset:0;z-index:999;background:rgba(0,21,36,.5);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;padding:20px';
+  overlay.innerHTML = `
+    <div style="background:#fff;border-radius:16px;width:100%;max-width:600px;max-height:92vh;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 20px 48px rgba(0,21,36,.22)">
+
+      <!-- ── Header ── -->
+      <div style="background:linear-gradient(120deg,var(--ink) 0%,var(--teal) 100%);padding:14px 20px;flex-shrink:0;display:flex;align-items:center;gap:12px">
+        <div id="kb-modal-icon" style="width:36px;height:36px;border-radius:9px;background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.18);display:flex;align-items:center;justify-content:center;flex-shrink:0">${currentIcon}</div>
+        <div style="flex:1;min-width:0">
+          <div style="font-family:'Poppins';font-weight:800;font-size:15px;color:#fff;line-height:1.2">${isEdit ? 'Edit Article' : 'New Article'}</div>
+          <div style="font-size:11px;color:rgba(255,255,255,.55);margin-top:1px">${isEdit ? 'Knowledge base · update content' : 'Knowledge base · add new content'}</div>
+        </div>
+        <button onclick="document.getElementById('kb-modal-overlay').remove()"
+          style="width:28px;height:28px;border-radius:7px;background:rgba(255,255,255,.1);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,.75);flex-shrink:0"
+          onmouseover="this.style.background='rgba(255,255,255,.2)'" onmouseout="this.style.background='rgba(255,255,255,.1)'">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:14px;height:14px"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+
+      <!-- ── Body ── -->
+      <div style="padding:20px 24px;overflow-y:auto;flex:1;display:flex;flex-direction:column;gap:16px">
+        <input type="hidden" id="kb-id" value="${article?.id || ''}">
+
+        <!-- Title — full width -->
+        <div>
+          ${lbl('Title', true)}
+          <input type="text" id="kb-title" class="form-input"
+            value="${escHtml(article?.title || '')}"
+            placeholder="e.g. Bean Mosaic Virus Treatment"
+            style="font-size:13.5px;font-weight:600;height:48px;padding:0 14px">
+        </div>
+
+        <!-- Category + Status — 2 col -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+          <div>
+            ${lbl('Category', true)}
+            <select id="kb-category" class="form-input" onchange="kbUpdateModalIcon(this.value)" style="font-size:13px;height:42px;padding:0 12px">${catOpts}</select>
+          </div>
+          <div>
+            ${lbl('Status')}
+            <select id="kb-active" class="form-input" style="font-size:13px;height:42px;padding:0 12px">
+              <option value="true"  ${article?.is_active !== false ? 'selected' : ''}>✅ Active — visible in chat</option>
+              <option value="false" ${article?.is_active === false   ? 'selected' : ''}>🚫 Hidden</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Divider -->
+        <div style="height:1px;background:var(--ink-05);margin:0 -24px;padding:0 24px"></div>
+
+        <!-- Content — full width, grows -->
+        <div style="display:flex;flex-direction:column;flex:1;min-height:0">
+          ${lbl('Content', true, '— write as if explaining to a farmer face-to-face')}
+          <textarea id="kb-content" class="form-input"
+            placeholder="Include symptoms, product names, dosage, and step-by-step instructions…"
+            style="font-size:13px;line-height:1.65;resize:vertical;min-height:140px;flex:1;padding:12px 14px"
+            >${escHtml(article?.content || '')}</textarea>
+          <div style="display:flex;justify-content:flex-end;margin-top:4px">
+            <span id="kb-char-count" style="font-size:10.5px;color:var(--ink-40)">${initCharCount} characters</span>
+          </div>
+        </div>
+
+        <!-- Tags -->
+        <div>
+          ${lbl('Tags', false, '— comma-separated')}
+          <input type="text" id="kb-tags" class="form-input"
+            value="${escHtml((article?.tags || []).join(', '))}"
+            placeholder="maize, pest, stalk borer, insecticide"
+            style="font-size:13px;height:48px;padding:0 14px">
+          <div id="kb-tag-preview" style="display:flex;flex-wrap:wrap;gap:4px;margin-top:7px;min-height:${initTags ? '24px' : '0'}">${initTags}</div>
+        </div>
+      </div>
+
+      <!-- ── Footer ── -->
+      <div style="padding:12px 24px;border-top:1px solid var(--ink-08);background:#F9F9F8;display:flex;justify-content:space-between;align-items:center;flex-shrink:0;border-radius:0 0 16px 16px">
+        <span style="font-size:11px;color:var(--ink-40)">
+          ${updatedAt ? `Updated ${updatedAt}` : 'Not yet saved'}
+        </span>
+        <div style="display:flex;gap:8px;align-items:center">
+          <button class="btn btn-ghost btn-sm" onclick="document.getElementById('kb-modal-overlay').remove()" style="height:32px;font-size:12.5px">Cancel</button>
+          <button class="btn btn-primary btn-sm" id="kb-save-btn" onclick="kbSaveArticle()" style="height:32px;font-size:12.5px;padding:0 16px">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:13px;height:13px"><polyline points="20 6 9 17 4 12"/></svg>
+            ${isEdit ? 'Save Changes' : 'Create Article'}
+          </button>
+        </div>
+      </div>
+    </div>`;
+
+  document.body.appendChild(overlay);
+
+  // Live char counter
+  const ta = document.getElementById('kb-content');
+  const counter = document.getElementById('kb-char-count');
+  ta.addEventListener('input', () => { counter.textContent = ta.value.length + ' characters'; });
+
+  // Live tag chips
+  const tagInput = document.getElementById('kb-tags');
+  const tagPreview = document.getElementById('kb-tag-preview');
+  tagInput.addEventListener('input', () => {
+    const tags = tagInput.value.split(',').map(t => t.trim()).filter(Boolean);
+    tagPreview.innerHTML = tags.map(t =>
+      `<span style="display:inline-flex;align-items:center;background:rgba(21,97,109,.09);color:var(--teal);font-size:10.5px;font-weight:600;padding:1px 8px;border-radius:4px;line-height:20px">${escHtml(t)}</span>`
+    ).join('');
+  });
+
+  document.getElementById('kb-title').focus();
+}
+
+window.kbUpdateModalIcon = function(cat) {
+  const el = document.getElementById('kb-modal-icon');
+  if (el) el.innerHTML = kbCatIcon(cat, '20px', 'rgba(255,255,255,.92)');
+};
+
+window.kbNewArticle = function() {
+  kbArticleModal(null);
+};
+
+window.kbEditArticle = function(id) {
+  const a = (window._kbArticles || []).find(x => x.id === id);
+  if (a) kbArticleModal(a);
+};
+
+window.kbSaveArticle = async function() {
+  const id       = document.getElementById('kb-id').value.trim();
+  const title    = document.getElementById('kb-title').value.trim();
+  const content  = document.getElementById('kb-content').value.trim();
+  const category = document.getElementById('kb-category').value;
+  const is_active = document.getElementById('kb-active').value === 'true';
+  const tagsRaw  = document.getElementById('kb-tags').value;
+  const tags     = tagsRaw ? tagsRaw.split(',').map(t => t.trim()).filter(Boolean) : [];
+
+  if (!title || !content) { toast('Title and content are required.', 'error'); return; }
+
+  const btn = document.getElementById('kb-save-btn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span> Saving…';
+
+  const payload = { title, content, category, tags, is_active };
+  let error;
+
+  if (id) {
+    ({ error } = await sb.from('knowledge_base').update(payload).eq('id', id));
+  } else {
+    ({ error } = await sb.from('knowledge_base').insert(payload));
+  }
+
+  if (error) {
+    toast('Save failed: ' + error.message, 'error');
+    btn.disabled = false;
+    btn.innerHTML = id ? 'Save Changes' : 'Create Article';
+    return;
+  }
+
+  toast(id ? 'Article updated ✓' : 'Article created ✓', 'success');
+  document.getElementById('kb-modal-overlay').remove();
+
+  // Reload the tab
+  const contentEl = document.getElementById('settings-content');
+  if (contentEl) loadKnowledgeBase(contentEl);
+};
+
+window.kbDeleteArticle = async function(id, title) {
+  if (!confirm(`Delete "${title}"?\n\nThis cannot be undone.`)) return;
+  const { error } = await sb.from('knowledge_base').delete().eq('id', id);
+  if (error) { toast('Delete failed: ' + error.message, 'error'); return; }
+  toast('Article deleted.', 'success');
+  const contentEl = document.getElementById('settings-content');
+  if (contentEl) loadKnowledgeBase(contentEl);
+};
+
+/* ════════════════════════════════════════════════════════════════════
+   CMS Images panel — Settings → Images & Media
+   Lets MD / IT admin upload images for any `cms_images` slot. Images
+   are resized client-side before upload (max 1200px, WebP q≈0.78) so
+   raw 4MB phone photos become ~100KB before they ever leave the
+   browser. The mobile app reads cms_images on boot and patches any
+   element with data-cms-slot=<slot>.
+   ──────────────────────────────────────────────────────────────────── */
+async function loadCmsImagesPanel(el) {
+  el.innerHTML = `
+    <div style="margin-bottom:18px">
+      <div style="font-family:'Poppins';font-weight:700;font-size:15px;margin-bottom:4px">Images &amp; Media</div>
+      <p style="font-size:13px;color:var(--ink-60);margin:0">
+        Swap any image used in the mobile app without a deploy. Photos are auto-resized to 1200px
+        WebP before upload (~100&thinsp;KB target) so they load quickly on 3G.
+      </p>
+    </div>
+    <div id="cms-images-list" style="display:flex;flex-direction:column;gap:24px">
+      <div class="shimmer sk-row"></div>
+      <div class="shimmer sk-row w-75"></div>
+    </div>`;
+
+  const { data, error } = await sb
+    .from('cms_images')
+    .select('*')
+    .order('category', { ascending: true })
+    .order('sort_order', { ascending: true });
+
+  const list = document.getElementById('cms-images-list');
+  if (error) {
+    list.innerHTML = `<div style="padding:20px;color:var(--rust);font-size:13px">Failed to load image slots: ${error.message}. Did you run the cms_images migration?</div>`;
+    return;
+  }
+  if (!data?.length) {
+    list.innerHTML = `<div style="padding:20px;color:var(--ink-60);font-size:13px">No image slots configured yet. Run the cms_images SQL migration first.</div>`;
+    return;
+  }
+
+  // Group by category
+  const byCat = {};
+  for (const row of data) {
+    (byCat[row.category] || (byCat[row.category] = [])).push(row);
+  }
+
+  list.innerHTML = Object.keys(byCat).map(cat => `
+    <div>
+      <div style="font-size:10.5px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--orange);margin-bottom:8px">${cat}</div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px">
+        ${byCat[cat].map(r => cmsImageCardHTML(r)).join('')}
+      </div>
+    </div>
+  `).join('');
+}
+
+/* What each slot currently looks like in the mobile app WHEN no admin
+   override exists. Lets the admin see the existing visual before they
+   replace it, instead of just "(no image yet)". Keep these in sync with
+   the corresponding default rendering in app.html. */
+const CMS_DEFAULTS = {
+  /* The onboarding hero falls back to the Unsplash photo shipped in app.html. */
+  'onboarding-hero': {
+    type: 'image',
+    src:  'https://images.unsplash.com/photo-1447933601403-0c6688de566e?auto=format&fit=crop&w=1000&q=80',
+    note: 'Currently: stock photo of Robusta coffee cherries (Unsplash). Replace with your own brand photo.'
+  },
+  /* The home promo banner is hidden when empty. */
+  'home-promo-banner': {
+    type: 'placeholder',
+    html: '<div style="text-align:center;font-size:11.5px;color:var(--ink-40);font-weight:600;line-height:1.45">Currently: hidden on the mobile home screen.<br>Upload an image to display a campaign banner.</div>'
+  },
+  /* Category icons in the mobile app: coloured block + leaf/bag/shield SVG. */
+  'cat-seeds': {
+    type: 'block',
+    color: '#5E7C1E',
+    svg: '<svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#FFECD1" stroke-width="1.6"><path d="M12 3c-4 3-5 9-2 13 2-1 5-5 2-13z"/><path d="M10 16v4"/></svg>',
+    note: 'Currently: olive-green block + leaf icon.'
+  },
+  'cat-fertilizers': {
+    type: 'block',
+    color: '#8B5A2B',
+    svg: '<svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#FFECD1" stroke-width="1.6" stroke-linejoin="round"><rect x="6" y="5" width="12" height="16" rx="1"/><path d="M6 9h12"/></svg>',
+    note: 'Currently: brown block + bag icon.'
+  },
+  'cat-crop-protection': {
+    type: 'block',
+    color: '#FF7D00',
+    svg: '<svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#FFECD1" stroke-width="1.6" stroke-linejoin="round"><path d="M12 3l7 3v5c0 5-3 9-7 11-4-2-7-6-7-11V6z"/></svg>',
+    note: 'Currently: orange block + shield icon.'
+  },
+  'cat-tools': {
+    type: 'block',
+    color: '#78290F',
+    svg: '<svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#FFECD1" stroke-width="1.6" stroke-linejoin="round"><path d="M4 20l5-5M14 3l3 3-9 9-3-3zM14 3l3-1 1 3"/></svg>',
+    note: 'Currently: rust block + hammer icon.'
+  },
+  'cat-irrigation': {
+    type: 'block',
+    color: '#2C5E7C',
+    svg: '<svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#FFECD1" stroke-width="1.6" stroke-linejoin="round"><path d="M12 3v6"/><path d="M8 9h8"/><path d="M5 13c3 4 11 4 14 0"/><circle cx="12" cy="19" r="1.5"/></svg>',
+    note: 'Currently: blue block + water-drop icon.'
+  },
+  'cat-livestock': {
+    type: 'block',
+    color: '#C99A2E',
+    svg: '<svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#FFECD1" stroke-width="1.6" stroke-linejoin="round"><circle cx="12" cy="9" r="4"/><path d="M8 13l-2 8M16 13l2 8M9 21l3-3 3 3"/></svg>',
+    note: 'Currently: gold block + livestock icon.'
+  },
+  'cat-post-harvest': {
+    type: 'block',
+    color: '#15616D',
+    svg: '<svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#FFECD1" stroke-width="1.6" stroke-linejoin="round"><path d="M4 8h16v12H4z"/><path d="M4 8l4-4h8l4 4"/></svg>',
+    note: 'Currently: teal block + storage icon.'
+  },
+  /* The AgroBot hero is a gradient block with an orange halo SVG in-app. */
+  'advisory-bot-hero': {
+    type: 'block',
+    color: 'linear-gradient(135deg,#FF7D00 0%,#FFA257 100%)',
+    svg: '<svg width="50" height="50" viewBox="0 0 24 24" fill="none"><path d="M4 6h16a1 1 0 011 1v10a1 1 0 01-1 1H9l-5 4V7a1 1 0 011-1z" stroke="#fff" stroke-width="1.8" stroke-linejoin="round"/><circle cx="9" cy="12" r="1.5" fill="#fff"/><circle cx="13" cy="12" r="1.5" fill="#fff"/><circle cx="17" cy="12" r="1.5" fill="#fff"/></svg>',
+    note: 'Currently: orange gradient + chat-bubble icon.'
+  },
+  /* The Diaspora landing uses a rust-coloured hero block in-app. */
+  'diaspora-hero': {
+    type: 'block',
+    color: 'linear-gradient(135deg,#78290F 0%,#A04425 100%)',
+    svg: '<svg width="50" height="50" viewBox="0 0 24 24" fill="none" stroke="#FFECD1" stroke-width="1.8" stroke-linejoin="round"><path d="M12 2l3 7h7l-5.5 4.5L18 21l-6-4-6 4 1.5-7.5L2 9h7z"/></svg>',
+    note: 'Currently: rust gradient + gift/star icon.'
+  }
+};
+
+function cmsImageCardHTML(r) {
+  const safeSlot = (r.slot || '').replace(/[^a-z0-9_-]/gi, '');
+  const def = CMS_DEFAULTS[r.slot] || null;
+  let previewInner = '';
+  let previewStyle = 'width:100%;aspect-ratio:16/9;border-radius:8px;margin-bottom:8px;border:1px solid var(--ink-10);display:flex;align-items:center;justify-content:center;overflow:hidden;background:var(--ink-05)';
+
+  /* Use single quotes inside the CSS url() so the outer style="…"
+     attribute doesn't get torn apart by double-quoted Supabase URLs. */
+  if (r.url) {
+    /* MD has uploaded an override — show it. */
+    previewStyle += `;background:url('${r.url}') center/cover no-repeat`;
+  } else if (def && def.type === 'image') {
+    previewStyle += `;background:url('${def.src}') center/cover no-repeat`;
+  } else if (def && def.type === 'block') {
+    /* Render the same coloured block + icon the mobile app uses. */
+    previewStyle += `;background:${def.color}`;
+    previewInner = def.svg || '';
+  } else if (def && def.type === 'placeholder') {
+    previewInner = def.html;
+  } else {
+    previewInner = '<span style="font-size:11px;color:var(--ink-40);font-weight:600">(no image yet)</span>';
+  }
+
+  /* Tag the preview so MD knows whether they're looking at a default or an override. */
+  const stateChip = r.url
+    ? '<span style="font-size:9.5px;font-weight:800;background:rgba(21,97,109,.12);color:var(--teal);border:1px solid rgba(21,97,109,.3);border-radius:4px;padding:1px 5px;letter-spacing:.05em;text-transform:uppercase">CUSTOM</span>'
+    : '<span style="font-size:9.5px;font-weight:800;background:rgba(0,0,0,.06);color:var(--ink-60);border:1px solid var(--ink-12);border-radius:4px;padding:1px 5px;letter-spacing:.05em;text-transform:uppercase">DEFAULT</span>';
+
+  const note = !r.url && def && def.note
+    ? `<div style="font-size:10.5px;color:var(--ink-40);margin-bottom:8px;font-style:italic">${def.note}</div>`
+    : '';
+
+  return `
+    <div class="card" id="cms-card-${safeSlot}" style="padding:14px">
+      <div style="display:flex;align-items:center;gap:6px;margin-bottom:2px">
+        <div style="font-size:12.5px;font-weight:700;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${r.label || r.slot}</div>
+        ${stateChip}
+      </div>
+      <div style="font-size:11px;color:var(--ink-60);margin-bottom:8px;min-height:30px">${r.description || ''}</div>
+      <div id="cms-preview-${safeSlot}" style="${previewStyle}">${previewInner}</div>
+      ${note}
+      <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center">
+        <label style="cursor:pointer">
+          <input type="file" accept="image/*" style="display:none" onchange="cmsImageUpload('${safeSlot}', this)">
+          <span class="btn btn-secondary btn-sm" style="pointer-events:none">${r.url ? 'Replace' : 'Upload'}</span>
+        </label>
+        ${r.url ? `<button class="btn btn-ghost btn-sm" onclick="cmsImageClear('${safeSlot}')" style="color:#dc2626">Remove</button>` : ''}
+        <span style="flex:1;min-width:0;font-size:10.5px;color:var(--ink-40);text-align:right;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${r.recommended || ''}">${r.recommended || ''}</span>
+      </div>
+      <div id="cms-status-${safeSlot}" style="font-size:11px;color:var(--ink-60);margin-top:6px;min-height:14px"></div>
+    </div>
+  `;
+}
+
+/* Client-side resize → WebP, then upload to cms-images bucket, then
+   update the cms_images.url field. */
+window.cmsImageUpload = async function(slot, input) {
+  const file = input.files && input.files[0];
+  if (!file) return;
+  const status = document.getElementById('cms-status-' + slot);
+  const setStatus = (msg, color) => {
+    if (status) { status.textContent = msg; status.style.color = color || 'var(--ink-60)'; }
+  };
+  try {
+    setStatus('Resizing…');
+    const blob = await cmsCompressForUpload(file, 1200, 0.78);
+    const sizeKB = Math.round(blob.size / 1024);
+    if (sizeKB > 500) {
+      setStatus(`Warning: image is ${sizeKB} KB — consider a smaller source.`, 'var(--orange)');
+    }
+    setStatus(`Uploading ${sizeKB} KB…`);
+    // Stable, cache-busting path: slot/<timestamp>.webp. New filename per upload
+    // means CDN + service-worker caches naturally invalidate.
+    const path = `${slot}/${Date.now()}.webp`;
+    const upRes = await sb.storage.from('cms-images').upload(path, blob, {
+      contentType: 'image/webp',
+      cacheControl: '31536000',
+      upsert: false,
+    });
+    if (upRes.error) throw upRes.error;
+    const pubUrl = sb.storage.from('cms-images').getPublicUrl(path).data.publicUrl;
+    const dbRes = await sb.from('cms_images').update({ url: pubUrl }).eq('slot', slot);
+    if (dbRes.error) throw dbRes.error;
+    setStatus(`Saved ✓ (${sizeKB} KB)`, 'var(--teal)');
+    // Refresh the preview without reloading the whole panel
+    const preview = document.getElementById('cms-preview-' + slot);
+    if (preview) {
+      preview.style.background = `url('${pubUrl}') center/cover no-repeat`;
+      preview.textContent = '';
+    }
+    setTimeout(() => loadCmsImagesPanel(document.getElementById('settings-content')), 1200);
+  } catch (e) {
+    setStatus('Upload failed: ' + (e.message || e), 'var(--rust)');
+  }
+};
+
+window.cmsImageClear = async function(slot) {
+  if (!confirm('Remove this image? The mobile app will fall back to the built-in default.')) return;
+  const status = document.getElementById('cms-status-' + slot);
+  const setStatus = (msg, color) => {
+    if (status) { status.textContent = msg; status.style.color = color || 'var(--ink-60)'; }
+  };
+  setStatus('Removing…');
+  const dbRes = await sb.from('cms_images').update({ url: null }).eq('slot', slot);
+  if (dbRes.error) { setStatus('Remove failed: ' + dbRes.error.message, 'var(--rust)'); return; }
+  setStatus('Removed ✓', 'var(--teal)');
+  setTimeout(() => loadCmsImagesPanel(document.getElementById('settings-content')), 700);
+};
+
+/* Resize an image File to max <maxDim>px on its longer edge, encode as
+   WebP at <quality>. Works in modern Chrome / Edge / Safari 16+.
+   Falls back to a regular canvas for older browsers. */
+async function cmsCompressForUpload(file, maxDim, quality) {
+  const img = await (window.createImageBitmap
+    ? createImageBitmap(file)
+    : new Promise((res, rej) => {
+        const i = new Image();
+        i.onload = () => res(i);
+        i.onerror = rej;
+        i.src = URL.createObjectURL(file);
+      }));
+  const w0 = img.width  || img.naturalWidth;
+  const h0 = img.height || img.naturalHeight;
+  const scale = Math.min(1, maxDim / Math.max(w0, h0));
+  const w = Math.round(w0 * scale);
+  const h = Math.round(h0 * scale);
+  let canvas;
+  if (window.OffscreenCanvas) {
+    canvas = new OffscreenCanvas(w, h);
+    canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+    return await canvas.convertToBlob({ type: 'image/webp', quality });
+  }
+  canvas = document.createElement('canvas');
+  canvas.width = w; canvas.height = h;
+  canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+  return await new Promise(res => canvas.toBlob(res, 'image/webp', quality));
+}
+
 window.switchSettingsTab = function(tab, el) {
   document.querySelectorAll('#page-settings .sb-item').forEach(b => b.classList.remove('active'));
   if (el) el.classList.add('active');
@@ -11890,6 +13751,240 @@ window.changePassword = async function() {
   }
 };
 
+/* ════════════════════════════════════════════════════════════════════════
+   TWO-FACTOR AUTHENTICATION (TOTP via Supabase MFA)
+   ──────────────────────────────────────────────────────
+   Three states for the Settings card:
+     1. No factor enrolled    → "Enable two-factor authentication" button
+     2. Mid-enrollment        → QR code + secret + verify input
+     3. Already enrolled      → green badge + "Disable" button
+
+   We use Supabase's built-in MFA which is TOTP-based (works with
+   Google Authenticator, Authy, 1Password, etc.). Enrollment requires
+   the user to scan a QR code, type a 6-digit code, and we verify with
+   sb.auth.mfa.verify. Successful verify also marks staff_profiles.two_factor_enabled
+   so the admin user list can show a green "2FA on" badge.
+   ════════════════════════════════════════════════════════════════════════ */
+
+/* In-memory enrollment state — only valid while the user is mid-flow. */
+window.__mfaEnroll = window.__mfaEnroll || null;
+
+window.renderMfaCard = async function() {
+  const body = document.getElementById('mfa-body');
+  if (!body) return;
+  body.innerHTML = '<div style="font-size:12.5px;color:var(--ink-60)">Loading…</div>';
+
+  let factors;
+  try {
+    const r = await sb.auth.mfa.listFactors();
+    factors = r.data || { totp: [] };
+  } catch(e) {
+    body.innerHTML = '<div style="font-size:12.5px;color:var(--rust)">Couldn\'t load 2FA status: ' + (e.message || 'unknown') + '</div>';
+    return;
+  }
+
+  const verifiedTotp = (factors.totp || []).find(f => f.status === 'verified');
+
+  if (verifiedTotp) {
+    /* Enrolled — show green badge + Disable button. */
+    body.innerHTML = `
+      <div style="display:flex;gap:14px;align-items:center;margin-bottom:14px">
+        <div style="width:36px;height:36px;border-radius:50%;background:#dcfce7;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#15803d" stroke-width="2.5" style="width:18px;height:18px"><polyline points="20 6 9 17 4 12"/></svg>
+        </div>
+        <div style="flex:1;min-width:0">
+          <div style="font-weight:700;font-size:13px;color:#15803d">Two-factor authentication is ON</div>
+          <div style="font-size:11.5px;color:var(--ink-50);margin-top:2px">Enrolled ${verifiedTotp.friendly_name ? '("' + verifiedTotp.friendly_name + '")' : ''} · ${new Date(verifiedTotp.created_at).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'})}</div>
+        </div>
+      </div>
+      <p style="font-size:12px;color:var(--ink-60);margin:0 0 14px;line-height:1.5">
+        Every time you sign in you'll be asked for a 6-digit code from your authenticator app
+        (Google Authenticator, Authy, 1Password, etc.) in addition to your password.
+      </p>
+      <button class="btn btn-danger btn-sm" id="mfa-disable-btn" onclick="disableMfa('${verifiedTotp.id}')" style="gap:6px">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:13px;height:13px"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        Turn off 2FA
+      </button>
+    `;
+    return;
+  }
+
+  /* Not enrolled — show enable CTA. */
+  body.innerHTML = `
+    <p style="font-size:12.5px;color:var(--ink-60);margin:0 0 16px;line-height:1.5">
+      Add a second sign-in step using an authenticator app. Even if your email
+      account is compromised, attackers won't be able to sign in without the
+      6-digit code from your phone.
+    </p>
+    <button class="btn btn-primary" id="mfa-enable-btn" onclick="enableMfa()" style="gap:6px">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      Enable two-factor authentication
+    </button>
+  `;
+};
+
+window.enableMfa = async function() {
+  const body = document.getElementById('mfa-body');
+  if (!body) return;
+  const btn = document.getElementById('mfa-enable-btn');
+  if (btn) { btn.disabled = true; btn.textContent = 'Generating…'; }
+
+  /* Clean up any half-finished enrollment from a prior attempt. */
+  try {
+    const { data } = await sb.auth.mfa.listFactors();
+    for (const f of (data?.totp || []).filter(f => f.status === 'unverified')) {
+      await sb.auth.mfa.unenroll({ factorId: f.id });
+    }
+  } catch(_) { /* best-effort cleanup */ }
+
+  let enrollment;
+  try {
+    const r = await sb.auth.mfa.enroll({
+      factorType: 'totp',
+      friendlyName: 'Authenticator app',
+    });
+    if (r.error) throw r.error;
+    enrollment = r.data;
+  } catch(e) {
+    toast('Couldn\'t start 2FA enrollment: ' + (e.message || 'unknown'), 'error');
+    if (btn) { btn.disabled = false; btn.textContent = 'Enable two-factor authentication'; }
+    return;
+  }
+
+  window.__mfaEnroll = enrollment;
+
+  /* Render the QR code + secret + verify input. */
+  body.innerHTML = `
+    <div style="background:#FFF8E7;border:1px solid rgba(255,125,0,.25);border-radius:10px;padding:14px;margin-bottom:16px">
+      <div style="font-weight:700;font-size:12.5px;color:var(--ink);margin-bottom:6px">Step 1 · Scan with your authenticator app</div>
+      <div style="font-size:11.5px;color:var(--ink-60);line-height:1.5">Use Google Authenticator, Authy, 1Password, or any TOTP app.</div>
+    </div>
+    <div style="display:flex;gap:18px;align-items:flex-start;margin-bottom:18px;flex-wrap:wrap">
+      <div style="background:#fff;border:1px solid var(--ink-08);border-radius:10px;padding:12px;flex-shrink:0">
+        <img src="${enrollment.totp.qr_code}" alt="2FA QR code" style="width:160px;height:160px;display:block">
+      </div>
+      <div style="flex:1;min-width:200px">
+        <div style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.07em;color:var(--ink-50);margin-bottom:6px">Or paste this secret manually</div>
+        <div style="font-family:monospace;font-size:12px;background:var(--cream);padding:8px 10px;border-radius:6px;word-break:break-all;color:var(--ink);user-select:all" id="mfa-secret-text">${enrollment.totp.secret}</div>
+        <button class="btn btn-secondary btn-sm" onclick="navigator.clipboard.writeText(document.getElementById('mfa-secret-text').textContent).then(()=>toast('Secret copied','success'))" style="margin-top:8px;gap:6px;font-size:11px">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+          Copy secret
+        </button>
+        <p style="font-size:11px;color:var(--ink-50);margin:10px 0 0;line-height:1.5"><strong style="color:var(--rust)">⚠ Save this secret in a password manager</strong> — if you lose access to your authenticator app, this is the only way to recover. We do not store it.</p>
+      </div>
+    </div>
+
+    <div style="border-top:1px solid var(--ink-08);padding-top:18px">
+      <div style="font-weight:700;font-size:12.5px;color:var(--ink);margin-bottom:8px">Step 2 · Enter the 6-digit code shown in your app</div>
+      <div style="display:flex;gap:8px;align-items:center">
+        <input
+          type="text"
+          inputmode="numeric"
+          pattern="[0-9]{6}"
+          maxlength="6"
+          autocomplete="one-time-code"
+          class="form-input"
+          id="mfa-verify-code"
+          placeholder="123 456"
+          style="flex:1;max-width:200px;font-family:monospace;font-size:18px;letter-spacing:6px;text-align:center"
+          onkeydown="if(event.key==='Enter')verifyMfaEnrollment()">
+        <button class="btn btn-primary" id="mfa-verify-btn" onclick="verifyMfaEnrollment()" style="gap:6px">
+          <span id="mfa-verify-label">Verify &amp; turn on 2FA</span>
+        </button>
+        <button class="btn btn-secondary btn-sm" onclick="cancelMfaEnrollment()">Cancel</button>
+      </div>
+      <div id="mfa-verify-error" style="margin-top:10px;font-size:12px;color:var(--rust);display:none"></div>
+    </div>
+  `;
+  setTimeout(() => document.getElementById('mfa-verify-code')?.focus(), 100);
+};
+
+window.cancelMfaEnrollment = async function() {
+  const e = window.__mfaEnroll;
+  if (e?.id) {
+    try { await sb.auth.mfa.unenroll({ factorId: e.id }); } catch(_) {}
+  }
+  window.__mfaEnroll = null;
+  renderMfaCard();
+};
+
+window.verifyMfaEnrollment = async function() {
+  const code = (document.getElementById('mfa-verify-code')?.value || '').replace(/\D/g, '');
+  const errEl = document.getElementById('mfa-verify-error');
+  const btn   = document.getElementById('mfa-verify-btn');
+  const lbl   = document.getElementById('mfa-verify-label');
+  if (errEl) errEl.style.display = 'none';
+
+  if (code.length !== 6) {
+    if (errEl) { errEl.textContent = 'Enter the 6-digit code from your authenticator app.'; errEl.style.display = 'block'; }
+    document.getElementById('mfa-verify-code')?.focus();
+    return;
+  }
+  if (!window.__mfaEnroll) {
+    if (errEl) { errEl.textContent = 'Enrollment expired — please start again.'; errEl.style.display = 'block'; }
+    return;
+  }
+
+  if (btn) btn.disabled = true;
+  if (lbl) lbl.textContent = 'Verifying…';
+
+  try {
+    /* Step 1: challenge the factor. */
+    const ch = await sb.auth.mfa.challenge({ factorId: window.__mfaEnroll.id });
+    if (ch.error) throw ch.error;
+    /* Step 2: verify the code against the challenge. */
+    const v = await sb.auth.mfa.verify({
+      factorId:    window.__mfaEnroll.id,
+      challengeId: ch.data.id,
+      code:        code,
+    });
+    if (v.error) throw v.error;
+
+    /* Step 3: update staff_profiles.two_factor_enabled so the admin
+       user list shows a green ✓. Best-effort — verification already succeeded. */
+    try {
+      const uid = (await sb.auth.getUser()).data?.user?.id;
+      if (uid) {
+        await sb.from('staff_profiles').update({ two_factor_enabled: true }).eq('id', uid);
+      }
+    } catch(e) { console.warn('[mfa] flag update failed', e); }
+
+    window.__mfaEnroll = null;
+    toast('Two-factor authentication enabled! 🛡', 'success');
+    renderMfaCard();
+  } catch(e) {
+    if (btn) btn.disabled = false;
+    if (lbl) lbl.textContent = 'Verify & turn on 2FA';
+    if (errEl) {
+      errEl.textContent = (e.message || '').toLowerCase().includes('invalid')
+        ? 'That code didn\'t match — check the latest 6-digit code in your app and try again.'
+        : 'Verification failed: ' + (e.message || 'unknown');
+      errEl.style.display = 'block';
+    }
+    document.getElementById('mfa-verify-code')?.select();
+  }
+};
+
+window.disableMfa = async function(factorId) {
+  if (!confirm('Turn off two-factor authentication? You\'ll only need your password to sign in — less secure.')) return;
+  const btn = document.getElementById('mfa-disable-btn');
+  if (btn) { btn.disabled = true; btn.textContent = 'Disabling…'; }
+  try {
+    const r = await sb.auth.mfa.unenroll({ factorId });
+    if (r.error) throw r.error;
+    /* Clear the staff_profiles flag. */
+    try {
+      const uid = (await sb.auth.getUser()).data?.user?.id;
+      if (uid) await sb.from('staff_profiles').update({ two_factor_enabled: false }).eq('id', uid);
+    } catch(_) {}
+    toast('Two-factor authentication disabled.', 'success');
+    renderMfaCard();
+  } catch(e) {
+    toast('Couldn\'t disable 2FA: ' + (e.message || 'unknown'), 'error');
+    if (btn) { btn.disabled = false; btn.textContent = 'Turn off 2FA'; }
+  }
+};
+
 /* ── Sign out confirmation ──────────────────────────── */
 window.confirmSignOut = function() {
   const overlay = document.createElement('div');
@@ -11953,6 +14048,68 @@ window.saveOrgSettings = async function() {
   }
   if (btn) { btn.disabled = false; btn.textContent = origLabel || 'Save changes'; }
   if (!failed) toast('Organisation settings saved.', 'success');
+};
+
+/* ── Africa's Talking SMS settings + test ─────────────── */
+window.saveAtSettings = async function() {
+  const u  = document.getElementById('s-at-username')?.value?.trim() || '';
+  const k  = document.getElementById('s-at-api-key')?.value?.trim()  || '';
+  const id = document.getElementById('s-at-sender-id')?.value?.trim() || '';
+  const status = document.getElementById('at-status');
+  if (status) { status.textContent = 'Saving…'; status.style.color = 'var(--ink-60)'; }
+  if (!u || !k) {
+    if (status) { status.textContent = 'Username and API key are required.'; status.style.color = 'var(--rust)'; }
+    return;
+  }
+  const rows = [
+    { key: 'at_username',  value: u  },
+    { key: 'at_api_key',   value: k  },
+    { key: 'at_sender_id', value: id },
+  ];
+  for (const row of rows) {
+    const { error } = await sb.from('settings').upsert(row, { onConflict: 'key' });
+    if (error) {
+      if (status) { status.textContent = 'Save failed: ' + error.message; status.style.color = 'var(--rust)'; }
+      return;
+    }
+    SETS.cfg[row.key] = row.value;
+  }
+  if (status) { status.textContent = 'Saved ✓ ' + new Date().toLocaleTimeString('en-UG'); status.style.color = 'var(--teal)'; }
+  toast('Africa\'s Talking credentials saved.', 'success');
+};
+
+window.testAtSms = async function() {
+  const status = document.getElementById('at-status');
+  const setStatus = (msg, color) => { if (status) { status.textContent = msg; status.style.color = color || 'var(--ink-60)'; } };
+  /* Save first if the form is dirty so we always test what's typed. */
+  await window.saveAtSettings();
+  /* Resolve the MD's email + check they have a phone on file. The
+     send-sms-otp function expects an email on app_users. */
+  const email = (APP?.profile?.email || APP?.session?.user?.email || '').toLowerCase();
+  if (!email) { setStatus('No admin email on file to test against.', 'var(--rust)'); return; }
+  setStatus('Sending test SMS to your phone on file…');
+  try {
+    const r = await fetch('/.netlify/functions/send-sms-otp', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email }),
+    });
+    const data = await r.json().catch(() => ({}));
+    if (data && data.ok) {
+      setStatus(`Sent ✓ Check ${data.masked_phone || 'your phone'} for the code.`, 'var(--teal)');
+    } else {
+      const msg = data?.error || `HTTP ${r.status}`;
+      if (data?.code === 'NO_PHONE_ON_FILE') {
+        setStatus('Your admin account has no phone on file — add one to app_users first.', 'var(--orange)');
+      } else if (data?.code === 'RATE_LIMITED') {
+        setStatus(msg, 'var(--orange)');
+      } else {
+        setStatus('Test failed: ' + msg, 'var(--rust)');
+      }
+    }
+  } catch (e) {
+    setStatus('Test failed: ' + (e.message || e), 'var(--rust)');
+  }
 };
 
 /* ── Login background image helpers ─────────────────── */
@@ -12071,6 +14228,61 @@ window.saveNewOutlet = async function() {
   toast(`Outlet "${name}" added.`, 'success');
 };
 
+/* ── Product Categories (MD) ─────────────────────────── */
+let _mcDraft = [];
+
+window.openManageCategoriesModal = function() {
+  _mcDraft = [...CATEGORIES];
+  renderMcList();
+  openModal('manage-categories-modal');
+};
+
+function renderMcList() {
+  const el = document.getElementById('mc-list');
+  if (!el) return;
+  if (_mcDraft.length === 0) {
+    el.innerHTML = `<div style="padding:16px;text-align:center;color:var(--ink-40);font-size:13px">No categories yet — add one below.</div>`;
+    return;
+  }
+  el.innerHTML = _mcDraft.map((c, i) => `
+    <div style="display:flex;align-items:center;padding:11px 14px;border-bottom:${i===_mcDraft.length-1?'none':'1px solid var(--ink-05)'};background:#fff">
+      <span style="width:22px;height:22px;border-radius:50%;background:var(--ink-05);color:var(--ink-60);font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;margin-right:10px;flex-shrink:0">${i+1}</span>
+      <span style="flex:1;font-size:13.5px;font-weight:500">${c}</span>
+      <button onclick="removeMcItem(${i})" title="Remove category" style="background:#fff0ee;border:1px solid #fcd5ce;border-radius:6px;cursor:pointer;color:var(--rust);font-size:12px;font-weight:600;padding:4px 10px;line-height:1;display:flex;align-items:center;gap:5px">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:11px;height:11px"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6m4-6v6"/><path d="M9 6V4h6v2"/></svg>
+        Remove
+      </button>
+    </div>`).join('');
+}
+
+window.removeMcItem = function(i) {
+  _mcDraft.splice(i, 1);
+  renderMcList();
+};
+
+window.addProductCategory = function() {
+  const inp = document.getElementById('mc-new-input');
+  const val = (inp?.value || '').trim();
+  if (!val) { toast('Enter a category name.', 'error'); return; }
+  if (_mcDraft.some(c => c.toLowerCase() === val.toLowerCase())) { toast('Category already exists.', 'error'); return; }
+  _mcDraft.push(val);
+  inp.value = '';
+  renderMcList();
+};
+
+window.saveProductCategories = async function() {
+  if (_mcDraft.length === 0) { toast('Add at least one category.', 'error'); return; }
+  const { error } = await sb.from('settings')
+    .upsert({ key: 'product_categories', value: JSON.stringify(_mcDraft) }, { onConflict: 'key' });
+  if (error) { toast(error.message, 'error'); return; }
+  SETS.cfg.product_categories = JSON.stringify(_mcDraft);
+  CATEGORIES.length = 0;
+  _mcDraft.forEach(c => CATEGORIES.push(c));
+  closeModal('manage-categories-modal');
+  toast('Product categories saved.', 'success');
+  renderProductFilters();
+};
+
 window.saveCommissionRate = async function() {
   const val = parseFloat(document.getElementById('s-commission-rate')?.value);
   if (isNaN(val) || val < 0 || val > 30) { toast('Enter a value between 0 and 30.', 'error'); return; }
@@ -12085,6 +14297,22 @@ window.saveCommissionRate = async function() {
   if (error) { toast(error.message, 'error'); return; }
   SETS.cfg.commission_rate = String(val);
   toast(`Commission rate set to ${val}%.`, 'success');
+};
+
+window.saveFOCommissionRate = async function() {
+  const val = parseFloat(document.getElementById('s-fo-commission-rate')?.value);
+  if (isNaN(val) || val < 0 || val > 30) { toast('Enter a value between 0 and 30.', 'error'); return; }
+  const btn = document.getElementById('s-fo-commission-btn');
+  const lbl = document.getElementById('s-fo-commission-label');
+  if (btn) btn.disabled = true;
+  if (lbl) lbl.textContent = 'Saving…';
+  const { error } = await sb.from('settings')
+    .upsert({ key: 'fo_commission_rate', value: String(val) }, { onConflict: 'key' });
+  if (btn) btn.disabled = false;
+  if (lbl) lbl.textContent = 'Save';
+  if (error) { toast(error.message, 'error'); return; }
+  SETS.cfg.fo_commission_rate = String(val);
+  toast(`Field officer commission rate set to ${val}%.`, 'success');
 };
 
 window.saveExportSchedule = async function() {
@@ -12492,7 +14720,22 @@ window.decideOfficer = async function(newStatus) {
     closeApproveOfficerDrawer();
     return;
   }
-  const { error } = await sb.from('app_users').update({ status: newStatus, notes }).eq('id', id);
+  /* Schema-tolerant update — different installs may not have `notes` (or
+     other extra cols). Same auto-retry pattern as saveOnboardOfficer: try,
+     on "column X not found" errors strip the offending key and retry. */
+  const payload = { status: newStatus, notes };
+  let error = null;
+  for (let attempt = 0; attempt < 8; attempt++) {
+    const res = await sb.from('app_users').update(payload).eq('id', id);
+    error = res.error || null;
+    if (!error) break;
+    const m = (error.message || '').match(/(?:column|find the)\s+['"]?([a-zA-Z_]+)['"]?\s+(?:column\s+of\s+'app_users'\s+in\s+the\s+schema\s+cache|does not exist)/i);
+    if (m && m[1] && payload.hasOwnProperty(m[1])) {
+      delete payload[m[1]];
+      continue;
+    }
+    break;
+  }
   if (error) { toast(error.message, 'error'); return; }
   toast(newStatus === 'active' ? '✓ Officer approved and now live in the directory.' : 'Application rejected.', 'success');
   closeApproveOfficerDrawer();
@@ -12660,8 +14903,15 @@ window.generatePDFReport = function() {
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
 <style>
-  @page { size: A4 ${orient}; margin: 0; }
-  @media print { html,body { -webkit-print-color-adjust:exact; print-color-adjust:exact; } .no-print{display:none} }
+  /* A4 with margins on every page EXCEPT the cover (which is full-bleed).
+     15mm top, 18mm bottom (room for page numbers), 12mm L/R is a standard
+     executive-report margin. Fits ~186mm content width in portrait,
+     ~273mm in landscape. Cover keeps margin:0 via :first selector. */
+  @page         { size: A4 ${orient}; margin: 15mm 12mm 18mm 12mm; }
+  @page :first  { margin: 0; }
+  @media print  { html,body { -webkit-print-color-adjust:exact; print-color-adjust:exact; } .no-print{display:none} }
+  /* Avoid chart / table rows being split across page breaks */
+  .trend-section, .kpi-card, table, .section-block { page-break-inside: avoid; }
   *{ box-sizing:border-box; margin:0; padding:0; }
   body { font-family:'Poppins',sans-serif; color:#001524; font-size:11px; background:#fff; }
 
@@ -12782,7 +15032,7 @@ window.generatePDFReport = function() {
 <!-- ── BODY ──────────────────────────────────────── -->
 <div class="body">
 
-${AN.useDemo ? `<div class="demo-note">⚠ Illustrative data — connect Supabase to load live figures.</div>` : ''}
+<!-- PDF export reflects live Supabase data only; no illustrative banner. -->
 
 ${sec.kpis ? `
 <!-- KPI CARDS -->
@@ -12959,6 +15209,7 @@ const IM_ROLE_DESCS = {
 window.openInviteModal = async function() {
   document.getElementById('im-email').value   = '';
   document.getElementById('im-name').value    = '';
+  const phEl = document.getElementById('im-phone'); if (phEl) phEl.value = '';
   document.getElementById('im-role').value    = 'sales_manager';
   document.getElementById('im-message').value = '';
   imRoleChange();
@@ -12984,30 +15235,87 @@ window.imRoleChange = function() {
 };
 
 window.saveInviteMember = async function() {
-  const email = document.getElementById('im-email').value.trim();
-  const name  = document.getElementById('im-name').value.trim();
-  const role  = document.getElementById('im-role').value;
-  if (!email) { toast('Email address is required.', 'error'); return; }
-  if (!name)  { toast('Full name is required.', 'error'); return; }
+  const emailRaw = document.getElementById('im-email').value.trim();
+  const email    = emailRaw.toLowerCase();
+  const name     = document.getElementById('im-name').value.trim();
+  const role     = document.getElementById('im-role').value;
+  /* Optional phone — normalise the same way the mobile signup does. */
+  const phoneRaw = (document.getElementById('im-phone')?.value || '').trim();
+  let phoneDigits = phoneRaw.replace(/[^0-9]/g, '');
+  if (phoneDigits.startsWith('256')) phoneDigits = phoneDigits.slice(3);
+  if (phoneDigits.startsWith('0'))   phoneDigits = phoneDigits.slice(1);
+  const phone = phoneDigits ? ('+256' + phoneDigits) : '';
+
+  /* ── Validation ──────────────────────────────────────── */
+  if (!email)            { toast('Email address is required.', 'error'); return; }
+  if (email.indexOf('@') < 0) { toast('Enter a valid email address.', 'error'); return; }
+  if (!name)             { toast('Full name is required.', 'error'); return; }
+  if (phoneDigits && !/^7\d{8}$/.test(phoneDigits)) {
+    toast('Phone must be a 9-digit Uganda mobile starting with 7 (e.g. 772 456 123). Leave blank to skip.', 'error', 6000);
+    return;
+  }
   if (role === 'md' && APP.profile?.role !== 'md') {
     toast('Only a Managing Director can grant MD access.', 'error'); return;
   }
+
   const btn = document.querySelector('#invite-member-drawer .btn-primary');
   const origLabel = btn?.innerHTML;
   if (btn) { btn.disabled = true; btn.textContent = 'Sending…'; }
-  const payload = {
-    full_name:     name,
-    email,
-    role,
-    status:        'pending_invite',
-    outlet_id:     document.getElementById('im-outlet').value || null,
-    invited_by:    APP.profile?.id || null,
-    invited_at:    new Date().toISOString(),
-  };
-  const { error } = await sb.from('app_users').insert(payload);
+
+  /* ── Send the 6-digit OTP via Supabase Auth, stashing all the
+     admin-set data in user_metadata. ────────────────────────────
+     We deliberately do NOT pre-create an app_users row here. That
+     row gets created by app.html's saveProfile path the moment the
+     invitee verifies their OTP, using these metadata fields to
+     populate full_name / role / district. This guarantees the new
+     app_users.id == auth.users.id (no id mismatch, no relink
+     dance under the new RLS rules). The trade-off: invited users
+     won't show up in the admin user list until they sign in for
+     the first time. */
+  let otpErr = null;
+  try {
+    const { error } = await sb.auth.signInWithOtp({
+      email,
+      options: {
+        shouldCreateUser: true,
+        data: {
+          full_name:   name,
+          role,
+          phone:       phone || null,
+          invited_by:  APP.profile?.id || null,
+          invited_at:  new Date().toISOString(),
+          outlet_id:   document.getElementById('im-outlet')?.value || null,
+          /* "active" for self-service roles, "pending_approval" for staff
+             roles that need MD sign-off after first sign-in. */
+          status:      (role === 'farmer' || role === 'diaspora') ? 'active' : 'pending_approval'
+        }
+      }
+    });
+    if (error) otpErr = error;
+  } catch (e) {
+    otpErr = e;
+  }
+
   if (btn) { btn.disabled = false; btn.innerHTML = origLabel; }
-  if (error) { toast(error.message, 'error'); return; }
-  toast(`Invite sent to ${email}. They will appear in Pending Invites until they accept.`, 'success', 6000);
+
+  if (otpErr) {
+    console.warn('[invite] OTP send failed', otpErr);
+    toast(
+      'Couldn’t send the sign-in code (' +
+      (otpErr.message || 'unknown error') +
+      '). Check the email address and try again.',
+      'error',
+      8000
+    );
+    return;
+  }
+
+  toast(
+    `Invite sent to ${email}. They'll appear in the user list once they sign in for the first time.`,
+    'success',
+    6000
+  );
+
   closeInviteMember();
   if (typeof loadUsers === 'function') loadUsers();
 };

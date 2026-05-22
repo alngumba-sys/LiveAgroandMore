@@ -1,5 +1,9 @@
 [build]
-  publish = "."        # serve the Platform/ folder as-is (no build step)
+  publish   = "."                  # serve the Platform/ folder as-is (no build step)
+  functions = "netlify/functions"  # SMS-OTP send + verify endpoints
+
+[functions]
+  node_bundler = "esbuild"
 
 # ── Clean URL aliases ──────────────────────────────────────────────
 [[redirects]]
