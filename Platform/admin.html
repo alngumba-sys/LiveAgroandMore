@@ -42,7 +42,9 @@
 /* ── Reset ──────────────────────────────────────────────── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html, body { height: 100%; overflow: hidden; }
-body { font-family: 'Inter', system-ui, sans-serif; background: #F4EFE5; color: var(--ink); font-size: 14px; line-height: 1.5; }
+body { font-family: 'Inter', system-ui, sans-serif; background: #F4EFE5; color: var(--ink); font-size: 14px; line-height: 1.5; font-variant-emoji: text; }
+/* Force all emoji to render as flat 2D glyphs (no colour/3D) */
+* { font-variant-emoji: text; }
 a { color: var(--teal); text-decoration: none; }
 a:hover { text-decoration: underline; }
 button { font-family: inherit; cursor: pointer; }
@@ -617,6 +619,11 @@ table.dt .cell-bold { color: var(--ink); font-weight: 700; }
 
       <!-- ── NETWORK ─────────────────────────────────── -->
       <div class="sb-section">Network</div>
+      <button class="sb-item" data-page="farmers">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 22s4-2 10-2 10 2 10 2"/><path d="M12 6v6"/><path d="M9 9l3 3 3-3"/><circle cx="12" cy="4" r="2"/></svg>
+        <span class="sb-label">Farmers</span>
+        <span class="sb-badge" id="sb-badge-farmers"></span>
+      </button>
       <button class="sb-item" data-page="agents">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
         <span class="sb-label">Agents &amp; Leaderboard</span>
@@ -624,6 +631,10 @@ table.dt .cell-bold { color: var(--ink); font-weight: 700; }
       <button class="sb-item" data-page="officers">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
         <span class="sb-label">Field Officers</span>
+      </button>
+      <button class="sb-item" data-page="diasporaclients">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>
+        <span class="sb-label">Diaspora Clients</span>
       </button>
       <button class="sb-item" data-page="advisory">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
@@ -782,12 +793,12 @@ table.dt .cell-bold { color: var(--ink); font-weight: 700; }
         <div class="grid-3" id="dash-charts" style="margin-bottom:16px">
           <div class="card" id="dash-chart-sales"><div class="card-header"><h3>Sales by district <span style="color:var(--ink-40);font-weight:500">· last 7 days</span></h3></div><div class="card-body" id="dash-sales-chart"><div class="shimmer sk-row" style="height:150px"></div></div></div>
           <div class="card" id="dash-chart-agents"><div class="card-header"><h3>Top 5 agents <span style="color:var(--ink-40);font-weight:500">· this month</span></h3></div><div class="card-body" id="dash-agents-list"><div class="shimmer sk-row" style="height:150px"></div></div></div>
-          <div class="card" id="dash-chart-fo"><div class="card-header"><h3>Field officer activity <span style="color:var(--ink-40);font-weight:500">· this month</span> <span style="font-size:9px;font-weight:800;background:rgba(255,125,0,.15);color:var(--orange);border:1px solid rgba(255,125,0,.3);border-radius:4px;padding:1px 5px;letter-spacing:.05em">DEMO</span></h3></div><div class="card-body" id="dash-fo-donut"><div class="shimmer sk-row" style="height:150px"></div></div></div>
+          <div class="card" id="dash-chart-fo"><div class="card-header"><h3>Field officer activity <span style="color:var(--ink-40);font-weight:500">· this month</span></h3></div><div class="card-body" id="dash-fo-donut"><div class="shimmer sk-row" style="height:150px"></div></div></div>
         </div>
         <!-- Bottom tables -->
         <div class="grid-2" id="dash-tables">
           <div class="card"><div class="card-header"><h3>Orders needing attention</h3><a href="#" onclick="navigate('orders')" style="font-size:11.5px" id="dash-orders-viewall">View all →</a></div><div style="font-size:11px;color:var(--ink-60);padding:0 16px 8px" id="dash-orders-subtitle">Awaiting payment verification · oldest first</div><div class="card-body" style="padding-top:0" id="dash-orders-table"><div class="shimmer sk-row"></div><div class="shimmer sk-row w-75"></div><div class="shimmer sk-row w-50"></div></div></div>
-          <div class="card"><div class="card-header"><h3>AgroBot <span style="color:var(--ink-40);font-weight:500">· most asked this week</span> <span style="font-size:9px;font-weight:800;background:rgba(255,125,0,.15);color:var(--orange);border:1px solid rgba(255,125,0,.3);border-radius:4px;padding:1px 5px;letter-spacing:.05em">DEMO</span></h3><a href="#" onclick="navigate('chatbot')" style="font-size:11.5px">View all →</a></div><div style="font-size:11px;color:var(--ink-60);padding:0 16px 8px">Sample data · chatbot_logs aggregation pending</div><div class="card-body" style="padding-top:0" id="dash-chatbot-queries"><div class="shimmer sk-row"></div><div class="shimmer sk-row w-75"></div><div class="shimmer sk-row w-50"></div></div></div>
+          <div class="card"><div class="card-header"><h3>AgroBot <span style="color:var(--ink-40);font-weight:500">· most asked this week</span></h3><a href="#" onclick="navigate('chatbot')" style="font-size:11.5px">View all →</a></div><div class="card-body" style="padding-top:0" id="dash-chatbot-queries"><div class="shimmer sk-row"></div><div class="shimmer sk-row w-75"></div><div class="shimmer sk-row w-50"></div></div></div>
         </div>
       </section>
 
@@ -965,11 +976,11 @@ table.dt .cell-bold { color: var(--ink); font-weight: 700; }
             <div style="display:flex;gap:6px;flex-shrink:0">
               <select id="dia-filter-country" class="btn btn-ghost btn-sm" onchange="filterDiaspora()">
                 <option value="">Country ▾</option>
-                <option value="UK">🇬🇧 UK</option>
-                <option value="USA">🇺🇸 USA</option>
-                <option value="UAE">🇦🇪 UAE</option>
-                <option value="Canada">🇨🇦 Canada</option>
-                <option value="Germany">🇩🇪 Germany</option>
+                <option value="UK">UK</option>
+                <option value="USA">USA</option>
+                <option value="UAE">UAE</option>
+                <option value="Canada">Canada</option>
+                <option value="Germany">Germany</option>
               </select>
               <select id="dia-filter-status" class="btn btn-ghost btn-sm" onchange="filterDiaspora()">
                 <option value="">Status ▾</option>
@@ -1129,6 +1140,38 @@ table.dt .cell-bold { color: var(--ink); font-weight: 700; }
         </div>
         <div id="officers-tab-bar" style="display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap"></div>
         <div id="officers-content"><div style="padding:40px" class="shimmer sk-row"></div></div>
+      </section>
+
+      <!-- ── Farmers Directory ─────────────────────────────── -->
+      <section class="page" id="page-farmers">
+        <div class="pg-header">
+          <div class="pg-header-left">
+            <h1 style="color:var(--orange)">Farmers</h1>
+            <p class="pg-sub"><span id="farmers-count-sub">—</span> farmers registered across Uganda. Approve pending self-registrations, view profiles, and contact farmers directly.</p>
+          </div>
+          <div class="pg-actions">
+            <button class="btn btn-ghost btn-sm" onclick="exportFarmersCSV()">Export CSV</button>
+          </div>
+        </div>
+        <div id="farmers-kpis" style="display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap"></div>
+        <div id="farmers-tab-bar" style="display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap"></div>
+        <div id="farmers-content"><div style="padding:40px" class="shimmer sk-row"></div></div>
+      </section>
+
+      <!-- ── Diaspora Clients Directory ────────────────────── -->
+      <section class="page" id="page-diasporaclients">
+        <div class="pg-header">
+          <div class="pg-header-left">
+            <h1 style="color:var(--orange)">Diaspora Clients</h1>
+            <p class="pg-sub"><span id="diasporaclients-count-sub">—</span> diaspora clients sending orders to family back home. View their order history and country breakdown.</p>
+          </div>
+          <div class="pg-actions">
+            <button class="btn btn-ghost btn-sm" onclick="exportDiasporaClientsCSV()">Export CSV</button>
+            <button class="btn btn-primary btn-sm" onclick="navigate('diaspora')">View orders →</button>
+          </div>
+        </div>
+        <div id="diasporaclients-kpis" style="display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap"></div>
+        <div id="diasporaclients-content"><div style="padding:40px" class="shimmer sk-row"></div></div>
       </section>
 
       <!-- ── Advisory Content ──────────────────────────────── -->
@@ -2107,7 +2150,7 @@ table.dt .cell-bold { color: var(--ink); font-weight: 700; }
     <div style="background:var(--ink-03);border:1px solid var(--ink-08);border-radius:var(--radius-md);padding:14px;margin-bottom:18px">
       <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:15px;height:15px;color:var(--teal);flex-shrink:0"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/></svg>
-        <span style="font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-60)">Live Forecast · Open-Meteo</span>
+        <span style="font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-60)">Live Forecast</span>
       </div>
       <div style="display:flex;gap:8px;align-items:flex-end;flex-wrap:wrap">
         <div style="flex:1;min-width:160px">
@@ -2162,7 +2205,7 @@ table.dt .cell-bold { color: var(--ink); font-weight: 700; }
       <div class="field">
         <label>Region <span class="req">*</span></label>
         <select id="wa-region">
-          <option value="national">🇺🇬 National (all regions)</option>
+          <option value="national">National (all regions)</option>
           <option value="central">Central</option>
           <option value="eastern">Eastern</option>
           <option value="northern">Northern</option>
@@ -2172,9 +2215,9 @@ table.dt .cell-bold { color: var(--ink); font-weight: 700; }
       <div class="field">
         <label>Severity <span class="req">*</span></label>
         <select id="wa-severity">
-          <option value="info">ℹ️ Info — general update</option>
-          <option value="warning">⚠️ Warning — take caution</option>
-          <option value="danger">🔴 Danger — urgent action needed</option>
+          <option value="info">Info — general update</option>
+          <option value="warning">Warning — take caution</option>
+          <option value="danger">Danger — urgent action needed</option>
         </select>
       </div>
     </div>
@@ -2316,6 +2359,8 @@ table.dt .cell-bold { color: var(--ink); font-weight: 700; }
           <option value="lusoga">Lusoga</option>
           <option value="runyankore">Runyankore</option>
           <option value="luo">Luo</option>
+          <option value="ateso">Ateso</option>
+          <option value="acholi">Acholi</option>
         </select>
       </div>
     </div>
@@ -2662,6 +2707,7 @@ table.dt .cell-bold { color: var(--ink); font-weight: 700; }
           <div class="prefix-wrap"><span class="prefix">%</span><input type="number" id="oa-commission" value="5" min="0" max="30" step="0.5"></div>
         </div>
       </div>
+      <div class="field"><label>Mobile money number <span class="hint">for commission payout</span></label><input type="tel" id="oa-momo" placeholder="e.g. 0772 000000 (MTN / Airtel)"></div>
       <div class="field"><label>Referee / Recruited by</label><input type="text" id="oa-referee" placeholder="Name of the person who brought them in"></div>
       <div class="field"><label>Notes</label><textarea id="oa-notes" placeholder="Any relevant background…" style="min-height:56px"></textarea></div>
     </div>
@@ -2741,6 +2787,7 @@ table.dt .cell-bold { color: var(--ink); font-weight: 700; }
           <div class="prefix-wrap"><span class="prefix">%</span><input type="number" id="of-commission" value="0" min="0" max="30" step="0.5"></div>
         </div>
       </div>
+      <div class="field"><label>Mobile money number <span class="hint">for commission payout</span></label><input type="tel" id="of-momo" placeholder="e.g. 0772 000000 (MTN / Airtel)"></div>
       <div class="field"><label>Notes</label><textarea id="of-notes" placeholder="Background, training, certifications…" style="min-height:56px"></textarea></div>
     </div>
     <div class="form-section">
@@ -2814,7 +2861,7 @@ table.dt .cell-bold { color: var(--ink); font-weight: 700; }
       <div>
         <div style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.07em;color:var(--ink-40);margin-bottom:8px">Application Status</div>
         <div style="background:#fff;border:1.5px solid var(--orange);border-radius:10px;padding:12px;text-align:center">
-          <div style="font-size:22px;margin-bottom:4px">⏳</div>
+          <div style="font-size:22px;margin-bottom:4px;font-weight:700;color:var(--orange)">—</div>
           <div style="font-weight:700;font-size:13px;color:var(--orange)">Pending Review</div>
           <div id="aom-submitted" style="font-size:11px;color:var(--ink-60);margin-top:4px">Submitted —</div>
         </div>
@@ -3068,6 +3115,30 @@ window.APP = {
   session:  null,
   profile:  null,
   currentPage: 'dashboard',
+  perms: { roleOverrides: null, userOverrides: null, loaded: false },
+};
+
+/* ── Audit log helper ─────────────────────────────────
+   Writes a row into audit_log for any staff action. Best-effort:
+   never throws, just warns to console so the action itself isn't
+   blocked if audit fails. Schema columns:
+     staff_id, staff_name, role, action, target_type, target_id, notes  */
+window.logAudit = async function(action, opts) {
+  opts = opts || {};
+  try {
+    const p = window.APP?.profile || {};
+    await sb.from('audit_log').insert({
+      staff_id:    p.id || null,
+      staff_name:  p.full_name || null,
+      role:        p.role || null,
+      action:      String(action || '').slice(0, 200),
+      target_type: opts.targetType || null,
+      target_id:   opts.targetId != null ? String(opts.targetId) : null,
+      notes:       opts.notes || null,
+    });
+  } catch (e) {
+    console.warn('[audit] write failed', e);
+  }
 };
 
 /* ── Page metadata ───────────────────────────────────── */
@@ -3079,8 +3150,10 @@ const PAGES = {
   orders:        { label: 'Orders',                parent: 'Operations' },
   diaspora:      { label: 'Diaspora Orders',       parent: 'Operations' },
   forhire:       { label: 'For Hire Providers',    parent: 'Operations' },
+  farmers:       { label: 'Farmers',               parent: 'Network' },
   agents:        { label: 'Agents & Leaderboard',  parent: 'Network' },
   officers:      { label: 'Field Officers',        parent: 'Network' },
+  diasporaclients:{ label: 'Diaspora Clients',     parent: 'Network' },
   advisory:      { label: 'Advisory Content',      parent: 'Network' },
   chatbot:       { label: 'AI Chatbot · AgroBot',  parent: 'Network' },
   notifications: { label: 'Push Notifications',    parent: 'Network' },
@@ -3094,27 +3167,93 @@ const PAGES = {
 const ROLE_ACCESS = {
   platform_admin:  ['__platform__'],          // handled separately — activates PA console
   md:              Object.keys(PAGES),
-  sales_manager:   ['dashboard','products','prices','orders','diaspora','forhire','users','agents','advisory','notifications','analytics'],
+  sales_manager:   ['dashboard','products','prices','orders','diaspora','forhire','users','farmers','agents','diasporaclients','advisory','notifications','analytics'],
   finance:         ['dashboard','orders','diaspora','analytics','finance'],
   it_admin:        ['dashboard','settings','users','analytics'],
-  agronomist:      ['dashboard','advisory','chatbot','officers','prices','notifications'],
+  agronomist:      ['dashboard','advisory','chatbot','officers','farmers','prices','notifications'],
   outlet_clerk:    ['dashboard','orders'],
 };
 
-/* Combined access for accounts with multiple roles */
+/* Roles allowed to edit module permissions */
+const PERM_EDITOR_ROLES = ['md','it_admin'];
+window.canEditPermissions = function(profile) {
+  const all = [profile?.role, ...(Array.isArray(profile?.extra_roles)?profile.extra_roles:[])];
+  return all.some(r => PERM_EDITOR_ROLES.includes(r));
+};
+
+/* All module keys (for permission matrix) */
+window.ALL_MODULES = Object.keys(PAGES);
+
+/* Resolve the effective allowed modules for a role, applying admin overrides */
+function getRoleAllowed(role) {
+  const overrides = APP.perms?.roleOverrides;
+  if (overrides && Array.isArray(overrides[role])) return overrides[role];
+  return ROLE_ACCESS[role] || [];
+}
+
+/* Combined access for accounts with multiple roles + per-user overrides */
 function getEffectiveAccess(profile) {
   const primary = profile?.role || 'outlet_clerk';
   const extras  = Array.isArray(profile?.extra_roles) ? profile.extra_roles : [];
   const allRoles = [primary, ...extras.filter(r => r && r !== primary)];
-  const pages = new Set(allRoles.flatMap(r => ROLE_ACCESS[r] || []));
+  // Platform-admin path is handled separately upstream
+  if (allRoles.includes('platform_admin')) return { allRoles, allowed: Object.keys(PAGES) };
+
+  const pages = new Set(allRoles.flatMap(r => getRoleAllowed(r)));
+
+  // Apply per-user overrides (allow adds, deny removes)
+  const uid = profile?.id;
+  const uo  = APP.perms?.userOverrides?.[uid];
+  if (uo) {
+    (uo.allow || []).forEach(m => pages.add(m));
+    (uo.deny  || []).forEach(m => pages.delete(m));
+  }
+  // Dashboard is always accessible
+  pages.add('dashboard');
   return { allRoles, allowed: [...pages] };
 }
+
+/* Load admin-managed permission overrides from the `settings` table.
+   Stored as JSON under two keys:
+     role_permissions          → { role: [moduleKey,...] }   (overrides ROLE_ACCESS)
+     user_permission_overrides → { userId: { allow:[], deny:[] } }
+   Safe to call before DB is ready — silently falls back to defaults. */
+window.loadPermissionsAsync = async function() {
+  try {
+    const { data, error } = await sb.from('settings')
+      .select('key,value').in('key', ['role_permissions','user_permission_overrides']);
+    if (error) { console.warn('[perms] load failed', error); APP.perms.loaded = true; return; }
+    const byKey = Object.fromEntries((data||[]).map(r => [r.key, r.value]));
+    APP.perms.roleOverrides = byKey.role_permissions || null;
+    APP.perms.userOverrides = byKey.user_permission_overrides || null;
+    APP.perms.loaded = true;
+  } catch (e) {
+    console.warn('[perms] load exception', e);
+    APP.perms.loaded = true;
+  }
+};
+
+window.savePermissionsAsync = async function(key, value) {
+  // Upsert by key — assumes `settings` has (key text PK, value jsonb)
+  const { error } = await sb.from('settings').upsert({ key, value }, { onConflict: 'key' });
+  if (error) throw error;
+};
+
+/* Re-apply nav greying after permissions change */
+window.refreshNavRestrictions = function() {
+  const { allowed } = getEffectiveAccess(APP.profile);
+  document.querySelectorAll('.sb-item[data-page]').forEach(btn => {
+    const pg = btn.dataset.page;
+    if (allowed.includes(pg)) btn.removeAttribute('data-restricted');
+    else btn.setAttribute('data-restricted','1');
+  });
+};
 
 /* ── Router ──────────────────────────────────────────── */
 window.navigate = function(page) {
   const { allowed } = getEffectiveAccess(APP.profile);
   if (!allowed.includes(page)) {
-    toast('Not available for your role.', 'error'); return;
+    toast('No access — contact admin.', 'error'); return;
   }
   // Hide all pages
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
@@ -3151,19 +3290,56 @@ window.navigate = function(page) {
     orders: loadOrders, users: loadUsers, traceability: loadTraceability, forhire: loadHire,
     advisory: loadAdvisory, chatbot: loadChatbot, notifications: loadNotifications,
     analytics: loadAnalytics, agents: loadAgents, officers: loadOfficers,
+    farmers: loadFarmers, diasporaclients: loadDiasporaClients,
     diaspora: loadDiaspora, settings: loadSettings, finance: loadFinance };
   if (loaders[page]) loaders[page]();
 };
 
 /* ── Auth guard ──────────────────────────────────────── */
+const PROFILE_CACHE_KEY = 'amAdminProfile_v2';
+const roleLabels = {
+  platform_admin:'Platform Admin',
+  md:            'Managing Director',
+  sales_manager: 'Sales Manager',
+  it_admin:      'IT Admin',
+  agronomist:    'Agronomist',
+  outlet_clerk:  'Outlet Clerk',
+};
+
+function paintProfile(profile, email) {
+  if (!profile) return;
+  const name     = profile.full_name || email || 'Admin';
+  const role     = profile.role || 'outlet_clerk';
+  const initials = name.split(' ').slice(0,2).map(w=>w[0]).join('').toUpperCase();
+  document.getElementById('sbAva').textContent   = initials;
+  document.getElementById('sbName').textContent  = name;
+  document.getElementById('sbRole').textContent  = roleLabels[role] || role;
+  document.getElementById('tbAva').textContent   = initials;
+  document.getElementById('tbName').textContent  = name;
+  document.getElementById('tbRole').textContent  = roleLabels[role] || role;
+  document.getElementById('pm-name').textContent  = name;
+  if (email) document.getElementById('pm-email').textContent = email;
+}
+
 async function initAuth() {
+  // ── Step 1: paint cached profile instantly (no network wait) ──
+  try {
+    const cached = JSON.parse(localStorage.getItem(PROFILE_CACHE_KEY) || 'null');
+    if (cached) paintProfile(cached, cached._email);
+  } catch(_) {}
+
+  // ── Step 2: check session ──────────────────────────────────
   const { data: { session } } = await sb.auth.getSession();
   if (!session) { window.location.href = 'index.html'; return; }
   APP.session = session;
 
-  // Load staff profile
-  const { data: profile, error: profileErr } = await sb.from('staff_profiles')
-    .select('*').eq('id', session.user.id).single();
+  // ── Step 3: fetch profile + permissions in parallel ────────
+  const [
+    { data: profile, error: profileErr },
+  ] = await Promise.all([
+    sb.from('staff_profiles').select('*').eq('id', session.user.id).single(),
+    loadPermissionsAsync(),   // runs in parallel — result handled inside
+  ]);
 
   // If no profile exists yet (DB not yet set up), show a helpful message
   if (profileErr && profileErr.code === 'PGRST116') {
@@ -3178,45 +3354,33 @@ async function initAuth() {
           After that, sign out and back in.
         </div>
       </div>`;
-    // Still allow rendering with email fallback
   }
 
   APP.profile = profile;
-  const name = profile?.full_name || session.user.email;
-  const role = profile?.role || 'outlet_clerk';
-  const initials = name.split(' ').slice(0,2).map(w=>w[0]).join('').toUpperCase();
-  const roleLabels = {
-    platform_admin:'🌐 Platform Admin',
-    md:            '👑 Managing Director',
-    sales_manager: 'Sales Manager',
-    it_admin:      'IT Admin',
-    agronomist:    'Agronomist',
-    outlet_clerk:  'Outlet Clerk',
-  };
 
-  // Sidebar user
-  document.getElementById('sbAva').textContent  = initials;
-  document.getElementById('sbName').textContent  = name;
-  document.getElementById('sbRole').textContent  = roleLabels[role] || role;
-  // Topbar user
-  document.getElementById('tbAva').textContent   = initials;
-  document.getElementById('tbName').textContent  = name;
-  document.getElementById('tbRole').textContent  = roleLabels[role] || role;
-  // Profile menu
-  document.getElementById('pm-name').textContent  = name;
-  document.getElementById('pm-email').textContent = session.user.email;
+  // Cache profile for instant paint next visit
+  try {
+    localStorage.setItem(PROFILE_CACHE_KEY, JSON.stringify({ ...profile, _email: session.user.email }));
+  } catch(_) {}
+
+  // Paint fresh data (overwrites cached values)
+  paintProfile(profile, session.user.email);
+
+  const role = profile?.role || 'outlet_clerk';
 
   // ── Platform Admin: show dedicated console, hide normal UI ──
   if (role === 'platform_admin') {
+    const name     = profile?.full_name || session.user.email;
+    const initials = name.split(' ').slice(0,2).map(w=>w[0]).join('').toUpperCase();
     document.getElementById('pa-avatar').textContent = initials;
     document.getElementById('pa-user-name').textContent = name;
     document.getElementById('pa-user-email').textContent = session.user.email;
     document.getElementById('pa-overlay').classList.add('active');
     loadPlatformAdmin();
-    return; // do not render normal admin UI
+    return;
   }
 
-  // Grey out restricted nav items (respects extra_roles)
+  // Grey out restricted nav items (permissions already loaded in parallel above)
   const { allRoles, allowed } = getEffectiveAccess(profile);
   document.querySelectorAll('.sb-item[data-page]').forEach(btn => {
     const pg = btn.dataset.page;
@@ -3226,8 +3390,8 @@ async function initAuth() {
   // Show multi-role badge in sidebar/topbar when MD has extra roles
   if (role === 'md' && allRoles.length > 1) {
     const extraLabels = allRoles.slice(1).map(r => roleLabels[r] || r).join(' · ');
-    document.getElementById('sbRole').textContent = '👑 MD · ' + extraLabels;
-    document.getElementById('tbRole').textContent = '👑 MD · ' + extraLabels;
+    document.getElementById('sbRole').textContent = 'MD · ' + extraLabels;
+    document.getElementById('tbRole').textContent = 'MD · ' + extraLabels;
   }
 
   // Inject "Manage my roles" into profile menu for MDs
@@ -3311,7 +3475,7 @@ window.closeMobileSidebar = function() {
 document.querySelectorAll('.sb-item[data-page]').forEach(btn => {
   btn.addEventListener('click', () => {
     if (btn.hasAttribute('data-restricted')) {
-      toast('Not available for your role.','error'); return;
+      toast('No access — contact admin.','error'); return;
     }
     navigate(btn.dataset.page);
     // Close sidebar on mobile after navigation
@@ -3410,7 +3574,7 @@ window.exportDashboardReport = async function() {
 
     // Header block
     rows.push(['Agro and More — Dashboard Report']);
-    rows.push([`Period: ${label}${isDemo ? ' (DEMO DATA)' : ''}`]);
+    rows.push([`Period: ${label}${isDemo ? ' (sample data)' : ''}`]);
     rows.push([`Generated: ${fmtDate(now)} ${now.toLocaleTimeString('en-UG',{hour:'2-digit',minute:'2-digit'})}`]);
     rows.push([`Exported by: ${APP.profile?.full_name || APP.session?.user?.email || '—'}`]);
     rows.push([]);
@@ -3581,13 +3745,7 @@ window.loadDashboard = async function(rangeDays) {
   document.getElementById('dash-heading').innerHTML =
     `${greet}, ${firstName} <span style="font-size:20px">🔥</span>`;
 
-  // Count outlets for subtitle
-  const { count: outletCount } = await sb.from('outlets').select('id',{count:'exact',head:true});
-  const nOutlets = outletCount > 0 ? outletCount : 8;
-  document.getElementById('dash-scope').textContent =
-    `Here's Agro and More across all ${nOutlets} outlets today · ${days[now.getDay()]}, ${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()}`;
-
-  // ── Fetch KPIs in parallel ─────────────────────────────
+  // ── Fetch KPIs + outlet count all in one parallel batch ──
   const [
     { count: ordersToday   },
     { data:  salesRows     },
@@ -3600,6 +3758,8 @@ window.loadDashboard = async function(rangeDays) {
     { count: totalAgents   },
     { count: dauTodayRaw, error: dauErr    },
     { count: dauYestRaw                   },
+    { count: expertCallsToday             },
+    { count: outletCount                  },
   ] = await Promise.all([
     sb.from('orders').select('id',{count:'exact',head:true}).gte('created_at', today),
     sb.from('orders').select('total_ugx').gte('created_at', rangeStart).in('status',['confirmed','dispatched','delivered','completed']),
@@ -3610,29 +3770,34 @@ window.loadDashboard = async function(rangeDays) {
     sb.from('app_users').select('id',{count:'exact',head:true}).gte('created_at', twoWksAgo).lt('created_at', weekAgo),
     sb.from('app_users').select('id',{count:'exact',head:true}).eq('role','agent').eq('status','active'),
     sb.from('app_users').select('id',{count:'exact',head:true}).eq('role','agent'),
-    sb.from('app_sessions').select('id',{count:'exact',head:true}).gte('created_at', today),
-    sb.from('app_sessions').select('id',{count:'exact',head:true}).gte('created_at', yesterday).lt('created_at', today),
+    sb.from('app_sessions').select('id',{count:'exact',head:true}).gte('created_at', today).then(r=>r).catch(()=>({count:0})),
+    sb.from('app_sessions').select('id',{count:'exact',head:true}).gte('created_at', yesterday).lt('created_at', today).then(r=>r).catch(()=>({count:0})),
+    sb.from('farm_visits').select('id',{count:'exact',head:true}).gte('created_at', today).then(r=>r).catch(()=>({count:0})),
+    sb.from('outlets').select('id',{count:'exact',head:true}).then(r=>r).catch(()=>({count:0})),
   ]);
+
+  const nOutlets = outletCount > 0 ? outletCount : 8;
+  document.getElementById('dash-scope').textContent =
+    `Here's Agro and More across all ${nOutlets} outlets today · ${days[now.getDay()]}, ${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()}`;
 
   const salesTotal = (salesRows||[]).reduce((s,r) => s + Number(r.total_ugx||0), 0);
   const salesPrev  = (salesPrevRows||[]).reduce((s,r) => s + Number(r.total_ugx||0), 0);
-  const useDemo    = salesTotal === 0 && (ordersToday||0) === 0;
 
-  // DAU — app_sessions table (null count means table absent → use demo)
-  const dauIsDemo = !!dauErr || dauTodayRaw === null;
+  // DAU — app_sessions table (null count means table absent → 0)
+  const dauIsDemo = false;
 
   const D = {
-    sales:    useDemo ? 12480000 : salesTotal,
-    salesPrev:useDemo ? 11530000 : salesPrev,
-    orders:   useDemo ? 137      : (ordersToday||0),
-    ordersYest:useDemo? 125      : (ordersYest||0),
-    pending:  useDemo ? 23       : (awaitPay||0),
-    agents:   useDemo ? 84       : (activeAgents||0),
-    agTotal:  useDemo ? 112      : (totalAgents||0),
-    newU:     useDemo ? 612      : (newUsers7d||0),
-    newUPrev: useDemo ? 519      : (newUsersPrev7d||0),
-    dau:      dauIsDemo ? 281    : (dauTodayRaw||0),
-    dauYest:  dauIsDemo ? 254    : (dauYestRaw||0),
+    sales:    salesTotal,
+    salesPrev:salesPrev,
+    orders:   (ordersToday||0),
+    ordersYest:(ordersYest||0),
+    pending:  (awaitPay||0),
+    agents:   (activeAgents||0),
+    agTotal:  (totalAgents||0),
+    newU:     (newUsers7d||0),
+    newUPrev: (newUsersPrev7d||0),
+    dau:      (dauTodayRaw||0),
+    dauYest:  (dauYestRaw||0),
     dauIsDemo,
   };
 
@@ -3650,7 +3815,7 @@ window.loadDashboard = async function(rangeDays) {
   };
 
   const fmtSales = v => v >= 1000000 ? `UGX ${(v/1000000).toFixed(2)}M` : `UGX ${(v/1000).toFixed(0)}K`;
-  const demoBadge = useDemo ? `<span style="display:inline-block;margin-left:8px;font-size:9px;font-weight:800;background:rgba(255,125,0,.15);color:var(--orange);border:1px solid rgba(255,125,0,.3);border-radius:4px;padding:1px 5px;vertical-align:middle;letter-spacing:.05em">DEMO</span>` : '';
+  const demoBadge = '';
 
   document.getElementById('dash-kpis').innerHTML = `
     <div class="kpi highlight" onclick="openDashModal('sales')">
@@ -3676,8 +3841,8 @@ window.loadDashboard = async function(rangeDays) {
       <div class="kpi-trend flat" style="color:var(--ink-60)">of ${D.agTotal} total</div>
     </div>
     <div class="kpi" onclick="openDashModal('calls')">
-      <div class="kpi-label">Expert calls today <span style="font-size:9px;font-weight:800;background:rgba(255,125,0,.15);color:var(--orange);border:1px solid rgba(255,125,0,.3);border-radius:4px;padding:1px 4px;letter-spacing:.05em">DEMO</span></div>
-      <div class="kpi-value">46</div>
+      <div class="kpi-label">Expert calls today</div>
+      <div class="kpi-value">${(expertCallsToday||0).toLocaleString()}</div>
       <div class="kpi-trend flat" style="color:var(--ink-60)">Farmers & agents assisted</div>
     </div>
     <div class="kpi" onclick="openDashModal('users')">
@@ -3697,99 +3862,96 @@ window.loadDashboard = async function(rangeDays) {
       })()}
     </div>`;
 
-  // ── Sales by district chart ────────────────────────────
-  const { data: distOrders } = await sb.from('orders')
-    .select('total_ugx, app_users(district)')
-    .gte('created_at', weekAgo)
-    .in('status',['confirmed','dispatched','delivered','completed'])
-    .limit(500);
+  // ── Fetch charts + tables in one parallel batch ───────
+  const [
+    { data: distOrders },
+    { data: agentUsers },
+    { data: agentOrders },
+    { count: foTotal },
+    { count: foActive },
+    { count: foPending },
+    { data: foVisitRows },
+    { data: attOrders },
+    { data: chatMsgs },
+  ] = await Promise.all([
+    sb.from('orders').select('total_ugx, app_users(district)').gte('created_at', weekAgo).in('status',['confirmed','dispatched','delivered','completed']).limit(500),
+    sb.from('app_users').select('id,full_name,district').eq('role','agent').eq('status','active').limit(20),
+    sb.from('orders').select('agent_id,total_ugx').gte('created_at', monthStart).in('status',['confirmed','dispatched','delivered','completed']),
+    sb.from('app_users').select('id',{count:'exact',head:true}).eq('role','field_officer').then(r=>r).catch(()=>({count:0})),
+    sb.from('app_users').select('id',{count:'exact',head:true}).eq('role','field_officer').eq('status','active').then(r=>r).catch(()=>({count:0})),
+    sb.from('app_users').select('id',{count:'exact',head:true}).eq('role','field_officer').eq('status','pending_approval').then(r=>r).catch(()=>({count:0})),
+    sb.from('farm_visits').select('id,farmer_id,visit_type,rating').gte('created_at', monthStart).then(r=>r).catch(()=>({data:[]})),
+    sb.from('orders').select('id,order_number,customer_name,district,total_ugx,status,created_at,payment_method').in('status',['awaiting_payment','pending']).order('created_at',{ascending:true}).limit(6),
+    sb.from('chatbot_messages').select('content,role').eq('role','user').gte('created_at', weekAgo).limit(2000).then(r=>r).catch(()=>({data:[]})),
+  ]);
 
+  // ── Sales by district chart ────────────────────────────
   const distMap = {};
   (distOrders||[]).forEach(o => {
     const d = o.app_users?.district || 'Unknown';
     distMap[d] = (distMap[d]||0) + Number(o.total_ugx||0);
   });
 
-  const DIST_FALLBACK = [
-    {d:'Kampala', v:24200000}, {d:'Wakiso',  v:19800000}, {d:'Mpigi',   v:16100000},
-    {d:'Masaka',  v:12700000}, {d:'Mbarara', v:11000000}, {d:'Mbale',   v: 8800000},
-    {d:'Gulu',    v: 7100000}, {d:'Jinja',   v: 5700000},
-  ];
-  const distData = Object.keys(distMap).length >= 3
-    ? Object.entries(distMap).sort((a,b)=>b[1]-a[1]).slice(0,8).map(([d,v])=>({d,v}))
-    : DIST_FALLBACK;
-
+  const distData = Object.entries(distMap).sort((a,b)=>b[1]-a[1]).slice(0,8).map(([d,v])=>({d,v}));
   const maxDist = Math.max(...distData.map(r=>r.v), 1);
-  document.getElementById('dash-sales-chart').innerHTML = `
-    <div class="bar-list">
-      ${distData.map((r,i) => `
-        <div class="bar-row">
-          <div class="bar-lbl" title="${r.d}">${r.d}</div>
-          <div class="bar-track"><div class="bar-fill ${i===0?'orange':''}" style="width:${Math.round(r.v/maxDist*100)}%"></div></div>
-          <div class="bar-val" style="min-width:56px">UGX ${(r.v/1000000).toFixed(1)}M</div>
-        </div>`).join('')}
-    </div>`;
+  document.getElementById('dash-sales-chart').innerHTML = distData.length === 0
+    ? `<div style="padding:30px 0;text-align:center;color:var(--ink-40);font-size:13px">No sales recorded yet.</div>`
+    : `<div class="bar-list">
+        ${distData.map((r,i) => `
+          <div class="bar-row">
+            <div class="bar-lbl" title="${r.d}">${r.d}</div>
+            <div class="bar-track"><div class="bar-fill ${i===0?'orange':''}" style="width:${Math.round(r.v/maxDist*100)}%"></div></div>
+            <div class="bar-val" style="min-width:56px">UGX ${(r.v/1000000).toFixed(1)}M</div>
+          </div>`).join('')}
+      </div>`;
 
   // ── Top agents leaderboard ─────────────────────────────
-  const { data: agentUsers } = await sb.from('app_users')
-    .select('id,full_name,district').eq('role','agent').eq('status','active').limit(20);
-  const { data: agentOrders } = await sb.from('orders')
-    .select('agent_id,total_ugx')
-    .gte('created_at', monthStart)
-    .in('status',['confirmed','dispatched','delivered','completed']);
   const agentTotals = {};
   (agentOrders||[]).forEach(o => {
     if (o.agent_id) agentTotals[o.agent_id] = (agentTotals[o.agent_id]||0) + Number(o.total_ugx||0);
   });
 
-  const AGENT_FALLBACK = [
-    {full_name:'Kato Ibrahim',     district:'Kampala', sales:4250000},
-    {full_name:'Nankya Justine',   district:'Masaka',  sales:3800000},
-    {full_name:'Byaruhanga Moses', district:'Mbarara', sales:3200000},
-    {full_name:'Tumusiime David',  district:'Wakiso',  sales:2900000},
-    {full_name:'Ssemakula Robert', district:'Mpigi',   sales:2400000},
-  ];
-  const agentList = (agentUsers||[]).length >= 3
-    ? (agentUsers||[]).map(a=>({...a,sales:agentTotals[a.id]||0})).sort((a,b)=>b.sales-a.sales).slice(0,5)
-    : AGENT_FALLBACK;
+  const agentList = (agentUsers||[]).map(a=>({...a,sales:agentTotals[a.id]||0})).sort((a,b)=>b.sales-a.sales).slice(0,5);
   const topSales = Math.max(...agentList.map(a=>a.sales), 1);
 
-  document.getElementById('dash-agents-list').innerHTML = `
-    <div class="bar-list">
-      ${agentList.map((a,i) => {
-        const initials = a.full_name.split(' ').slice(0,2).map(w=>w[0]).join('').toUpperCase();
-        const trophy   = i === 0 ? '🏆 ' : '';
-        return `<div class="bar-row" style="gap:8px">
-          <div style="width:22px;height:22px;border-radius:50%;background:${i===0?'var(--orange)':'var(--teal)'};color:#fff;
-            display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:800;flex-shrink:0">${initials}</div>
-          <div class="bar-lbl" style="min-width:90px">${trophy}${a.full_name}</div>
-          <div class="bar-track"><div class="bar-fill ${i===0?'orange':''}" style="width:${Math.round((a.sales||0)/topSales*100)}%"></div></div>
-          <div class="bar-val" style="min-width:64px;font-size:11px">${a.sales>0?'UGX '+(a.sales/1000000).toFixed(2)+'M':'—'}</div>
-        </div>`;
-      }).join('')}
-    </div>`;
+  document.getElementById('dash-agents-list').innerHTML = agentList.length === 0
+    ? `<div style="padding:30px 0;text-align:center;color:var(--ink-40);font-size:13px">No active agents yet.</div>`
+    : `<div class="bar-list">
+        ${agentList.map((a,i) => {
+          const initials = (a.full_name||'?').split(' ').slice(0,2).map(w=>w[0]).join('').toUpperCase();
+          const trophy   = i === 0 ? '#1 ' : '';
+          return `<div class="bar-row" style="gap:8px">
+            <div style="width:22px;height:22px;border-radius:50%;background:${i===0?'var(--orange)':'var(--teal)'};color:#fff;
+              display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:800;flex-shrink:0">${initials}</div>
+            <div class="bar-lbl" style="min-width:90px">${trophy}${a.full_name}</div>
+            <div class="bar-track"><div class="bar-fill ${i===0?'orange':''}" style="width:${Math.round((a.sales||0)/topSales*100)}%"></div></div>
+            <div class="bar-val" style="min-width:64px;font-size:11px">${a.sales>0?'UGX '+(a.sales/1000000).toFixed(2)+'M':'—'}</div>
+          </div>`;
+        }).join('')}
+      </div>`;
 
   // ── Field officer activity donut ───────────────────────
-  const { count: foTotal }  = await sb.from('app_users').select('id',{count:'exact',head:true}).eq('role','field_officer');
-  const { count: foActive } = await sb.from('app_users').select('id',{count:'exact',head:true}).eq('role','field_officer').eq('status','active');
-  const { count: foPending }= await sb.from('app_users').select('id',{count:'exact',head:true}).eq('role','field_officer').eq('status','pending_approval');
-
-  const foFarmed  = 84;
-  const foVisits  = 42;
-  const foCalls   = 67;
-  const foUnrated = 17;
-  const foSum     = foFarmed + foVisits + foCalls + foUnrated;
+  let foFarmed=0, foVisits=0, foCalls=0, foUnrated=0;
+  {
+    const v = foVisitRows || [];
+    foVisits  = v.length;
+    foFarmed  = new Set(v.map(r=>r.farmer_id).filter(Boolean)).size;
+    foCalls   = v.filter(r => r.visit_type === 'call').length;
+    foUnrated = v.filter(r => r.rating == null).length;
+  }
+  const foSum  = Math.max(foFarmed + foVisits + foCalls + foUnrated, 1);
   const deg1 = Math.round(foFarmed/foSum*360);
   const deg2 = Math.round(foVisits/foSum*360);
   const deg3 = Math.round(foCalls/foSum*360);
 
+  const hasFoActivity = (foFarmed + foVisits + foCalls + foUnrated) > 0;
   document.getElementById('dash-fo-donut').innerHTML = `
     <div class="donut-wrap">
-      <div class="donut" style="background:conic-gradient(
+      <div class="donut" style="background:${hasFoActivity ? `conic-gradient(
         var(--orange) 0deg ${deg1}deg,
         var(--teal)   ${deg1}deg ${deg1+deg2}deg,
         var(--rust)   ${deg1+deg2}deg ${deg1+deg2+deg3}deg,
-        #ccc          ${deg1+deg2+deg3}deg 360deg)"></div>
+        #ccc          ${deg1+deg2+deg3}deg 360deg)` : 'var(--ink-05)'}"></div>
       <div class="donut-legend">
         <div class="dl-row"><div class="dl-dot" style="background:var(--orange)"></div><div class="dl-lbl">Farmers helped</div><div class="dl-val">${foFarmed}</div></div>
         <div class="dl-row"><div class="dl-dot" style="background:var(--teal)"></div><div class="dl-lbl">Visits logged</div><div class="dl-val">${foVisits}</div></div>
@@ -3799,12 +3961,7 @@ window.loadDashboard = async function(rangeDays) {
       </div>
     </div>`;
 
-  // ── Orders needing attention ───────────────────────────
-  const { data: attOrders } = await sb.from('orders')
-    .select('id,order_number,customer_name,district,total_ugx,status,created_at,payment_method')
-    .in('status',['awaiting_payment','pending'])
-    .order('created_at',{ascending:true}).limit(6);
-
+  // ── Orders needing attention (already fetched in parallel above) ──
   const ageStr = created => {
     const mins = Math.round((Date.now()-new Date(created))/60000);
     if (mins < 2)    return 'just now';
@@ -3818,47 +3975,48 @@ window.loadDashboard = async function(rangeDays) {
     pending:`<span class="chip" style="font-size:10px;padding:2px 8px;background:var(--ink-08)">Pending</span>`,
   };
 
-  const ATT_FB = [
-    {id:'af1',order_number:'AM-2026-04-0137',customer_name:'Nakato Nabirye',district:'Mpigi',    total_ugx:340000,status:'awaiting_payment',created_at:new Date(Date.now()-2*60000).toISOString(),  payment_method:'mobile_money'},
-    {id:'af2',order_number:'AM-2026-04-0128',customer_name:'Byaruhanga Moses',district:'Hoima',  total_ugx:88500, status:'awaiting_payment',created_at:new Date(Date.now()-38*60000).toISOString(), payment_method:'mobile_money'},
-    {id:'af3',order_number:'AM-2026-04-0114',customer_name:'Ssemakula Robert',district:'Masaka', total_ugx:215000,status:'awaiting_payment',created_at:new Date(Date.now()-72*60000).toISOString(), payment_method:'cash'},
-  ];
-  const ordRows = (attOrders||[]).length > 0 ? attOrders : ATT_FB;
+  const ATT_FB = [];
+  const ordRows = (attOrders||[]);
   const pendingCount = ordRows.length;
   document.getElementById('dash-orders-viewall').textContent = `View all · ${D.pending} →`;
 
-  document.getElementById('dash-orders-table').innerHTML = `
-    <table class="dt" style="font-size:11.5px">
-      <thead><tr><th>Order #</th><th>Customer</th><th>Total</th><th>Status</th><th>Age</th><th></th></tr></thead>
-      <tbody>${ordRows.map(o=>`
-        <tr>
-          <td class="cell-bold">${o.order_number||'—'}</td>
-          <td>${o.customer_name||'—'}${o.district?` <span style="color:var(--ink-40);font-size:10.5px">· ${o.district}</span>`:''}  </td>
-          <td class="r">UGX ${Number(o.total_ugx||0).toLocaleString()}</td>
-          <td>${ORD_CHIP[o.status]||'—'}</td>
-          <td style="color:var(--ink-60)">${ageStr(o.created_at)}</td>
-          <td><button class="btn btn-primary btn-sm" onclick="navigate('orders')">Verify</button></td>
-        </tr>`).join('')}
-      </tbody></table>`;
+  document.getElementById('dash-orders-table').innerHTML = ordRows.length === 0
+    ? `<div style="padding:30px 0;text-align:center;color:var(--ink-40);font-size:13px">No orders awaiting verification. ✓</div>`
+    : `<table class="dt" style="font-size:11.5px">
+        <thead><tr><th>Order #</th><th>Customer</th><th>Total</th><th>Status</th><th>Age</th><th></th></tr></thead>
+        <tbody>${ordRows.map(o=>`
+          <tr>
+            <td class="cell-bold">${o.order_number||'—'}</td>
+            <td>${o.customer_name||'—'}${o.district?` <span style="color:var(--ink-40);font-size:10.5px">· ${o.district}</span>`:''}  </td>
+            <td class="r">UGX ${Number(o.total_ugx||0).toLocaleString()}</td>
+            <td>${ORD_CHIP[o.status]||'—'}</td>
+            <td style="color:var(--ink-60)">${ageStr(o.created_at)}</td>
+            <td><button class="btn btn-primary btn-sm" onclick="navigate('orders')">Verify</button></td>
+          </tr>`).join('')}
+        </tbody></table>`;
 
-  // ── AgroBot top queries ────────────────────────────────
-  const TOP_QUERIES = [
-    {q:'How do I treat coffee leaf rust?',       count:142},
-    {q:'DAP price this month',                   count:98},
-    {q:'Fall Armyworm on maize',                 count:76},
-    {q:'Where is my order?',                     count:64},
-    {q:'Hass avocado pruning time',              count:53},
-  ];
+  // ── AgroBot top queries (already fetched in parallel above) ──
+  let TOP_QUERIES = [];
+  try {
+    const counts = {};
+    (chatMsgs||[]).forEach(m => {
+      const k = (m.content||'').trim().toLowerCase().slice(0,80);
+      if (k) counts[k] = (counts[k]||0) + 1;
+    });
+    TOP_QUERIES = Object.entries(counts).sort((a,b)=>b[1]-a[1]).slice(0,5)
+      .map(([q,count]) => ({q: q.charAt(0).toUpperCase()+q.slice(1), count}));
+  } catch(e) { /* leave empty */ }
 
-  document.getElementById('dash-chatbot-queries').innerHTML = `
-    ${TOP_QUERIES.map(q=>`
-      <div style="display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--ink-05)">
-        <div style="flex:1;font-size:12.5px;color:var(--ink);font-weight:500">${q.q}</div>
-        <div style="font-size:12px;font-weight:800;color:var(--orange);white-space:nowrap">${q.count}×</div>
-      </div>`).join('')}`;
+  document.getElementById('dash-chatbot-queries').innerHTML = TOP_QUERIES.length
+    ? TOP_QUERIES.map(q=>`
+        <div style="display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--ink-05)">
+          <div style="flex:1;font-size:12.5px;color:var(--ink);font-weight:500">${q.q}</div>
+          <div style="font-size:12px;font-weight:800;color:var(--orange);white-space:nowrap">${q.count}×</div>
+        </div>`).join('')
+    : `<div style="padding:20px;text-align:center;color:var(--ink-40);font-size:12.5px">No chatbot activity yet this week.</div>`;
 
   // ── Store snapshot for export & modals ────────────────
-  DASH.snapshot = { D, rangeLabel: DASH.rangeLabel, generatedAt: new Date(), useDemo,
+  DASH.snapshot = { D, rangeLabel: DASH.rangeLabel, generatedAt: new Date(), useDemo: false,
     distData, agentList, ordRows, TOP_QUERIES, salesDelta, ordersDelta, newUDelta,
     today, yesterday };
 };
@@ -3913,7 +4071,7 @@ window.openDashModal = async function(type) {
   // ── SALES ────────────────────────────────────────────
   if (type === 'sales') {
     title = `Sales · ${S.rangeLabel || 'Last 7 days'}`;
-    icon  = '💰';
+    icon  = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v2m0 8v2M9 9.5A3 3 0 0115 12a3 3 0 01-6 2.5"/></svg>';
     const pct = S.salesDelta !== null ? parseFloat(S.salesDelta) : null;
     const distRows = (S.distData||[]).map((r,i) => {
       const maxV = Math.max(...(S.distData||[]).map(x=>x.v), 1);
@@ -3941,21 +4099,14 @@ window.openDashModal = async function(type) {
   // ── ORDERS TODAY ─────────────────────────────────────
   } else if (type === 'orders') {
     title = 'Orders Today';
-    icon  = '📦';
+    icon  = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>';
     // Fetch today's orders live
     const todayStr = new Date().toISOString().split('T')[0];
     const { data: todayOrders } = await sb.from('orders')
       .select('id,order_number,customer_name,district,total_ugx,status,created_at,payment_method')
       .gte('created_at', todayStr).order('created_at',{ascending:false}).limit(50);
 
-    const TODAY_FB = [
-      {order_number:'AM-2026-04-0141',customer_name:'Nabirye Carol',   district:'Kampala', total_ugx:780000, status:'confirmed',        created_at:new Date(Date.now()-8*60000).toISOString(),  payment_method:'mobile_money'},
-      {order_number:'AM-2026-04-0140',customer_name:'Ssebagala Frank', district:'Wakiso',  total_ugx:320000, status:'delivered',         created_at:new Date(Date.now()-22*60000).toISOString(), payment_method:'cash'},
-      {order_number:'AM-2026-04-0139',customer_name:'Akello Priscilla',district:'Lira',    total_ugx:145000, status:'dispatched',        created_at:new Date(Date.now()-41*60000).toISOString(), payment_method:'mobile_money'},
-      {order_number:'AM-2026-04-0138',customer_name:'Ochieng Paul',    district:'Gulu',    total_ugx:54000,  status:'awaiting_payment',  created_at:new Date(Date.now()-55*60000).toISOString(), payment_method:'cash'},
-      {order_number:'AM-2026-04-0137',customer_name:'Nakato Nabirye',  district:'Mpigi',   total_ugx:340000, status:'awaiting_payment',  created_at:new Date(Date.now()-2*60*60000).toISOString(),payment_method:'mobile_money'},
-      {order_number:'AM-2026-04-0136',customer_name:'Mugisha Peter',   district:'Mbarara', total_ugx:210000, status:'completed',         created_at:new Date(Date.now()-3*60*60000).toISOString(),payment_method:'visa'},
-    ];
+    const TODAY_FB = [];
     const rows = (todayOrders||[]).length > 0 ? todayOrders : TODAY_FB;
     const useFB = !(todayOrders||[]).length;
     const STATUS_CHIP = {
@@ -4000,7 +4151,7 @@ window.openDashModal = async function(type) {
   // ── PENDING VERIFICATION ─────────────────────────────
   } else if (type === 'pending') {
     title = 'Pending Verification';
-    icon  = '⚠️';
+    icon  = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>';
     const ageStr = c => { const m=Math.round((Date.now()-new Date(c))/60000); return m<60?`${m} min ago`:m<1440?`${Math.round(m/60)}h ago`:`${Math.round(m/1440)}d ago`; };
     const PM = { mobile_money:'MTN / Airtel Money', cash:'Cash on delivery', visa:'Visa card' };
     const rows = S.ordRows || [];
@@ -4070,17 +4221,10 @@ window.openDashModal = async function(type) {
   // ── EXPERT CALLS ─────────────────────────────────────
   } else if (type === 'calls') {
     title = 'Expert / Advisory Calls Today';
-    icon  = '📞';
+    icon  = '';
     const TOP_Q = S.TOP_QUERIES || [];
     const totalCalls = TOP_Q.reduce((s,q)=>s+(q.count||0),0) || 46;
-    const CALL_TOPICS_DEMO = [
-      {q:'Coffee leaf rust treatment',         count:18, category:'Crop disease'},
-      {q:'Hass avocado pruning schedule',      count:14, category:'Horticulture'},
-      {q:'DAP fertilizer application rate',   count:11, category:'Inputs'},
-      {q:'Fall Armyworm — early detection',   count:9,  category:'Pest control'},
-      {q:'How to store harvested maize',       count:7,  category:'Post-harvest'},
-      {q:'Soil test before planting beans',   count:5,  category:'Soil health'},
-    ];
+    const CALL_TOPICS_DEMO = [];
     const callData = CALL_TOPICS_DEMO;
     const maxC = Math.max(...callData.map(c=>c.count),1);
     bodyHTML = `
@@ -4167,7 +4311,7 @@ window.openDashModal = async function(type) {
 
   } else if (type === 'dau') {
     title = 'Daily Active Users (DAU)';
-    icon  = '📱';
+    icon  = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>';
     // Fetch last 7 days of session counts, grouped by date
     const sevenDaysAgo = new Date(Date.now() - 7 * 86400000).toISOString();
     const { data: sessionRows, error: sessErr } = await sb.from('app_sessions')
@@ -4185,10 +4329,7 @@ window.openDashModal = async function(type) {
 
     // Build last-7-days array (fill missing dates with 0)
     const useDemoDAU = (sessionRows||[]).length === 0 || !!sessErr;
-    const DAU_DEMO = [
-      {d:'Mon',v:231},{d:'Tue',v:247},{d:'Wed',v:268},{d:'Thu',v:254},
-      {d:'Fri',v:291},{d:'Sat',v:241},{d:'Sun',v:281},
-    ];
+    const DAU_DEMO = [];
     let dauChart;
     if (useDemoDAU) {
       dauChart = DAU_DEMO;
@@ -5253,19 +5394,11 @@ window.applyOrderFilters = function() {
   ORD.filterRole    = (document.getElementById('ord-filter-role')?.value||'');
   ORD.page = 0;
 
-  // When using demo rows, apply filters to the demo set so status tiles and filters work
-  const useDemo = ORD.all.length === 0;
-  const DEMO_ROWS = [
-    {id:'d1',order_number:'AM-2026-04-24-0137',customer_name:'Nakato Nabirye',  customer_district:'Mpigi',  customer_role:'farmer',  order_items:[{},{},{}], total_ugx:340000, payment_method:'mobile_money', status:'awaiting_payment', created_at:new Date(Date.now()-5*3600000).toISOString()},
-    {id:'d2',order_number:'AM-2026-04-24-0128',customer_name:'Byaruhanga Moses',customer_district:'Hoima',  customer_role:'farmer',  order_items:[{},{}],    total_ugx:88500,  payment_method:'mobile_money', status:'awaiting_payment', created_at:new Date(Date.now()-7*3600000).toISOString()},
-    {id:'d3',order_number:'AM-2026-04-22-0103',customer_name:'Nankya Justine',  customer_district:'Masaka', customer_role:'agent',   order_items:[{},{}],    total_ugx:210000, payment_method:'mobile_money', status:'completed',        created_at:new Date(Date.now()-2*864e5).toISOString(), agent_name:'Kato Ibrahim'},
-    {id:'d4',order_number:'AM-D-2026-04-00091',customer_name:'Ssemakula Robert',customer_district:'UK',     customer_role:'diaspora', order_items:[{},{}],   total_ugx:117800, payment_method:'visa',         status:'completed',        created_at:new Date(Date.now()-2*864e5).toISOString(), recipient_name:'Namutebi Sarah', recipient_district:'Mpigi', visa_last4:'4391'},
-    {id:'d5',order_number:'AM-2026-04-21-0085',customer_name:'Nakato Nabirye',  customer_district:'Mpigi',  customer_role:'farmer',  order_items:[{},{}],    total_ugx:58500,  payment_method:'mobile_money', status:'dispatched',       created_at:new Date(Date.now()-6*864e5+3600000*2).toISOString()},
-    {id:'d6',order_number:'AM-2026-04-21-0074',customer_name:'Kamya Noah',      customer_district:'Mukono', customer_role:'farmer',  order_items:[{}],       total_ugx:22500,  payment_method:'cash',         status:'cancelled',        created_at:new Date(Date.now()-6*864e5+3600000).toISOString()},
-  ];
-  ORD._demoRows = DEMO_ROWS; // store for openOrderDetail
+  // Demo fallback removed — show real orders only (empty if none)
+  const DEMO_ROWS = [];
+  ORD._demoRows = DEMO_ROWS;
 
-  let list = useDemo ? DEMO_ROWS : ORD.all;
+  let list = ORD.all;
   if (ORD.statusFilter) list = list.filter(o => o.status === ORD.statusFilter);
   if (ORD.filterPayment) list = list.filter(o => o.payment_method === ORD.filterPayment);
   if (ORD.filterOutlet)  list = list.filter(o => (o.outlet_name||'').includes(ORD.filterOutlet));
@@ -5299,7 +5432,7 @@ function renderOrdersTable() {
 
   const demoBanner = useDemo
     ? `<div style="margin:12px 16px;padding:10px 14px;background:rgba(220,100,30,.08);border-left:3px solid var(--orange);border-radius:0 8px 8px 0;font-size:12.5px;color:var(--ink-80)">
-        <strong style="color:var(--orange)">⚠️ DEMO DATA</strong> — Could not reach the database. Showing sample orders. Pipeline counts and filters apply to sample data only.
+        ⚠️ Could not reach the database. Showing sample orders.
        </div>`
     : '';
 
@@ -5921,7 +6054,7 @@ function staffRoleChip(role) {
     agronomist:   'background:rgba(58,125,68,.1);color:#3A7D44;border:1px solid rgba(58,125,68,.25)',
     outlet_clerk: 'background:var(--ink-05);color:var(--ink);border:1px solid var(--ink-15)',
   };
-  const icons = { md:'🌱', sales_manager:'', it_admin:'', agronomist:'', outlet_clerk:'' };
+  const icons = { md:'', sales_manager:'', it_admin:'', agronomist:'', outlet_clerk:'' };
   const st = styles[role] || 'background:var(--ink-05);color:var(--ink)';
   const lbl = ROLE_LABELS[role] || role;
   const icon = icons[role] || '';
@@ -5943,35 +6076,49 @@ function relTime(iso) {
   return isYest ? `Yesterday · ${time}` : fmtDate(iso);
 }
 
-const USR_STAFF_FB = [
-  {id:'us1',full_name:'Isaac Mugera',     email:'isaac@agroandmore.co.ug',    role:'md',            outlet:'HQ · Kampala', last_active_at:new Date(Date.now()-60000).toISOString(),       tfa:'Phone OTP',status:'active', you:true},
-  {id:'us2',full_name:'Namutebi Sarah',   email:'sarah.n@agroandmore.co.ug',  role:'sales_manager', outlet:'HQ · Kampala', last_active_at:new Date(Date.now()-28*60000).toISOString(),    tfa:'Phone OTP',status:'active'},
-  {id:'us3',full_name:'Kato Ibrahim',     email:'kato.i@agroandmore.co.ug',   role:'it_admin',      outlet:'HQ · Kampala', last_active_at:new Date(Date.now()-72*60000).toISOString(),    tfa:'Phone OTP',status:'active'},
-  {id:'us4',full_name:'Achieng Grace',    email:'grace.a@agroandmore.co.ug',  role:'agronomist',    outlet:'HQ · Kampala', last_active_at:new Date(Date.now()-2*3600000).toISOString(),   tfa:'Phone OTP',status:'active'},
-  {id:'us5',full_name:'Janet Nakibuuka',  email:'janet.n@agroandmore.co.ug',  role:'outlet_clerk',  outlet:'Mpigi Town',   last_active_at:new Date(Date.now()-864e5+60000*102).toISOString(), tfa:'Phone OTP',status:'active'},
-  {id:'us6',full_name:'Namutebi Rosette', email:'rosette.n@agroandmore.co.ug',role:'sales_manager', outlet:'HQ · Kampala', last_active_at:null, tfa:'—', status:'pending_invite'},
-];
+const USR_STAFF_FB = [];
 
 window.loadUsers = async function() {
   document.getElementById('users-content').innerHTML = '<div style="padding:40px" class="shimmer sk-row"></div>';
 
-  // Try to load admin staff from app_users (roles: md, sales_manager, it_admin, agronomist, outlet_clerk)
-  const ADMIN_ROLES = ['md','sales_manager','finance','it_admin','agronomist','outlet_clerk'];
-  const { data, error } = await sb.from('app_users')
-    .select('*').in('role', ADMIN_ROLES).order('created_at',{ascending:false});
+  // Staff users live in staff_profiles (linked to auth.users by id)
+  const { data: staffRows, error } = await sb.from('staff_profiles')
+    .select('*').order('created_at',{ascending:false});
 
-  const useDemo = error || !data?.length;
-  USR.all = useDemo ? USR_STAFF_FB : data;
-  USR._useDemo = useDemo;
+  // Normalise staff_profiles → the shape the rest of this view expects
+  // (email comes from auth — not queryable client-side, so left blank)
+  USR.all = (staffRows || []).map(s => ({
+    id:          s.id,
+    full_name:   s.full_name,
+    email:       s.email || '',  // populated only if a view exposes it
+    role:        s.role,
+    outlet:      s.outlet_id || '',
+    phone:       s.phone,
+    avatar_url:  s.avatar_url,
+    status:      s.active === false ? 'blocked' : 'active',
+    tfa:         s.two_factor_enabled ? 'Enabled' : '—',
+    created_at:  s.created_at,
+    last_active_at: s.updated_at,
+  }));
+  // Only flag demo on actual DB error, not on empty result
+  USR._useDemo = !!error;
 
   // Hide invite banner once real active staff exist
   const banner = document.getElementById('users-invite-banner');
-  if (banner) banner.style.display = (!useDemo && USR.all.filter(u=>u.status==='active').length > 0) ? 'none' : '';
+  if (banner) banner.style.display = USR.all.filter(u=>u.status==='active').length > 0 ? 'none' : '';
+
+  // Audit events count (last 7 days). Sensitive flag is computed
+  // client-side from action prefix since audit_log has no such column.
+  const weekAgo = new Date(Date.now() - 7 * 86400000).toISOString();
+  const { data: auditWeek } = await sb.from('audit_log')
+    .select('action').gte('created_at', weekAgo);
+  const auditCount = (auditWeek || []).length;
+  const SENSITIVE_RX = /^(delete|remove|block|reject|export|grant|revoke|role\.|perm)/i;
+  const auditSensitive = (auditWeek || []).filter(r => SENSITIVE_RX.test(r.action || '')).length;
 
   // KPI cards
   const active   = USR.all.filter(u=>u.status==='active').length;
   const pending  = USR.all.filter(u=>u.status==='pending_invite'||u.status==='pending_approval').length;
-  const blocked  = USR.all.filter(u=>u.status==='blocked').length;
 
   const kpiCard = (label, value, sub, highlight) => `
     <div style="flex:1;min-width:150px;padding:14px 16px;border-radius:var(--radius-md);background:#fff;
@@ -5982,10 +6129,10 @@ window.loadUsers = async function() {
     </div>`;
 
   document.getElementById('users-kpis').innerHTML =
-    kpiCard('TOTAL STAFF USERS', USR.all.length, useDemo?'+1 this month':'') +
+    kpiCard('TOTAL STAFF USERS', USR.all.length, '') +
     kpiCard('PENDING INVITES', pending, pending>0?(USR.all.find(u=>u.status==='pending_invite')?.full_name||'')+' · '+(ROLE_LABELS[USR.all.find(u=>u.status==='pending_invite')?.role]||''):'') +
-    kpiCard('ACTIVE SESSIONS', useDemo?4:active, useDemo?'2 on mobile':'') +
-    kpiCard('AUDIT EVENTS · 7D', useDemo?'1,284':'—', useDemo?'42 sensitive':'');
+    kpiCard('ACTIVE SESSIONS', active, '') +
+    kpiCard('AUDIT EVENTS · 7D', (auditCount||0).toLocaleString(), (auditSensitive||0)+' sensitive');
 
   renderUsersTabs();
   renderUsersContent();
@@ -6043,7 +6190,7 @@ function renderUsersContent() {
 
     const isDemo = USR._useDemo;
     const demoBannerRow = isDemo
-      ? `<tr><td colspan="7" style="padding:0"><div style="background:var(--orange-05,#fff8f0);border-left:3px solid var(--orange);padding:8px 14px;font-size:12.5px;color:var(--orange);font-weight:600">⚠️ DEMO DATA — Connect Supabase to manage real team members</div></td></tr>`
+      ? `<tr><td colspan="7" style="padding:0"><div style="background:var(--orange-05,#fff8f0);border-left:3px solid var(--orange);padding:8px 14px;font-size:12.5px;color:var(--orange);font-weight:600">⚠️ Could not load team members — check database connection</div></td></tr>`
       : '';
 
     container.innerHTML = `
@@ -6108,6 +6255,7 @@ function renderUsersContent() {
                       {label:'View audit trail',fn:function(){switchUsersTab('audit')}},
                       '---',
                       {label:'${isBlock?'Unblock':'Block'}',danger:${!isBlock},fn:function(){openBlockModal('${u.id}','${safeName}',${isBlock})}}
+                      ${isBlock ? `,'---',{label:'Remove permanently',danger:true,fn:function(){removeStaffUser('${u.id}','${safeName}')}}` : ''}
                     ])">⋮</button>`}
               </td>
             </tr>`;
@@ -6119,47 +6267,31 @@ function renderUsersContent() {
 
   // ── ROLES & PERMISSIONS ───────────────────────────────────
   } else if (tab === 'roles') {
-    const PERMS = [
-      {role:'Managing Director',     icon:'🌱', desc:'Full access — sees all pages, all data, all settings.',               canInvite:true,  canExport:true,  canDelete:true},
-      {role:'Sales / Ops Manager',   icon:'📊', desc:'Orders, products, agents, field officers, advisory content.',         canInvite:false, canExport:true,  canDelete:false},
-      {role:'IT Admin',              icon:'⚙️',  desc:'Settings, integrations, user management. Cannot delete orders.',     canInvite:true,  canExport:true,  canDelete:false},
-      {role:'Senior Agronomist',     icon:'🌾', desc:'Advisory content, chatbot KB, field officers. Read-only on finance.',  canInvite:false, canExport:false, canDelete:false},
-      {role:'Outlet Clerk',          icon:'🏪', desc:'Traceability, orders for assigned outlet only. Read-only.',           canInvite:false, canExport:false, canDelete:false},
-    ];
-    container.innerHTML = `
-      <div class="tbl-wrap">
-        <table class="dt">
-          <thead><tr><th>ROLE</th><th>DESCRIPTION</th><th>CAN INVITE</th><th>CAN EXPORT</th><th>CAN DELETE</th></tr></thead>
-          <tbody>${PERMS.map(p=>`<tr>
-            <td style="font-weight:700">${p.icon} ${p.role}</td>
-            <td style="font-size:12.5px;color:var(--ink-60);max-width:320px">${p.desc}</td>
-            <td>${p.canInvite?'<span style="color:var(--teal);font-weight:700">✓</span>':'<span style="color:var(--ink-20)">—</span>'}</td>
-            <td>${p.canExport?'<span style="color:var(--teal);font-weight:700">✓</span>':'<span style="color:var(--ink-20)">—</span>'}</td>
-            <td>${p.canDelete?'<span style="color:var(--teal);font-weight:700">✓</span>':'<span style="color:var(--ink-20)">—</span>'}</td>
-          </tr>`).join('')}
-          </tbody>
-        </table>
-      </div>`;
+    renderPermissionsTab(container);
 
   // ── AUDIT LOG ─────────────────────────────────────────────
   } else if (tab === 'audit') {
     container.innerHTML = '<div style="padding:40px" class="shimmer sk-row"></div>';
     (async () => {
-    const AUDIT_DEMO = [
-      {actor_name:'Isaac Mugera',   action:'Updated FX rate',            target:'1 USD = UGX 3,800',     created_at:new Date(Date.now()-30*60000).toISOString(),     sensitive:false},
-      {actor_name:'Kato Ibrahim',   action:'Invited Namutebi Rosette',    target:'Sales Manager role',    created_at:new Date(Date.now()-3*3600000).toISOString(),    sensitive:false},
-      {actor_name:'Isaac Mugera',   action:'Approved field officer',      target:'Okello James',          created_at:new Date(Date.now()-5*3600000).toISOString(),    sensitive:false},
-      {actor_name:'Namutebi Sarah', action:'Exported order CSV',          target:'167 orders exported',   created_at:new Date(Date.now()-864e5+3*3600000).toISOString(),sensitive:true},
-      {actor_name:'Isaac Mugera',   action:'Updated commission rate',     target:'5% → 5.5%',             created_at:new Date(Date.now()-2*864e5).toISOString(),       sensitive:true},
-    ];
-    const { data: auditData } = await sb.from('audit_logs')
-      .select('actor_name,action,target,created_at,sensitive')
+    const { data: auditData, error: auditErr } = await sb.from('audit_log')
+      .select('staff_name,role,action,target_type,target_id,notes,created_at')
       .order('created_at',{ascending:false}).limit(100);
-    const auditRows = (auditData?.length) ? auditData : AUDIT_DEMO;
-    const auditIsDemo = !auditData?.length;
-    const auditBanner = auditIsDemo
-      ? `<tr><td colspan="5" style="padding:0"><div style="background:var(--orange-05,#fff8f0);border-left:3px solid var(--orange);padding:8px 14px;font-size:12.5px;color:var(--orange);font-weight:600">⚠️ DEMO DATA — audit_logs table not yet populated</div></td></tr>`
-      : '';
+    const auditRows = auditData || [];
+
+    // Sensitive = action prefix matches one of these (no DB column for this)
+    const SENSITIVE_RX = /^(delete|remove|block|reject|export|grant|revoke|role\.|perm)/i;
+    const isSensitive = a => SENSITIVE_RX.test(a.action || '');
+
+    const targetCell = a => a.notes
+      || [a.target_type, a.target_id].filter(Boolean).join(' · ')
+      || '—';
+
+    const banner = auditErr
+      ? `<tr><td colspan="5" style="padding:0"><div style="background:var(--orange-05,#fff8f0);border-left:3px solid var(--orange);padding:8px 14px;font-size:12.5px;color:var(--orange);font-weight:600">⚠️ Could not load audit log — ${auditErr.message}</div></td></tr>`
+      : (auditRows.length === 0
+          ? `<tr><td colspan="5" style="padding:24px;text-align:center;color:var(--ink-40);font-size:13px">No audit events yet.</td></tr>`
+          : '');
+
     container.innerHTML = `
       <div class="tbl-wrap">
         <div class="tbl-toolbar" style="justify-content:flex-end">
@@ -6168,19 +6300,19 @@ function renderUsersContent() {
         <table class="dt">
           <thead><tr><th>USER</th><th>ACTION</th><th>TARGET</th><th>WHEN</th><th>SENSITIVE</th></tr></thead>
           <tbody>
-          ${auditBanner}
+          ${banner}
           ${auditRows.map(a=>`<tr>
-            <td style="font-weight:600">${a.actor_name||'—'}</td>
+            <td style="font-weight:600">${a.staff_name||'—'}</td>
             <td style="font-size:12.5px">${a.action||'—'}</td>
-            <td style="font-size:12px;color:var(--ink-60)">${a.target||'—'}</td>
+            <td style="font-size:12px;color:var(--ink-60)">${targetCell(a)}</td>
             <td style="font-size:11.5px;color:var(--ink-60)">${relTime(a.created_at)}</td>
-            <td>${a.sensitive?`<span class="chip chip-orange">Sensitive</span>`:'<span style="color:var(--ink-20)">—</span>'}</td>
+            <td>${isSensitive(a)?`<span class="chip chip-orange">Sensitive</span>`:'<span style="color:var(--ink-20)">—</span>'}</td>
           </tr>`).join('')}
           </tbody>
         </table>
-        <div class="tbl-foot"><span>Showing ${auditRows.length} audit event${auditRows.length!==1?'s':''} · last 7 days</span></div>
+        <div class="tbl-foot"><span>Showing ${auditRows.length} audit event${auditRows.length!==1?'s':''}</span></div>
       </div>`;
-    window._auditRows = auditRows;
+    window._auditRows = auditRows.map(a => ({ ...a, actor_name: a.staff_name, target: targetCell(a), sensitive: isSensitive(a) }));
     })();
   }
 }
@@ -6188,12 +6320,283 @@ function renderUsersContent() {
 window.setUserRole = function(r) { USR.search=''; renderUsersContent(); };
 window.usrPage     = function(d) { USR.page=Math.max(0,USR.page+d); renderUsersContent(); };
 
+/* ══════════════════════════════════════════════════════
+   ROLE / MODULE PERMISSIONS EDITOR
+   - MD and IT Admin see the editor (role matrix + per-user overrides).
+   - Everyone else sees a read-only description of effective access.
+   - Persisted to `settings` keys: role_permissions, user_permission_overrides
+══════════════════════════════════════════════════════ */
+const PERM_ROLE_LABELS = {
+  md:            'Managing Director',
+  sales_manager: 'Sales / Ops Manager',
+  finance:       'Finance Officer',
+  it_admin:      'IT Admin',
+  agronomist:    'Senior Agronomist',
+  outlet_clerk:  'Outlet Clerk',
+};
+const PERM_ROLES_EDITABLE = ['sales_manager','finance','it_admin','agronomist','outlet_clerk'];
+// MD is locked to full access — we never edit MD's matrix (would let MD lock themselves out).
+
+function renderPermissionsTab(container) {
+  const canEdit = canEditPermissions(APP.profile);
+
+  // Read-only view for non-MD/IT
+  if (!canEdit) {
+    const me = APP.profile || {};
+    const { allowed } = getEffectiveAccess(me);
+    container.innerHTML = `
+      <div class="tbl-wrap" style="padding:16px">
+        <div style="font-size:13px;color:var(--ink-60);margin-bottom:10px">
+          Module access is controlled by the Managing Director and IT Admin.
+          Below is the access currently granted to <strong>${escHtml(me.full_name||'your account')}</strong>.
+        </div>
+        <table class="dt">
+          <thead><tr><th>MODULE</th><th>ACCESS</th></tr></thead>
+          <tbody>${ALL_MODULES.map(m=>`<tr>
+            <td style="font-weight:600">${PAGES[m].label}</td>
+            <td>${allowed.includes(m)
+              ? '<span class="chip" style="background:#E6F8F2;color:var(--teal)">Allowed</span>'
+              : '<span class="chip" style="background:#FEEAEA;color:#C62828">Blocked</span>'}</td>
+          </tr>`).join('')}</tbody>
+        </table>
+      </div>`;
+    return;
+  }
+
+  // Editor for MD / IT Admin
+  const roleOver = APP.perms.roleOverrides || {};
+  // Build current effective role matrix (using overrides if present, else defaults)
+  const current = {};
+  PERM_ROLES_EDITABLE.forEach(r => {
+    current[r] = new Set(Array.isArray(roleOver[r]) ? roleOver[r] : (ROLE_ACCESS[r]||[]));
+  });
+
+  // Module matrix HTML
+  const moduleHeader = ALL_MODULES.map(m =>
+    `<th style="writing-mode:vertical-rl;transform:rotate(180deg);font-size:10px;padding:8px 4px;text-align:left;white-space:nowrap">${PAGES[m].label}</th>`
+  ).join('');
+
+  const matrixRows = PERM_ROLES_EDITABLE.map(role => `
+    <tr data-perm-role="${role}">
+      <td style="font-weight:700;white-space:nowrap;padding-right:14px">${PERM_ROLE_LABELS[role]}</td>
+      ${ALL_MODULES.map(m => {
+        const on = current[role].has(m);
+        const isDash = m === 'dashboard';
+        return `<td style="text-align:center;padding:4px">
+          <input type="checkbox" class="perm-cb" data-role="${role}" data-module="${m}"
+            ${on?'checked':''} ${isDash?'disabled title="Dashboard is always available"':''}
+            style="width:16px;height:16px;cursor:${isDash?'not-allowed':'pointer'}">
+        </td>`;
+      }).join('')}
+    </tr>`).join('');
+
+  container.innerHTML = `
+    <div style="display:flex;flex-direction:column;gap:22px">
+
+      <!-- Header / explanation -->
+      <div class="callout callout-orange" style="margin:0">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+        <div>
+          <strong>Module permissions</strong> · Set what each role can see by default, then override for specific users below.
+          Blocked modules appear greyed-out in the sidebar with a "No access — contact admin" message.
+          The Managing Director always has full access and cannot be restricted here.
+        </div>
+      </div>
+
+      <!-- ── Role defaults matrix ───────────────────────────── -->
+      <div>
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+          <h3 style="font-family:'Poppins';margin:0">Role defaults</h3>
+          <div style="display:flex;gap:8px">
+            <button class="btn btn-ghost btn-sm" onclick="resetRolePermissions()">Reset to factory defaults</button>
+            <button class="btn btn-primary btn-sm" onclick="saveRolePermissions()">Save role defaults</button>
+          </div>
+        </div>
+        <div class="tbl-wrap" style="overflow-x:auto">
+          <table class="dt" style="min-width:max-content">
+            <thead>
+              <tr>
+                <th style="text-align:left">ROLE</th>
+                ${moduleHeader}
+              </tr>
+            </thead>
+            <tbody>${matrixRows}</tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ── Per-user overrides ─────────────────────────────── -->
+      <div>
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+          <h3 style="font-family:'Poppins';margin:0">Per-user overrides</h3>
+        </div>
+        <div style="font-size:12.5px;color:var(--ink-60);margin-bottom:10px">
+          Pick a user to grant access beyond their role default, or block specific modules.
+          Three states per module: <strong>Default</strong> (follow role), <strong>Allow</strong> (force on), <strong>Block</strong> (force off).
+        </div>
+        <div style="display:flex;gap:10px;align-items:center;margin-bottom:12px">
+          <select id="perm-user-picker" onchange="renderUserOverridePanel()"
+            style="min-width:300px;padding:10px 14px;background:#fff;border:1.5px solid var(--ink-20);border-radius:8px;font-size:13px;font-weight:600;color:var(--ink);font-family:inherit;cursor:pointer;box-shadow:0 1px 2px rgba(0,0,0,.04)">
+            <option value="">— Select a user —</option>
+            ${(USR.all||[]).filter(u=>u.role!=='md' && u.role!=='platform_admin').map(u =>
+              `<option value="${u.id}">${escHtml(u.full_name||'(no name)')} · ${PERM_ROLE_LABELS[u.role]||u.role}</option>`
+            ).join('')}
+          </select>
+        </div>
+        <div id="perm-user-panel"></div>
+      </div>
+
+    </div>`;
+}
+
+window.saveRolePermissions = async function() {
+  const next = {};
+  PERM_ROLES_EDITABLE.forEach(role => {
+    const cbs = document.querySelectorAll(`#users-content .perm-cb[data-role="${role}"]`);
+    const allowed = [];
+    cbs.forEach(cb => { if (cb.checked || cb.disabled) allowed.push(cb.dataset.module); });
+    // Ensure dashboard is always present
+    if (!allowed.includes('dashboard')) allowed.push('dashboard');
+    next[role] = allowed;
+  });
+  try {
+    await savePermissionsAsync('role_permissions', next);
+    APP.perms.roleOverrides = next;
+    logAudit('perm.role.update', { targetType:'permissions', notes:'Updated role defaults' });
+    toast('Role permissions saved.', 'success');
+    refreshNavRestrictions();
+  } catch (e) {
+    toast('Could not save: ' + (e.message||e), 'error');
+  }
+};
+
+window.resetRolePermissions = async function() {
+  if (!confirm('Reset all roles to factory defaults? Existing per-user overrides will be kept.')) return;
+  try {
+    await savePermissionsAsync('role_permissions', {});  // empty → falls back to ROLE_ACCESS
+    APP.perms.roleOverrides = null;
+    logAudit('perm.role.reset', { targetType:'permissions' });
+    toast('Role permissions reset to defaults.', 'success');
+    renderUsersContent();
+    refreshNavRestrictions();
+  } catch (e) {
+    toast('Could not reset: ' + (e.message||e), 'error');
+  }
+};
+
+window.renderUserOverridePanel = function() {
+  const uid = document.getElementById('perm-user-picker')?.value;
+  const panel = document.getElementById('perm-user-panel');
+  if (!panel) return;
+  if (!uid) { panel.innerHTML = ''; return; }
+
+  const user = (USR.all||[]).find(u => u.id === uid);
+  if (!user) { panel.innerHTML = '<div style="color:var(--ink-60);font-size:12.5px">User not found.</div>'; return; }
+
+  const roleAllowed = new Set(getRoleAllowed(user.role));
+  const uo = (APP.perms.userOverrides||{})[uid] || { allow:[], deny:[] };
+  const allowSet = new Set(uo.allow||[]);
+  const denySet  = new Set(uo.deny||[]);
+
+  const rows = ALL_MODULES.map(m => {
+    const def = roleAllowed.has(m);
+    let state = 'default';
+    if (allowSet.has(m)) state = 'allow';
+    else if (denySet.has(m)) state = 'deny';
+    const effective = state === 'allow' ? true : state === 'deny' ? false : def;
+    return `<tr data-uo-module="${m}">
+      <td style="font-weight:600">${PAGES[m].label}</td>
+      <td style="color:var(--ink-60);font-size:12px">${def?'Allowed':'Blocked'}</td>
+      <td>
+        <select class="perm-uo-state" data-module="${m}" onchange="this.closest('tr').setAttribute('data-state',this.value)"
+          style="padding:5px 8px;border:1px solid var(--ink-15);border-radius:6px;font-size:12px">
+          <option value="default" ${state==='default'?'selected':''}>Default (${def?'Allow':'Block'})</option>
+          <option value="allow"   ${state==='allow'  ?'selected':''}>Force allow</option>
+          <option value="deny"    ${state==='deny'   ?'selected':''}>Force block</option>
+        </select>
+      </td>
+      <td>${effective
+        ? '<span class="chip" style="background:#E6F8F2;color:var(--teal)">Allowed</span>'
+        : '<span class="chip" style="background:#FEEAEA;color:#C62828">Blocked</span>'}</td>
+    </tr>`;
+  }).join('');
+
+  panel.innerHTML = `
+    <div class="tbl-wrap">
+      <div style="padding:12px 14px;border-bottom:1px solid var(--ink-08);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px">
+        <div>
+          <div style="font-weight:700">${escHtml(user.full_name||'(no name)')}</div>
+          <div style="font-size:11.5px;color:var(--ink-60)">${PERM_ROLE_LABELS[user.role]||user.role}${user.email?' · '+escHtml(user.email):''}</div>
+        </div>
+        <div style="display:flex;gap:8px">
+          <button class="btn btn-ghost btn-sm" onclick="clearUserOverrides('${uid}')">Clear overrides</button>
+          <button class="btn btn-primary btn-sm" onclick="saveUserOverrides('${uid}')">Save overrides</button>
+        </div>
+      </div>
+      <table class="dt">
+        <thead><tr><th>MODULE</th><th>ROLE DEFAULT</th><th>OVERRIDE</th><th>EFFECTIVE</th></tr></thead>
+        <tbody>${rows}</tbody>
+      </table>
+    </div>`;
+};
+
+window.saveUserOverrides = async function(uid) {
+  const sels = document.querySelectorAll('#perm-user-panel .perm-uo-state');
+  const allow = [], deny = [];
+  sels.forEach(s => {
+    if (s.value === 'allow') allow.push(s.dataset.module);
+    else if (s.value === 'deny') deny.push(s.dataset.module);
+  });
+  const all = APP.perms.userOverrides || {};
+  if (allow.length === 0 && deny.length === 0) delete all[uid];
+  else all[uid] = { allow, deny };
+  try {
+    await savePermissionsAsync('user_permission_overrides', all);
+    APP.perms.userOverrides = all;
+    logAudit('perm.user.update', { targetType:'staff', targetId:uid, notes:`allow=${allow.length},deny=${deny.length}` });
+    toast('User overrides saved.', 'success');
+    // If we just edited the current user, refresh nav too
+    if (APP.profile?.id === uid) refreshNavRestrictions();
+  } catch (e) {
+    toast('Could not save: ' + (e.message||e), 'error');
+  }
+};
+
+window.clearUserOverrides = async function(uid) {
+  if (!confirm('Clear all overrides for this user? They will follow their role default.')) return;
+  const all = APP.perms.userOverrides || {};
+  delete all[uid];
+  try {
+    await savePermissionsAsync('user_permission_overrides', all);
+    APP.perms.userOverrides = all;
+    logAudit('perm.user.clear', { targetType:'staff', targetId:uid });
+    toast('User overrides cleared.', 'success');
+    renderUserOverridePanel();
+    if (APP.profile?.id === uid) refreshNavRestrictions();
+  } catch (e) {
+    toast('Could not clear: ' + (e.message||e), 'error');
+  }
+};
+
 window.resendInvite = async function(id, email) {
-  if (String(id).startsWith('us')) { toast('Demo data — connect Supabase to resend invites.', 'info'); return; }
-  const { error } = await sb.from('app_users')
-    .update({ invited_at: new Date().toISOString() }).eq('id', id);
-  if (error) { toast(error.message, 'error'); return; }
-  toast(`Invite resent to ${email || 'user'}.`, 'success');
+  if (!email) { toast('No email on file for this user — cannot resend invite.', 'error'); return; }
+  try {
+    const res = await fetch('/.netlify/functions/send-admin-invite', {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        email,
+        redirectTo: window.location.origin + '/index.html',
+        data: {},
+      }),
+    });
+    const json = await res.json().catch(() => ({}));
+    if (!json.ok) throw new Error(json.error || 'Resend failed');
+  } catch(e) {
+    toast('Resend failed: ' + (e.message || 'unknown error'), 'error'); return;
+  }
+  toast(`Invite resent to ${email}.`, 'success');
+  logAudit('Resent invite', { targetType:'staff_profiles', targetId:id, notes:email });
 };
 
 window.exportAuditCSV = function() {
@@ -6227,6 +6630,7 @@ window.exportUsersCSV = function() {
   a.download = `team_users_${new Date().toISOString().slice(0,10)}.csv`;
   a.click();
   toast(`Exported ${rows.length} team members.`, 'success');
+  logAudit('Exported team members CSV', { notes:`${rows.length} rows` });
 };
 
 /* ── User detail drawer ─────────────────────────────── */
@@ -6329,9 +6733,11 @@ window.closeUserDrawer = function() {
 
 /* ── Approve ────────────────────────────────────────── */
 window.approveUser = async function(id) {
-  const { error } = await sb.from('app_users').update({status:'active',updated_at:new Date().toISOString()}).eq('id',id);
+  // Users & Roles rows now come from staff_profiles, not app_users
+  const { error } = await sb.from('staff_profiles').update({ active: true, updated_at:new Date().toISOString() }).eq('id', id);
   if (error) { toast('Error: '+error.message,'error'); return; }
   toast('User approved and activated.','success');
+  logAudit('Approved staff member', { targetType:'staff_profiles', targetId:id });
   loadUsers(); loadBadges();
 };
 
@@ -6353,11 +6759,28 @@ window.openBlockModal = function(id, name, isBlocked) {
   openModal('block-modal');
 };
 window.confirmBlockUser = async function() {
-  const newStatus = USR.pendingIsBlocked ? 'active' : 'blocked';
-  const { error } = await sb.from('app_users').update({status:newStatus,updated_at:new Date().toISOString()}).eq('id',USR.pendingId);
+  // Users & Roles rows are staff_profiles (active boolean, no status column)
+  const isUnblocking = !!USR.pendingIsBlocked;
+  const targetId     = USR.pendingId;
+  const { error } = await sb.from('staff_profiles')
+    .update({ active: isUnblocking, updated_at: new Date().toISOString() })
+    .eq('id', targetId);
   closeModal('block-modal');
   if (error) { toast('Error: '+error.message,'error'); return; }
-  toast(`User ${newStatus === 'active' ? 'unblocked' : 'blocked'}.`, newStatus==='active'?'success':'info');
+  toast(`User ${isUnblocking ? 'unblocked' : 'blocked'}.`, isUnblocking?'success':'info');
+  logAudit(isUnblocking ? 'Unblocked staff member' : 'Blocked staff member',
+           { targetType:'staff_profiles', targetId });
+  loadUsers();
+};
+
+/* ── Remove staff permanently ───────────────────────── */
+window.removeStaffUser = async function(id, name) {
+  if (!id) { toast('User id missing.', 'error'); return; }
+  if (!confirm(`Remove ${name} permanently?\n\nThis deletes their staff profile and cannot be undone. Audit history will be kept but will no longer link to this user.`)) return;
+  const { error } = await sb.from('staff_profiles').delete().eq('id', id);
+  if (error) { toast('Could not remove: ' + error.message, 'error'); return; }
+  toast(`${name} removed permanently.`, 'success');
+  logAudit('Removed staff member permanently', { targetType:'staff_profiles', targetId:id, notes:name });
   loadUsers();
 };
 
@@ -6386,11 +6809,16 @@ window.openRoleModal = function(id, name, currentRole, isStaff) {
   openModal('role-modal');
 };
 window.confirmChangeRole = async function() {
-  const role = document.getElementById('role-select').value;
-  const { error } = await sb.from('app_users').update({role,updated_at:new Date().toISOString()}).eq('id',USR.pendingId);
+  const role     = document.getElementById('role-select').value;
+  const targetId = USR.pendingId;
+  // Role changes for Users & Roles target staff_profiles (staff_role enum)
+  const { error } = await sb.from('staff_profiles')
+    .update({ role, updated_at:new Date().toISOString() })
+    .eq('id', targetId);
   closeModal('role-modal');
   if (error) { toast('Error: '+error.message,'error'); return; }
   toast('Role updated.','success');
+  logAudit('Role changed', { targetType:'staff_profiles', targetId, notes:`New role: ${role}` });
   loadUsers();
 };
 /* ══════════════════════════════════════════════════════
@@ -6468,7 +6896,7 @@ window.openMyRoles = function() {
     <label style="display:flex;align-items:flex-start;gap:10px;padding:10px 12px;border-radius:8px;background:rgba(21,97,109,.07);border:1px solid rgba(21,97,109,.2);cursor:default">
       <input type="checkbox" checked disabled style="margin-top:3px;accent-color:var(--teal)">
       <div>
-        <div style="font-weight:700;font-size:13px">🌱 Managing Director</div>
+        <div style="font-weight:700;font-size:13px">Managing Director</div>
         <div style="font-size:11.5px;color:var(--ink-60)">Full access — always active on your account</div>
       </div>
     </label>
@@ -6528,7 +6956,7 @@ window.saveMyRoles = async function() {
   // Update role label
   const roleLabels2 = { sales_manager:'Sales Manager', finance:'Finance Officer', it_admin:'IT Admin', agronomist:'Agronomist', outlet_clerk:'Outlet Clerk' };
   const extraLabel = extras.length ? ' · ' + extras.map(r=>roleLabels2[r]||r).join(' · ') : '';
-  const label = '👑 MD' + extraLabel;
+  const label = 'MD' + extraLabel;
   document.getElementById('sbRole').textContent = label;
   document.getElementById('tbRole').textContent = label;
 
@@ -6541,18 +6969,7 @@ window.saveMyRoles = async function() {
 ══════════════════════════════════════════════════════ */
 const PRC = { rows: [], tab: 'current' };
 
-const PRC_FALLBACK = [
-  { id:'pf1',  crop:'Matooke',              unit:'bunch', month:'2026-04-01', central_ugx:18000, eastern_ugx:14500, northern_ugx:12000, western_ugx:20000 },
-  { id:'pf2',  crop:'Maize grain',          unit:'kg',    month:'2026-04-01', central_ugx:1200,  eastern_ugx:1100,  northern_ugx:950,   western_ugx:1250 },
-  { id:'pf3',  crop:'Beans (NABE)',         unit:'kg',    month:'2026-04-01', central_ugx:3400,  eastern_ugx:3200,  northern_ugx:3100,  western_ugx:3600 },
-  { id:'pf4',  crop:'Coffee (Robusta FAQ)', unit:'kg',    month:'2026-04-01', central_ugx:9800,  eastern_ugx:null,  northern_ugx:null,  western_ugx:10200 },
-  { id:'pf5',  crop:'Hass Avocado',         unit:'kg',    month:'2026-04-01', central_ugx:2200,  eastern_ugx:1950,  northern_ugx:1800,  western_ugx:2400 },
-  { id:'pf6',  crop:'Cassava (fresh)',      unit:'kg',    month:'2026-04-01', central_ugx:650,   eastern_ugx:600,   northern_ugx:550,   western_ugx:700 },
-  { id:'pf7',  crop:'Sweet potato',         unit:'kg',    month:'2026-04-01', central_ugx:900,   eastern_ugx:850,   northern_ugx:750,   western_ugx:1000 },
-  { id:'pf8',  crop:'Groundnuts (shelled)', unit:'kg',    month:'2026-04-01', central_ugx:5200,  eastern_ugx:4800,  northern_ugx:4500,  western_ugx:5500 },
-  { id:'pf9',  crop:'Sorghum',              unit:'kg',    month:'2026-04-01', central_ugx:1100,  eastern_ugx:1050,  northern_ugx:1000,  western_ugx:1150 },
-  { id:'pf10', crop:'Sunflower seed',       unit:'kg',    month:'2026-04-01', central_ugx:2300,  eastern_ugx:2100,  northern_ugx:2000,  western_ugx:2400 },
-];
+const PRC_FALLBACK = [];
 
 window.loadPrices = async function() {
   const el = document.getElementById('prices-table-body');
@@ -6574,18 +6991,18 @@ const CROP_EMOJI = {
 };
 const CROP_ICON = c => {
   const l = (c||'').toLowerCase();
-  if (l.includes('matooke')||l.includes('matoke')) return '🍌';
-  if (l.includes('maize'))     return '🌽';
-  if (l.includes('beans'))     return '🫘';
-  if (l.includes('coffee'))    return '☕';
-  if (l.includes('avocado'))   return '🥑';
-  if (l.includes('cassava'))   return '🥔';
-  if (l.includes('sweet pot')) return '🍠';
-  if (l.includes('groundnut')) return '🥜';
-  if (l.includes('sorghum'))   return '🌾';
-  if (l.includes('sunflower')) return '🌻';
-  if (l.includes('sim'))       return '🌱';
-  return '🌿';
+  if (l.includes('matooke')||l.includes('matoke')) return 'Mat';
+  if (l.includes('maize'))     return 'Mz';
+  if (l.includes('beans'))     return 'Bn';
+  if (l.includes('coffee'))    return 'Cof';
+  if (l.includes('avocado'))   return 'Av';
+  if (l.includes('cassava'))   return 'Cs';
+  if (l.includes('sweet pot')) return 'SwP';
+  if (l.includes('groundnut')) return 'Gn';
+  if (l.includes('sorghum'))   return 'Sg';
+  if (l.includes('sunflower')) return 'Sf';
+  if (l.includes('sim'))       return 'Ss';
+  return '—';
 };
 
 function renderPriceTable(rows, editable) {
@@ -6631,7 +7048,7 @@ function renderPrices() {
   const isFallback = PRC.rows.length && PRC.rows[0].id?.startsWith('pf');
   const demoBanner = isFallback
     ? `<div style="margin:12px 16px;padding:10px 14px;background:rgba(220,100,30,.08);border-left:3px solid var(--orange);border-radius:0 8px 8px 0;font-size:12.5px;color:var(--ink-80)">
-        <strong style="color:var(--orange)">⚠️ DEMO DATA</strong> — Could not reach the database. Showing sample prices only. Real prices will appear once connected.
+        ⚠️ Could not reach the database. Showing sample prices.
        </div>`
     : '';
 
@@ -6922,18 +7339,12 @@ window.exportPrices = async function() {
 ══════════════════════════════════════════════════════ */
 const TRC = { rows: [], _query: '', _filter: 'all', _district: '', _stage: '' };
 
-const TRC_FALLBACK = [
-  { id:'tf1', batch_number:'AM-COF-2026-04-00218', crop:'coffee_robusta', farmer_name:'Nakato Nabirye',  district:'Mpigi',   harvest_date:'2026-04-02', current_stage:'warehoused', destination:'Hamburg, DE',       weight_kg:2400, updated_at:'2026-04-14' },
-  { id:'tf2', batch_number:'AM-AVO-2026-04-00341', crop:'hass_avocado',   farmer_name:'Nakato Nabirye',  district:'Mpigi',   harvest_date:'2026-04-18', current_stage:'in_transit', destination:'Rotterdam, NL',     weight_kg:980,  updated_at:'2026-04-20' },
-  { id:'tf3', batch_number:'AM-COF-2026-03-00204', crop:'coffee_robusta', farmer_name:'Byaruhanga Moses',district:'Mbarara', harvest_date:'2026-03-28', current_stage:'exported',   destination:'Trieste, IT',       weight_kg:3100, updated_at:'2026-04-22' },
-  { id:'tf4', batch_number:'AM-COF-2026-03-00199', crop:'coffee_arabica', farmer_name:'Mugisha Patrick', district:'Kasese',  harvest_date:'2026-03-22', current_stage:'exported',   destination:'Hamburg, DE',       weight_kg:1750, updated_at:'2026-04-20' },
-  { id:'tf5', batch_number:'AM-AVO-2026-04-00339', crop:'hass_avocado',   farmer_name:'Achen Milly',     district:'Lira',    harvest_date:'2026-04-15', current_stage:'processing', destination:'TBC',               weight_kg:620,  updated_at:'2026-04-18' },
-];
+const TRC_FALLBACK = [];
 
 const TRC_CROP = {
-  coffee_robusta: { icon:'☕', label:'Robusta' },
-  coffee_arabica: { icon:'☕', label:'Arabica' },
-  hass_avocado:   { icon:'🥑', label:'Hass' },
+  coffee_robusta: { icon:'', label:'Robusta' },
+  coffee_arabica: { icon:'', label:'Arabica' },
+  hass_avocado:   { icon:'', label:'Hass' },
 };
 
 const TRC_STAGE = s => {
@@ -7032,7 +7443,7 @@ function renderBatches() {
   const fmtShort = d => d ? new Date(d).toLocaleDateString('en-UG',{day:'2-digit',month:'short'}) : '—';
   const demoBanner = isFallbackView
     ? `<div style="margin:12px 16px;padding:10px 14px;background:rgba(220,100,30,.08);border-left:3px solid var(--orange);border-radius:0 8px 8px 0;font-size:12.5px;color:var(--ink-80)">
-        <strong style="color:var(--orange)">⚠️ DEMO DATA</strong> — Could not reach the database. Showing sample batches. Real data will appear once connected.
+        ⚠️ Could not reach the database. Showing sample batches.
        </div>`
     : '';
 
@@ -7050,7 +7461,7 @@ function renderBatches() {
     </tr></thead>
     <tbody>
     ${rows.map(r => {
-      const crop = TRC_CROP[r.crop] || { icon:'🌿', label: r.crop };
+      const crop = TRC_CROP[r.crop] || { icon:'', label: r.crop };
       return `<tr>
         <td><code style="font-family:monospace;font-size:12.5px;font-weight:600;letter-spacing:.02em">${r.batch_number}</code></td>
         <td style="font-weight:600;font-size:13.5px">${crop.icon} ${crop.label}</td>
@@ -7238,7 +7649,7 @@ window.openBatchDrawer = async function(id) {
   } else {
     const [bRes, sRes] = await Promise.all([
       sb.from('traceability_batches').select('*').eq('id', id).single(),
-      sb.from('traceability_stages').select('*').eq('batch_id', id).order('recorded_at'),
+      sb.from('traceability_stages').select('*').eq('batch_id', id).order('completed_at'),
     ]);
     batch  = bRes.data;
     stages = sRes.data || [];
@@ -7262,7 +7673,7 @@ window.openBatchDrawer = async function(id) {
       </div>
       <div style="padding-bottom:20px;flex:1">
         <div style="font-weight:700;font-size:12.5px;color:${done ? 'var(--ink)' : 'var(--ink-30)'}">${STAGE_LABELS[s]}</div>
-        ${sd ? `<div style="font-size:11px;color:var(--ink-60);margin-top:2px">${fmtDatetime(sd.recorded_at)}${sd.location ? ' · ' + sd.location : ''}</div>` : ''}
+        ${sd ? `<div style="font-size:11px;color:var(--ink-60);margin-top:2px">${fmtDatetime(sd.completed_at)}${sd.location ? ' · ' + sd.location : ''}</div>` : ''}
         ${sd?.notes ? `<div style="font-size:11px;color:var(--ink-60);margin-top:1px;font-style:italic">${sd.notes}</div>` : ''}
       </div>
     </div>`;
@@ -7286,7 +7697,7 @@ window.openBatchDrawer = async function(id) {
 
   const certBadges = batch.certifications
     ? batch.certifications.split(',').map(c => {
-        const labels = { organic:'🌿 Organic', fairtrade:'⚖️ Fair Trade', rainforest:'🌧️ Rainforest Alliance' };
+        const labels = { organic:'Organic', fairtrade:'Fair Trade', rainforest:'Rainforest Alliance' };
         return `<span class="chip chip-teal" style="font-size:11px">${labels[c.trim()] || c}</span>`;
       }).join(' ')
     : '—';
@@ -7445,11 +7856,7 @@ window.handleBatchUpload = async function(input) {
 ══════════════════════════════════════════════════════ */
 const HIRE = { rows: [], tab: 'tractor', _query: '', view: 'providers', bookings: [], bookingsDemo: false };
 
-const HIRE_FALLBACK = [
-  { id:'hf1', name:'Tumusiime David',  phone:'+256772400100', whatsapp:'+256772400100', category:'tractor',    equipment_make:'Massey Ferguson', equipment_model:'375',   equipment_capacity:'75HP',      districts_covered:['Gomba','Butambala','Mpigi'], day_rate_ugx:180000, rating:4.6, jobs_done:28, verified:true,  active:true },
-  { id:'hf2', name:'Byaruhanga Moses', phone:'+256782100200', whatsapp:'+256782100200', category:'water_pump', equipment_make:'Grundfos',        equipment_model:'CM3',   equipment_capacity:'3000L/hr', districts_covered:['Mbarara','Isingiro'],        day_rate_ugx:85000,  rating:4.2, jobs_done:15, verified:true,  active:true },
-  { id:'hf3', name:'Okello James',     phone:'+256700321777', whatsapp:'+256700321777', category:'thresher',   equipment_make:'VOTEX',           equipment_model:'BM300', equipment_capacity:'500kg/hr', districts_covered:['Gulu','Amuru'],             day_rate_ugx:120000, rating:4.0, jobs_done:6,  verified:false, active:true },
-];
+const HIRE_FALLBACK = [];
 
 /* deterministic avatar colour from name */
 function hireAvatar(name) {
@@ -7502,14 +7909,7 @@ window.switchHireView = function(view, btnEl) {
 };
 
 /* ── For Hire: bookings ───────────────────────────────── */
-const HIRE_BOOKINGS_FALLBACK = [
-  { id:'hb1', booking_number:'HB-2026-001', farmer_name:'Nakayiza Prossy',    farmer_phone:'+256777100001', provider_name:'Tumusiime David',  equipment_type:'Tractor (MF 375)', district:'Gomba',    requested_date:'2026-05-03', status:'pending',     created_at:new Date(Date.now()-1*864e5).toISOString(), notes:'' },
-  { id:'hb2', booking_number:'HB-2026-002', farmer_name:'Ssebuliba Charles',  farmer_phone:'+256772100002', provider_name:'Byaruhanga Moses', equipment_type:'Water Pump (3000L/hr)', district:'Mbarara', requested_date:'2026-05-06', status:'confirmed',   created_at:new Date(Date.now()-2*864e5).toISOString(), notes:'Needs delivery by 7am' },
-  { id:'hb3', booking_number:'HB-2026-003', farmer_name:'Atim Grace',         farmer_phone:'+256700100003', provider_name:'Okello James',     equipment_type:'Thresher (BM300)',     district:'Gulu',    requested_date:'2026-04-28', status:'in_progress', created_at:new Date(Date.now()-4*864e5).toISOString(), notes:'' },
-  { id:'hb4', booking_number:'HB-2026-004', farmer_name:'Mugisha Richard',    farmer_phone:'+256752100004', provider_name:'Tumusiime David',  equipment_type:'Tractor (MF 375)',     district:'Butambala',requested_date:'2026-04-20', status:'completed',   created_at:new Date(Date.now()-10*864e5).toISOString(), notes:'' },
-  { id:'hb5', booking_number:'HB-2026-005', farmer_name:'Namagembe Lydia',    farmer_phone:'+256782100005', provider_name:'Byaruhanga Moses', equipment_type:'Water Pump (3000L/hr)', district:'Isingiro',requested_date:'2026-05-10', status:'pending',     created_at:new Date(Date.now()-0.5*864e5).toISOString(), notes:'Wants 2 days' },
-  { id:'hb6', booking_number:'HB-2026-006', farmer_name:'Ochieng Patrick',    farmer_phone:'+256701100006', provider_name:'Okello James',     equipment_type:'Thresher (BM300)',     district:'Amuru',   requested_date:'2026-04-15', status:'cancelled',   created_at:new Date(Date.now()-14*864e5).toISOString(), notes:'Farmer not ready' },
-];
+const HIRE_BOOKINGS_FALLBACK = [];
 
 window.loadHireBookings = async function(badgeOnly = false) {
   if (!badgeOnly) {
@@ -7575,7 +7975,7 @@ window.renderHireBookings = function() {
   };
 
   const demoBanner = HIRE.bookingsDemo
-    ? `<tr><td colspan="8" style="padding:0"><div style="background:var(--orange-05,#fff8f0);border-left:3px solid var(--orange);padding:8px 14px;font-size:12.5px;color:var(--orange);font-weight:600">⚠️ DEMO DATA — hire_bookings table not yet populated</div></td></tr>`
+    ? `<tr><td colspan="8" style="padding:0"><div style="background:var(--orange-05,#fff8f0);border-left:3px solid var(--orange);padding:8px 14px;font-size:12.5px;color:var(--orange);font-weight:600">⚠️ No hire bookings found</div></td></tr>`
     : '';
 
   if (!list.length) {
@@ -7703,7 +8103,7 @@ function renderHire() {
   const q = (document.getElementById('hire-search')?.value || '').toLowerCase();
   const isFallback = HIRE.rows.length > 0 && String(HIRE.rows[0]?.id).startsWith('hf');
   const demoBanner = isFallback
-    ? `<tr><td colspan="7" style="padding:0"><div style="background:var(--orange-05,#fff8f0);border-left:3px solid var(--orange);padding:8px 14px;font-size:12.5px;color:var(--orange);font-weight:600">⚠️ DEMO DATA — Connect Supabase to manage real providers</div></td></tr>`
+    ? `<tr><td colspan="7" style="padding:0"><div style="background:var(--orange-05,#fff8f0);border-left:3px solid var(--orange);padding:8px 14px;font-size:12.5px;color:var(--orange);font-weight:600">⚠️ Could not load providers — check database connection</div></td></tr>`
     : '';
 
   let rows = HIRE.rows.filter(r => r.category === HIRE.tab);
@@ -7918,7 +8318,7 @@ window.openHireView = function(id) {
   const statusChip = !r.verified
     ? `<span class="chip chip-orange">Pending Review</span>`
     : r.active ? `<span class="chip chip-teal">Active</span>` : `<span class="chip chip-rust">Inactive</span>`;
-  const CAT_ICONS = { tractor:'🚜', water_pump:'💧', thresher:'⚙️', transport:'🚛' };
+  const CAT_ICONS = { tractor:'T', water_pump:'W', thresher:'TH', transport:'TR' };
   const catLabel = { tractor:'Tractor', water_pump:'Water Pump', thresher:'Thresher', transport:'Transport' }[r.category] || r.category;
 
   document.getElementById('hv-title').textContent = r.name;
@@ -7962,7 +8362,7 @@ window.openHireView = function(id) {
         </div>
         <div style="background:var(--ink-05);border-radius:var(--radius);padding:10px 12px">
           <div style="font-size:11px;color:var(--ink-40);font-weight:600;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px">Verified</div>
-          <div style="font-weight:700;font-size:13.5px">${r.verified ? '✅ Verified' : '⏳ Pending'}</div>
+          <div style="font-weight:700;font-size:13.5px">${r.verified ? 'Verified' : 'Pending'}</div>
         </div>
       </div>
     </div>
@@ -8070,12 +8470,7 @@ window.handleHireUpload = async function(input) {
 ══════════════════════════════════════════════════════ */
 const ADV = { rows: [], tab: 'video', _useDemo: false };
 
-const ADV_FALLBACK = [
-  { id:'af1', type:'video',        title:'Pruning your Hass avocado before the rains',        description:'Step-by-step guide on pruning Hass avocado trees for better yields.',   language:'luganda', source_url:'https://youtu.be/example1',          duration_seconds:272,  published_at:new Date(Date.now()-13*864e5).toISOString(), visibility:'public' },
-  { id:'af2', type:'video',        title:'Fall Armyworm control in maize',                    description:'Identification and management of Fall Armyworm in maize fields.',        language:'english', source_url:'https://drive.google.com/example2',  duration_seconds:370,  published_at:new Date(Date.now()-20*864e5).toISOString(), visibility:'public' },
-  { id:'af3', type:'radio',        title:'CBS Radio: Coffee prices this month',               description:'Monthly price roundup and market outlook with Byaruhanga Moses.',        language:'luganda', source_url:'https://soundcloud.com/example3',    duration_seconds:2280, published_at:new Date(Date.now()-17*864e5).toISOString(), visibility:'public' },
-  { id:'af4', type:'seasonal_tip', title:'Prepare your seedbeds before the long rains begin', description:'Early preparation increases germination rates by up to 40%.',           language:'english', source_url:null,                                 duration_seconds:null, published_at:new Date(Date.now()-5*864e5).toISOString(),  visibility:'public' },
-];
+const ADV_FALLBACK = [];
 
 window.loadAdvisory = async function() {
   const el = document.getElementById('advisory-table-body');
@@ -8100,7 +8495,7 @@ function renderAdvTabs() {
     { key:'radio',          label:'Radio' },
     { key:'seasonal_tip',   label:'Tips' },
     { key:'draft',          label:'Drafts' },
-    { key:'weather_alerts', label:'⛈ Weather Alerts' },
+    { key:'weather_alerts', label:'Weather Alerts' },
   ];
   const bar = document.getElementById('adv-tab-bar');
   if (!bar) return;
@@ -8129,9 +8524,9 @@ function renderAdvisory() {
 
   /* thumbnail colour rectangles */
   const THUMB_BG = { video:'#15616D', radio:'#1D3461', seasonal_tip:'#3A7D44', draft:'#78290F' };
-  const TYPE_ICON = { video:'▶', radio:'◉', seasonal_tip:'🌱' };
+  const TYPE_ICON = { video:'▶', radio:'◉', seasonal_tip:'✦' };
 
-  const LANG = { english:'English', luganda:'Luganda', lusoga:'Lusoga', runyankore:'Runyankore', luo:'Luo' };
+  const LANG = { english:'English', luganda:'Luganda', lusoga:'Lusoga', runyankore:'Runyankore', luo:'Luo', ateso:'Ateso', acholi:'Acholi' };
   const fmtDur = s => { if (!s) return '—'; const m = Math.floor(s/60); const sec = s%60; return `${m}:${String(sec).padStart(2,'0')}`; };
   const fmtShortDate = d => { if (!d) return '—'; return new Date(d).toLocaleDateString('en-GB',{day:'numeric',month:'short'}); };
 
@@ -8141,7 +8536,7 @@ function renderAdvisory() {
 
   const advIsDemo = ADV._useDemo;
   const advDemoBanner = advIsDemo
-    ? `<tr><td colspan="7" style="padding:0"><div style="background:var(--orange-05,#fff8f0);border-left:3px solid var(--orange);padding:8px 14px;font-size:12.5px;color:var(--orange);font-weight:600">⚠️ DEMO DATA — Connect Supabase to manage real advisory content</div></td></tr>`
+    ? `<tr><td colspan="7" style="padding:0"><div style="background:var(--orange-05,#fff8f0);border-left:3px solid var(--orange);padding:8px 14px;font-size:12.5px;color:var(--orange);font-weight:600">⚠️ Could not load advisory content — check database connection</div></td></tr>`
     : '';
 
   if (!rows.length) {
@@ -8305,7 +8700,7 @@ window.publishAdvisory = async function(id) {
 window.exportAdvisoryCSV = function() {
   const rows = ADV.rows;
   if (!rows.length) { toast('No content to export.', 'info'); return; }
-  const LANG = { english:'English', luganda:'Luganda', lusoga:'Lusoga', runyankore:'Runyankore', luo:'Luo' };
+  const LANG = { english:'English', luganda:'Luganda', lusoga:'Lusoga', runyankore:'Runyankore', luo:'Luo', ateso:'Ateso', acholi:'Acholi' };
   const fmtDur = s => { if (!s) return ''; const m = Math.floor(s/60); const sec = s%60; return `${m}:${String(sec).padStart(2,'0')}`; };
   const headers = ['Type','Title','Description','Language','Duration','Source URL','Visibility','Published'];
   const q = v => `"${String(v??'').replace(/"/g,'""')}"`;
@@ -8330,18 +8725,13 @@ window.exportAdvisoryCSV = function() {
 ══════════════════════════════════════════════════════ */
 const WA = { rows: [], _useDemo: false };
 
-const WA_FALLBACK = [
-  { id:'wa1', region:'central',  severity:'warning', headline:'Heavy rains expected — delay planting of beans',         message:'The Central region is forecast to receive above-average rainfall this week. Delay planting of beans and groundnuts by 5–7 days to avoid waterlogging. Ensure drainage channels are clear.',           valid_from:'2026-04-28', valid_until:'2026-05-04', active:true,  created_at:new Date(Date.now()-1*864e5).toISOString() },
-  { id:'wa2', region:'northern', severity:'danger',  headline:'Drought alert — Northern region water stress',           message:'Rainfall in Gulu, Amuru and Kitgum districts is 40% below seasonal average. Irrigate if possible. Prioritise water for germinating seedbeds. Contact your Field Officer for support.',               valid_from:'2026-04-20', valid_until:'2026-05-10', active:true,  created_at:new Date(Date.now()-8*864e5).toISOString() },
-  { id:'wa3', region:'national', severity:'info',    headline:'Long rains onset confirmed — good planting window open', message:'Uganda Meteorological Authority confirms the onset of the 2026 long rains season across all regions. Plant maize, beans and groundnuts now for optimal yields. See your advisory tab for planting tips.',valid_from:'2026-04-15', valid_until:'2026-04-30', active:false, created_at:new Date(Date.now()-13*864e5).toISOString() },
-  { id:'wa4', region:'western',  severity:'info',    headline:'Favourable conditions for coffee flowering',             message:'Western region temperatures and humidity are ideal for Robusta coffee flowering. Ensure adequate potassium application. Avoid spray programmes during peak flowering.',                                   valid_from:'2026-04-25', valid_until:'2026-05-08', active:true,  created_at:new Date(Date.now()-3*864e5).toISOString() },
-];
+const WA_FALLBACK = [];
 
 window.loadWeatherAlerts = async function() {
   const { data, error } = await sb.from('weather_alerts')
     .select('*').order('created_at', { ascending: false }).limit(100);
-  WA.rows     = (error || !data?.length) ? WA_FALLBACK : data;
-  WA._useDemo = (error || !data?.length);
+  WA.rows     = error ? WA_FALLBACK : (data || []);
+  WA._useDemo = !!error;
 };
 
 window.renderWeatherAlerts = function() {
@@ -8349,11 +8739,11 @@ window.renderWeatherAlerts = function() {
   if (!el) return;
 
   const SEV = {
-    info:    { label:'Info',    cls:'chip-teal',  icon:'ℹ️', border:'var(--teal)' },
-    warning: { label:'Warning', cls:'chip-orange', icon:'⚠️', border:'var(--orange)' },
-    danger:  { label:'Danger',  cls:'chip-rust',  icon:'🔴', border:'var(--rust)' },
+    info:    { label:'Info',    cls:'chip-teal',  icon:'i', border:'var(--teal)' },
+    warning: { label:'Warning', cls:'chip-orange', icon:'!', border:'var(--orange)' },
+    danger:  { label:'Danger',  cls:'chip-rust',  icon:'!!', border:'var(--rust)' },
   };
-  const REGION_LABEL = { national:'🇺🇬 National', central:'Central', eastern:'Eastern', northern:'Northern', western:'Western' };
+  const REGION_LABEL = { national:'National', central:'Central', eastern:'Eastern', northern:'Northern', western:'Western' };
 
   const all     = WA.rows;
   const active  = all.filter(r => r.active);
@@ -8377,7 +8767,7 @@ window.renderWeatherAlerts = function() {
     </div>`;
 
   const demoBanner = WA._useDemo
-    ? `<tr><td colspan="7" style="padding:0"><div style="background:var(--orange-05,#fff8f0);border-left:3px solid var(--orange);padding:8px 14px;font-size:12.5px;color:var(--orange);font-weight:600">⚠️ DEMO DATA — weather_alerts table not yet created in Supabase</div></td></tr>`
+    ? `<tr><td colspan="7" style="padding:0"><div style="background:var(--orange-05,#fff8f0);border-left:3px solid var(--orange);padding:8px 14px;font-size:12.5px;color:var(--orange);font-weight:600">⚠️ Could not load weather alerts — check database connection</div></td></tr>`
     : '';
 
   if (!all.length) {
@@ -8464,7 +8854,7 @@ window.closeWeatherAlertDrawer = function() {
   document.getElementById('wa-drawer-overlay').classList.remove('open');
 };
 
-/* ── Open-Meteo integration ──────────────────────────── */
+/* ── Live weather forecast integration ──────────────── */
 const _WF_COORDS = {
   kampala:    { lat:  0.3476, lon: 32.5825, label: 'Kampala',    region: 'central'  },
   mbarara:    { lat: -0.6167, lon: 30.6500, label: 'Mbarara',    region: 'western'  },
@@ -8514,15 +8904,18 @@ window.fetchWeatherForecast = async function() {
 
   try {
     const url = `https://api.open-meteo.com/v1/forecast?latitude=${coords.lat}&longitude=${coords.lon}`
-      + `&daily=weathercode,temperature_2m_max,temperature_2m_min,precipitation_sum,windspeed_10m_max`
+      + `&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_sum,windspeed_10m_max`
       + `&timezone=Africa%2FNairobi&forecast_days=7`;
 
-    const res  = await fetch(url);
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), 10000);
+    const res  = await fetch(url, { signal: controller.signal });
+    clearTimeout(timer);
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const json = await res.json();
 
     const daily  = json.daily;
-    const codes  = daily.weathercode   || [];
+    const codes  = daily.weather_code || daily.weathercode || [];
     const temps  = daily.temperature_2m_max || [];
     const rains  = daily.precipitation_sum  || [];
     const winds  = daily.windspeed_10m_max  || [];
@@ -8614,7 +9007,7 @@ window.prefillAlertFromForecast = function() {
       ? new Date(dates[worstIdx]).toLocaleDateString('en-GB', { weekday:'long', day:'numeric', month:'long' })
       : 'this week';
     msgEl.value =
-      `Open-Meteo 7-day forecast for ${coords.label} district:\n\n`
+      `7-day forecast for ${coords.label} district:\n\n`
       + `• Conditions: ${info.label}\n`
       + `• Max temperature: ${tempC}°C\n`
       + `• Total rainfall: ${rain7} mm over 7 days\n`
@@ -8722,20 +9115,9 @@ window.toggleWeatherAlert = async function(id, active) {
 ══════════════════════════════════════════════════════ */
 const CBT = { tab: 'logs', conversations: [], kb: [], _useDemo: false };
 
-const CBT_CONV_FB = [
-  { id:'cf1', farmer_name:'Nakato Nabirye',  district:'Mpigi',   channel:'whatsapp', status:'resolved',  message_count:7,  created_at:new Date(Date.now()-2*3600000+11*60000).toISOString(),  last_message:'Asante! Can it work on beans too?' },
-  { id:'cf2', farmer_name:'Mugisha Peter',   district:'Kampala', channel:'whatsapp', status:'resolved',  message_count:4,  created_at:new Date(Date.now()-4*3600000+12*60000).toISOString(),  last_message:'When do I top-dress maize again?' },
-  { id:'cf3', farmer_name:'Achen Milly',     district:'Lira',    channel:'sms',      status:'escalated', message_count:3,  created_at:new Date(Date.now()-864e5+60000*20).toISOString(),     last_message:'I only speak Acholi — can you help?' },
-  { id:'cf4', farmer_name:'Byaruhanga Moses',district:'Hoima',   channel:'app',      status:'resolved',  message_count:6,  created_at:new Date(Date.now()-864e5+60000*2).toISOString(),      last_message:'Where can I sell my coffee for the best price?' },
-];
+const CBT_CONV_FB = [];
 
-const CBT_KB_FB = [
-  { id:'kf1', title:'Product Catalogue 2026',        description:'Full product list with prices and agronomic details.',           file_type:'pdf',  created_at:new Date(Date.now()-30*864e5).toISOString() },
-  { id:'kf2', title:'Advisory Video Transcripts',    description:'Text transcripts of all advisory videos for AI indexing.',       file_type:'docx', created_at:new Date(Date.now()-25*864e5).toISOString() },
-  { id:'kf3', title:'Weather & Planting Calendar',   description:'Regional weather patterns and recommended planting windows.',    file_type:'pdf',  created_at:new Date(Date.now()-20*864e5).toISOString() },
-  { id:'kf4', title:'Frequently Asked Questions',    description:'Common farmer questions and expert answers.',                    file_type:'pdf',  created_at:new Date(Date.now()-15*864e5).toISOString() },
-  { id:'kf5', title:'Current Produce Price Sheet',   description:'Monthly price guide exported from the system.',                 file_type:'csv',  created_at:new Date(Date.now()-5*864e5).toISOString() },
-];
+const CBT_KB_FB = [];
 
 window.loadChatbot = async function() {
   document.getElementById('chatbot-kpis').innerHTML    = '';
@@ -8746,10 +9128,11 @@ window.loadChatbot = async function() {
     sb.from('chatbot_conversations').select('*').order('created_at', { ascending: false }).limit(100),
     sb.from('knowledge_base').select('*').order('created_at', { ascending: false }),
   ]);
-  const useDemo     = !!(convRes.error || !convRes.data?.length);
+  // Only flag demo on actual DB error, not on empty result
+  const useDemo     = !!convRes.error;
   CBT._useDemo      = useDemo;
-  CBT.conversations = useDemo ? CBT_CONV_FB : convRes.data;
-  CBT.kb            = (kbRes.error || !kbRes.data?.length) ? CBT_KB_FB : kbRes.data;
+  CBT.conversations = convRes.data || [];
+  CBT.kb            = kbRes.data || [];
   const total      = CBT.conversations.length;
   const escalated  = CBT.conversations.filter(c => c.status === 'escalated').length;
   const unanswered = CBT.conversations.filter(c => c.status === 'open' && !c.last_message).length;
@@ -8796,7 +9179,7 @@ function renderChatbot() {
   const el = document.getElementById('chatbot-content');
 
   if (CBT.tab === 'kb') {
-    const FILE_ICON = { pdf:'📄', docx:'📝', doc:'📝', csv:'📊', xlsx:'📊', mp3:'🎵', mp4:'🎬', txt:'📋' };
+    const FILE_ICON = { pdf:'PDF', docx:'DOC', doc:'DOC', csv:'CSV', xlsx:'XLS', mp3:'MP3', mp4:'MP4', txt:'TXT' };
     el.innerHTML = `
       <div style="padding:14px 16px;display:flex;justify-content:flex-end;border-bottom:1px solid var(--ink-08)">
         <button class="btn btn-primary btn-sm" onclick="document.getElementById('kb-upload-input').click()">
@@ -9026,14 +9409,14 @@ window.openConvDetail = function(id) {
   const name    = c.farmer_name || c.user_name || 'Unknown';
   const STATUS_CLS   = { open:'chip-orange', closed:'chip-ghost', escalated:'chip-orange', resolved:'chip-teal' };
   const STATUS_LABEL = { open:'Open', closed:'Closed', escalated:'Escalated', resolved:'Resolved' };
-  const CHAN_ICON = { whatsapp:'💬', sms:'📱', app:'📲' };
+  const CHAN_ICON = { whatsapp:'WA', sms:'SMS', app:'App' };
   document.getElementById('ud-body').innerHTML = `
     <div style="padding:20px 24px">
       <div style="display:flex;align-items:center;gap:14px;margin-bottom:20px">
         ${hireAvatar(name, 48)}
         <div>
           <div style="font-family:'Poppins';font-weight:800;font-size:17px">${name}</div>
-          <div style="font-size:12.5px;color:var(--ink-60)">${c.district||'Unknown district'} &nbsp;·&nbsp; ${CHAN_ICON[c.channel]||'💬'} ${c.channel||'Unknown channel'}</div>
+          <div style="font-size:12.5px;color:var(--ink-60)">${c.district||'Unknown district'} &nbsp;·&nbsp; ${CHAN_ICON[c.channel]||''} ${c.channel||'Unknown channel'}</div>
         </div>
         <span class="chip ${STATUS_CLS[c.status]||'chip-ghost'}" style="margin-left:auto">${STATUS_LABEL[c.status]||c.status||'—'}</span>
       </div>
@@ -9134,10 +9517,7 @@ window.confirmAssign = async function(convId) {
 ══════════════════════════════════════════════════════ */
 const NOTIF = { rows: [], tab: 'scheduled', _useDemo: false };
 
-const NOTIF_FALLBACK = [
-  { id:'nf1', title:'New fertilizer price drop!',        body:'DAP 50kg now UGX 210,000. Order now from your nearest outlet.',               target_audience:'farmers', target_districts:['Mpigi','Butambala','Gomba'],  status:'scheduled', scheduled_at:new Date(Date.now()+864e5).toISOString(),    sent_at:null,                                          created_at:new Date(Date.now()-3600000).toISOString() },
-  { id:'nf2', title:'Rains forecast: prepare seedbeds',  body:'Met forecast shows rains arriving in 2 weeks across Central Region.',          target_audience:'farmers', target_districts:['Kampala','Wakiso','Mpigi'],   status:'sent',      scheduled_at:new Date(Date.now()-3*864e5).toISOString(), sent_at:new Date(Date.now()-3*864e5).toISOString(),   created_at:new Date(Date.now()-4*864e5).toISOString() },
-];
+const NOTIF_FALLBACK = [];
 
 window.loadNotifications = async function() {
   const el = document.getElementById('notif-table-body');
@@ -9242,7 +9622,7 @@ function renderNotifications() {
               onmouseover="this.style.background='var(--ink-08)'" onmouseout="this.style.background='none'">✏️</button>
             <button title="Delete" onclick="deleteNotif('${r.id}')"
               style="background:none;border:none;cursor:pointer;padding:4px 6px;color:var(--rust);font-size:15px;border-radius:4px;transition:background .15s"
-              onmouseover="this.style.background='rgba(120,41,15,.08)'" onmouseout="this.style.background='none'">🗑</button>
+              onmouseover="this.style.background='rgba(120,41,15,.08)'" onmouseout="this.style.background='none'">×</button>
           ` : '<span style="color:var(--ink-40);font-size:12px">—</span>'}
         </td>
       </tr>`;
@@ -10178,13 +10558,16 @@ window.loadAgents = async function() {
   const container = document.getElementById('agents-content');
   container.innerHTML = '<div style="padding:40px" class="shimmer sk-row"></div>';
 
-  const [{ data: agents }, { data: orders }, { data: cfgRows }] = await Promise.all([
+  const [agentsRes, ordersRes, cfgRes] = await Promise.all([
     sb.from('app_users').select('*').eq('role','agent').order('full_name'),
     sb.from('orders').select('customer_id,total_ugx,status,created_at')
       .in('status',['confirmed','dispatched','delivered','completed'])
       .gte('created_at', new Date(new Date().getFullYear(),new Date().getMonth(),1).toISOString()),
     sb.from('settings').select('key,value').eq('key','commission_rate').limit(1),
   ]);
+  const { data: agents, error: agentsErr } = agentsRes;
+  const { data: orders } = ordersRes;
+  const { data: cfgRows } = cfgRes;
   // Store global commission rate (also syncs SETS.cfg so Settings tab stays in sync)
   const savedRate = cfgRows?.[0]?.value;
   if (savedRate !== undefined) {
@@ -10197,13 +10580,14 @@ window.loadAgents = async function() {
   AGT.all     = all.filter(a => a.verified !== false);
   AGT.pending = all.filter(a => a.verified === false);
   AGT.orders  = orders || [];
-  AGT._useDemo = !agents?.length;
+  // Only flag demo on actual DB error, not on empty result
+  AGT._useDemo = !!agentsErr;
 
-  // Update subtitle with live stats
+  // Update subtitle with live stats (no demo fallbacks)
   const totalSales = AGT.orders.reduce((s,o)=>s+Number(o.total_ugx||0),0);
   const activeCount = AGT.all.filter(a=>a.status==='active'||!a.status).length;
   const sub = document.getElementById('agents-subtitle');
-  if (sub) sub.textContent = `${AGT.all.length||112} registered agro-dealers across Uganda · ${activeCount||84} active this month · UGX ${totalSales>0?(totalSales/1e6).toFixed(1):'47.3'}M total sales this month.`;
+  if (sub) sub.textContent = `${AGT.all.length} registered agro-dealers across Uganda · ${activeCount} active this month · UGX ${(totalSales/1e6).toFixed(1)}M total sales this month.`;
 
   renderAgentsTabs();
   renderAgentsContent(AGT.currentTab);
@@ -10215,8 +10599,8 @@ function renderAgentsTabs() {
   const realPending = AGT.pending.length;
   const TABS = [
     { key:'leaderboard',  label:'Leaderboard' },
-    { key:'all',          label:'All agents',       count: AGT.all.length || 112 },
-    { key:'pending',      label:'Pending approval', count: realPending || 4, urgent: realPending > 0 },
+    { key:'all',          label:'All agents',       count: AGT.all.length },
+    { key:'pending',      label:'Pending approval', count: realPending, urgent: realPending > 0 },
     { key:'commissions',  label:'Commission reports' },
   ];
   bar.innerHTML = TABS.map(t => {
@@ -10247,33 +10631,18 @@ function renderAgentsContent(tab) {
   const globalCommPct = AGT.globalRate ?? parseFloat(SETS?.cfg?.commission_rate) ?? 5;
   const commRate = globalCommPct / 100; // used as default for display; per-agent rate applied individually
 
-  // Merge sales into verified agents and sort
-  const FALLBACK_ALL = [
-    {id:'fa1',full_name:'Kato Ibrahim',     district:'Kampala', outlet:'Kampala Central', phone:'+256 701 234 567', status:'active', sales:12400000, ordersCount:48},
-    {id:'fa2',full_name:'Nankya Justine',   district:'Masaka',  outlet:'Masaka Branch',   phone:'+256 702 345 678', status:'active', sales: 9800000, ordersCount:37},
-    {id:'fa3',full_name:'Byaruhanga Moses', district:'Mbarara', outlet:'Mbarara Hub',     phone:'+256 703 456 789', status:'active', sales: 8600000, ordersCount:31},
-    {id:'fa4',full_name:'Nakato Nabirye',   district:'Mpigi',   outlet:'Mpigi Town',      phone:'+256 704 567 890', status:'active', sales: 6200000, ordersCount:24},
-    {id:'fa5',full_name:'Okello James',     district:'Gulu',    outlet:'Gulu North',      phone:'+256 705 678 901', status:'active', sales: 4900000, ordersCount:19},
-    {id:'fa6',full_name:'Namutebi Grace',   district:'Wakiso',  outlet:'Entebbe Road',    phone:'+256 706 789 012', status:'active', sales: 3700000, ordersCount:14},
-    {id:'fa7',full_name:'Ssemwogerere Dan', district:'Luwero',  outlet:'Luwero Main',     phone:'+256 707 890 123', status:'active', sales: 2900000, ordersCount:11},
-  ];
-  const FALLBACK_PENDING = [
-    {id:'fp1',full_name:'Amoding Prossy',   district:'Soroti',  phone:'+256 780 112 233', created_at: new Date(Date.now()-2*864e5).toISOString()},
-    {id:'fp2',full_name:'Tumwine Collins',  district:'Kasese',  phone:'+256 781 223 344', created_at: new Date(Date.now()-4*864e5).toISOString()},
-    {id:'fp3',full_name:'Akello Beatrice',  district:'Apac',    phone:'+256 782 334 455', created_at: new Date(Date.now()-6*864e5).toISOString()},
-    {id:'fp4',full_name:'Katende Ronald',   district:'Hoima',   phone:'+256 783 445 566', created_at: new Date(Date.now()-7*864e5).toISOString()},
-  ];
+  // Merge sales into verified agents and sort (no demo fallback)
+  const FALLBACK_ALL = [];
+  const FALLBACK_PENDING = [];
 
-  const isDemo = AGT._useDemo || AGT.all.length === 0;
+  const isDemo = AGT._useDemo;
   const demoBannerRow = isDemo
-    ? `<tr><td colspan="8" style="padding:0"><div style="background:var(--orange-05,#fff8f0);border-left:3px solid var(--orange);padding:8px 14px;font-size:12.5px;color:var(--orange);font-weight:600">⚠️ DEMO DATA — Connect Supabase to see real agent rankings</div></td></tr>`
+    ? `<tr><td colspan="8" style="padding:0"><div style="background:var(--orange-05,#fff8f0);border-left:3px solid var(--orange);padding:8px 14px;font-size:12.5px;color:var(--orange);font-weight:600">⚠️ Could not load agent rankings — check database connection</div></td></tr>`
     : '';
 
-  const ranked = AGT.all.length > 0
-    ? AGT.all.map(a=>({...a, outlet:a.outlet||a.district||'—', sales:getAgentSales(a.id), ordersCount:AGT.orders.filter(o=>o.customer_id===a.id).length})).sort((a,b)=>b.sales-a.sales)
-    : FALLBACK_ALL;
+  const ranked = AGT.all.map(a=>({...a, outlet:a.outlet||a.district||'—', sales:getAgentSales(a.id), ordersCount:AGT.orders.filter(o=>o.customer_id===a.id).length})).sort((a,b)=>b.sales-a.sales);
 
-  const pendingList = AGT.pending.length > 0 ? AGT.pending : FALLBACK_PENDING;
+  const pendingList = AGT.pending;
 
   // ── LEADERBOARD ──────────────────────────────────────────
   if (tab === 'leaderboard') {
@@ -10425,13 +10794,14 @@ function renderAgentsContent(tab) {
 
   // ── PENDING APPROVAL ─────────────────────────────────────
   } else if (tab === 'pending') {
-    const pendingIsDemo = AGT.pending.length === 0;
+    // Banner only on real DB error, not on empty result
+    const pendingIsDemo = AGT._useDemo;
     const pendingBanner = pendingIsDemo
-      ? `<tr><td colspan="5" style="padding:0"><div style="background:var(--orange-05,#fff8f0);border-left:3px solid var(--orange);padding:8px 14px;font-size:12.5px;color:var(--orange);font-weight:600">⚠️ DEMO DATA — Connect Supabase to manage real pending agents</div></td></tr>`
+      ? `<tr><td colspan="5" style="padding:0"><div style="background:var(--orange-05,#fff8f0);border-left:3px solid var(--orange);padding:8px 14px;font-size:12.5px;color:var(--orange);font-weight:600">⚠️ Could not load pending agents — check database connection</div></td></tr>`
       : '';
     container.innerHTML = `
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px">
-        <div style="font-size:13px;color:var(--ink-60)">${pendingList.length} application${pendingList.length!==1?'s':''} awaiting review${pendingIsDemo?' (demo)':''}</div>
+        <div style="font-size:13px;color:var(--ink-60)">${pendingList.length} application${pendingList.length!==1?'s':''} awaiting review</div>
       </div>
       <div class="tbl-wrap">
         <table class="dt">
@@ -10558,6 +10928,7 @@ window.approveAgent = async function(id, name) {
   const { error } = await sb.from('app_users').update({ verified: true, status: 'active' }).eq('id', id);
   if (error) { toast(error.message, 'error'); return; }
   toast(`${name} approved as agent.`, 'success');
+  logAudit('Approved agent', { targetType:'app_user', targetId:id, notes:name });
   loadAgents();
 };
 
@@ -10571,13 +10942,8 @@ const _AR = { id: null, isDemo: false };
 
 window.openAgentReview = function(id) {
   const all = [...AGT.pending, ...AGT.all];
-  const FALLBACK_PENDING = [
-    {id:'fp1',full_name:'Amoding Prossy',   district:'Soroti',  phone:'+256 780 112 233', created_at: new Date(Date.now()-2*864e5).toISOString()},
-    {id:'fp2',full_name:'Tumwine Collins',  district:'Kasese',  phone:'+256 781 223 344', created_at: new Date(Date.now()-4*864e5).toISOString()},
-    {id:'fp3',full_name:'Akello Beatrice',  district:'Apac',    phone:'+256 782 334 455', created_at: new Date(Date.now()-6*864e5).toISOString()},
-    {id:'fp4',full_name:'Katende Ronald',   district:'Hoima',   phone:'+256 783 445 566', created_at: new Date(Date.now()-7*864e5).toISOString()},
-  ];
-  const row = all.find(a=>String(a.id)===String(id)) || FALLBACK_PENDING.find(a=>a.id===id);
+  const FALLBACK_PENDING = [];
+  const row = all.find(a=>String(a.id)===String(id));
   if (!row) { toast('Applicant not found.', 'error'); return; }
 
   _AR.id     = id;
@@ -10662,6 +11028,7 @@ window.executeAgentApprove = async function() {
     return;
   }
   toast('Agent approved successfully.', 'success');
+  logAudit('Approved agent', { targetType:'app_user', targetId:_AR.id, notes:note || null });
   closeAgentReview();
   loadAgents();
 };
@@ -10691,6 +11058,7 @@ window.executeAgentReject = async function() {
     return;
   }
   toast('Application rejected.', 'info');
+  logAudit('Rejected agent application', { targetType:'app_user', targetId:_AR.id, notes:`${reason}${note?' · '+note:''}` });
   closeAgentReview();
   loadAgents();
 };
@@ -10731,8 +11099,9 @@ window.openAgentDetail = function(id) {
           ['District',    row.district||'—'],
           ['Outlet',      row.outlet||'—'],
           ['Agent Code',  row.agent_code||'—'],
-          ['Commission',  (row.commission_rate||5)+'%'],
-          ['Referred by', row.referred_by||'—'],
+          ['Commission',   (row.commission_rate||5)+'%'],
+          ['MoMo (payout)',row.commission_payout_phone||'—'],
+          ['Referred by',  row.referred_by||'—'],
           ['Last active', row.last_active_at ? fmtDate(row.last_active_at) : 'Never'],
         ].map(([l,v])=>`
           <div>
@@ -10768,13 +11137,23 @@ window.openAgentDetail = function(id) {
   }
 };
 
+/* Helper: detects the "inactive not in enum" DB error and returns a
+   friendly message telling the admin exactly what to run.            */
+function enumStatusError(err) {
+  if (!err) return null;
+  if (/invalid input value for enum.*inactive/i.test(err.message || '')) {
+    return 'Database needs a one-time update. Run this SQL in your Supabase dashboard → SQL Editor:\n\nALTER TYPE user_status ADD VALUE IF NOT EXISTS \'inactive\';\n\nThe migration file db/2026-05-25_add_inactive_status_and_momo_field.sql contains the full script.';
+  }
+  return err.message;
+}
+
 window.toggleAgentStatus = async function(id, newStatus, name) {
   if (String(id).startsWith('fa') || String(id).startsWith('fp')) {
     toast('Demo data — connect Supabase to make changes.', 'info'); return;
   }
   if (!confirm(`${newStatus==='inactive'?'Deactivate':'Activate'} ${name}?`)) return;
   const { error } = await sb.from('app_users').update({ status: newStatus }).eq('id', id);
-  if (error) { toast(error.message, 'error'); return; }
+  if (error) { toast(enumStatusError(error), 'error'); return; }
   toast(`${name} ${newStatus==='inactive'?'deactivated':'activated'}.`, 'success');
   loadAgents();
 };
@@ -10791,7 +11170,7 @@ window.deactivateAgentFromDrawer = async function() {
   btn.disabled = true; btn.textContent = 'Deactivating…';
   const { error } = await sb.from('app_users').update({ status: 'inactive' }).eq('id', id);
   btn.disabled = false; btn.textContent = 'Deactivate';
-  if (error) { toast(error.message, 'error'); return; }
+  if (error) { toast(enumStatusError(error), 'error'); return; }
   toast(`${name} deactivated.`, 'info');
   closeOnboardAgent();
   loadAgents();
@@ -10953,28 +11332,7 @@ function focResolveCoord(o) {
   return focJitter(String(o.id || o.full_name || ''), base);
 }
 
-const FOC_FALLBACK = [
-  {id:'fo1', full_name:'Okello James',      district:'Butambala', status:'active',           phone:'+256700321777', speciality:'Coffee & Cocoa',         languages:'English · Luganda · Acholi',  farmers_helped:84,  visits:42, rating:4.7, availability:'available', senior:false, lat:0.20,   lng:32.00},
-  {id:'fo2', full_name:'Achieng Grace',     district:'Mbale',     status:'active',           phone:'+256712900400', speciality:'Horticulture · Hass',     languages:'English · Luganda · Luo',     farmers_helped:112, visits:58, rating:4.9, availability:'available', senior:true,  lat:1.08,   lng:34.18},
-  {id:'fo3', full_name:'Byaruhanga Moses',  district:'Hoima',     status:'active',           phone:'+256703456789', speciality:'Coffee · Post-harvest',    languages:'English · Runyoro',           farmers_helped:68,  visits:34, rating:4.6, availability:'available', senior:false, lat:1.43,   lng:31.35},
-  {id:'fo4', full_name:'Nankya Justine',    district:'Masaka',    status:'active',           phone:'+256702345678', speciality:'Matooke · Cassava',        languages:'English · Luganda',           farmers_helped:76,  visits:40, rating:4.8, availability:'off_duty',  off_day:'Sun', senior:false, lat:-0.34, lng:31.73},
-  {id:'fo5', full_name:'Tumusiime David',   district:'Mbarara',   status:'active',           phone:'+256781234567', speciality:'Livestock · Dairy',        languages:'English · Runyankole',        farmers_helped:54,  visits:28, rating:4.5, availability:'available', senior:false, lat:-0.61,  lng:30.65},
-  {id:'fo6', full_name:'Nassuna Diana',     district:'Wakiso',    status:'active',           phone:'+256782300100', speciality:'Banana · Horticulture',    languages:'English · Luganda',           farmers_helped:61,  visits:31, rating:4.3, availability:'available', senior:false, lat:0.40,   lng:32.45},
-  {id:'fo7', full_name:'Mugabi Ronald',     district:'Mbale',     status:'active',           phone:'+256700100200', speciality:'Maize · Beans',            languages:'English · Lugisu',            farmers_helped:49,  visits:25, rating:4.2, availability:'available', senior:false, lat:1.10,   lng:34.22},
-  {id:'fo8', full_name:'Atim Stella',       district:'Lira',      status:'active',           phone:'+256772800500', speciality:'Groundnuts · Sunflower',   languages:'English · Lango',             farmers_helped:43,  visits:22, rating:3.9, availability:'available', senior:false, lat:2.25,   lng:32.90},
-  {id:'fo9', full_name:'Kato Emmanuel',     district:'Jinja',     status:'active',           phone:'+256779001122', speciality:'Sugar · Maize',            languages:'English · Luganda · Lusoga',  farmers_helped:91,  visits:47, rating:4.8, availability:'available', senior:true,  lat:0.43,   lng:33.20},
-  {id:'fo10',full_name:'Atuhaire Prossy',   district:'Bushenyi',  status:'active',           phone:'+256754321099', speciality:'Tea · Dairy',              languages:'English · Runyankole',        farmers_helped:58,  visits:29, rating:4.6, availability:'available', senior:false, lat:-0.54,  lng:30.19},
-  {id:'fo11',full_name:'Opio Charles',      district:'Gulu',      status:'active',           phone:'+256772654321', speciality:'Sesame · Sunflower',       languages:'English · Acholi',            farmers_helped:72,  visits:38, rating:4.4, availability:'available', senior:false, lat:2.77,   lng:32.30},
-  {id:'fo12',full_name:'Birungi Harriet',   district:'Fort Portal',status:'active',          phone:'+256701899000', speciality:'Coffee · Vanilla',         languages:'English · Rutooro',           farmers_helped:65,  visits:33, rating:4.7, availability:'off_duty',  off_day:'Sat', senior:false, lat:0.67, lng:30.27},
-  {id:'fo13',full_name:'Ndawula Patrick',   district:'Iganga',    status:'active',           phone:'+256705776543', speciality:'Rice · Cassava',           languages:'English · Lusoga · Luganda',  farmers_helped:53,  visits:27, rating:4.1, availability:'available', senior:false, lat:0.61,   lng:33.47},
-  {id:'fo14',full_name:'Amoding Lydia',     district:'Soroti',    status:'active',           phone:'+256782112233', speciality:'Cotton · Sunflower',       languages:'English · Iteso',             farmers_helped:47,  visits:24, rating:4.3, availability:'available', senior:false, lat:1.72,   lng:33.61},
-  {id:'fo15',full_name:'Bwambale Julius',   district:'Kasese',    status:'active',           phone:'+256700450900', speciality:'Maize · Beans · Vanilla',  languages:'English · Lhukonzo',          farmers_helped:60,  visits:31, rating:4.5, availability:'available', senior:false, lat:0.18,   lng:30.08},
-  {id:'fo16',full_name:'Arua Gladys',       district:'Arua',      status:'active',           phone:'+256712988776', speciality:'Sesame · Groundnuts',      languages:'English · Lugbara',           farmers_helped:38,  visits:19, rating:4.0, availability:'available', senior:false, lat:3.02,   lng:30.91},
-  {id:'fo17',full_name:'Karekaho Felix',    district:'Kabale',    status:'active',           phone:'+256700654321', speciality:'Irish Potato · Wheat',     languages:'English · Rukiga',            farmers_helped:79,  visits:41, rating:4.6, availability:'available', senior:true,  lat:-1.25,  lng:29.99},
-  {id:'fo18',full_name:'Mulindwa Simon',    district:'Ntungamo',  status:'active',           phone:'+256703100200', speciality:'Tea · Dairy · Banana',     languages:'English · Runyankole',        farmers_helped:55,  visits:28, rating:4.4, availability:'available', senior:false, lat:-0.88,  lng:30.26},
-  {id:'fp1', full_name:'Kamya Bernard',     district:'Kampala',   status:'pending_approval', phone:'+256704112233', speciality:'Fish farming',             languages:'English · Luganda',           farmers_helped:0,   visits:0,  rating:null,availability:'pending', senior:false, lat:0.32,   lng:32.58},
-  {id:'fp2', full_name:'Akello Beatrice',   district:'Apac',      status:'pending_approval', phone:'+256705223344', speciality:'Cassava · Sweet potato',   languages:'English · Lango',             farmers_helped:0,   visits:0,  rating:null,availability:'pending', senior:false, lat:2.08,   lng:32.79},
-];
+const FOC_FALLBACK = [];
 
 const FOC_AV_COLORS = ['var(--teal)','var(--orange)','var(--rust)','#1D3461','#3A7D44','#6B4226','#9B2226','#285238'];
 function focAvColor(name) {
@@ -10985,8 +11343,9 @@ function focAvColor(name) {
 window.loadOfficers = async function() {
   const { data, error } = await sb.from('app_users')
     .select('*').eq('role','field_officer').order('status').order('full_name');
-  FOC._useDemo = !(!error && data?.length);
-  FOC.all = FOC._useDemo ? FOC_FALLBACK : data;
+  // Only flag demo on actual DB error, not on empty result
+  FOC._useDemo = !!error;
+  FOC.all = data || [];
   /* Live subtitle count — only active (approved) officers count toward the
      "appearing in the Talk to an Expert directory" copy. */
   const sub = document.getElementById('officers-count-sub');
@@ -11030,7 +11389,7 @@ window.exportOfficersCSV = function() {
   const lines = [headers.join(','), ...rows.map(o => [
     q(o.full_name), q(o.district||''), q(o.speciality||''), q(o.languages||''),
     o.farmers_helped||0, o.visits||0, o.rating||'',
-    q(o.availability||'available'), q(o.status||'active')
+    q(o.fo_available === false ? 'off_duty' : 'available'), q(o.status||'active')
   ].join(','))];
   const blob = new Blob([lines.join('\n')], { type:'text/csv' });
   const a = document.createElement('a');
@@ -11047,8 +11406,8 @@ window.openOfficerDetail = function(id) {
   const avBg = focAvColor(o.full_name);
   const isSenior = o.senior || (o.rating >= 4.8 && o.visits >= 50);
   const rating = o.rating ? `★ ${Number(o.rating).toFixed(1)}` : '—';
-  const availHtml = o.availability==='off_duty'
-    ? `<span class="chip chip-ghost">Off duty · ${o.off_day||'Sun'}</span>`
+  const availHtml = o.fo_available === false
+    ? `<span class="chip chip-ghost">Off duty${o.off_day ? ' · '+o.off_day : ''}</span>`
     : `<span style="background:rgba(58,125,68,.12);color:#3A7D44;padding:3px 10px;border-radius:20px;font-size:11.5px;font-weight:600">● Available</span>`;
 
   document.getElementById('user-drawer-overlay').classList.add('open');
@@ -11113,7 +11472,7 @@ window.openOfficerDetail = function(id) {
 /* ── Add officer drawer (new) ──────────────────────────── */
 window.openOnboardOfficer = function() {
   /* Reset form */
-  ['of-name','of-phone','of-email','of-languages','of-speciality','of-notes'].forEach(id => {
+  ['of-name','of-phone','of-email','of-languages','of-speciality','of-notes','of-momo'].forEach(id => {
     const el = document.getElementById(id); if (el) el.value = '';
   });
   document.getElementById('of-district').value = '';
@@ -11139,6 +11498,7 @@ window.saveOnboardOfficer = async function() {
   const offDay    = document.getElementById('of-off-day').value || null;
   const commRaw   = parseFloat(document.getElementById('of-commission').value);
   const commRate  = isNaN(commRaw) ? 0 : commRaw;
+  const momo      = (document.getElementById('of-momo').value || '').trim() || null;
   const status    = (document.querySelector('input[name="of-status"]:checked') || {}).value || 'active';
   const notes     = (document.getElementById('of-notes').value || '').trim() || null;
 
@@ -11159,10 +11519,11 @@ window.saveOnboardOfficer = async function() {
     speciality:       specialty,    /* legacy spelling kept for backward compat with FOC schema */
     specialty:        specialty,    /* and the corrected spelling — different installs have different schemas */
     off_day:          offDay,
-    commission_rate:  commRate,
-    availability:     'available',  /* may not exist in older schemas; auto-stripped on retry */
-    status:           status,
-    notes:            notes,
+    commission_rate:         commRate,
+    commission_payout_phone: momo,
+    fo_available:            true,  /* boolean column from the 2026-05-23 migration */
+    status:                  status,
+    notes:                   notes,
   };
   /* The app_users schema varies between installs (speciality vs specialty,
      availability/off_day may be missing entirely). Loop: try insert, if
@@ -11183,6 +11544,7 @@ window.saveOnboardOfficer = async function() {
   if (btn) { btn.disabled = false; btn.textContent = 'Add officer'; }
   if (error) { toast('Could not add officer: ' + error.message, 'error'); return; }
   toast(`✓ ${name} added` + (status === 'active' ? ' and live in the directory.' : '. Awaiting approval.'), 'success');
+  logAudit('Added field officer', { targetType:'app_user', notes:`${name} (${status})` });
   closeOnboardOfficer();
   loadOfficers();
 };
@@ -11204,8 +11566,10 @@ window.toggleOfficerStatus = async function(id, newStatus, name) {
   }
   if (!confirm(`${newStatus==='inactive'?'Deactivate':'Activate'} ${name}?`)) return;
   const { error } = await sb.from('app_users').update({ status: newStatus }).eq('id', id);
-  if (error) { toast(error.message, 'error'); return; }
+  if (error) { toast(enumStatusError(error), 'error'); return; }
   toast(`${name} ${newStatus==='inactive'?'deactivated':'activated'}.`, 'success');
+  logAudit(newStatus==='inactive' ? 'Deactivated field officer' : 'Activated field officer',
+           { targetType:'app_user', targetId:id, notes:name });
   loadOfficers();
 };
 
@@ -11220,6 +11584,7 @@ window.removeOfficer = async function(id, name) {
   const { error } = await sb.from('app_users').delete().eq('id', id);
   if (error) { toast('Could not remove: ' + error.message, 'error'); return; }
   toast(`${name} removed.`, 'success');
+  logAudit('Removed field officer', { targetType:'app_user', targetId:id, notes:name });
   loadOfficers();
 };
 
@@ -11229,6 +11594,7 @@ window.rejectOfficer = async function(id, name) {
   const { error } = await sb.from('app_users').update({ status: 'rejected' }).eq('id', id);
   if (error) { toast(error.message, 'error'); return; }
   toast(`${name}'s application rejected.`, 'info');
+  logAudit('Rejected field officer', { targetType:'app_user', targetId:id, notes:name });
   loadOfficers();
 };
 
@@ -11243,7 +11609,7 @@ function renderOfficersContent(tab) {
 
   const isFocDemo = FOC._useDemo;
   const focDemoBanner = isFocDemo
-    ? `<tr><td colspan="9" style="padding:0"><div style="background:var(--orange-05,#fff8f0);border-left:3px solid var(--orange);padding:8px 14px;font-size:12.5px;color:var(--orange);font-weight:600">⚠️ DEMO DATA — Connect Supabase to manage real field officers</div></td></tr>`
+    ? `<tr><td colspan="9" style="padding:0"><div style="background:var(--orange-05,#fff8f0);border-left:3px solid var(--orange);padding:8px 14px;font-size:12.5px;color:var(--orange);font-weight:600">⚠️ Could not load field officers — check database connection</div></td></tr>`
     : '';
 
   // ── DIRECTORY ────────────────────────────────────────────
@@ -11274,9 +11640,8 @@ function renderOfficersContent(tab) {
             const avBg      = focAvColor(o.full_name);
             const isSenior  = o.senior || (o.rating >= 4.8 && o.visits >= 50);
             const rating    = o.rating ? `<span style="color:var(--orange);font-weight:700">★ ${Number(o.rating).toFixed(1)}</span>` : '—';
-            const avail     = o.availability;
-            const availHtml = avail==='off_duty'
-              ? `<span style="background:var(--ink-08);color:var(--ink-60);padding:4px 10px;border-radius:20px;font-size:11.5px;font-weight:600">Off duty · ${o.off_day||'Sun'}</span>`
+            const availHtml = o.fo_available === false
+              ? `<span style="background:var(--ink-08);color:var(--ink-60);padding:4px 10px;border-radius:20px;font-size:11.5px;font-weight:600">Off duty${o.off_day ? ' · '+o.off_day : ''}</span>`
               : `<span style="background:rgba(58,125,68,.12);color:#3A7D44;padding:4px 10px;border-radius:20px;font-size:11.5px;font-weight:600">● Available</span>`;
             const safeName = (o.full_name||'').replace(/'/g,"\\'");
             const isActive = (o.status||'active') === 'active';
@@ -11310,7 +11675,7 @@ function renderOfficersContent(tab) {
           </tbody>
         </table>
         <div class="tbl-foot">
-          <span>${active.length} officer${active.length!==1?'s':''} · ${active.filter(o=>o.availability==='available'||!o.availability||o.status==='active').length} available</span>
+          <span>${active.length} officer${active.length!==1?'s':''} · ${active.filter(o=>o.fo_available !== false).length} available</span>
         </div>
       </div>`;
 
@@ -11329,7 +11694,7 @@ function renderOfficersContent(tab) {
     const topDistrict = Object.entries(districtCounts).sort((a,b)=>b[1]-a[1])[0];
 
     container.innerHTML = `
-      ${isFocDemo ? `<div style="background:var(--orange-05,#fff8f0);border-left:3px solid var(--orange);border-radius:0 8px 8px 0;padding:8px 14px;font-size:12.5px;color:var(--orange);font-weight:600;margin-bottom:14px">⚠️ DEMO DATA — GPS coordinates from fallback officers</div>` : ''}
+      ${isFocDemo ? `<div style="background:var(--orange-05,#fff8f0);border-left:3px solid var(--orange);border-radius:0 8px 8px 0;padding:8px 14px;font-size:12.5px;color:var(--orange);font-weight:600;margin-bottom:14px">⚠️ Showing sample GPS coordinates — live data unavailable</div>` : ''}
       <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px">
         <div class="card card-body" style="padding:14px">
           <div style="font-size:11px;color:var(--ink-60);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px">Officers on map</div>
@@ -11455,8 +11820,8 @@ function renderOfficersContent(tab) {
               </div>
               <div style="font-size:11.5px;color:#555;margin-bottom:6px">${o.district||'—'} · ${o.speciality||'—'}</div>
               <div style="display:flex;gap:12px;font-size:11.5px">
-                <span>📍 ${o.visits||0} visits</span>
-                <span>👩‍🌾 ${o.farmers_helped||0} farmers</span>
+                <span>${o.visits||0} visits</span>
+                <span>${o.farmers_helped||0} farmers</span>
               </div>
               ${o.rating ? `<div style="margin-top:6px;font-size:11.5px;color:#FF7D00;font-weight:700">★ ${Number(o.rating).toFixed(1)}</div>` : ''}
               ${(o.lat == null || o.lng == null) ? `<div style="margin-top:6px;font-size:10.5px;color:#888;font-style:italic">Pinned at ${o.district||'district'} centroid (no GPS visit recorded yet).</div>` : ''}
@@ -11480,15 +11845,11 @@ function renderOfficersContent(tab) {
     const ratedOfficers = FOC.all
       .filter(o => o.status !== 'pending_approval' && o.rating)
       .sort((a,b) => (b.rating||0) - (a.rating||0));
-    const DEMO_LOW = [
-      {farmer:'Wamala Peter',  comment:'Took too long to respond to my banana disease query.', rating:2, officer:'Mugabi Ronald'},
-      {farmer:'Lamwaka Susan', comment:'Could not identify the pest on my groundnuts.', rating:2, officer:'Atim Stella'},
-      {farmer:'Odongo Denis',  comment:'Call dropped twice, follow-up was slow.', rating:3, officer:'Atim Stella'},
-    ];
+    const DEMO_LOW = [];
     const lowRatingOfficers = ratedOfficers.filter(o => (o.rating||5) < 4.0);
     const allLow = isFocDemo ? DEMO_LOW : lowRatingOfficers.map(o => ({officer:o.full_name, farmer:'Farmer feedback', comment:'Rating below 4.0 — follow up recommended.', rating:o.rating}));
     container.innerHTML = `
-      ${isFocDemo ? `<div style="background:var(--orange-05,#fff8f0);border-left:3px solid var(--orange);border-radius:0 8px 8px 0;padding:8px 14px;font-size:12.5px;color:var(--orange);font-weight:600;margin-bottom:14px">⚠️ DEMO DATA — ratings shown from fallback officers</div>` : ''}
+      ${isFocDemo ? `<div style="background:var(--orange-05,#fff8f0);border-left:3px solid var(--orange);border-radius:0 8px 8px 0;padding:8px 14px;font-size:12.5px;color:var(--orange);font-weight:600;margin-bottom:14px">⚠️ Showing sample ratings — live data unavailable</div>` : ''}
       <div class="grid-2" style="margin-bottom:20px">
         ${ratedOfficers.map(o=>`
           <div class="card card-body">
@@ -11524,7 +11885,7 @@ function renderOfficersContent(tab) {
   // ── PENDING APPROVAL ─────────────────────────────────────
   } else if (tab === 'pending') {
     const pendingFocBanner = isFocDemo
-      ? `<tr><td colspan="7" style="padding:0"><div style="background:var(--orange-05,#fff8f0);border-left:3px solid var(--orange);padding:8px 14px;font-size:12.5px;color:var(--orange);font-weight:600">⚠️ DEMO DATA — Connect Supabase to manage real applications</div></td></tr>`
+      ? `<tr><td colspan="7" style="padding:0"><div style="background:var(--orange-05,#fff8f0);border-left:3px solid var(--orange);padding:8px 14px;font-size:12.5px;color:var(--orange);font-weight:600">⚠️ Could not load applications — check database connection</div></td></tr>`
       : '';
     container.innerHTML = `
       <div class="tbl-wrap">
@@ -11574,19 +11935,303 @@ window.openApproveOfficerById = function(id) {
   openApproveOfficer(officer);
 };
 /* ══════════════════════════════════════════════════════
+   FARMERS DIRECTORY (app_users where role='farmer')
+══════════════════════════════════════════════════════ */
+const FRM = { all:[], tab:'all', search:'', _useDemo:false };
+
+window.loadFarmers = async function() {
+  document.getElementById('farmers-content').innerHTML = '<div style="padding:40px" class="shimmer sk-row"></div>';
+  const { data, error } = await sb.from('app_users')
+    .select('*').eq('role','farmer').order('created_at',{ascending:false});
+
+  FRM._useDemo = !!error;
+  FRM.all = data || [];
+
+  const total    = FRM.all.length;
+  const active   = FRM.all.filter(f => (f.status||'active') === 'active').length;
+  const pending  = FRM.all.filter(f => f.status === 'pending_approval').length;
+  const blocked  = FRM.all.filter(f => f.status === 'blocked').length;
+  const monthAgo = new Date(Date.now() - 30 * 86400000).toISOString();
+  const thisMonth = FRM.all.filter(f => (f.created_at || '') >= monthAgo).length;
+
+  document.getElementById('farmers-count-sub').textContent = total.toLocaleString();
+
+  const kpiCard = (label, value, sub, highlight) => `
+    <div style="flex:1;min-width:150px;padding:14px 16px;border-radius:var(--radius-md);background:#fff;
+      border:2px solid ${highlight?'var(--orange)':'var(--ink-08)'};box-shadow:var(--shadow-card)">
+      <div style="font-size:9.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-60);margin-bottom:8px">${label}</div>
+      <div style="font-family:'Poppins';font-weight:800;font-size:26px;color:${highlight?'var(--orange)':'var(--ink)'};line-height:1">${value.toLocaleString()}</div>
+      ${sub?`<div style="font-size:11px;color:var(--ink-60);margin-top:5px">${sub}</div>`:''}
+    </div>`;
+
+  document.getElementById('farmers-kpis').innerHTML =
+    kpiCard('TOTAL FARMERS',  total,     'All time') +
+    kpiCard('ACTIVE',         active,    `${Math.round(active/Math.max(total,1)*100)}% of total`) +
+    kpiCard('PENDING APPROVAL', pending, pending>0?'Needs review':'✓ Clear', pending>0) +
+    kpiCard('NEW · 30D',      thisMonth, 'Self-registered');
+
+  renderFarmersTabs();
+  renderFarmersContent();
+};
+
+function renderFarmersTabs() {
+  const bar = document.getElementById('farmers-tab-bar');
+  if (!bar) return;
+  const pending  = FRM.all.filter(f => f.status === 'pending_approval').length;
+  const blocked  = FRM.all.filter(f => f.status === 'blocked').length;
+  const TABS = [
+    { key:'all',     label:'All farmers',  count: FRM.all.length },
+    { key:'pending', label:'Pending',       count: pending, urgent: pending > 0 },
+    { key:'blocked', label:'Blocked',       count: blocked },
+  ];
+  bar.innerHTML = TABS.map(t => {
+    const on = FRM.tab === t.key;
+    const badge = t.count != null ? ` <span class="tc${on?' on':''}">${t.count}</span>` : '';
+    return `<button class="ptab${on?' on':''}" onclick="switchFarmersTab('${t.key}')">${t.label}${badge}</button>`;
+  }).join('');
+}
+
+window.switchFarmersTab = function(tab) { FRM.tab = tab; renderFarmersTabs(); renderFarmersContent(); };
+
+window.filterFarmers = function() {
+  const inp = document.getElementById('frm-search');
+  FRM.search = (inp?.value || '').toLowerCase();
+  const cursor = inp?.selectionStart ?? (inp?.value?.length ?? 0);
+  renderFarmersContent();
+  const newInp = document.getElementById('frm-search');
+  if (newInp) { newInp.focus(); try { newInp.setSelectionRange(cursor, cursor); } catch(e){} }
+};
+
+function renderFarmersContent() {
+  const container = document.getElementById('farmers-content');
+  let list = FRM.all;
+  if (FRM.tab === 'pending') list = list.filter(f => f.status === 'pending_approval');
+  else if (FRM.tab === 'blocked') list = list.filter(f => f.status === 'blocked');
+  else list = list.filter(f => f.status !== 'pending_approval' && f.status !== 'blocked');
+
+  if (FRM.search) list = list.filter(f =>
+    (f.full_name||'').toLowerCase().includes(FRM.search) ||
+    (f.phone||'').includes(FRM.search) ||
+    (f.district||'').toLowerCase().includes(FRM.search));
+
+  const banner = FRM._useDemo
+    ? `<tr><td colspan="6" style="padding:0"><div style="background:var(--orange-05,#fff8f0);border-left:3px solid var(--orange);padding:8px 14px;font-size:12.5px;color:var(--orange);font-weight:600">⚠️ Could not load farmers — check database connection</div></td></tr>`
+    : (list.length === 0
+        ? `<tr><td colspan="6" style="padding:24px;text-align:center;color:var(--ink-40);font-size:13px">No farmers in this view.</td></tr>`
+        : '');
+
+  const statusChip = s => {
+    if (s === 'pending_approval') return '<span class="chip chip-orange">Pending</span>';
+    if (s === 'blocked')          return '<span class="chip" style="background:var(--rust);color:#fff">Blocked</span>';
+    if (s === 'inactive')         return '<span class="chip" style="background:var(--ink-08);color:var(--ink-60)">Inactive</span>';
+    return '<span class="chip" style="background:rgba(58,125,68,.12);color:#3A7D44">Active</span>';
+  };
+
+  container.innerHTML = `
+    <div class="tbl-wrap">
+      <div class="tbl-toolbar">
+        <div class="tbl-search" style="flex:1">
+          <input type="text" placeholder="Search by name, phone, or district…" id="frm-search" oninput="filterFarmers()" value="${FRM.search}">
+        </div>
+      </div>
+      <table class="dt">
+        <thead><tr><th>FARMER</th><th>PHONE</th><th>DISTRICT</th><th>STATUS</th><th>REGISTERED</th><th></th></tr></thead>
+        <tbody>
+        ${banner}
+        ${list.map(f => `<tr>
+          <td><div style="font-weight:600">${f.full_name||'—'}</div>
+              ${f.sub_county?`<div style="font-size:11px;color:var(--ink-60)">${f.sub_county}</div>`:''}</td>
+          <td style="font-size:12.5px">${f.phone||'—'}</td>
+          <td style="font-size:12.5px">${f.district||'—'}</td>
+          <td>${statusChip(f.status)}</td>
+          <td style="font-size:11.5px;color:var(--ink-60)">${f.created_at ? new Date(f.created_at).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}) : '—'}</td>
+          <td>
+            ${f.status === 'pending_approval' ? `<button class="btn btn-primary btn-sm" onclick="approveFarmer('${f.id}','${(f.full_name||'').replace(/'/g,"\\'")}')">Approve</button>` : ''}
+            ${f.status === 'blocked' ? `<button class="btn btn-ghost btn-sm" onclick="toggleFarmerBlock('${f.id}','${(f.full_name||'').replace(/'/g,"\\'")}', true)">Unblock</button>`
+              : (f.status !== 'pending_approval' ? `<button class="btn btn-ghost btn-sm" onclick="toggleFarmerBlock('${f.id}','${(f.full_name||'').replace(/'/g,"\\'")}', false)">Block</button>` : '')}
+          </td>
+        </tr>`).join('')}
+        </tbody>
+      </table>
+      <div class="tbl-foot"><span>Showing ${list.length} farmer${list.length!==1?'s':''}</span></div>
+    </div>`;
+}
+
+window.approveFarmer = async function(id, name) {
+  const { error } = await sb.from('app_users')
+    .update({ status: 'active', updated_at: new Date().toISOString() }).eq('id', id);
+  if (error) { toast(error.message, 'error'); return; }
+  toast(`${name || 'Farmer'} approved.`, 'success');
+  logAudit('Approved farmer', { targetType:'app_user', targetId:id, notes:name||null });
+  loadFarmers();
+};
+
+window.toggleFarmerBlock = async function(id, name, isBlocked) {
+  const newStatus = isBlocked ? 'active' : 'blocked';
+  if (!confirm(`${isBlocked ? 'Unblock' : 'Block'} ${name}?`)) return;
+  const { error } = await sb.from('app_users')
+    .update({ status: newStatus, updated_at: new Date().toISOString() }).eq('id', id);
+  if (error) { toast(error.message, 'error'); return; }
+  toast(`${name || 'Farmer'} ${isBlocked ? 'unblocked' : 'blocked'}.`, isBlocked?'success':'info');
+  logAudit(isBlocked ? 'Unblocked farmer' : 'Blocked farmer', { targetType:'app_user', targetId:id, notes:name||null });
+  loadFarmers();
+};
+
+window.exportFarmersCSV = function() {
+  const rows = FRM.all;
+  if (!rows.length) { toast('No farmers to export.', 'info'); return; }
+  const headers = ['Name','Phone','District','Sub-county','Status','Registered'];
+  const q = v => `"${String(v??'').replace(/"/g,'""')}"`;
+  const lines = [headers.join(','), ...rows.map(f =>
+    [q(f.full_name), q(f.phone), q(f.district||''), q(f.sub_county||''),
+     q(f.status||'active'), f.created_at||''].join(','))];
+  const blob = new Blob([lines.join('\n')], { type:'text/csv' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `farmers_${new Date().toISOString().slice(0,10)}.csv`;
+  a.click();
+  toast(`Exported ${rows.length} farmers.`, 'success');
+  logAudit('Exported farmers CSV', { notes:`${rows.length} rows` });
+};
+
+/* ══════════════════════════════════════════════════════
+   DIASPORA CLIENTS DIRECTORY (app_users where role='diaspora')
+══════════════════════════════════════════════════════ */
+const DCL = { all:[], orders:[], search:'', _useDemo:false };
+
+window.loadDiasporaClients = async function() {
+  document.getElementById('diasporaclients-content').innerHTML = '<div style="padding:40px" class="shimmer sk-row"></div>';
+
+  // Fetch diaspora clients + their order counts in one pass
+  const [{ data, error }, { data: orders }] = await Promise.all([
+    sb.from('app_users').select('*').eq('role','diaspora').order('created_at',{ascending:false}),
+    sb.from('diaspora_orders').select('payer_email,total_usd,status,created_at'),
+  ]);
+
+  DCL._useDemo = !!error;
+  DCL.all = data || [];
+  DCL.orders = orders || [];
+
+  // Aggregate orders by payer_email (best we have to link to client without payer_user_id col)
+  const byEmail = {};
+  DCL.orders.forEach(o => {
+    const k = (o.payer_email||'').toLowerCase();
+    if (!k) return;
+    if (!byEmail[k]) byEmail[k] = { count:0, totalUsd:0 };
+    byEmail[k].count++;
+    byEmail[k].totalUsd += Number(o.total_usd||0);
+  });
+
+  const total      = DCL.all.length;
+  const monthAgo   = new Date(Date.now() - 30 * 86400000).toISOString();
+  const newCount   = DCL.all.filter(d => (d.created_at || '') >= monthAgo).length;
+  const totalOrders = DCL.orders.length;
+  const totalUsd   = DCL.orders.reduce((s,o) => s + Number(o.total_usd||0), 0);
+
+  document.getElementById('diasporaclients-count-sub').textContent = total.toLocaleString();
+
+  const kpiCard = (label, value, sub, highlight) => `
+    <div style="flex:1;min-width:150px;padding:14px 16px;border-radius:var(--radius-md);background:#fff;
+      border:2px solid ${highlight?'var(--orange)':'var(--ink-08)'};box-shadow:var(--shadow-card)">
+      <div style="font-size:9.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-60);margin-bottom:8px">${label}</div>
+      <div style="font-family:'Poppins';font-weight:800;font-size:26px;color:${highlight?'var(--orange)':'var(--ink)'};line-height:1">${value}</div>
+      ${sub?`<div style="font-size:11px;color:var(--ink-60);margin-top:5px">${sub}</div>`:''}
+    </div>`;
+
+  document.getElementById('diasporaclients-kpis').innerHTML =
+    kpiCard('TOTAL CLIENTS',  total.toLocaleString(),       'All time') +
+    kpiCard('NEW · 30D',      newCount.toLocaleString(),    'Recent signups') +
+    kpiCard('TOTAL ORDERS',   totalOrders.toLocaleString(), 'Diaspora orders placed') +
+    kpiCard('TOTAL USD',      '$'+totalUsd.toLocaleString('en-US',{minimumFractionDigits:0}), 'Lifetime spend');
+
+  renderDiasporaClientsContent(byEmail);
+};
+
+window.filterDiasporaClients = function() {
+  const inp = document.getElementById('dcl-search');
+  DCL.search = (inp?.value || '').toLowerCase();
+  const cursor = inp?.selectionStart ?? (inp?.value?.length ?? 0);
+  // re-derive byEmail from current orders
+  const byEmail = {};
+  DCL.orders.forEach(o => {
+    const k = (o.payer_email||'').toLowerCase();
+    if (!k) return;
+    if (!byEmail[k]) byEmail[k] = { count:0, totalUsd:0 };
+    byEmail[k].count++;
+    byEmail[k].totalUsd += Number(o.total_usd||0);
+  });
+  renderDiasporaClientsContent(byEmail);
+  const newInp = document.getElementById('dcl-search');
+  if (newInp) { newInp.focus(); try { newInp.setSelectionRange(cursor, cursor); } catch(e){} }
+};
+
+function renderDiasporaClientsContent(byEmail) {
+  const container = document.getElementById('diasporaclients-content');
+  let list = DCL.all;
+  if (DCL.search) list = list.filter(d =>
+    (d.full_name||'').toLowerCase().includes(DCL.search) ||
+    (d.email||'').toLowerCase().includes(DCL.search) ||
+    (d.country_of_residence||'').toLowerCase().includes(DCL.search));
+
+  const banner = DCL._useDemo
+    ? `<tr><td colspan="6" style="padding:0"><div style="background:var(--orange-05,#fff8f0);border-left:3px solid var(--orange);padding:8px 14px;font-size:12.5px;color:var(--orange);font-weight:600">⚠️ Could not load diaspora clients — check database connection</div></td></tr>`
+    : (list.length === 0
+        ? `<tr><td colspan="6" style="padding:24px;text-align:center;color:var(--ink-40);font-size:13px">No diaspora clients in this view.</td></tr>`
+        : '');
+
+  container.innerHTML = `
+    <div class="tbl-wrap">
+      <div class="tbl-toolbar">
+        <div class="tbl-search" style="flex:1">
+          <input type="text" placeholder="Search by name, email, or country…" id="dcl-search" oninput="filterDiasporaClients()" value="${DCL.search}">
+        </div>
+      </div>
+      <table class="dt">
+        <thead><tr><th>CLIENT</th><th>EMAIL</th><th>COUNTRY</th><th>ORDERS</th><th>TOTAL USD</th><th>REGISTERED</th></tr></thead>
+        <tbody>
+        ${banner}
+        ${list.map(d => {
+          const stat = byEmail[(d.email||'').toLowerCase()] || { count:0, totalUsd:0 };
+          return `<tr>
+            <td><div style="font-weight:600">${d.full_name||'—'}</div></td>
+            <td style="font-size:12.5px">${d.email||'—'}</td>
+            <td style="font-size:12.5px">${d.country_of_residence||'—'}</td>
+            <td style="font-size:12.5px;font-weight:600">${stat.count}</td>
+            <td style="font-size:12.5px;font-weight:600">${stat.totalUsd>0?'$'+stat.totalUsd.toLocaleString('en-US',{minimumFractionDigits:0}):'—'}</td>
+            <td style="font-size:11.5px;color:var(--ink-60)">${d.created_at ? new Date(d.created_at).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}) : '—'}</td>
+          </tr>`;
+        }).join('')}
+        </tbody>
+      </table>
+      <div class="tbl-foot"><span>Showing ${list.length} client${list.length!==1?'s':''}</span></div>
+    </div>`;
+}
+
+window.exportDiasporaClientsCSV = function() {
+  const rows = DCL.all;
+  if (!rows.length) { toast('No diaspora clients to export.', 'info'); return; }
+  const headers = ['Name','Email','Country','Phone','Registered'];
+  const q = v => `"${String(v??'').replace(/"/g,'""')}"`;
+  const lines = [headers.join(','), ...rows.map(d =>
+    [q(d.full_name), q(d.email||''), q(d.country_of_residence||''),
+     q(d.phone||''), d.created_at||''].join(','))];
+  const blob = new Blob([lines.join('\n')], { type:'text/csv' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `diaspora_clients_${new Date().toISOString().slice(0,10)}.csv`;
+  a.click();
+  toast(`Exported ${rows.length} diaspora clients.`, 'success');
+  logAudit('Exported diaspora clients CSV', { notes:`${rows.length} rows` });
+};
+
+/* ══════════════════════════════════════════════════════
    DIASPORA ORDERS
 ══════════════════════════════════════════════════════ */
 const DIA = { all:[], filtered:[], pendingId:null, fxRate:3800 };
 
-const DIA_FALLBACK = [
-  {id:'df1',order_number:'AM-D-2026-04-00091',payer_name:'Ssemakula Robert',payer_country:'UK',   recipient_name:'Namutebi Sarah',  recipient_district:'Mpigi',         outlet_name:'Mpigi Town',      total_usd:31,   pickup_code:'482917',dia_status:'collected',    collected:true,  code_expired:false, created_at:new Date(Date.now()-5*864e5).toISOString()},
-  {id:'df2',order_number:'AM-D-2026-04-00087',payer_name:'Ssemakula Robert',payer_country:'UK',   recipient_name:'Ssemakula Mary', recipient_district:'Masaka',        outlet_name:'Masaka Central',  total_usd:48.5, pickup_code:'301544',dia_status:'awaiting_pickup',collected:false, code_expired:false, created_at:new Date(Date.now()-3*864e5).toISOString()},
-  {id:'df3',order_number:'AM-D-2026-04-00083',payer_name:'Achen Rebecca',   payer_country:'USA',  recipient_name:'Achen Florence', recipient_district:'Lira',          outlet_name:'Lira',            total_usd:65,   pickup_code:'718223',dia_status:'awaiting_pickup',collected:false, code_expired:false, created_at:new Date(Date.now()-4*864e5).toISOString()},
-  {id:'df4',order_number:'AM-D-2026-04-00079',payer_name:'Tumusiime Paul',  payer_country:'UAE',  recipient_name:'Tumusiime Mary', recipient_district:'Mbarara',       outlet_name:'Mbarara',         total_usd:120,  pickup_code:'559001',dia_status:'collected',    collected:true,  code_expired:false, created_at:new Date(Date.now()-6*864e5).toISOString()},
-  {id:'df5',order_number:'AM-D-2026-04-00068',payer_name:'Kato Agnes',      payer_country:'Canada',recipient_name:'Kato Justine',  recipient_district:'Kampala Nakawa',outlet_name:'Kampala Nakawa',  total_usd:18,   pickup_code:'402771',dia_status:'code_expired',  collected:false, code_expired:true,  created_at:new Date(Date.now()-9*864e5).toISOString()},
-];
+const DIA_FALLBACK = [];
 
-const DIA_FLAG = {USA:'🇺🇸',UK:'🇬🇧',UAE:'🇦🇪',Canada:'🇨🇦',Germany:'🇩🇪',Netherlands:'🇳🇱',Australia:'🇦🇺',Sweden:'🇸🇪',Uganda:'🇺🇬'};
+const DIA_FLAG = {USA:'US',UK:'UK',UAE:'AE',Canada:'CA',Germany:'DE',Netherlands:'NL',Australia:'AU',Sweden:'SE',Uganda:'UG'};
 
 window.loadDiaspora = async function() {
   document.getElementById('diaspora-table-body').innerHTML = '<div style="padding:40px" class="shimmer sk-row"></div>';
@@ -11596,9 +12241,9 @@ window.loadDiaspora = async function() {
     sb.from('fx_rates').select('usd_to_ugx').order('updated_at',{ascending:false}).limit(1).single(),
   ]);
 
-  DIA.all     = (error || !data?.length) ? DIA_FALLBACK : data;
+  DIA.all     = data || [];
   DIA.fxRate  = fxRow?.usd_to_ugx || 3800;
-  const useDemo = !data?.length;
+  const useDemo = false;
 
   // Update FX callout
   const fxEl = document.getElementById('fx-current-rate');
@@ -11663,7 +12308,7 @@ function renderDiasporaTable() {
   const body = document.getElementById('diaspora-table-body');
   const demoBanner = DIA._useDemo
     ? `<div style="margin:12px 16px;padding:10px 14px;background:rgba(220,100,30,.08);border-left:3px solid var(--orange);border-radius:0 8px 8px 0;font-size:12.5px;color:var(--ink-80)">
-        <strong style="color:var(--orange)">⚠️ DEMO DATA</strong> — Could not reach the database. Showing sample diaspora orders. KPI figures above are also sample values.
+        ⚠️ Could not reach the database. Showing sample diaspora orders.
        </div>`
     : '';
 
@@ -11688,7 +12333,7 @@ function renderDiasporaTable() {
       <th></th>
     </tr></thead>
     <tbody>${list.map(o => {
-      const flag    = DIA_FLAG[o.payer_country] || '🌍';
+      const flag    = DIA_FLAG[o.payer_country] || o.payer_country||'?';
       const ugx     = Math.round(Number(o.total_usd||0) * DIA.fxRate);
       const dStatus = o.dia_status || (o.collected?'collected':o.code_expired?'code_expired':'awaiting_pickup');
       const isAwait = dStatus === 'awaiting_pickup';
@@ -11902,7 +12547,7 @@ window.openDiaDetail = async function(id) {
     return;
   }
 
-  const flag    = DIA_FLAG[o.payer_country] || '🌍';
+  const flag    = DIA_FLAG[o.payer_country] || o.payer_country||'?';
   const ugx     = Math.round(Number(o.total_usd||0) * DIA.fxRate);
   const dStatus = o.dia_status || (o.collected?'collected':o.code_expired?'code_expired':'awaiting_pickup');
   const statusHtml = dStatus==='collected'
@@ -12086,16 +12731,7 @@ window.exportRecipientManifest = function() {
 ══════════════════════════════════════════════════════ */
 const SETS = { tab: 'org', cfg: {}, outlets: [], staff: [], audit: [], fxRate: 3800 };
 
-const SETS_OUTLETS_FB = [
-  { id:'so1', name:'Mpigi Town',     district:'Mpigi',    phone:'+256 414 223 045', address:'Plot 14, Mpigi main road' },
-  { id:'so2', name:'Butambala',      district:'Butambala',phone:'+256 414 778 220', address:'Near Kalamba Trading Centre' },
-  { id:'so3', name:'Gomba',          district:'Gomba',    phone:'+256 702 001 445', address:'Maddu Town' },
-  { id:'so4', name:'Masaka Central', district:'Masaka',   phone:'+256 481 420 113', address:'Edward Avenue' },
-  { id:'so5', name:'Kampala Nakawa', district:'Kampala',  phone:'+256 414 567 220', address:'Nakawa Market' },
-  { id:'so6', name:'Mbale',          district:'Mbale',    phone:'+256 454 112 884', address:'Republic Street' },
-  { id:'so7', name:'Gulu',           district:'Gulu',     phone:'+256 471 330 015', address:'Coronation Road' },
-  { id:'so8', name:'Jinja',          district:'Jinja',    phone:'+256 434 120 008', address:'Main Street' },
-];
+const SETS_OUTLETS_FB = [];
 
 const SETS_STAFF_FB = [
   { full_name:'Managing Director',  email:'md@agroandmore.co.ug',           role:'md' },
@@ -12225,7 +12861,7 @@ window.loadSettings = async function() {
 
   SETS.cfg     = {};
   (cfgRes.data || []).forEach(r => { SETS.cfg[r.key] = r.value; });
-  SETS.fxRate  = fxRes.data?.[0]?.rate || 3800;
+  SETS.fxRate  = fxRes.data?.[0]?.usd_to_ugx || 3800;
   SETS.outlets = outletsRes.data?.length  ? outletsRes.data  : SETS_OUTLETS_FB;
   SETS.audit   = auditRes.data  || [];
 
@@ -12286,8 +12922,8 @@ function renderSettings(tab) {
         <thead><tr><th>Action</th><th>Table</th><th>Record</th><th>Staff</th><th>When</th></tr></thead>
         <tbody>
         ${SETS.audit.map(a => {
-          const ACT_ICON = { INSERT:'➕', UPDATE:'✏️', DELETE:'🗑️', LOGIN:'🔐', LOGOUT:'🔐' };
-          const actIcon = ACT_ICON[a.action] || (a.action?.toLowerCase().includes('auth') ? '🔐' : '✏️');
+          const ACT_ICON = { INSERT:'+', UPDATE:'~', DELETE:'×', LOGIN:'→', LOGOUT:'←' };
+          const actIcon = ACT_ICON[a.action] || (a.action?.toLowerCase().includes('auth') ? '→' : '~');
           return `<tr>
           <td>
             <span style="margin-right:5px">${actIcon}</span>
@@ -12318,12 +12954,12 @@ function renderSettings(tab) {
       </div>`;
     el.innerHTML = `<div class="card" style="padding:20px;max-width:580px">
       <div style="font-family:'Poppins';font-weight:700;font-size:15px;margin-bottom:16px">Payment Methods</div>
-      ${intRow('📱','MTN Mobile Money','Active',`
+      ${intRow('MTN','MTN Mobile Money','Active',`
         <div class="field"><label>Merchant Code</label><input type="text" value="${cfg.mtn_merchant_code||'AG-MTN-2026'}" readonly style="background:var(--ink-05)"></div>
         <div class="field"><label>Webhook URL</label><input type="text" value="https://nqyutflqzjjueemirgzr.supabase.co/functions/v1/mtn-webhook" readonly style="background:var(--ink-05);font-size:12px"></div>`)}
-      ${intRow('📱','Airtel Money','Active',`
+      ${intRow('AIR','Airtel Money','Active',`
         <div class="field"><label>Merchant ID</label><input type="text" value="${cfg.airtel_merchant_id||'AG-AIR-8827'}" readonly style="background:var(--ink-05)"></div>`)}
-      ${intRow('💳','Stripe — Diaspora / Visa','Active',`
+      ${intRow('Visa','Stripe — Diaspora / Visa','Active',`
         <div class="field"><label>Publishable Key</label><input type="text" value="pk_live_••••••••••••••••" readonly style="background:var(--ink-05)"></div>
         <p style="font-size:12px;color:var(--ink-60)">Secret key stored as a Supabase Edge Function environment variable.</p>`)}
     </div>`;
@@ -12896,8 +13532,9 @@ function renderSettings(tab) {
         <div style="font-weight:700;font-size:13px;margin-bottom:10px">New Outlet</div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
           <div class="field" style="margin:0"><label style="font-size:11px">Name *</label><input type="text" id="ao-name" placeholder="e.g. Mpigi Branch"></div>
+          <div class="field" style="margin:0"><label style="font-size:11px">District *</label><input type="text" id="ao-district" placeholder="e.g. Mpigi"></div>
           <div class="field" style="margin:0"><label style="font-size:11px">Phone</label><input type="tel" id="ao-phone" placeholder="+256 …"></div>
-          <div class="field" style="margin:0;grid-column:1/-1"><label style="font-size:11px">Address</label><input type="text" id="ao-address" placeholder="Plot, street, district"></div>
+          <div class="field" style="margin:0;grid-column:1/-1"><label style="font-size:11px">Address</label><input type="text" id="ao-address" placeholder="Plot, street, sub-county"></div>
         </div>
         <div style="display:flex;gap:8px">
           <button class="btn btn-primary btn-sm" id="ao-save-btn" onclick="saveNewOutlet()"><span id="ao-save-label">Add Outlet</span></button>
@@ -13591,6 +14228,8 @@ window.cmsImageUpload = async function(slot, input) {
     if (status) { status.textContent = msg; status.style.color = color || 'var(--ink-60)'; }
   };
   try {
+    setStatus('Preparing upload…');
+    await ensureFreshSession();
     setStatus('Resizing…');
     const blob = await cmsCompressForUpload(file, 1200, 0.78);
     const sizeKB = Math.round(blob.size / 1024);
@@ -14014,8 +14653,10 @@ window.saveFxRate = async function() {
   const btn = document.querySelector('#settings-content .btn-primary');
   const origLabel = btn?.textContent;
   if (btn) { btn.disabled = true; btn.textContent = 'Saving…'; }
+  // fx_rates schema: id, usd_to_ugx, updated_by, updated_at — no unique key,
+  // diaspora & settings reads pick the newest by updated_at, so an INSERT is correct.
   const { error } = await sb.from('fx_rates')
-    .upsert({ currency: 'USD', rate, updated_at: new Date().toISOString() }, { onConflict: 'currency' });
+    .insert({ usd_to_ugx: rate, updated_by: APP.profile?.id || null, updated_at: new Date().toISOString() });
   if (btn) { btn.disabled = false; btn.textContent = origLabel || 'Update Rate'; }
   if (error) { toast(error.message, 'error'); return; }
   SETS.fxRate = rate;
@@ -14024,6 +14665,7 @@ window.saveFxRate = async function() {
   const diasInd = document.getElementById('fx-current-rate');
   if (diasInd) diasInd.textContent = `Current: 1 USD = UGX ${Number(rate).toLocaleString()}`;
   toast(`FX rate updated to UGX ${Number(rate).toLocaleString()} per USD.`, 'success');
+  logAudit('Updated FX rate', { targetType:'fx_rates', notes:`1 USD = UGX ${rate}` });
 };
 
 window.saveOrgSettings = async function() {
@@ -14124,6 +14766,7 @@ window.previewLoginBg = async function(input) {
 
   const ext  = file.name.split('.').pop().toLowerCase() || 'jpg';
   const path = `login-bg/background.${ext}`;
+  await ensureFreshSession();
   const { error } = await sb.storage.from('platform-assets').upload(path, file, { upsert: true, contentType: file.type });
   if (error) {
     toast('Upload failed: ' + error.message, 'error');
@@ -14178,6 +14821,7 @@ window.saveBrandingSettings = async function() {
     // Write a public config.json to Storage so the login page can read it
     // without needing authentication or database RLS policies
     try {
+      await ensureFreshSession();
       const loginBgUrl = document.getElementById('s-loginbg-final')?.value?.trim() || '';
       const cfg = JSON.stringify({ login_bg_url: loginBgUrl, updated: Date.now() });
       const blob = new Blob([cfg], { type: 'application/json' });
@@ -14196,21 +14840,23 @@ window.toggleAddOutletForm = function() {
 };
 
 window.saveNewOutlet = async function() {
-  const name    = document.getElementById('ao-name')?.value?.trim();
-  const phone   = document.getElementById('ao-phone')?.value?.trim();
-  const address = document.getElementById('ao-address')?.value?.trim();
-  if (!name) { toast('Outlet name is required.', 'error'); return; }
+  const name     = document.getElementById('ao-name')?.value?.trim();
+  const district = document.getElementById('ao-district')?.value?.trim();
+  const phone    = document.getElementById('ao-phone')?.value?.trim();
+  const address  = document.getElementById('ao-address')?.value?.trim();
+  if (!name)     { toast('Outlet name is required.', 'error'); return; }
+  if (!district) { toast('District is required.', 'error'); return; }
   const btn = document.getElementById('ao-save-btn');
   const lbl = document.getElementById('ao-save-label');
   if (btn) btn.disabled = true;
   if (lbl) lbl.textContent = 'Saving…';
   const { data, error } = await sb.from('outlets')
-    .insert({ name, phone: phone||null, address: address||null })
+    .insert({ name, district, phone: phone||null, address: address||null })
     .select().single();
   if (btn) btn.disabled = false;
   if (lbl) lbl.textContent = 'Add Outlet';
   if (error) { toast(error.message, 'error'); return; }
-  const newOutlet = data || { name, phone, address };
+  const newOutlet = data || { name, district, phone, address };
   SETS.outlets.push(newOutlet);
   /* Append to grid */
   const grid = document.getElementById('outlets-grid');
@@ -14218,14 +14864,16 @@ window.saveNewOutlet = async function() {
     const card = document.createElement('div');
     card.style.cssText = 'padding:14px;border:1px solid var(--ink-08);border-radius:var(--radius-md)';
     card.innerHTML = `<div style="font-weight:700;font-size:14px;color:var(--teal);margin-bottom:4px">${name}</div>
-      <div style="font-size:12px;color:var(--ink-60)">${[address,phone].filter(Boolean).join(' · ')}</div>`;
+      <div style="font-size:12px;color:var(--ink-60)">${[district,address,phone].filter(Boolean).join(' · ')}</div>`;
     grid.appendChild(card);
   }
   toggleAddOutletForm();
   document.getElementById('ao-name').value = '';
+  document.getElementById('ao-district').value = '';
   document.getElementById('ao-phone').value = '';
   document.getElementById('ao-address').value = '';
   toast(`Outlet "${name}" added.`, 'success');
+  logAudit('Added outlet', { targetType:'outlets', targetId: newOutlet.id || null, notes:`${name} (${district})` });
 };
 
 /* ── Product Categories (MD) ─────────────────────────── */
@@ -14555,23 +15203,36 @@ window.saveManualOrder = async function() {
     totalUGX += price * qty;
   });
   if (!items.length) { toast('Add at least one product.', 'error'); return; }
-  const orderNum = `AM-${new Date().getFullYear()}-${String(new Date().getMonth()+1).padStart(2,'0')}-MAN-${String(Math.floor(Math.random()*9000)+1000)}`;
+  // orders table has no `district` or `placed_by` columns, and order_number
+  // is generated by a BEFORE INSERT trigger. Insert the parent first, then
+  // the line items in a second call using the returned id.
   const payload = {
-    order_number:   orderNum,
     customer_name:  name,
     customer_phone: document.getElementById('mo-phone').value || null,
-    district:       document.getElementById('mo-district').value || null,
     outlet_id:      document.getElementById('mo-outlet').value || null,
     payment_method: document.getElementById('mo-payment').value,
+    subtotal_ugx:   totalUGX,
     total_ugx:      totalUGX,
     status:         'confirmed',
     notes:          document.getElementById('mo-notes').value || null,
-    order_items:    items,
-    placed_by:      APP.profile?.id || null,
   };
-  const { error } = await sb.from('orders').insert(payload);
+  const { data: orderRow, error } = await sb.from('orders').insert(payload).select().single();
   if (error) { toast(error.message, 'error'); return; }
-  toast(`Order ${orderNum} placed successfully.`, 'success');
+  // Insert line items
+  const itemRows = items.map(it => ({
+    order_id:        orderRow.id,
+    product_id:      it.product_id,
+    product_name:    it.product_name,
+    quantity:        it.quantity,
+    unit_price_ugx:  it.unit_price_ugx,
+    total_ugx:       it.unit_price_ugx * it.quantity,
+  }));
+  const { error: itemsErr } = await sb.from('order_items').insert(itemRows);
+  if (itemsErr) { toast('Order created but items failed: ' + itemsErr.message, 'error'); }
+  else {
+    toast(`Order ${orderRow.order_number} placed successfully.`, 'success');
+    logAudit('Placed manual order', { targetType:'orders', targetId:orderRow.id, notes:`${name} · UGX ${totalUGX.toLocaleString()}` });
+  }
   closeManualOrder();
   if (typeof loadOrders === 'function') loadOrders();
 };
@@ -14591,6 +15252,7 @@ window.openOnboardAgent = async function(agentId) {
   document.getElementById('oa-district').value   = row?.district || '';
   document.getElementById('oa-code').value       = code;
   document.getElementById('oa-commission').value = row?.commission_rate ?? '5';
+  document.getElementById('oa-momo').value       = row?.commission_payout_phone || '';
   document.getElementById('oa-referee').value    = row?.referred_by || '';
   document.getElementById('oa-notes').value      = row?.notes || '';
   const statusVal = row?.status || 'pending_approval';
@@ -14637,16 +15299,25 @@ window.saveOnboardAgent = async function() {
     district:        dist,
     status,
     agent_code:      document.getElementById('oa-code').value || null,
-    commission_rate: parseFloat(document.getElementById('oa-commission').value) || 5,
-    outlet_id:       document.getElementById('oa-outlet').value || null,
-    referred_by:     document.getElementById('oa-referee').value || null,
-    notes:           document.getElementById('oa-notes').value || null,
+    commission_rate:         parseFloat(document.getElementById('oa-commission').value) || 5,
+    commission_payout_phone: document.getElementById('oa-momo').value.trim() || null,
+    outlet_id:               document.getElementById('oa-outlet').value || null,
+    referred_by:             document.getElementById('oa-referee').value || null,
+    notes:                   document.getElementById('oa-notes').value || null,
   };
-  let error;
-  if (id) {
-    ({ error } = await sb.from('app_users').update(payload).eq('id', id));
-  } else {
-    ({ error } = await sb.from('app_users').insert(payload));
+  /* Schema-tolerant retry loop — same pattern as saveOnboardOfficer.
+     If a column doesn't exist yet (e.g. commission_payout_phone before
+     the migration is run), it is silently dropped and the save retried. */
+  let error = null;
+  for (let attempt = 0; attempt < 8; attempt++) {
+    const res = id
+      ? await sb.from('app_users').update(payload).eq('id', id)
+      : await sb.from('app_users').insert(payload);
+    error = res.error || null;
+    if (!error) break;
+    const m = (error.message || '').match(/(?:column|find the)\s+['"]?([a-zA-Z_]+)['"]?\s+(?:column\s+of\s+'app_users'\s+in\s+the\s+schema\s+cache|does not exist)/i);
+    if (m && m[1] && payload.hasOwnProperty(m[1])) { delete payload[m[1]]; continue; }
+    break;
   }
   btn.disabled = false; lbl.textContent = id ? 'Save Changes' : 'Onboard Agent';
   if (error) { toast(error.message, 'error'); return; }
@@ -14671,8 +15342,8 @@ window.openApproveOfficer = function(officer) {
     [officer.district, officer.speciality].filter(Boolean).join(' · ') || '—';
   // Chips
   document.getElementById('aom-chips').innerHTML = [
-    officer.languages  ? `<span class="chip" style="background:var(--ink-08);font-size:11px">🗣 ${officer.languages}</span>` : '',
-    officer.speciality ? `<span class="chip" style="background:rgba(21,97,109,.1);color:var(--teal);font-size:11px">🌱 ${officer.speciality}</span>` : '',
+    officer.languages  ? `<span class="chip" style="background:var(--ink-08);font-size:11px">${officer.languages}</span>` : '',
+    officer.speciality ? `<span class="chip" style="background:rgba(21,97,109,.1);color:var(--teal);font-size:11px">${officer.speciality}</span>` : '',
   ].filter(Boolean).join('');
   // Detail grid
   const fmtD = d => d ? new Date(d).toLocaleDateString('en-UG',{day:'numeric',month:'short',year:'numeric'}) : '—';
@@ -14697,7 +15368,7 @@ window.openApproveOfficer = function(officer) {
   document.getElementById('aom-stat-farmers').textContent = officer.farmers_helped || '0';
   document.getElementById('aom-stat-visits').textContent  = officer.visits || '0';
   document.getElementById('aom-stat-rating').textContent  = officer.rating ? `★ ${officer.rating}` : '—';
-  document.getElementById('aom-stat-avail').textContent   = officer.availability === 'available' ? '● Available' : 'Off duty';
+  document.getElementById('aom-stat-avail').textContent   = officer.fo_available === false ? 'Off duty' : '● Available';
   document.getElementById('aom-submitted').textContent    = `Submitted ${fmtD(officer.created_at)}`;
   // Reset checklist & notes
   ['aom-chk1','aom-chk2','aom-chk3','aom-chk4'].forEach(id => { const el = document.getElementById(id); if(el) el.checked = false; });
@@ -14738,6 +15409,8 @@ window.decideOfficer = async function(newStatus) {
   }
   if (error) { toast(error.message, 'error'); return; }
   toast(newStatus === 'active' ? '✓ Officer approved and now live in the directory.' : 'Application rejected.', 'success');
+  logAudit(newStatus === 'active' ? 'Approved field officer' : 'Rejected field officer',
+           { targetType:'app_user', targetId:id, notes:notes || null });
   closeApproveOfficerDrawer();
   if (typeof loadOfficers === 'function') loadOfficers();
 };
@@ -15270,14 +15943,21 @@ window.saveInviteMember = async function() {
      populate full_name / role / district. This guarantees the new
      app_users.id == auth.users.id (no id mismatch, no relink
      dance under the new RLS rules). The trade-off: invited users
-     won't show up in the admin user list until they sign in for
-     the first time. */
+     won’t show up in the admin user list until they sign in for
+     the first time.
+     NOTE: We use the send-admin-invite Netlify function instead of
+     signInWithOtp directly. This triggers the Supabase "Invite" email
+     template (Auth → Email Templates → Invite) which you can customise
+     separately from the "Magic Link / OTP" template the farmer app uses.
+     Staff invite emails should say "web admin", farmer OTP emails say "app". */
   let otpErr = null;
   try {
-    const { error } = await sb.auth.signInWithOtp({
-      email,
-      options: {
-        shouldCreateUser: true,
+    const inviteRes = await fetch('/.netlify/functions/send-admin-invite', {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        email,
+        redirectTo: window.location.origin + '/index.html',
         data: {
           full_name:   name,
           role,
@@ -15285,13 +15965,12 @@ window.saveInviteMember = async function() {
           invited_by:  APP.profile?.id || null,
           invited_at:  new Date().toISOString(),
           outlet_id:   document.getElementById('im-outlet')?.value || null,
-          /* "active" for self-service roles, "pending_approval" for staff
-             roles that need MD sign-off after first sign-in. */
           status:      (role === 'farmer' || role === 'diaspora') ? 'active' : 'pending_approval'
         }
-      }
+      }),
     });
-    if (error) otpErr = error;
+    const inviteJson = await inviteRes.json().catch(() => ({}));
+    if (!inviteJson.ok) otpErr = { message: inviteJson.error || 'Invite failed' };
   } catch (e) {
     otpErr = e;
   }
@@ -15299,9 +15978,9 @@ window.saveInviteMember = async function() {
   if (btn) { btn.disabled = false; btn.innerHTML = origLabel; }
 
   if (otpErr) {
-    console.warn('[invite] OTP send failed', otpErr);
+    console.warn('[invite] send-admin-invite failed', otpErr);
     toast(
-      'Couldn’t send the sign-in code (' +
+      "Couldn't send the invitation (" +
       (otpErr.message || 'unknown error') +
       '). Check the email address and try again.',
       'error',
@@ -15315,6 +15994,13 @@ window.saveInviteMember = async function() {
     'success',
     6000
   );
+
+  /* Audit log */
+  logAudit('Invited new staff member', {
+    targetType: 'staff_invite',
+    targetId:   email,
+    notes:      `${name} · ${(typeof ROLE_LABELS !== 'undefined' && ROLE_LABELS[role]) || role}`,
+  });
 
   closeInviteMember();
   if (typeof loadUsers === 'function') loadUsers();
@@ -15336,10 +16022,23 @@ sb.auth.onAuthStateChange((event, session) => {
 });
 
 /* ── Session heartbeat (refresh every 10 min) ────────── */
+/* Actively refreshes the JWT so it never expires mid-upload. */
 setInterval(async () => {
-  const { data: { session } } = await sb.auth.getSession();
-  if (!session) window.location.href = 'index.html';
+  const { data, error } = await sb.auth.refreshSession();
+  if (error || !data.session) window.location.href = 'index.html';
 }, 10 * 60 * 1000);
+
+/* ── Pre-upload session guard ────────────────────────── */
+/* Call before any storage upload to ensure the JWT is fresh.
+   Videos/large files can take minutes — without this the JWT
+   may expire mid-upload and Supabase returns "JWT expired".  */
+async function ensureFreshSession() {
+  const { data, error } = await sb.auth.refreshSession();
+  if (error || !data.session) {
+    window.location.href = 'index.html';
+    throw new Error('Session expired — please log in again.');
+  }
+}
 
 /* ══════════════════════════════════════════════════════
    PLATFORM ADMIN CONSOLE — DATA & RENDER
@@ -15351,7 +16050,7 @@ window.doPaLogout = async function() {
 
 window.loadPlatformAdmin = async function() {
   const body = document.getElementById('pa-body');
-  body.innerHTML = `<div style="padding:60px;text-align:center;color:var(--ink-60)"><div style="font-size:28px;margin-bottom:12px">⏳</div><div style="font-weight:700">Fetching platform data…</div></div>`;
+  body.innerHTML = `<div style="padding:60px;text-align:center;color:var(--ink-60)"><div style="font-weight:700">Fetching platform data…</div></div>`;
 
   const now        = new Date();
   const monthStart = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
@@ -15399,8 +16098,8 @@ window.loadPlatformAdmin = async function() {
     sb.from('products').select('category').not('category','is',null).limit(1000),
   ]);
 
-  // ── Determine demo mode ────────────────────────────
-  const useDemo = (totalFarmers === 0 || totalFarmers === null);
+  // ── Demo mode disabled — always show real data (even if zero) ──
+  const useDemo = false;
 
   // ── Process: monthly farmer onboarding (last 12 months) ──
   const MONTHS_SHORT = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
