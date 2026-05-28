@@ -52,7 +52,7 @@ img { display: block; }
 input, select, textarea { font-family: inherit; }
 
 /* ── App shell ──────────────────────────────────────────── */
-#app { display: flex; height: 100vh; }
+#app { display: flex; height: 100vh; overflow-x: hidden; }
 
 /* ═══════════════════════════════════════════════════════════
    SIDEBAR
@@ -169,11 +169,13 @@ input, select, textarea { font-family: inherit; }
   #sidebar {
     position: fixed; top: 0; left: 0; height: 100vh;
     transform: translateX(-100%);
-    transition: transform .25s ease, width .2s ease;
+    transition: transform .25s ease, width .2s ease, visibility .25s;
     z-index: 50;
+    visibility: hidden;
   }
   #sidebar.mobile-open {
     transform: translateX(0);
+    visibility: visible;
   }
   #sidebar.collapsed {
     width: var(--sb-width); /* keep full width on mobile even when "collapsed" */
@@ -293,7 +295,7 @@ input, select, textarea { font-family: inherit; }
 .kpi:hover::after { content: '↗'; position: absolute; top: 10px; right: 12px; font-size: 11px; color: var(--ink-40); font-weight: 700; }
 .kpi.highlight { border-color: var(--orange); background: #FFF4E4; }
 .kpi.highlight:hover::after { color: var(--orange); }
-.kpi .kpi-label { font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: .06em; color: var(--teal); }
+.kpi .kpi-label { font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: .06em; color: var(--teal); min-height: 28px; display: flex; align-items: flex-start; line-height: 1.4; }
 .kpi.highlight .kpi-label { color: var(--orange); }
 .kpi .kpi-value { font-family: 'Poppins'; font-weight: 800; font-size: 22px; color: var(--ink); margin-top: 4px; line-height: 1.1; font-variant-numeric: tabular-nums; }
 .kpi .kpi-trend { font-size: 10.5px; font-weight: 700; margin-top: 5px; display: flex; align-items: center; gap: 4px; }
@@ -935,7 +937,6 @@ table.dt .cell-bold { color: var(--ink); font-weight: 700; }
                 <option value="">Role ▾</option>
                 <option value="farmer">Farmer</option>
                 <option value="agent">Agent</option>
-                <option value="diaspora">Diaspora</option>
               </select>
             </div>
           </div>
@@ -1353,8 +1354,6 @@ table.dt .cell-bold { color: var(--ink); font-weight: 700; }
         <div class="field"><label>Category <span class="req">*</span></label>
           <select id="pd-category">
             <option value="">— Select —</option>
-            <option>Seeds</option><option>Fertilizers</option><option>Crop Protection</option>
-            <option>Tools</option><option>Irrigation</option><option>Livestock</option><option>Post-harvest</option>
           </select>
         </div>
         <div class="field"><label>Brand / Manufacturer</label><input type="text" id="pd-brand" placeholder="e.g. NARO, Yara"></div>
@@ -1369,10 +1368,10 @@ table.dt .cell-bold { color: var(--ink); font-weight: 700; }
       <h4>Pricing</h4>
       <div class="field-row">
         <div class="field"><label>Price (UGX) <span class="req">*</span></label>
-          <div class="prefix-wrap"><span class="prefix">UGX</span><input type="number" id="pd-price" placeholder="0" min="0"></div>
+          <div class="prefix-wrap"><span class="prefix">UGX</span><input type="number" id="pd-price" placeholder="0" min="0" step="any"></div>
         </div>
         <div class="field"><label>Agent price (UGX) <span class="hint">optional</span></label>
-          <div class="prefix-wrap"><span class="prefix">UGX</span><input type="number" id="pd-agent-price" placeholder="0" min="0"></div>
+          <div class="prefix-wrap"><span class="prefix">UGX</span><input type="number" id="pd-agent-price" placeholder="0" min="0" step="any"></div>
         </div>
       </div>
       <div class="field"><label>Diaspora price (USD) <span class="hint">optional — shown in Diaspora shop</span></label>
@@ -1432,6 +1431,52 @@ table.dt .cell-bold { color: var(--ink); font-weight: 700; }
     <button class="btn btn-primary" id="pd-save-btn" onclick="saveProduct('active')">
       <span id="pd-save-txt">Save &amp; Publish</span>
     </button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     Forced password change — shown on first login
+     Cannot be dismissed; blocks the whole UI.
+════════════════════════════════════════════════════════ -->
+<div class="modal-overlay" id="change-pw-modal" style="z-index:9999;background:rgba(0,21,36,0.85)">
+  <div class="modal modal-sm" style="max-width:440px">
+    <div class="modal-hdr" style="border-bottom:1px solid var(--border)">
+      <h2>Set your password</h2>
+    </div>
+    <div style="padding:24px 24px 0">
+      <p style="font-size:14px;color:var(--text-muted);margin-bottom:20px;line-height:1.6">
+        Welcome to the Agro and More admin portal. For security, please set a personal password before continuing.
+      </p>
+      <div class="alert error" id="change-pw-error" style="margin-bottom:16px"></div>
+      <div class="field">
+        <label>New password</label>
+        <div class="pw-wrap" style="position:relative">
+          <input type="password" id="change-pw-new" placeholder="At least 8 characters" autocomplete="new-password"
+                 style="width:100%;padding:10px 40px 10px 12px;border:1px solid var(--border);border-radius:8px;font-size:14px">
+          <button type="button" onclick="toggleChangePw('change-pw-new','eye1')"
+                  style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--text-muted)">
+            <svg id="eye1" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+          </button>
+        </div>
+      </div>
+      <div class="field" style="margin-top:12px">
+        <label>Confirm new password</label>
+        <div class="pw-wrap" style="position:relative">
+          <input type="password" id="change-pw-confirm" placeholder="Repeat password" autocomplete="new-password"
+                 style="width:100%;padding:10px 40px 10px 12px;border:1px solid var(--border);border-radius:8px;font-size:14px">
+          <button type="button" onclick="toggleChangePw('change-pw-confirm','eye2')"
+                  style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--text-muted)">
+            <svg id="eye2" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer" style="padding:20px 24px;display:flex;gap:12px;justify-content:flex-end">
+      <button class="btn btn-primary" id="change-pw-btn" onclick="submitPasswordChange()">
+        <span class="btn-text">Set password &amp; continue</span>
+        <div class="spinner"></div>
+      </button>
+    </div>
   </div>
 </div>
 
@@ -1527,7 +1572,7 @@ table.dt .cell-bold { color: var(--ink); font-weight: 700; }
               Upload an <strong>.xlsx</strong> or <strong>.csv</strong> file. Each row becomes one product.
               Required columns: <strong>Name</strong>, <strong>Category</strong>, <strong>Price UGX</strong>.
             </p>
-            <p style="font-size:12px;color:var(--ink-40);margin-bottom:16px">
+            <p id="bu-valid-cats-hint" style="font-size:12px;color:var(--ink-40);margin-bottom:16px">
               Valid categories: Seeds · Fertilizers · Crop Protection · Tools · Irrigation · Livestock · Post-harvest
             </p>
             <button class="btn btn-ghost btn-sm" onclick="downloadProductTemplate()">
@@ -2794,10 +2839,10 @@ table.dt .cell-bold { color: var(--ink); font-weight: 700; }
       <h4>Status on creation</h4>
       <div class="field-row">
         <div class="field">
-          <label><input type="radio" name="of-status" value="active" checked style="margin-right:6px">Live in directory immediately</label>
+          <label><input type="radio" name="of-status" value="pending_approval" checked style="margin-right:6px">Pending approval <span style="font-size:10px;color:var(--teal);font-weight:700">(recommended)</span></label>
         </div>
         <div class="field">
-          <label><input type="radio" name="of-status" value="pending_approval" style="margin-right:6px">Pending approval</label>
+          <label><input type="radio" name="of-status" value="active" style="margin-right:6px">Live in directory immediately</label>
         </div>
       </div>
     </div>
@@ -3071,10 +3116,15 @@ import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js
     }
   });
 
+  const _ctxHandlers = [];
+  window._ctxExec = function(i) { if (_ctxHandlers[i]) _ctxHandlers[i](); };
   window.openCtxMenu = function(btn, items) {
+    _ctxHandlers.length = 0;
     menu.innerHTML = items.map(it => {
       if (it === '---') return '<div class="ctx-divider"></div>';
-      return `<button class="ctx-menu-item${it.danger ? ' danger' : ''}" onclick="(${it.fn.toString()})()">${it.label}</button>`;
+      const idx = _ctxHandlers.length;
+      _ctxHandlers.push(it.fn);
+      return `<button class="ctx-menu-item${it.danger ? ' danger' : ''}" onclick="_ctxExec(${idx})">${escHtml(it.label)}</button>`;
     }).join('');
     menu.classList.add('open');
     const r = btn.getBoundingClientRect();
@@ -3167,11 +3217,11 @@ const PAGES = {
 const ROLE_ACCESS = {
   platform_admin:  ['__platform__'],          // handled separately — activates PA console
   md:              Object.keys(PAGES),
-  sales_manager:   ['dashboard','products','prices','orders','diaspora','forhire','users','farmers','agents','diasporaclients','advisory','notifications','analytics'],
-  finance:         ['dashboard','orders','diaspora','analytics','finance'],
+  sales_manager:   ['dashboard','products','prices','orders','diaspora','forhire','users','farmers','agents','diasporaclients','advisory','notifications','analytics','settings'],
+  finance:         ['dashboard','orders','diaspora','analytics','finance','settings'],
   it_admin:        ['dashboard','settings','users','analytics'],
-  agronomist:      ['dashboard','advisory','chatbot','officers','farmers','prices','notifications'],
-  outlet_clerk:    ['dashboard','orders'],
+  agronomist:      ['dashboard','advisory','chatbot','officers','farmers','prices','notifications','settings'],
+  outlet_clerk:    ['dashboard','orders','settings'],
 };
 
 /* Roles allowed to edit module permissions */
@@ -3366,6 +3416,12 @@ async function initAuth() {
   // Paint fresh data (overwrites cached values)
   paintProfile(profile, session.user.email);
 
+  // ── Force password change on first login ──────────────────────
+  if (session.user.user_metadata?.must_change_password) {
+    document.getElementById('change-pw-modal')?.classList.add('active');
+    setTimeout(() => document.getElementById('change-pw-new')?.focus(), 100);
+  }
+
   const role = profile?.role || 'outlet_clerk';
 
   // ── Platform Admin: show dedicated console, hide normal UI ──
@@ -3453,9 +3509,12 @@ async function loadBadges() {
 }
 
 /* ── Sidebar collapse (desktop) ──────────────────────── */
-document.getElementById('sbCollapseBtn').addEventListener('click', () => {
-  document.getElementById('sidebar').classList.toggle('collapsed');
-});
+{
+  const colBtn = document.getElementById('sbCollapseBtn');
+  if (colBtn) colBtn.addEventListener('click', () => {
+    document.getElementById('sidebar').classList.toggle('collapsed');
+  });
+}
 
 /* ── Mobile sidebar ──────────────────────────────────── */
 window.toggleMobileSidebar = function() {
@@ -3516,20 +3575,20 @@ window.toast = function(msg, type = 'success', duration = 3500) {
 };
 
 /* ── Helpers ─────────────────────────────────────────── */
-window.fmtUGX = n => 'UGX ' + Number(n || 0).toLocaleString('en-UG');
+window.fmtUGX = n => { const v = Number(n || 0); return 'UGX ' + v.toLocaleString('en-UG', v % 1 !== 0 ? { minimumFractionDigits: 2, maximumFractionDigits: 4 } : {}); };
 window.fmtUSD = n => 'USD ' + Number(n || 0).toFixed(2);
 window.fmtDate = s => s ? new Date(s).toLocaleDateString('en-UG', { day:'2-digit', month:'short', year:'numeric' }) : '—';
 window.fmtDatetime = s => s ? new Date(s).toLocaleString('en-UG', { day:'2-digit', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit' }) : '—';
 window.statusChip = (status) => {
   const map = {
-    active:'chip-teal', pending_approval:'chip-orange', blocked:'chip-rust',
+    active:'chip-teal', pending_invite:'chip-amber', pending_approval:'chip-orange', blocked:'chip-rust',
     pending:'chip-ghost', awaiting_payment:'chip-orange', confirmed:'chip-teal',
     dispatched:'chip-orange', delivered:'chip-teal', completed:'chip-teal', cancelled:'chip-rust',
     draft:'chip-ghost', scheduled:'chip-orange', sent:'chip-teal',
     harvested:'chip-ghost', warehoused:'chip-teal', processing:'chip-orange', in_transit:'chip-orange', exported:'chip-teal',
   };
   const labels = {
-    active:'Active', pending_approval:'Pending Approval', blocked:'Blocked',
+    active:'Active', pending_invite:'Invite sent', pending_approval:'Pending Approval', blocked:'Blocked',
     pending:'Pending', awaiting_payment:'Awaiting pay', confirmed:'Confirmed',
     dispatched:'Dispatched', delivered:'Delivered', completed:'Completed', cancelled:'Cancelled',
     draft:'Draft', scheduled:'Scheduled', sent:'Sent',
@@ -4191,7 +4250,7 @@ window.openDashModal = async function(type) {
     icon  = '🧑‍💼';
     const agentRows = (S.agentList||[]).map((a,i)=>{
       const maxS = Math.max(...(S.agentList||[]).map(x=>x.sales||0),1);
-      const initials = a.full_name.split(' ').slice(0,2).map(w=>w[0]||'').join('').toUpperCase();
+      const initials = (a.full_name||'?').split(' ').slice(0,2).map(w=>(w||'')[0]||'').join('').toUpperCase();
       const medal = ['🥇','🥈','🥉'][i] || `${i+1}.`;
       return `<div style="display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid var(--ink-05)">
         <div style="font-size:16px;width:24px;text-align:center">${medal}</div>
@@ -4442,6 +4501,15 @@ function renderProductFilters() {
   `;
 }
 
+/* Rebuild the category <select> in the product drawer from the live CATEGORIES array */
+function populateCategorySelect(currentVal) {
+  const sel = document.getElementById('pd-category');
+  if (!sel) return;
+  const prev = currentVal !== undefined ? currentVal : sel.value;
+  sel.innerHTML = '<option value="">— Select —</option>' +
+    CATEGORIES.map(c => `<option value="${c}"${c === prev ? ' selected' : ''}>${c}</option>`).join('');
+}
+
 window.setProdCat = function(c) { PROD.catFilter = c; PROD.page=0; renderProductFilters(); applyProductFilters(); };
 window.setProdStock = function(s) { PROD.stockFilter = PROD.stockFilter===s?'':s; PROD.page=0; renderProductFilters(); applyProductFilters(); };
 window.setProdArchived = function() {
@@ -4544,7 +4612,7 @@ function renderProductsTable() {
               </div>
             </td>
             <td><span class="chip chip-ghost">${p.category||'—'}</span></td>
-            <td class="r cell-bold">${Number(p.price_ugx||0).toLocaleString()}</td>
+            <td class="r cell-bold">${(v => v.toLocaleString('en-UG', v % 1 !== 0 ? { minimumFractionDigits: 2, maximumFractionDigits: 4 } : {}))(Number(p.price_ugx||0))}</td>
             <td>${stockChip(p.total_stock||0)}</td>
             <td>${statusPill}</td>
             <td style="font-size:11.5px;color:var(--ink-60)">${updated}</td>
@@ -4575,6 +4643,7 @@ window.toggleAllProducts = function(cb) {
 window.openProductModal = async function(id) {
   document.getElementById('pd-id').value     = id || '';
   document.getElementById('pd-title').textContent = id ? 'Edit Product' : 'Add Product';
+  populateCategorySelect('');
   /* Defensive: rebuild the save button's inner span from scratch every
      time the drawer opens. The save flow's success path re-enables this
      too, but if any future bug leaves the button disabled/spinning, this
@@ -4610,7 +4679,7 @@ window.openProductModal = async function(id) {
     const { data: p } = await sb.from('products').select('*, product_outlet_stock(outlet_id,stock)').eq('id', id).single();
     if (p) {
       document.getElementById('pd-name').value          = p.name || '';
-      document.getElementById('pd-category').value      = p.category || '';
+      populateCategorySelect(p.category || '');
       document.getElementById('pd-brand').value         = p.brand || '';
       document.getElementById('pd-sku').value           = p.sku || '';
       document.getElementById('pd-desc-en').value       = p.description_en || '';
@@ -4764,6 +4833,67 @@ window.saveProduct = async function(status) {
   if (id) {
     ({ error } = await sb.from('products').update(payload).eq('id', id));
   } else {
+    // ── Check for existing product with same name ──────────
+    const { data: nameMatch } = await sb.from('products')
+      .select('id,name,status').ilike('name', name).limit(1);
+    if (nameMatch && nameMatch.length > 0) {
+      const existing = nameMatch[0];
+      const choice = await new Promise(resolve => {
+        const overlay = document.createElement('div');
+        overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,21,36,.5);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px';
+        overlay.innerHTML = `
+          <div style="background:#fff;border-radius:16px;padding:28px 24px;max-width:420px;width:100%;box-shadow:0 8px 32px rgba(0,21,36,.2)">
+            <div style="font-size:18px;font-weight:700;color:#001524;margin-bottom:8px">Product already exists</div>
+            <div style="font-size:13px;color:rgba(0,21,36,.65);margin-bottom:20px">
+              <strong>${existing.name}</strong> is already in the system
+              (status: <em>${existing.status}</em>).<br><br>
+              Do you want to <strong>overwrite</strong> it with these new details,
+              or <strong>add</strong> this as a separate product?
+            </div>
+            <div style="display:flex;gap:10px;justify-content:flex-end">
+              <button id="_dup-cancel" style="padding:10px 18px;border:1.5px solid #ccc;border-radius:8px;background:#fff;font-size:13px;font-weight:600;cursor:pointer">Cancel</button>
+              <button id="_dup-add"    style="padding:10px 18px;border:none;border-radius:8px;background:#15616D;color:#fff;font-size:13px;font-weight:600;cursor:pointer">Add as new</button>
+              <button id="_dup-over"   style="padding:10px 18px;border:none;border-radius:8px;background:#FF7D00;color:#fff;font-size:13px;font-weight:600;cursor:pointer">Overwrite</button>
+            </div>
+          </div>`;
+        document.body.appendChild(overlay);
+        overlay.querySelector('#_dup-cancel').onclick = () => { document.body.removeChild(overlay); resolve('cancel'); };
+        overlay.querySelector('#_dup-add').onclick    = () => { document.body.removeChild(overlay); resolve('add'); };
+        overlay.querySelector('#_dup-over').onclick   = () => { document.body.removeChild(overlay); resolve('overwrite'); };
+      });
+      if (choice === 'cancel') {
+        btn.disabled = false; btn.innerHTML = `<span id="pd-save-txt">Save & Publish</span>`;
+        return;
+      }
+      if (choice === 'overwrite') {
+        ({ error } = await sb.from('products').update(payload).eq('id', existing.id));
+        productId = existing.id;
+        // fall through to stock + images save below
+        if (error) {
+          toast('Overwrite failed: ' + error.message, 'error');
+          btn.disabled = false; btn.innerHTML = `<span id="pd-save-txt">Save & Publish</span>`;
+          return;
+        }
+        toast('Product overwritten successfully.', 'success');
+        // skip the normal insert
+        goto_stock_save: {
+          if (productId && PROD.outlets.length > 0) {
+            const stockRows = PROD.outlets.map(o => ({
+              product_id: productId, outlet_id: o.id,
+              stock: parseInt(document.getElementById('os-'+o.id)?.value)||0,
+            }));
+            await sb.from('product_outlet_stock').upsert(stockRows, { onConflict:'product_id,outlet_id' });
+          }
+          if (images.length > 0 && productId) {
+            await sb.from('product_images').delete().eq('product_id', productId);
+            await sb.from('product_images').insert(images.map((url,i) => ({ product_id: productId, url, sort_order: i })));
+          }
+        }
+        btn.disabled = false; btn.innerHTML = `<span id="pd-save-txt">Save & Publish</span>`;
+        closeProductDrawer(); loadProducts(); return;
+      }
+      // choice === 'add' — fall through to normal insert below
+    }
     payload.created_by = APP.session?.user?.id || null;
     const { data: inserted, error: ie } = await sb.from('products').insert(payload).select('id').single();
     error = ie;
@@ -5024,7 +5154,8 @@ const BU_COLS = [
   { key: 'description_lg',     header: 'Description (Luganda)',  required: false },
   { key: 'show_on_shop',       header: 'Show on Shop',           required: false },
 ];
-const BU_VALID_CATS = new Set(['Seeds','Fertilizers','Crop Protection','Tools','Irrigation','Livestock','Post-harvest']);
+/* Always derived from the live CATEGORIES array so newly-created categories are accepted immediately */
+const getBuValidCats = () => new Set(CATEGORIES);
 
 /* Load SheetJS lazily */
 async function ensureXLSX() {
@@ -5045,6 +5176,9 @@ window.openBulkUploadModal = async function() {
   document.getElementById('bu-file-input').value = '';
   document.getElementById('bu-next-btn').disabled = true;
   document.getElementById('bu-next-btn').textContent = 'Next → Review';
+  // Update valid-categories hint from the live list
+  const hint = document.getElementById('bu-valid-cats-hint');
+  if (hint) hint.textContent = 'Valid categories: ' + CATEGORIES.join(' · ');
   openModal('bulk-upload-modal');
   await ensureXLSX();
 };
@@ -5148,7 +5282,7 @@ async function processBulkFile(file) {
         const errors = [];
         if (!mapped.name)     errors.push('Name missing');
         if (!mapped.category) errors.push('Category missing');
-        else if (!BU_VALID_CATS.has(mapped.category)) errors.push(`Invalid category: "${mapped.category}"`);
+        else if (!getBuValidCats().has(mapped.category)) errors.push(`Invalid category: "${mapped.category}"`);
         const price = parseFloat(mapped.price_ugx);
         if (!mapped.price_ugx || isNaN(price) || price <= 0) errors.push('Price UGX must be > 0');
 
@@ -5213,7 +5347,7 @@ function renderBulkPreview() {
           return `<tr style="${rowStyle}">
             ${cols.map(c => {
               const v = r[c] !== undefined ? r[c] : '—';
-              const isErr = hasErr && (c==='name'&&!r.name || c==='category'&&(!r.category||!BU_VALID_CATS.has(r.category)) || c==='price_ugx'&&(!r.price_ugx||parseFloat(r.price_ugx)<=0));
+              const isErr = hasErr && (c==='name'&&!r.name || c==='category'&&(!r.category||!getBuValidCats().has(r.category)) || c==='price_ugx'&&(!r.price_ugx||parseFloat(r.price_ugx)<=0));
               return `<td style="${isErr?'color:var(--rust);font-weight:700':''}${c==='name'?';max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap':''}">${v===true?'Yes':v===false?'No':v}</td>`;
             }).join('')}
             <td>${status}</td>
@@ -5223,11 +5357,50 @@ function renderBulkPreview() {
     </table>`;
 }
 
+/* ── Helper: ask user what to do with duplicate SKUs ────── */
+function askBulkDuplicateAction(existingProducts) {
+  return new Promise(resolve => {
+    const names = existingProducts.slice(0, 3).map(p => `<strong>${p.name}</strong>`).join(', ');
+    const more  = existingProducts.length > 3 ? ` and ${existingProducts.length - 3} more` : '';
+    const overlay = document.createElement('div');
+    overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,21,36,.55);z-index:10000;display:flex;align-items:center;justify-content:center;padding:20px';
+    overlay.innerHTML = `
+      <div style="background:#fff;border-radius:16px;padding:28px 24px;max-width:460px;width:100%;box-shadow:0 8px 40px rgba(0,21,36,.25)">
+        <div style="font-size:18px;font-weight:700;color:#001524;margin-bottom:8px">
+          ${existingProducts.length} product${existingProducts.length!==1?'s':''} already exist
+        </div>
+        <div style="font-size:13px;color:rgba(0,21,36,.65);margin-bottom:22px;line-height:1.6">
+          ${names}${more} already exist in the system.<br><br>
+          <strong>What would you like to do with these matching products?</strong>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:18px">
+          <button id="_bdup-add" style="text-align:left;padding:14px 16px;border:1.5px solid var(--teal,#15616D);border-radius:10px;background:#fff;cursor:pointer;font-family:inherit">
+            <div style="font-size:13px;font-weight:700;color:#15616D;margin-bottom:3px">➕ Add to existing (quantity only)</div>
+            <div style="font-size:11.5px;color:rgba(0,21,36,.5)">Only adds the uploaded quantity to each existing product's stock. All other details remain unchanged.</div>
+          </button>
+          <button id="_bdup-dup" style="text-align:left;padding:14px 16px;border:1.5px solid rgba(0,21,36,.15);border-radius:10px;background:#fff;cursor:pointer;font-family:inherit">
+            <div style="font-size:13px;font-weight:700;color:#001524;margin-bottom:3px">📋 Create as new (duplicate)</div>
+            <div style="font-size:11.5px;color:rgba(0,21,36,.5)">Adds all rows as brand-new products, even if the name/SKU already exists. You can merge or delete duplicates later.</div>
+          </button>
+        </div>
+        <div style="text-align:right">
+          <button id="_bdup-cancel" style="padding:9px 18px;border:1.5px solid #ccc;border-radius:8px;background:#fff;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit">Cancel</button>
+        </div>
+      </div>`;
+    document.body.appendChild(overlay);
+    const cleanup = (val) => { document.body.removeChild(overlay); resolve(val); };
+    overlay.querySelector('#_bdup-add').onclick    = () => cleanup('add');
+    overlay.querySelector('#_bdup-dup').onclick    = () => cleanup('duplicate');
+    overlay.querySelector('#_bdup-cancel').onclick = () => cleanup('cancel');
+  });
+}
+
 window.runBulkImport = async function() {
   const btn = document.getElementById('bu-next-btn');
   btn.disabled = true;
-  btn.innerHTML = '<div class="spinner"></div> Importing…';
+  btn.innerHTML = '<div class="spinner"></div> Checking…';
 
+  const userId = APP.session?.user?.id || null;
   const payload = BU.validRows.map(r => ({
     name:                r.name,
     category:            r.category,
@@ -5238,22 +5411,80 @@ window.runBulkImport = async function() {
     price_ugx:           parseFloat(r.price_ugx) || 0,
     agent_price_ugx:     r.agent_price_ugx  ? parseFloat(r.agent_price_ugx)  : null,
     diaspora_price_usd:  r.diaspora_price_usd ? parseFloat(r.diaspora_price_usd) : null,
-    total_stock:         parseInt(r.total_stock) || 0,
+    total_stock:         Math.max(0, parseInt(r.total_stock) || 0),
     show_on_shop:        !!r.show_on_shop,
     show_diaspora:       false,
     feature_home:        false,
     status:              r.show_on_shop ? 'active' : 'draft',
-    created_by:          APP.session?.user?.id || null,
+    created_by:          userId,
   }));
 
-  // Insert in batches of 50 to avoid payload limits
+  // ── Check for existing products with matching SKUs ──────
+  const skusInFile = payload.map(r => r.sku).filter(Boolean);
+  let duplicateAction = null; // 'add' | 'duplicate' | null (no duplicates)
+  let existingBySkuMap = {};  // sku → { id, total_stock }
+
+  if (skusInFile.length > 0) {
+    const { data: existingProds } = await sb.from('products')
+      .select('id,name,sku,total_stock')
+      .in('sku', skusInFile);
+    if (existingProds && existingProds.length > 0) {
+      btn.disabled = false; btn.innerHTML = 'Next → Import';
+      duplicateAction = await askBulkDuplicateAction(existingProds);
+      if (duplicateAction === 'cancel') {
+        btn.disabled = false; btn.innerHTML = 'Next → Import';
+        return;
+      }
+      existingProds.forEach(p => { existingBySkuMap[p.sku] = p; });
+    }
+  }
+
+  btn.disabled = true;
+  btn.innerHTML = '<div class="spinner"></div> Importing…';
+
   let imported = 0;
   let failed   = 0;
-  for (let i = 0; i < payload.length; i += 50) {
-    const batch = payload.slice(i, i + 50);
-    const { error } = await sb.from('products').insert(batch);
-    if (error) { failed += batch.length; }
-    else        { imported += batch.length; }
+  const firstErrors = [];
+
+  if (duplicateAction === 'add') {
+    // ── Add mode: only increment total_stock for matching SKUs ──
+    // Update existing rows (quantity only)
+    for (const row of payload) {
+      if (row.sku && existingBySkuMap[row.sku]) {
+        const ex       = existingBySkuMap[row.sku];
+        const newStock = (ex.total_stock || 0) + (row.total_stock || 0);
+        const { error } = await sb.from('products')
+          .update({ total_stock: newStock })
+          .eq('id', ex.id);
+        if (error) { failed++; if (firstErrors.length < 3) firstErrors.push(error.message); }
+        else imported++;
+      } else {
+        // No existing match — insert as new
+        const { error } = await sb.from('products').insert(row);
+        if (error) { failed++; if (firstErrors.length < 3) firstErrors.push(error.message); }
+        else imported++;
+      }
+    }
+  } else {
+    // ── Duplicate mode (or no conflicts): insert/upsert all rows ──
+    if (duplicateAction === 'duplicate') {
+      // Strip SKU from matching rows so they insert fresh instead of updating
+      payload.forEach(r => {
+        if (r.sku && existingBySkuMap[r.sku]) r.sku = null;
+      });
+    }
+    for (let i = 0; i < payload.length; i += 50) {
+      const batch = payload.slice(i, i + 50);
+      const { error } = await sb.from('products')
+        .upsert(batch, { onConflict: 'sku', ignoreDuplicates: false });
+      if (error) {
+        failed += batch.length;
+        if (firstErrors.length < 3 && !firstErrors.includes(error.message))
+          firstErrors.push(error.message);
+      } else {
+        imported += batch.length;
+      }
+    }
   }
 
   // Show result
@@ -5266,12 +5497,18 @@ window.runBulkImport = async function() {
     resultIcon.style.background = 'rgba(21,97,109,.1)';
     resultIcon.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="2" style="width:28px;height:28px"><polyline points="20 6 9 17 4 12"/></svg>`;
     resultMsg.textContent = `${imported} product${imported!==1?'s':''} imported!`;
-    resultSub.textContent = `They've been added as ${payload.filter(p=>p.status==='active').length} Live and ${payload.filter(p=>p.status==='draft').length} Draft products.`;
-  } else {
+    const modeNote = duplicateAction === 'add' ? ' (quantities added to existing)' : '';
+    resultSub.textContent = `Added/updated as ${payload.filter(p=>p.status==='active').length} Live and ${payload.filter(p=>p.status==='draft').length} Draft products${modeNote}.`;
+  } else if (imported > 0) {
     resultIcon.style.background = 'rgba(255,125,0,.1)';
     resultIcon.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="var(--orange)" stroke-width="2" style="width:28px;height:28px"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>`;
     resultMsg.textContent = `${imported} imported, ${failed} failed`;
-    resultSub.textContent = 'Some batches could not be saved. Check Supabase for constraints or duplicate SKUs.';
+    resultSub.textContent = firstErrors.length ? firstErrors[0] : 'Some rows could not be saved.';
+  } else {
+    resultIcon.style.background = 'rgba(220,38,38,.1)';
+    resultIcon.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="#dc2626" stroke-width="2" style="width:28px;height:28px"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>`;
+    resultMsg.textContent = `Import failed (${failed} rows)`;
+    resultSub.textContent = firstErrors.length ? firstErrors[0] : 'Check the browser console for details.';
   }
 
   // Add "Done" button and reload products
@@ -5411,7 +5648,7 @@ window.applyOrderFilters = function() {
     (o.customer_name||'').toLowerCase().includes(ORD.search) ||
     (o.customer_phone||'').includes(ORD.search));
   ORD.filtered = list;
-  ORD._useDemo = useDemo;
+  ORD._useDemo = false;
   renderOrdersTable();
 };
 
@@ -6095,7 +6332,7 @@ window.loadUsers = async function() {
     outlet:      s.outlet_id || '',
     phone:       s.phone,
     avatar_url:  s.avatar_url,
-    status:      s.active === false ? 'blocked' : 'active',
+    status:      s.active === null ? 'pending_invite' : s.active === false ? 'blocked' : 'active',
     tfa:         s.two_factor_enabled ? 'Enabled' : '—',
     created_at:  s.created_at,
     last_active_at: s.updated_at,
@@ -6144,7 +6381,7 @@ function renderUsersTabs() {
   const pending = USR.all.filter(u=>u.status==='pending_invite'||u.status==='pending_approval').length;
   const blocked = USR.all.filter(u=>u.status==='blocked').length;
   const TABS = [
-    { key:'all',         label:'All users',         count: USR.all.filter(u=>u.status!=='pending_invite').length },
+    { key:'all',         label:'All users',         count: USR.all.length },
     { key:'pending',     label:'Pending invites',   count: pending },
     { key:'blocked',     label:'Blocked',            count: blocked },
     { key:'roles',       label:'Roles & permissions' },
@@ -6182,7 +6419,7 @@ function renderUsersContent() {
     let list = USR.all;
     if (tab === 'pending') list = list.filter(u=>u.status==='pending_invite'||u.status==='pending_approval');
     else if (tab === 'blocked') list = list.filter(u=>u.status==='blocked');
-    else list = list.filter(u=>u.status!=='pending_invite'&&u.status!=='pending_approval');
+    // 'all' tab shows every user regardless of status
 
     if (USR.search) list = list.filter(u=>
       (u.full_name||'').toLowerCase().includes(USR.search) ||
@@ -6213,7 +6450,7 @@ function renderUsersContent() {
           <tbody>
           ${demoBannerRow}
           ${list.map(u=>{
-            const initials = u.full_name.split(' ').slice(0,2).map(w=>w[0]).join('').toUpperCase();
+            const initials = (u.full_name||'?').split(' ').slice(0,2).map(w=>(w||'')[0]||'').join('').toUpperCase();
             const avBg = u.role==='md'?'var(--orange)':u.role==='sales_manager'?'var(--teal)':u.role==='it_admin'?'#1D3461':u.role==='agronomist'?'#3A7D44':'var(--ink)';
             const isBlock = u.status==='blocked';
             const isPend  = u.status==='pending_invite'||u.status==='pending_approval';
@@ -6249,14 +6486,23 @@ function renderUsersContent() {
               <td onclick="event.stopPropagation()">
                 ${isPend
                   ? `<button class="btn btn-ghost btn-sm" onclick="resendInvite('${u.id}','${u.email||''}')">Resend</button>`
-                  : `<button class="ctx-btn" onclick="openCtxMenu(this,[
-                      {label:'View profile',fn:function(){openUserDetail('${u.id}')}},
-                      {label:'Edit role',fn:function(){openRoleModal('${u.id}','${safeName}','${u.role}',true)}},
-                      {label:'View audit trail',fn:function(){switchUsersTab('audit')}},
-                      '---',
-                      {label:'${isBlock?'Unblock':'Block'}',danger:${!isBlock},fn:function(){openBlockModal('${u.id}','${safeName}',${isBlock})}}
-                      ${isBlock ? `,'---',{label:'Remove permanently',danger:true,fn:function(){removeStaffUser('${u.id}','${safeName}')}}` : ''}
-                    ])">⋮</button>`}
+                  : (() => {
+                      const canAdmin = ['md','it_admin'].includes(APP.profile?.role);
+                      const isYou    = !!u.you;
+                      const resetItem = (canAdmin && !isYou)
+                        ? `,'---',{label:'Reset password',fn:function(){resetStaffPassword('${u.id}','${safeName}','${u.email||''}')}}` : '';
+                      const deleteItem = isBlock
+                        ? `,'---',{label:'Remove permanently',danger:true,fn:function(){removeStaffUser('${u.id}','${safeName}')}}` : '';
+                      return `<button class="ctx-btn" onclick="openCtxMenu(this,[
+                        {label:'View profile',fn:function(){openUserDetail('${u.id}')}},
+                        {label:'Edit role',fn:function(){openRoleModal('${u.id}','${safeName}','${u.role}',true)}},
+                        {label:'View audit trail',fn:function(){switchUsersTab('audit')}},
+                        '---',
+                        {label:'${isBlock?'Unblock':'Block'}',danger:${!isBlock},fn:function(){openBlockModal('${u.id}','${safeName}',${isBlock})}}
+                        ${resetItem}
+                        ${deleteItem}
+                      ])">⋮</button>`;
+                    })()}
               </td>
             </tr>`;
           }).join('')}
@@ -6578,6 +6824,42 @@ window.clearUserOverrides = async function(uid) {
   }
 };
 
+window.resetStaffPassword = async function(id, name, email) {
+  if (!email) { toast('No email on file for this user — cannot reset password.', 'error'); return; }
+
+  if (!confirm(`Reset password for ${name}?\n\nA new temporary password will be emailed to ${email}. They will be prompted to set a new password on next login.`)) return;
+
+  const session = APP.session;
+  if (!session) { toast('Session expired — please refresh.', 'error'); return; }
+
+  try {
+    const res = await fetch('/.netlify/functions/admin-reset-password', {
+      method:  'POST',
+      headers: {
+        'Content-Type':  'application/json',
+        'Authorization': `Bearer ${session.access_token}`,
+      },
+      body: JSON.stringify({
+        userId:   id,
+        email,
+        fullName: name,
+        loginUrl: window.location.origin + '/index.html',
+      }),
+    });
+    const json = await res.json().catch(() => ({}));
+    if (!json.ok) throw new Error(json.error || 'Reset failed');
+
+    if (json.emailSkipped) {
+      toast(`Password reset for ${name} but the email could not be sent. Share their new login details manually.`, 'warning', 8000);
+    } else {
+      toast(`Password reset. ${name} will receive an email with their temporary password.`, 'success', 5000);
+    }
+    logAudit('Reset staff password', { targetType:'staff_profiles', targetId:id, notes:email });
+  } catch(e) {
+    toast('Password reset failed: ' + (e.message || 'unknown error'), 'error');
+  }
+};
+
 window.resendInvite = async function(id, email) {
   if (!email) { toast('No email on file for this user — cannot resend invite.', 'error'); return; }
   try {
@@ -6586,7 +6868,7 @@ window.resendInvite = async function(id, email) {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         email,
-        redirectTo: window.location.origin + '/index.html',
+        loginUrl: window.location.origin + '/index.html',
         data: {},
       }),
     });
@@ -6652,14 +6934,31 @@ window.openUserDetail = async function(id) {
     document.getElementById('ud-footer').innerHTML = `<button class="btn btn-ghost" onclick="closeUserDrawer()">Close</button>`;
     return;
   }
-  if (!String(id).startsWith('us')) {
-    const { data: ord } = await sb.from('orders')
-      .select('order_number,total_ugx,status,created_at')
-      .eq('customer_id',id).order('created_at',{ascending:false}).limit(5);
-    orders = ord || [];
+  if (!String(id).startsWith('us') && u) {
+    if (u.role === 'diaspora') {
+      /* Diaspora orders live in a separate table, linked by payer email */
+      const { data: dOrd } = await sb.from('diaspora_orders')
+        .select('id,created_at,total_usd,status,recipient_name')
+        .eq('payer_email', u.email)
+        .order('created_at', {ascending:false}).limit(5);
+      /* Normalise to same shape as regular orders for rendering */
+      orders = (dOrd || []).map(o => ({
+        order_number: o.id ? '#DIA-' + String(o.id).slice(-6).toUpperCase() : '—',
+        total_ugx:    null,
+        total_usd:    o.total_usd,
+        status:       o.status,
+        created_at:   o.created_at,
+        recipient_name: o.recipient_name,
+      }));
+    } else {
+      const { data: ord } = await sb.from('orders')
+        .select('order_number,total_ugx,status,created_at')
+        .eq('customer_id',id).order('created_at',{ascending:false}).limit(5);
+      orders = ord || [];
+    }
   }
 
-  const initials = u.full_name.split(' ').slice(0,2).map(w=>w[0]).join('').toUpperCase();
+  const initials = (u.full_name||'?').split(' ').slice(0,2).map(w=>(w||'')[0]||'').join('').toUpperCase();
   document.getElementById('ud-name').textContent = u.full_name;
   document.getElementById('ud-sub').textContent  = `${ROLE_LABELS[u.role]||u.role} · Joined ${fmtDate(u.created_at)}`;
 
@@ -6679,19 +6978,43 @@ window.openUserDetail = async function(id) {
 
     <!-- Contact details -->
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px">
-      ${[
-        ['Phone',     u.phone||'—'],
-        ['Email',     u.email||'—'],
-        ['District',  u.district||u.country_of_residence||'—'],
-        ['Sub-county',u.sub_county||'—'],
-        ['National ID',u.national_id||'—'],
-        ['Last active',u.last_active_at ? fmtDate(u.last_active_at) : 'Never'],
-      ].map(([l,v])=>`
+      ${(u.role === 'diaspora' ? [
+        ['Phone',          u.phone||'—'],
+        ['Email',          u.email||'—'],
+        ['Country',        u.country_of_residence||'—'],
+        ['Last active',    u.last_active_at ? fmtDate(u.last_active_at) : 'Never'],
+      ] : [
+        ['Phone',          u.phone||'—'],
+        ['Email',          u.email||'—'],
+        ['District',       u.district||'—'],
+        ['Sub-county',     u.sub_county||'—'],
+        ['National ID',    u.national_id||'—'],
+        ['Last active',    u.last_active_at ? fmtDate(u.last_active_at) : 'Never'],
+      ]).map(([l,v])=>`
         <div>
           <div style="font-size:9.5px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-60);margin-bottom:3px">${l}</div>
           <div style="font-size:13px;font-weight:600">${v}</div>
         </div>`).join('')}
     </div>
+    ${u.role === 'diaspora' && (u.local_contact_name || u.local_contact_phone) ? `
+    <!-- Diaspora local contact -->
+    <div style="background:rgba(29,52,97,.06);border-radius:10px;padding:14px 16px;margin-bottom:18px">
+      <div style="font-size:9.5px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-60);margin-bottom:10px">Local Contact (Uganda)</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        ${[
+          ['Name',         u.local_contact_name||'—'],
+          ['Relationship', u.local_contact_rel||'—'],
+          ['Phone',        u.local_contact_phone||'—'],
+          ['District',     u.local_contact_district||'—'],
+          ['Village',      u.local_contact_village||'—'],
+          ['Outlet',       u.local_contact_outlet||'—'],
+        ].map(([l,v])=>`
+          <div>
+            <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-40);margin-bottom:2px">${l}</div>
+            <div style="font-size:12.5px;font-weight:600">${v}</div>
+          </div>`).join('')}
+      </div>
+    </div>` : ''}
 
     <!-- Recent orders -->
     <div>
@@ -6701,11 +7024,11 @@ window.openUserDetail = async function(id) {
         : (orders||[]).map(o=>`
           <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--ink-05)">
             <div>
-              <div style="font-size:12.5px;font-weight:700">${o.order_number}</div>
+              <div style="font-size:12.5px;font-weight:700">${o.order_number}${o.recipient_name ? ' → ' + o.recipient_name : ''}</div>
               <div style="font-size:11px;color:var(--ink-60)">${fmtDate(o.created_at)}</div>
             </div>
             <div style="text-align:right">
-              <div style="font-size:12.5px;font-weight:700">${fmtUGX(o.total_ugx)}</div>
+              <div style="font-size:12.5px;font-weight:700">${o.total_usd != null ? 'USD ' + parseFloat(o.total_usd).toFixed(2) : fmtUGX(o.total_ugx)}</div>
               ${statusChip(o.status)}
             </div>
           </div>`).join('')}
@@ -6733,11 +7056,11 @@ window.closeUserDrawer = function() {
 
 /* ── Approve ────────────────────────────────────────── */
 window.approveUser = async function(id) {
-  // Users & Roles rows now come from staff_profiles, not app_users
-  const { error } = await sb.from('staff_profiles').update({ active: true, updated_at:new Date().toISOString() }).eq('id', id);
+  // App users (farmers, agents, field officers) live in app_users
+  const { error } = await sb.from('app_users').update({ status: 'active' }).eq('id', id);
   if (error) { toast('Error: '+error.message,'error'); return; }
   toast('User approved and activated.','success');
-  logAudit('Approved staff member', { targetType:'staff_profiles', targetId:id });
+  logAudit('Approved app user account', { targetType:'app_users', targetId:id });
   loadUsers(); loadBadges();
 };
 
@@ -6759,29 +7082,51 @@ window.openBlockModal = function(id, name, isBlocked) {
   openModal('block-modal');
 };
 window.confirmBlockUser = async function() {
-  // Users & Roles rows are staff_profiles (active boolean, no status column)
   const isUnblocking = !!USR.pendingIsBlocked;
   const targetId     = USR.pendingId;
-  const { error } = await sb.from('staff_profiles')
-    .update({ active: isUnblocking, updated_at: new Date().toISOString() })
-    .eq('id', targetId);
+  const action       = isUnblocking ? 'unblock' : 'block';
   closeModal('block-modal');
-  if (error) { toast('Error: '+error.message,'error'); return; }
-  toast(`User ${isUnblocking ? 'unblocked' : 'blocked'}.`, isUnblocking?'success':'info');
-  logAudit(isUnblocking ? 'Unblocked staff member' : 'Blocked staff member',
-           { targetType:'staff_profiles', targetId });
-  loadUsers();
+  const btn = document.getElementById('block-confirm-btn');
+  if (btn) { btn.disabled = true; }
+  try {
+    const session = (await sb.auth.getSession())?.data?.session;
+    const res = await fetch('/.netlify/functions/admin-staff-manage', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${session?.access_token||''}` },
+      body: JSON.stringify({ action, id: targetId }),
+    });
+    const json = await res.json().catch(() => ({}));
+    if (!json.ok) { toast('Error: ' + (json.error || 'Could not update user.'), 'error'); return; }
+    toast(`User ${isUnblocking ? 'unblocked' : 'blocked'}.`, isUnblocking ? 'success' : 'info');
+    logAudit(isUnblocking ? 'Unblocked staff member' : 'Blocked staff member',
+             { targetType: 'staff_profiles', targetId });
+    loadUsers();
+  } catch (e) {
+    toast('Network error: ' + e.message, 'error');
+  } finally {
+    if (btn) btn.disabled = false;
+  }
 };
 
 /* ── Remove staff permanently ───────────────────────── */
 window.removeStaffUser = async function(id, name) {
   if (!id) { toast('User id missing.', 'error'); return; }
   if (!confirm(`Remove ${name} permanently?\n\nThis deletes their staff profile and cannot be undone. Audit history will be kept but will no longer link to this user.`)) return;
-  const { error } = await sb.from('staff_profiles').delete().eq('id', id);
-  if (error) { toast('Could not remove: ' + error.message, 'error'); return; }
-  toast(`${name} removed permanently.`, 'success');
-  logAudit('Removed staff member permanently', { targetType:'staff_profiles', targetId:id, notes:name });
-  loadUsers();
+  try {
+    const session = (await sb.auth.getSession())?.data?.session;
+    const res = await fetch('/.netlify/functions/admin-staff-manage', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${session?.access_token||''}` },
+      body: JSON.stringify({ action: 'delete', id }),
+    });
+    const json = await res.json().catch(() => ({}));
+    if (!json.ok) { toast('Could not remove: ' + (json.error || 'Unknown error'), 'error'); return; }
+    toast(`${name} removed permanently.`, 'success');
+    logAudit('Removed staff member permanently', { targetType: 'staff_profiles', targetId: id, notes: name });
+    loadUsers();
+  } catch (e) {
+    toast('Network error: ' + e.message, 'error');
+  }
 };
 
 /* ── Change role ────────────────────────────────────── */
@@ -7265,15 +7610,42 @@ window.handlePriceUpload = async function(input) {
 
   toast(`Importing ${payload.length} price entries…`, 'info');
 
-  // Batch upsert (match on crop + month)
+  /* Fetch existing rows for the crops in this payload so we can match
+     by crop+month without needing a DB unique constraint.
+     Rows that already exist get updated (upsert by id); new rows are inserted. */
+  const crops = [...new Set(payload.map(r => r.crop))];
+  const { data: existing } = await sb.from('produce_prices')
+    .select('id, crop, month').in('crop', crops);
+
+  const existingMap = {};
+  (existing || []).forEach(r => {
+    existingMap[`${r.crop}|||${r.month?.slice(0,7)}`] = r.id;
+  });
+
+  const toUpdate = [];
+  const toInsert = [];
+  payload.forEach(r => {
+    const key = `${r.crop}|||${r.month?.slice(0,7)}`;
+    if (existingMap[key]) toUpdate.push({ ...r, id: existingMap[key] });
+    else                   toInsert.push(r);
+  });
+
   const BATCH = 50;
   let failed = 0;
-  for (let i = 0; i < payload.length; i += BATCH) {
-    const { error } = await sb.from('produce_prices').upsert(payload.slice(i, i + BATCH), { onConflict: 'crop,month' });
-    if (error) failed++;
+
+  // Update existing rows (upsert on primary key — always works)
+  for (let i = 0; i < toUpdate.length; i += BATCH) {
+    const { error } = await sb.from('produce_prices').upsert(toUpdate.slice(i, i + BATCH));
+    if (error) { failed++; console.error('[price import] update batch error:', error.message); }
   }
 
-  if (failed) { toast(`Import finished with ${failed} batch error(s). Check console.`, 'error'); }
+  // Insert new rows
+  for (let i = 0; i < toInsert.length; i += BATCH) {
+    const { error } = await sb.from('produce_prices').insert(toInsert.slice(i, i + BATCH));
+    if (error) { failed++; console.error('[price import] insert batch error:', error.message); }
+  }
+
+  if (failed) { toast(`Import finished with ${failed} batch error(s). Check console for details.`, 'error'); }
   else { toast(`✅ ${payload.length} price entries imported successfully.`, 'success'); }
   loadPrices();
 };
@@ -10560,7 +10932,7 @@ window.loadAgents = async function() {
 
   const [agentsRes, ordersRes, cfgRes] = await Promise.all([
     sb.from('app_users').select('*').eq('role','agent').order('full_name'),
-    sb.from('orders').select('customer_id,total_ugx,status,created_at')
+    sb.from('orders').select('agent_id,total_ugx,status,created_at')
       .in('status',['confirmed','dispatched','delivered','completed'])
       .gte('created_at', new Date(new Date().getFullYear(),new Date().getMonth(),1).toISOString()),
     sb.from('settings').select('key,value').eq('key','commission_rate').limit(1),
@@ -10577,8 +10949,13 @@ window.loadAgents = async function() {
     AGT.globalRate = parseFloat(SETS.cfg.commission_rate) || 5;
   }
   const all = agents || [];
-  AGT.all     = all.filter(a => a.verified !== false);
-  AGT.pending = all.filter(a => a.verified === false);
+  /* Pending = anyone whose app_users.status is pending_approval (the value
+     the self-signup flow writes for new agents). Treat the legacy
+     verified=false flag the same way so older rows still surface for
+     review. Everything else (active / blocked / etc.) shows in the All
+     agents tab. */
+  AGT.pending = all.filter(a => a.status === 'pending_approval' || a.verified === false);
+  AGT.all     = all.filter(a => !(a.status === 'pending_approval' || a.verified === false));
   AGT.orders  = orders || [];
   // Only flag demo on actual DB error, not on empty result
   AGT._useDemo = !!agentsErr;
@@ -10623,7 +11000,7 @@ window.switchAgentsTab = function(tab) {
 };
 
 function getAgentSales(agentId) {
-  return AGT.orders.filter(o=>o.customer_id===agentId).reduce((s,o)=>s+Number(o.total_ugx||0),0);
+  return AGT.orders.filter(o=>o.agent_id===agentId).reduce((s,o)=>s+Number(o.total_ugx||0),0);
 }
 
 function renderAgentsContent(tab) {
@@ -10640,7 +11017,7 @@ function renderAgentsContent(tab) {
     ? `<tr><td colspan="8" style="padding:0"><div style="background:var(--orange-05,#fff8f0);border-left:3px solid var(--orange);padding:8px 14px;font-size:12.5px;color:var(--orange);font-weight:600">⚠️ Could not load agent rankings — check database connection</div></td></tr>`
     : '';
 
-  const ranked = AGT.all.map(a=>({...a, outlet:a.outlet||a.district||'—', sales:getAgentSales(a.id), ordersCount:AGT.orders.filter(o=>o.customer_id===a.id).length})).sort((a,b)=>b.sales-a.sales);
+  const ranked = AGT.all.map(a=>({...a, outlet:a.outlet||a.district||'—', sales:getAgentSales(a.id), ordersCount:AGT.orders.filter(o=>o.agent_id===a.id).length})).sort((a,b)=>b.sales-a.sales);
 
   const pendingList = AGT.pending;
 
@@ -10662,7 +11039,7 @@ function renderAgentsContent(tab) {
           ${podiumSlots.map((a,i)=>{
             const rank = parseInt(podiumRank[i]);
             const avatarBg = podiumBg[i];
-            const initials = a.full_name.split(' ').slice(0,2).map(w=>w[0]).join('').toUpperCase();
+            const initials = (a.full_name||'?').split(' ').slice(0,2).map(w=>(w||'')[0]||'').join('').toUpperCase();
             const salesStr = a.sales>0 ? 'UGX '+(a.sales/1e6).toFixed(1)+'M' : (rank===1?'UGX 12.4M':rank===2?'UGX 9.8M':'UGX 8.6M');
             const orderStr = a.ordersCount > 0 ? a.ordersCount : (rank===1?48:rank===2?37:31);
             return `
@@ -10701,7 +11078,7 @@ function renderAgentsContent(tab) {
           ${demoBannerRow}
           ${rest.map((a,i)=>{
             const rank = i+4;
-            const initials = a.full_name.split(' ').slice(0,2).map(w=>w[0]).join('').toUpperCase();
+            const initials = (a.full_name||'?').split(' ').slice(0,2).map(w=>(w||'')[0]||'').join('').toUpperCase();
             const comm = a.sales>0 ? Number(a.sales*commRate).toLocaleString() : '—';
             const safeName = (a.full_name||'').replace(/'/g,"\\'");
             return `<tr>
@@ -10756,7 +11133,7 @@ function renderAgentsContent(tab) {
           </tr></thead>
           ${demoBannerRow}
           ${ranked.map((a,i)=>{
-            const initials = a.full_name.split(' ').slice(0,2).map(w=>w[0]).join('').toUpperCase();
+            const initials = (a.full_name||'?').split(' ').slice(0,2).map(w=>(w||'')[0]||'').join('').toUpperCase();
             const rankColor = i===0?'var(--orange)':i===1?'var(--teal)':i===2?'var(--rust)':'var(--ink-20)';
             const agentCommPct = a.commission_rate != null ? a.commission_rate : globalCommPct;
             const agentCommRate = agentCommPct / 100;
@@ -10811,7 +11188,7 @@ function renderAgentsContent(tab) {
           <tbody>
           ${pendingBanner}
           ${pendingList.map(a=>{
-            const initials = a.full_name.split(' ').slice(0,2).map(w=>w[0]).join('').toUpperCase();
+            const initials = (a.full_name||'?').split(' ').slice(0,2).map(w=>(w||'')[0]||'').join('').toUpperCase();
             const applied = a.created_at ? new Date(a.created_at).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}) : '—';
             const daysWaiting = a.created_at ? Math.floor((Date.now()-new Date(a.created_at))/864e5) : null;
             const urgency = daysWaiting !== null && daysWaiting > 5
@@ -10887,7 +11264,7 @@ function renderAgentsContent(tab) {
             <tr>
               <td>
                 <div class="cell-avatar">
-                  <div class="av">${a.full_name.split(' ').slice(0,2).map(w=>w[0]).join('').toUpperCase()}</div>
+                  <div class="av">${(a.full_name||'?').split(' ').slice(0,2).map(w=>(w||'')[0]||'').join('').toUpperCase()}</div>
                   <div><div class="cell-bold">${a.full_name}</div>
                   <div style="font-size:10.5px;color:var(--ink-60)">${a.district||''}</div></div>
                 </div>
@@ -11077,7 +11454,7 @@ window.openAgentDetail = function(id) {
     document.getElementById('user-drawer').classList.add('open');
     document.getElementById('ud-name').textContent = row.full_name;
     document.getElementById('ud-sub').textContent  = `Agent · ${row.district||'—'} · ${row.agent_code||row.id}`;
-    const initials = row.full_name.split(' ').slice(0,2).map(w=>w[0]).join('').toUpperCase();
+    const initials = (row.full_name||'?').split(' ').slice(0,2).map(w=>(w||'')[0]||'').join('').toUpperCase();
     const sales = getAgentSales(row.id);
     const orders = AGT.orders.filter(o=>o.customer_id===row.id).length;
     document.getElementById('ud-body').innerHTML = `
@@ -11120,7 +11497,7 @@ window.openAgentDetail = function(id) {
         </div>
         <div style="background:var(--ink-05);border-radius:var(--radius);padding:12px;text-align:center">
           <div style="font-size:9.5px;font-weight:700;text-transform:uppercase;color:var(--ink-60);margin-bottom:4px">Commission</div>
-          <div style="font-weight:800;font-size:15px;color:var(--teal)">${sales>0?'UGX '+(sales*0.05/1e3).toFixed(0)+'K':'—'}</div>
+          <div style="font-weight:800;font-size:15px;color:var(--teal)">${sales>0?'UGX '+(sales*(row.commission_rate!=null?row.commission_rate:5)/100/1e3).toFixed(0)+'K':'—'}</div>
         </div>
       </div>
       ${row.notes ? `<div style="background:var(--ink-05);border-radius:var(--radius);padding:10px 12px;font-size:12.5px;color:var(--ink-80)"><strong>Notes:</strong> ${row.notes}</div>` : ''}`;
@@ -11186,17 +11563,23 @@ window.shiftCommMonth = function(delta) {
 window.exportCommissionsCSV = function() {
   const rows = window._commRanked || [];
   if (!rows.length) { toast('No commission data to export.', 'info'); return; }
-  const rate = window._commRate || 0.05;
+  const globalRate = window._commRate || 0.05;
+  const globalPct  = Math.round(globalRate * 100);
   const month = window._commMonth || '';
-  const headers = ['Agent','District','Outlet','Orders','Sales (UGX)',`Commission @ ${(rate*100).toFixed(0)}%`,'Payout Status'];
+  const headers = ['Agent','District','Outlet','Orders','Sales (UGX)','Rate %','Commission (UGX)','Payout Status'];
   const q = v => `"${String(v??'').replace(/"/g,'""')}"`;
-  const lines = [headers.join(','), ...rows.map(a => [
-    q(a.full_name), q(a.district||''), q(a.outlet||a.district||''),
-    a.ordersCount||0,
-    a.sales||0,
-    a.sales>0 ? Math.round(a.sales*rate) : 0,
-    q('Pending payout')
-  ].join(','))];
+  const lines = [headers.join(','), ...rows.map(a => {
+    const effPct  = a.commission_rate != null ? a.commission_rate : globalPct;
+    const effRate = effPct / 100;
+    return [
+      q(a.full_name), q(a.district||''), q(a.outlet||a.district||''),
+      a.ordersCount||0,
+      a.sales||0,
+      effPct,
+      a.sales>0 ? Math.round(a.sales*effRate) : 0,
+      q('Pending payout')
+    ].join(',');
+  })];
   const blob = new Blob([lines.join('\n')], { type:'text/csv' });
   const link = document.createElement('a');
   link.href = URL.createObjectURL(blob);
@@ -11402,7 +11785,7 @@ window.exportOfficersCSV = function() {
 window.openOfficerDetail = function(id) {
   const o = FOC.all.find(x => String(x.id) === String(id));
   if (!o) { toast('Officer not found.', 'error'); return; }
-  const initials = o.full_name.split(' ').slice(0,2).map(w=>w[0]).join('').toUpperCase();
+  const initials = (o.full_name||'?').split(' ').slice(0,2).map(w=>(w||'')[0]||'').join('').toUpperCase();
   const avBg = focAvColor(o.full_name);
   const isSenior = o.senior || (o.rating >= 4.8 && o.visits >= 50);
   const rating = o.rating ? `★ ${Number(o.rating).toFixed(1)}` : '—';
@@ -11636,7 +12019,7 @@ function renderOfficersContent(tab) {
           <tbody>
           ${focDemoBanner}
           ${active.map(o=>{
-            const initials  = o.full_name.split(' ').slice(0,2).map(w=>w[0]).join('').toUpperCase();
+            const initials  = (o.full_name||'?').split(' ').slice(0,2).map(w=>(w||'')[0]||'').join('').toUpperCase();
             const avBg      = focAvColor(o.full_name);
             const isSenior  = o.senior || (o.rating >= 4.8 && o.visits >= 50);
             const rating    = o.rating ? `<span style="color:var(--orange);font-weight:700">★ ${Number(o.rating).toFixed(1)}</span>` : '—';
@@ -11896,7 +12279,7 @@ function renderOfficersContent(tab) {
           <tbody>
           ${pendingFocBanner}
           ${pending.map(o=>{
-            const initials = o.full_name.split(' ').slice(0,2).map(w=>w[0]).join('').toUpperCase();
+            const initials = (o.full_name||'?').split(' ').slice(0,2).map(w=>(w||'')[0]||'').join('').toUpperCase();
             const safeName = (o.full_name||'').replace(/'/g,"\\'");
             return `<tr>
               <td>
@@ -12848,6 +13231,30 @@ window.financeOdooSync = async function() {
 
 window.loadSettings = async function() {
   document.getElementById('settings-content').innerHTML = '<div style="padding:40px" class="shimmer sk-row"></div>';
+
+  /* Non-admin roles (everyone except md and it_admin) only see "My Account".
+     Hide all admin-only settings tabs so the sidebar is clean. */
+  const myRole = APP.profile?.role;
+  const isAdminRole = ['md','it_admin'].includes(myRole);
+
+  if (!isAdminRole) {
+    /* Hide every settings tab except the My Account section */
+    ['stab-org','stab-branding','stab-commission','stab-payments','stab-fx',
+     'stab-sms','stab-whatsapp','stab-odoo','stab-export','stab-audit',
+     'stab-knowledge_base','stab-images'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.style.display = 'none';
+    });
+    /* Also hide the "Settings" section divider (first one above stab-org) */
+    const settingsDividers = document.querySelectorAll('#page-settings .sb-item[id^="stab-"]');
+    /* Activate the account tab */
+    document.querySelectorAll('#page-settings .sb-item').forEach(b => b.classList.remove('active'));
+    document.getElementById('stab-account')?.classList.add('active');
+    SETS.tab = 'account';
+    renderSettings('account');
+    return;
+  }
+
   SETS.tab = 'org';
   document.querySelectorAll('#page-settings .sb-item').forEach(b => b.classList.remove('active'));
   document.getElementById('stab-org')?.classList.add('active');
@@ -14057,6 +14464,45 @@ async function loadCmsImagesPanel(el) {
       <div class="shimmer sk-row w-75"></div>
     </div>`;
 
+  // Auto-insert any missing category slots before loading (handles categories
+  // added before this auto-sync existed, e.g. Herbicides, Insecticides)
+  const catSlug = n => 'cat-' + n.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+  const { data: existingSlots } = await sb.from('cms_images').select('slot,category,sort_order');
+  const existingSet = new Set((existingSlots || []).map(r => r.slot));
+  // Detect the category group and max sort_order used by existing cat-* slots so new ones join the same group
+  const existingCatRows = (existingSlots || []).filter(r => r.slot.startsWith('cat-'));
+  const catGroupName = existingCatRows.length ? existingCatRows[0].category : 'Product Categories';
+  const maxSortOrder = existingCatRows.reduce((m, r) => Math.max(m, r.sort_order || 0), 0);
+  // Fix any existing cat-* rows that landed in the wrong category group or have wrong metadata
+  const wrongGroup = (existingSlots || []).filter(r => r.slot.startsWith('cat-') && r.category !== catGroupName);
+  if (wrongGroup.length > 0) {
+    await Promise.all(wrongGroup.map(r => {
+      // Derive a clean display name from the slot, e.g. cat-herbicides → Herbicides
+      const niceName = r.slot.replace(/^cat-/, '').replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+      return sb.from('cms_images').update({
+        category:    catGroupName,
+        label:       'Category: ' + niceName,
+        description: 'Tile background on the shop home.',
+        recommended: '600×400 square-ish, < 80 KB'
+      }).eq('slot', r.slot);
+    }));
+  }
+  const missing = CATEGORIES.filter(c => !existingSet.has(catSlug(c)));
+  if (missing.length > 0) {
+    await sb.from('cms_images').upsert(
+      missing.map((c, i) => ({
+        slot:        catSlug(c),
+        label:       'Category: ' + c,
+        category:    catGroupName,
+        description: 'Tile background on the shop home.',
+        recommended: '600×400 square-ish, < 80 KB',
+        sort_order:  maxSortOrder + 10 + i,
+        url:         null
+      })),
+      { onConflict: 'slot', ignoreDuplicates: true }
+    );
+  }
+
   const { data, error } = await sb
     .from('cms_images')
     .select('*')
@@ -14305,10 +14751,15 @@ async function cmsCompressForUpload(file, maxDim, quality) {
 }
 
 window.switchSettingsTab = function(tab, el) {
-  document.querySelectorAll('#page-settings .sb-item').forEach(b => b.classList.remove('active'));
-  if (el) el.classList.add('active');
   /* staff tab now lives under Users & Roles page; redirect */
   if (tab === 'staff') { navigate('users'); return; }
+  /* Non-admin roles can only access the account/password tab */
+  const myRole = APP.profile?.role;
+  const isAdminRole = ['md','it_admin'].includes(myRole);
+  const ADMIN_ONLY_TABS = ['org','branding','commission','payments','fx','sms','whatsapp','odoo','export','audit','knowledge_base','images'];
+  if (!isAdminRole && ADMIN_ONLY_TABS.includes(tab)) { return; }
+  document.querySelectorAll('#page-settings .sb-item').forEach(b => b.classList.remove('active'));
+  if (el) el.classList.add('active');
   renderSettings(tab);
 };
 
@@ -14923,12 +15374,39 @@ window.saveProductCategories = async function() {
   const { error } = await sb.from('settings')
     .upsert({ key: 'product_categories', value: JSON.stringify(_mcDraft) }, { onConflict: 'key' });
   if (error) { toast(error.message, 'error'); return; }
+
+  // Detect brand-new categories (not already in CATEGORIES) so we can create their cms_images slots
+  const brandNew = _mcDraft.filter(c => !CATEGORIES.includes(c));
+
   SETS.cfg.product_categories = JSON.stringify(_mcDraft);
   CATEGORIES.length = 0;
   _mcDraft.forEach(c => CATEGORIES.push(c));
+
+  // Insert a cms_images row for each brand-new category so it appears in Settings → Images & Media
+  if (brandNew.length > 0) {
+    const catSlug = name => 'cat-' + name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+    // Match the category group + sort_order of existing cat-* slots so new ones appear in the same section
+    const { data: existingCatSlots } = await sb.from('cms_images').select('slot,category,sort_order');
+    const existingCatRows = (existingCatSlots || []).filter(r => r.slot.startsWith('cat-'));
+    const catGroupName = existingCatRows.length ? existingCatRows[0].category : 'Product Categories';
+    const maxSortOrder = existingCatRows.reduce((m, r) => Math.max(m, r.sort_order || 0), 0);
+    const newRows = brandNew.map((c, i) => ({
+      slot:        catSlug(c),
+      label:       'Category: ' + c,
+      category:    catGroupName,
+      description: 'Tile background on the shop home.',
+      recommended: '600×400 square-ish, < 80 KB',
+      sort_order:  maxSortOrder + 10 + i,
+      url:         null
+    }));
+    const { error: imgErr } = await sb.from('cms_images').upsert(newRows, { onConflict: 'slot', ignoreDuplicates: true });
+    if (imgErr) console.warn('cms_images upsert for new categories:', imgErr.message);
+  }
+
   closeModal('manage-categories-modal');
   toast('Product categories saved.', 'success');
   renderProductFilters();
+  populateCategorySelect();   // keep the product-drawer dropdown in sync
 };
 
 window.saveCommissionRate = async function() {
@@ -15957,7 +16435,7 @@ window.saveInviteMember = async function() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         email,
-        redirectTo: window.location.origin + '/index.html',
+        loginUrl: window.location.origin + '/index.html',
         data: {
           full_name:   name,
           role,
@@ -15971,6 +16449,25 @@ window.saveInviteMember = async function() {
     });
     const inviteJson = await inviteRes.json().catch(() => ({}));
     if (!inviteJson.ok) otpErr = { message: inviteJson.error || 'Invite failed' };
+
+    /* Pre-create (or update) staff_profiles row so the user appears immediately.
+       - New users:      active = null  → shows "Invite sent" chip
+       - Existing users: active = null  → same; they can sign in with existing creds */
+    if (inviteJson.ok && inviteJson.userId) {
+      const outletId = document.getElementById('im-outlet')?.value || null;
+      await sb.from('staff_profiles').upsert({
+        id:         inviteJson.userId,
+        full_name:  name,
+        role,
+        email,
+        phone:      phone || null,
+        outlet_id:  outletId,
+        active:     null,
+      }, { onConflict: 'id', ignoreDuplicates: false });
+    }
+    /* Stash flags for the toast below */
+    window._lastInviteExisted     = !!(inviteJson.ok && inviteJson.existed);
+    window._lastInviteEmailSkipped = !!(inviteJson.ok && inviteJson.emailSkipped);
   } catch (e) {
     otpErr = e;
   }
@@ -15989,11 +16486,17 @@ window.saveInviteMember = async function() {
     return;
   }
 
-  toast(
-    `Invite sent to ${email}. They'll appear in the user list once they sign in for the first time.`,
-    'success',
-    6000
-  );
+  if (window._lastInviteEmailSkipped) {
+    toast(
+      `${email} has been added but the invite email could not be sent. You will need to share their login details manually.`,
+      'warning',
+      10000
+    );
+  } else {
+    toast(`Invite sent to ${email}. They'll receive an email with their temporary password.`, 'success', 5000);
+  }
+  delete window._lastInviteExisted;
+  delete window._lastInviteEmailSkipped;
 
   /* Audit log */
   logAudit('Invited new staff member', {
@@ -16004,6 +16507,53 @@ window.saveInviteMember = async function() {
 
   closeInviteMember();
   if (typeof loadUsers === 'function') loadUsers();
+};
+
+/* ── Forced password change (first login) ───────────── */
+window.toggleChangePw = function(inputId, eyeId) {
+  const inp = document.getElementById(inputId);
+  if (inp) inp.type = inp.type === 'password' ? 'text' : 'password';
+};
+
+window.submitPasswordChange = async function() {
+  const newPw  = (document.getElementById('change-pw-new')?.value  || '').trim();
+  const confPw = (document.getElementById('change-pw-confirm')?.value || '').trim();
+  const errEl  = document.getElementById('change-pw-error');
+  const btn    = document.getElementById('change-pw-btn');
+
+  errEl.classList.remove('show');
+
+  if (!newPw) {
+    errEl.textContent = 'Please enter a new password.';
+    errEl.classList.add('show'); return;
+  }
+  if (newPw.length < 8) {
+    errEl.textContent = 'Password must be at least 8 characters.';
+    errEl.classList.add('show'); return;
+  }
+  if (newPw !== confPw) {
+    errEl.textContent = 'Passwords do not match.';
+    errEl.classList.add('show'); return;
+  }
+
+  btn.classList.add('loading'); btn.disabled = true;
+
+  try {
+    /* Update password */
+    const { error: pwErr } = await sb.auth.updateUser({ password: newPw });
+    if (pwErr) throw pwErr;
+
+    /* Clear the must_change_password flag in user_metadata */
+    await sb.auth.updateUser({ data: { must_change_password: false } });
+
+    /* Close modal */
+    document.getElementById('change-pw-modal')?.classList.remove('active');
+    toast('Password updated. Welcome to the admin portal!', 'success', 5000);
+  } catch (e) {
+    btn.classList.remove('loading'); btn.disabled = false;
+    errEl.textContent = e.message || 'Could not update password. Please try again.';
+    errEl.classList.add('show');
+  }
 };
 
 /* ── Auth state listener ─────────────────────────────── */
