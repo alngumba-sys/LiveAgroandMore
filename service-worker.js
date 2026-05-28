@@ -99,7 +99,7 @@ self.addEventListener('fetch', (event) => {
           caches.open(CACHE_VERSION).then((cache) => cache.put(req, copy));
         }
         return res;
-      }).catch(() => caches.match('./index.html'));
+      }).catch(() => new Response('', { status: 504, statusText: 'Offline' }));
     })
   );
 });
