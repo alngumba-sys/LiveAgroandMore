@@ -509,7 +509,7 @@
   .otp-screen{padding:20px 22px;display:flex;flex-direction:column;height:100%}
   .otp-screen h2{font-family:'Poppins';font-weight:800;font-size:21px;margin:12px 0 6px}
   .otp-screen .sub{font-size:12.5px;color:var(--teal);margin:0 0 22px;line-height:1.45;font-weight:500}
-  .otp-row{display:flex;gap:8px;justify-content:space-between;margin-bottom:18px}
+  .otp-row{display:flex;gap:6px;justify-content:center;margin-bottom:18px}
   .otp-box{
     width:42px;height:52px;border-radius:10px;background:#fff;border:1.5px solid var(--ink-10);
     display:flex;align-items:center;justify-content:center;
@@ -2127,7 +2127,7 @@
           <div class="body">
             <h2>Tell us about your farm</h2>
             <p class="sub">Role: Farmer · we'll show prices &amp; advisory tailored to your district</p>
-            <div class="field"><span class="label">Full Name</span><div class="input"><span>—</span></div></div>
+            <div class="field"><span class="label">Full Name</span><div class="input"><input type="text" placeholder="Your full name" autocomplete="off" style="flex:1;border:none;outline:none;background:transparent;font-family:inherit;font-size:13.5px;color:var(--ink);min-width:0;width:100%;padding:0"></div></div>
             <div class="field"><span class="label">Phone Number</span><div class="input"><span class="prefix">+256</span><span>—</span></div></div>
             <div class="field"><span class="label">Email Address <span style="color:var(--teal);font-weight:500">(optional)</span></span><div class="input"><span class="ph">nakato@email.ug</span></div></div>
             <div class="field row">
@@ -2175,7 +2175,7 @@
           <div class="body">
             <h2>Tell us about your shop</h2>
             <p class="sub">Role: Agro-dealer / Agent · we'll wire up commission and outlet attribution</p>
-            <div class="field"><span class="label">Full Name</span><div class="input"><span>—</span></div></div>
+            <div class="field"><span class="label">Full Name</span><div class="input"><input type="text" placeholder="Your full name" autocomplete="off" style="flex:1;border:none;outline:none;background:transparent;font-family:inherit;font-size:13.5px;color:var(--ink);min-width:0;width:100%;padding:0"></div></div>
             <div class="field"><span class="label">Phone Number</span><div class="input"><span class="prefix">+256</span><span>772 889 004</span></div></div>
             <div class="field"><span class="label">Email Address</span><div class="input"><span>kato.i@gmail.com</span></div></div>
             <div class="field row">
@@ -2221,7 +2221,7 @@
           <div class="body">
             <h2>Tell us about your work</h2>
             <p class="sub">Role: Extension Officer / Agronomist · farmers will pick you based on these credentials</p>
-            <div class="field"><span class="label">Full Name</span><div class="input"><span>—</span></div></div>
+            <div class="field"><span class="label">Full Name</span><div class="input"><input type="text" placeholder="Your full name" autocomplete="off" style="flex:1;border:none;outline:none;background:transparent;font-family:inherit;font-size:13.5px;color:var(--ink);min-width:0;width:100%;padding:0"></div></div>
             <div class="field"><span class="label">Phone Number</span><div class="input"><span class="prefix">+256</span><span>772 118 903</span></div></div>
             <div class="field"><span class="label">Email Address <span style="color:var(--rust);font-weight:500;font-size:10px">· required</span></span><div class="input"><span>rachel.n@mail.ug</span></div></div>
             <div class="field row">
@@ -2283,7 +2283,7 @@
             <p class="sub" style="margin-top:0">Tell us where you are and who we should deliver to in Uganda.</p>
             <div class="section-card">
               <h3>Section A — About you</h3>
-              <div class="field"><span class="label">Full Name</span><div class="input"><span>—</span></div></div>
+              <div class="field"><span class="label">Full Name</span><div class="input"><input type="text" placeholder="Your full name" autocomplete="off" style="flex:1;border:none;outline:none;background:transparent;font-family:inherit;font-size:13.5px;color:var(--ink);min-width:0;width:100%;padding:0"></div></div>
               <div class="field"><span class="label">Email Address <span class="req">*</span></span><div class="input"><span>rob.ssemakula@mail.co.uk</span></div></div>
               <div class="field row">
                 <div><span class="label">Country</span><div class="input"><span>🇬🇧 UK</span><span style="margin-left:auto">▾</span></div></div>
@@ -2331,7 +2331,7 @@
             <div class="otp-box filled">4</div><div class="otp-box filled">5</div><div class="otp-box filled">6</div>
             <div class="otp-box filled">1</div><div class="otp-box active">2</div><div class="otp-box">&nbsp;</div>
           </div>
-          <div class="resend">Resend in <strong>0:58</strong> · <a>Resend OTP</a></div>
+          <div class="resend"><a>Resend OTP</a></div>
           <button class="btn primary" style="margin-top:auto">Verify &amp; Continue</button>
         </div>
       </div></div>
@@ -4424,7 +4424,7 @@
             <div class="p">You'll need to enter an OTP the next time you sign in. Your orders, saved addresses and crops stay safe on your account.</div>
             <div style="display:flex;gap:8px">
               <button class="btn secondary">Cancel</button>
-              <button class="btn destructive" style="background:var(--rust);color:#fff;border:none">Log out</button>
+              <button class="btn destructive" data-logout style="background:var(--rust);color:#fff;border:none">Log out</button>
             </div>
           </div>
         </div>
@@ -8395,6 +8395,7 @@
     document.querySelector('#protoJump') && (document.querySelector('#protoJump').value = id);
   }
   window.protoShow = showScreen;
+  window.__screenMap = screenMap;   // expose so other scripts can resolve screens by id
 
   function handleHash(){
     const hash = location.hash.replace(/^#/, '');
@@ -9010,7 +9011,7 @@
         try {
           var sess = await sb.auth.getSession();
           if (sess.data && sess.data.session) {
-            var fresh = await sb.from('app_users').select('*').eq('id', sess.data.session.user.id).single();
+            var fresh = await sb.from('app_users').select('*').eq('auth_user_id', sess.data.session.user.id).limit(1).maybeSingle();
             if (fresh.data) { profile = fresh.data; window.__amProfile = fresh.data; }
           }
         } catch(_) {}
@@ -10007,7 +10008,7 @@
       if (sb2) {
         sb2.auth.getUser().then(function(u) {
           if (!u.data || !u.data.user) return;
-          sb2.from('app_users').select('*').eq('id', u.data.user.id).maybeSingle()
+          sb2.from('app_users').select('*').eq('auth_user_id', u.data.user.id).limit(1).maybeSingle()
             .then(function(r) {
               var p = r.data || profile;
               if (!p && u.data.user.user_metadata) {
@@ -10724,7 +10725,30 @@
   var priceRows = [];
 
   /* ---- Off-taker contact data ---- */
-  var OFFTAKER_CONTACTS = {};
+  var OFFTAKER_CONTACTS = {
+    'Khamisa Trading':    { phone:'+256414123456', wa:'+256772123456', buys:'Maize grain, Beans, Sim-sim',        loc:'Kampala · Nakawa',    about:'One of Central Uganda\'s largest grain buyers. Weekly buying days at Nakawa and Kawempe markets.',                      buying_days:'Mon, Wed, Fri' },
+    'Kyagalanyi Coffee':  { phone:'+256414234567', wa:'+256772234567', buys:'Robusta coffee (FAQ & Screen 15)',   loc:'Kampala · Nakasero',  about:'Uganda\'s leading coffee exporter. Buys FAQ and Screen 15 Robusta across Central and Western regions.',               buying_days:'Tue, Thu, Sat' },
+    'NUCAFE':             { phone:'+256414345678', wa:'+256772345678', buys:'Arabica coffee, Robusta coffee',     loc:'Kampala · Kololo',    about:'National Union of Coffee Agribusinesses and Farm Enterprises. Farmer-owned cooperative with guaranteed off-take.',      buying_days:'Mon–Fri' },
+    'Horyal Investments': { phone:'+256414456789', wa:'+256772456789', buys:'Hass avocado, Maize grain',         loc:'Entebbe · Kampala',   about:'Export-grade avocado and grain buyer supplying EU markets. Strict quality grading — ask for their spec sheet.',          buying_days:'Wed, Sat' },
+    'NARO Aggregator':    { phone:'+256414567890', wa:'+256772567890', buys:'Beans, Groundnuts, Sorghum',        loc:'Kampala · Buganda Rd',about:'Government-linked aggregator under NARO. Competitive prices with direct payment within 48 hours of delivery.',          buying_days:'Mon, Thu' },
+    'East African Grains':{ phone:'+256312678901', wa:'+256702678901', buys:'Maize grain, Sorghum, Cassava',     loc:'Jinja · Kampala',     about:'Regional grain trader with collection points in Eastern and Central Uganda. Pays by mobile money within 24 hours.',      buying_days:'Tue, Fri' }
+  };
+
+  /* Attempt live merge from Supabase offtakers table */
+  (function(){
+    function mergeOftakers(sb){
+      sb.from('offtakers').select('*').then(function(res){
+        if(res.data && res.data.length){
+          res.data.forEach(function(r){
+            OFFTAKER_CONTACTS[r.name] = { phone:r.phone, wa:r.wa_number, buys:r.buys, loc:r.location, about:r.about, buying_days:r.buying_days };
+          });
+        }
+      });
+    }
+    var sb = window.__sb;
+    if(sb){ mergeOftakers(sb); return; }
+    var _t = setInterval(function(){ sb = window.__sb; if(!sb) return; clearInterval(_t); mergeOftakers(sb); }, 500);
+  })();
 
   function otakerCall(phone){
     if(phone) window.location.href = 'tel:' + phone;
@@ -10740,6 +10764,36 @@
   function wireOftakerDirectory(){
     var container = scr('sell-3'); if(!container) return;
     if(container.dataset.otWired) return; container.dataset.otWired='1';
+
+    /* ── Render off-taker cards from OFFTAKER_CONTACTS ─────────── */
+    var CALL_SVG = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M4 4h4l2 4-2 2a11 11 0 006 6l2-2 4 2v4c0 1-1 2-2 2A17 17 0 012 6c0-1 1-2 2-2z" stroke="#fff" stroke-width="1.8" stroke-linejoin="round"/></svg>';
+    var WA_SVG   = '<svg width="14" height="14" viewBox="0 0 24 24" fill="#fff"><path d="M17.5 14.3c-.3-.2-1.7-.8-2-.9-.3-.1-.5-.2-.7.2-.2.3-.8.9-1 1.1-.2.2-.4.2-.7 0a9 9 0 01-4.1-3.6c-.2-.3 0-.5.1-.7l.5-.6c.2-.2.2-.3.3-.5.1-.2 0-.4 0-.5L8.6 7c-.2-.5-.5-.4-.7-.4h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.5s1 2.9 1.2 3.1c.1.2 2 3.1 5 4.4 2.5 1 2.5.7 3 .6.5-.1 1.7-.7 1.9-1.4.2-.7.2-1.3.2-1.4-.1-.1-.3-.2-.5-.3z"/></svg>';
+    var scroll = container.querySelector('.scroll');
+    if(scroll){
+      var empty = scroll.querySelector('.empty-state'); if(empty) empty.remove();
+      Object.keys(OFFTAKER_CONTACTS).forEach(function(name){
+        var info = OFFTAKER_CONTACTS[name];
+        var card = document.createElement('div'); card.className='ot-card';
+        card.dataset.protoGo='sell-4'; card.dataset.offtakerName=name;
+        card.style.cursor='pointer';
+        card.innerHTML=[
+          '<div class="ot-logo" style="background:var(--teal);color:#fff;font-weight:800;font-size:12px;display:flex;align-items:center;justify-content:center;width:38px;height:38px;border-radius:10px;flex-shrink:0">'+name.charAt(0)+'</div>',
+          '<div class="ot-info">',
+            '<div class="ot-name">'+name+'</div>',
+            '<div class="ot-buys">'+info.buys+'</div>',
+            '<div class="ot-loc">'+info.loc+'</div>',
+          '</div>',
+          '<div class="ot-actions">',
+            '<button class="ot-btn call">'+CALL_SVG+'</button>',
+            '<button class="ot-btn wa">'+WA_SVG+'</button>',
+          '</div>'
+        ].join('');
+        card.querySelector('.ot-btn.call').addEventListener('click', function(e){ e.stopPropagation(); otakerCall(info.phone); });
+        card.querySelector('.ot-btn.wa').addEventListener('click',   function(e){ e.stopPropagation(); otakerWA(info.wa, name); });
+        card.addEventListener('click', function(){ window.__currentOfftaker = name; });
+        scroll.appendChild(card);
+      });
+    }
 
     /* ── Crop filter chips ─────────────────────────────────────── */
     var CROP_KEYWORDS = {
@@ -10795,22 +10849,51 @@
   }
 
   /* ---- Wire off-taker profile page (sell-4) ---- */
+  function showToast(msg){
+    var t = document.createElement('div');
+    t.style.cssText='position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#001524;color:#fff;padding:10px 18px;border-radius:20px;font-size:12.5px;font-weight:600;z-index:9999;opacity:0;transition:opacity .2s;white-space:nowrap;max-width:86vw;text-align:center';
+    t.textContent=msg; document.body.appendChild(t);
+    setTimeout(function(){ t.style.opacity='1'; },10);
+    setTimeout(function(){ t.style.opacity='0'; setTimeout(function(){ t.remove(); },200); },2800);
+  }
+
   function wireOftakerProfile(){
     var container = scr('sell-4'); if(!container) return;
-    // Determine which off-taker this profile represents from its heading
-    var nameEl = container.querySelector('.cn');
-    var name   = nameEl ? nameEl.textContent.trim() : '';
-    var info   = OFFTAKER_CONTACTS[name] || null;
+    // Use the name stored when user tapped a card in sell-3
+    var name = window.__currentOfftaker || '';
+    var info = OFFTAKER_CONTACTS[name] || null;
+
+    /* Populate header fields */
+    var cnEl = container.querySelector('.cn'); if(cnEl) cnEl.textContent = name || '—';
+    var ciEl = container.querySelector('.ci'); if(ciEl && info) ciEl.textContent = info.loc;
+    var logoEl = container.querySelector('.logo-xl'); if(logoEl && name) logoEl.textContent = name.charAt(0);
+    var aboutEl = container.querySelector('p[style*="margin:0"]'); if(aboutEl && info) aboutEl.textContent = info.about;
 
     var talkBtn = container.querySelector('.btn.primary');
-    if(talkBtn && info){
-      talkBtn.onclick = function(){ otakerCall(info.phone); };
-      // Update label with real number
-      talkBtn.textContent = 'Talk to ' + info.phone;
+    if(talkBtn){
+      if(info){
+        talkBtn.onclick = function(){ otakerCall(info.phone); };
+        talkBtn.textContent = 'Talk to ' + info.phone;
+      } else {
+        talkBtn.onclick = function(){ showToast('Contact details not available'); };
+      }
     }
     var waBtn = container.querySelector('.btn.secondary');
-    if(waBtn && info){
-      waBtn.onclick = function(){ otakerWA(info.wa, name); };
+    if(waBtn){
+      if(info){
+        waBtn.onclick = function(){ otakerWA(info.wa, name); };
+      } else {
+        waBtn.onclick = function(){ showToast('WhatsApp not available'); };
+      }
+    }
+
+    /* Notify / subscribe card */
+    var subCard = container.querySelector('.subscribe-card');
+    if(subCard && !subCard.dataset.wired){
+      subCard.dataset.wired='1'; subCard.style.cursor='pointer';
+      subCard.addEventListener('click', function(){
+        showToast('You\'ll get an SMS on '+(info ? info.buying_days||'buying days' : 'buying days')+' when they\'re buying near you.');
+      });
     }
   }
 
@@ -10884,6 +10967,83 @@
     });
   }
 
+  /* ---- Sell tab supplemental wiring ---- */
+  function wireSell1Broadcast(){
+    var container = scr('sell-1'); if(!container) return;
+    if(container.dataset.broadcastWired) return; container.dataset.broadcastWired='1';
+    /* "Tell off-takers I have matooke" — in section B of sell-1 */
+    container.querySelectorAll('.btn.primary').forEach(function(btn){
+      if(btn.textContent.trim().indexOf('Tell off-takers') >= 0){
+        btn.addEventListener('click', function(){
+          showToast('Broadcast sent! Nearby off-takers will contact you within 24 hours.');
+          btn.textContent = '✓ Broadcasted';
+          btn.disabled = true;
+          setTimeout(function(){ btn.textContent = 'Tell off-takers I have matooke'; btn.disabled = false; }, 3000);
+        });
+      }
+    });
+  }
+
+  function wireSell2Actions(){
+    var container = scr('sell-2'); if(!container) return;
+    if(container.dataset.sell2Wired) return; container.dataset.sell2Wired='1';
+    container.querySelectorAll('.btn').forEach(function(btn){
+      var t = btn.textContent.trim();
+      if(t.indexOf('WhatsApp') >= 0){
+        btn.addEventListener('click', function(){
+          var cropEl = container.querySelector('.app-bar');
+          var crop = cropEl ? cropEl.textContent.replace(/[←►▶◀]/g,'').replace('←','').trim() : 'Produce';
+          var priceEl = container.querySelector('[style*="font-size:32px"]');
+          var price = priceEl ? priceEl.textContent.trim() : 'see Agro and More app';
+          var msg = 'Current '+crop+' price from Agro and More: '+price+'. Check yours at agroandmore.co.ug';
+          window.open('https://wa.me/?text='+encodeURIComponent(msg),'_blank');
+        });
+      } else if(t === 'PDF'){
+        btn.addEventListener('click', function(){
+          if(window.html2pdf){
+            window.html2pdf().set({filename:'agro-price.pdf',margin:8}).from(container.querySelector('.content')).save();
+          } else { showToast('PDF export loading… try again in a moment.'); }
+        });
+      }
+    });
+  }
+
+  function wireSell5Actions(){
+    var container = scr('sell-5'); if(!container) return;
+    if(container.dataset.sell5Wired) return; container.dataset.sell5Wired='1';
+    container.querySelectorAll('.btn').forEach(function(btn){
+      var t = btn.textContent.trim();
+      if(t.indexOf('WhatsApp') >= 0){
+        btn.addEventListener('click', function(){
+          var bid = (container.querySelector('.bid')||{}).textContent || window.__traceBatchNumber || 'Unknown';
+          var crop = (container.querySelector('.crop')||{}).textContent || 'my produce';
+          var msg = 'I traced my '+crop+' on Agro and More! Batch '+bid+' is moving through the supply chain. Track yours at agroandmore.co.ug';
+          window.open('https://wa.me/?text='+encodeURIComponent(msg),'_blank');
+        });
+      } else if(t === 'PDF'){
+        btn.addEventListener('click', function(){
+          if(window.html2pdf){
+            window.html2pdf().set({filename:'trace-result.pdf',margin:8}).from(container.querySelector('.content')).save();
+          } else { showToast('PDF export loading… try again in a moment.'); }
+        });
+      }
+    });
+  }
+
+  function wireSell6Notify(){
+    var container = scr('sell-6'); if(!container) return;
+    if(container.dataset.sell6Wired) return; container.dataset.sell6Wired='1';
+    container.querySelectorAll('.btn.secondary').forEach(function(btn){
+      if(btn.textContent.trim().indexOf('Notify') >= 0){
+        btn.addEventListener('click', function(){
+          showToast('We\'ll SMS you when your batch moves to the next stage.');
+          btn.textContent = '✓ You\'ll be notified';
+          btn.disabled = true;
+        });
+      }
+    });
+  }
+
   /* ---- Intercept protoShow ---- */
   function wrapForAdvisory(){
     var orig = window.protoShow; if(!orig) return;
@@ -10895,9 +11055,12 @@
       if(id==='advisory-4') populateCallSheet();
       if(id==='advisory-6') loadAdvisoryContent();
       if(id==='advisory-7') wireAgroBot();
-      if(id==='sell-1')     loadProducePrices();
+      if(id==='sell-1')     { loadProducePrices(); wireSell1Broadcast(); }
+      if(id==='sell-2')     wireSell2Actions();
       if(id==='sell-3')     wireOftakerDirectory();
       if(id==='sell-4')     wireOftakerProfile();
+      if(id==='sell-5')     wireSell5Actions();
+      if(id==='sell-6')     wireSell6Notify();
     };
   }
 
@@ -12167,7 +12330,7 @@
     try {
       var s = await sb.auth.getSession();
       if (!s.data || !s.data.session) return p;
-      var res = await sb.from('app_users').select('*').eq('id', s.data.session.user.id).single();
+      var res = await sb.from('app_users').select('*').eq('auth_user_id', s.data.session.user.id).limit(1).maybeSingle();
       if (res.data) { window.__amProfile = res.data; return res.data; }
     } catch(e) {}
     return p;
@@ -12985,17 +13148,19 @@
     if (!fieldDiv) return null;
     var inputDiv = fieldDiv.querySelector('.input');
     if (!inputDiv) return null;
-    var spans = Array.from(inputDiv.querySelectorAll('span')).filter(function(s) {
-      return !s.classList.contains('prefix');
+    /* If a real <input> is already in the HTML, just return it */
+    var existing = inputDiv.querySelector('input');
+    if (existing) { existing.placeholder = placeholder || ''; return existing; }
+    /* Remove all non-prefix spans (same approach as injectSelect — avoids replaceWith issues) */
+    Array.from(inputDiv.querySelectorAll('span')).forEach(function(s) {
+      if (!s.classList.contains('prefix')) s.remove();
     });
-    var target = spans[spans.length - 1];
-    if (!target) return null;
     var inp = document.createElement('input');
     inp.type = type || 'text';
     inp.placeholder = placeholder || '';
     inp.autocomplete = type === 'email' ? 'email' : type === 'tel' ? 'tel' : 'off';
     inp.style.cssText = 'flex:1;border:none;outline:none;background:transparent;font-family:inherit;font-size:13.5px;color:var(--ink);min-width:0;width:100%;padding:0';
-    target.replaceWith(inp);
+    inputDiv.appendChild(inp);
     return inp;
   }
 
@@ -13036,6 +13201,7 @@
       p.style.cursor = 'pointer';
       p.addEventListener('click', function(e) {
         e.preventDefault();
+        e.stopPropagation();
         pills.forEach(function(q) { q.classList.remove('on'); });
         this.classList.add('on');
       });
@@ -13057,6 +13223,7 @@
       p.style.cursor = 'pointer';
       p.addEventListener('click', function(e) {
         e.preventDefault();
+        e.stopPropagation();
         this.classList.toggle('on');
       });
     });
@@ -13167,7 +13334,7 @@
   }
 
   /* ---- Navigate to role home ---- */
-  function goHome(role) {
+  window.goHome = function goHome(role) {
     var profile = window.__amProfile;
     var status  = profile ? (profile.status || '') : '';
     var dest;
@@ -13210,12 +13377,12 @@
     var status = meta.status ||
                  ((role === 'farmer' || role === 'diaspora') ? 'active' : 'pending_approval');
     var row = {
-      id:        user.id,
-      full_name: name,
-      phone:     phone,
-      email:     user.email,
-      role:      role,
-      status:    status
+      auth_user_id: user.id,
+      full_name:    name,
+      phone:        phone,
+      email:        user.email,
+      role:         role,
+      status:       status
     };
     /* district / sub_county only apply to non-diaspora roles */
     if (role !== 'diaspora') {
@@ -13248,7 +13415,7 @@
     if (meta.local_contact_village)  row.local_contact_village   = meta.local_contact_village;
     if (meta.local_contact_outlet)   row.local_contact_outlet    = meta.local_contact_outlet;
     try {
-      var res = await sb.from('app_users').upsert(row, { onConflict: 'id' });
+      var res = await sb.from('app_users').upsert(row, { onConflict: 'auth_user_id,role' });
       if (res.error) console.warn('[auth] saveProfile error', res.error);
       return res;
     } catch(e) {
@@ -13398,32 +13565,39 @@
           var authUser = result.data.user;
           var meta = authUser.user_metadata || {};
           var isSignupFlow = (window.__amOtpMode === 'signup');
+          var SELECT_COLS = 'id, auth_user_id, role, full_name, status, district, sub_county, phone, email, created_at, home_outlet, years_in_trade, national_id, bank_name, bank_account_number, bank_account_name, bank_branch, commission_payout_phone, fo_university, fo_grad_year, fo_experience, fo_specialities, fo_districts_covered, fo_languages, country_of_residence, local_contact_name, local_contact_rel, local_contact_phone, local_contact_district, local_contact_village, local_contact_outlet';
 
-          /* ── 1) Returning user: look up their row by auth.uid(). ─── */
-          var pById = await sb.from('app_users')
-            .select('id, role, full_name, status, district, sub_county, phone, email, created_at, home_outlet, years_in_trade, national_id, bank_name, bank_account_number, bank_account_name, bank_branch, commission_payout_phone, fo_university, fo_grad_year, fo_experience, fo_specialities, fo_districts_covered, fo_languages, country_of_residence, local_contact_name, local_contact_rel, local_contact_phone, local_contact_district, local_contact_village, local_contact_outlet')
-            .eq('id', authUser.id)
-            .maybeSingle();
+          /* ── Helper: fetch all role-rows for this auth user ─────── */
+          async function fetchAllRoles() {
+            var res = await sb.from('app_users').select(SELECT_COLS).eq('auth_user_id', authUser.id);
+            return (res.data && res.data.length) ? res.data : null;
+          }
 
-          if (pById.data) {
-            /* If the user came in via the SIGNUP form AND has just typed
-               fresh values (pendingName / pendingRole etc.), their typed
-               data should win over whatever's stored. We update their own
-               row directly — the new RLS policy allows UPDATE where
-               auth.uid() = id, so this is safe and doesn't need any
-               service-role help. */
-            if (isSignupFlow && pendingName && pendingName !== pById.data.full_name) {
+          /* ── 1) Load all existing rows for this auth user ─────── */
+          var allRows = await fetchAllRoles();
+
+          /* ── 2) Signup flow: create/update the pending role row ── */
+          if (isSignupFlow && pendingRole) {
+            var existingForRole = allRows && allRows.find(function(r) { return r.role === pendingRole; });
+            if (!existingForRole) {
+              /* New role for this user — create a row */
+              var saved = await saveProfile(authUser);
+              if (saved && saved.error) {
+                console.warn('[auth] saveProfile error', saved.error);
+                showOtpError('Couldn\'t save your profile — please try again');
+                this.disabled = false; this.textContent = 'Verify & Continue'; return;
+              }
+              allRows = await fetchAllRoles();
+            } else if (pendingName && pendingName !== existingForRole.full_name) {
+              /* Re-signup with new name for an existing role — update it */
               var patch = {
                 full_name:  pendingName,
-                role:       pendingRole || pById.data.role,
-                status:     ((pendingRole || pById.data.role) === 'farmer' ||
-                             (pendingRole || pById.data.role) === 'diaspora') ? 'active'
-                             : (pById.data.status || 'pending_approval'),
+                status:     (pendingRole === 'farmer' || pendingRole === 'diaspora') ? 'active'
+                            : (existingForRole.status || 'pending_approval'),
                 updated_at: new Date().toISOString()
               };
               if (pendingPhone) patch.phone = pendingPhone;
-              var patchRole = pendingRole || pById.data.role;
-              if (patchRole !== 'diaspora') {
+              if (pendingRole !== 'diaspora') {
                 if (meta.district)   patch.district   = meta.district;
                 if (meta.sub_county) patch.sub_county = meta.sub_county;
               }
@@ -13448,76 +13622,48 @@
               if (meta.local_contact_district) patch.local_contact_district = meta.local_contact_district;
               if (meta.local_contact_village)  patch.local_contact_village  = meta.local_contact_village;
               if (meta.local_contact_outlet)   patch.local_contact_outlet   = meta.local_contact_outlet;
-              try { await sb.from('app_users').update(patch).eq('id', authUser.id); }
+              try { await sb.from('app_users').update(patch).eq('id', existingForRole.id); }
               catch(e) { console.warn('[auth] signup-overwrite update failed', e); }
-              /* Also push the new full_name into auth.users user_metadata
-                 so a future re-signup with the same email reads correct
-                 metadata even if the app_users row gets dropped/restored. */
               try { await sb.auth.updateUser({ data: Object.assign({}, meta, {
-                full_name: pendingName, role: pendingRole || meta.role,
+                full_name: pendingName, role: pendingRole,
                 phone: pendingPhone || meta.phone,
-                district: meta.district, sub_county: meta.sub_county,
               }) }); } catch(_) {}
-              window.__amProfile = Object.assign({}, pById.data, patch);
-              goHome(window.__amProfile.role); return;
+              allRows = await fetchAllRoles();
             }
-            /* Normal returning sign-in (or signup with no new data) — use the
-               stored row as-is. Profile changes still go through Edit Profile. */
-            window.__amProfile = pById.data;
-            goHome(pById.data.role); return;
           }
 
-          /* ── 2) Brand-new user (no app_users row yet) — write one.
-                   This is the common case for:
-                     • a fresh self-signup (pendingName/Role set from the form)
-                     • an admin-invited user (full_name/role come from
-                       auth.users.user_metadata that the admin attached)
-                     • a returning user whose row was lost / never created */
-          var saved = await saveProfile(authUser);
-          if (saved && saved.error) {
-            console.warn('[auth] saveProfile error', saved.error);
-            /* Most likely cause: a row with this email already exists with a
-               different id (legacy seed data / old admin-invite). Under the
-               new RLS rules we can't relink from the client. Surface a clear
-               message so admin can fix it via the platform. */
-            if ((saved.error.message || '').toLowerCase().indexOf('duplicate') >= 0 ||
-                (saved.error.code || '') === '23505') {
-              showOtpError('This email is already linked to another account. Please contact support.');
-            } else {
-              showOtpError('Couldn’t save your profile — please try again');
+          /* ── 3) Brand-new user — no rows at all ──────────────── */
+          if (!allRows || allRows.length === 0) {
+            if (!isSignupFlow) {
+              /* Returning sign-in but no profile — create one */
+              await saveProfile(authUser);
+              allRows = await fetchAllRoles();
             }
-            this.disabled = false; this.textContent = 'Verify & Continue'; return;
+            if (!allRows || allRows.length === 0) {
+              /* Still nothing — build an in-memory fallback */
+              window.__amProfile = {
+                auth_user_id: authUser.id,
+                id:           authUser.id,
+                full_name:    pendingName  || meta.full_name || 'User',
+                phone:        pendingPhone || meta.phone     || null,
+                email:        authUser.email,
+                role:         pendingRole  || meta.role      || 'farmer',
+                status:       (((pendingRole || meta.role) === 'farmer' ||
+                                (pendingRole || meta.role) === 'diaspora') ? 'active' : 'pending_approval'),
+              };
+              goHome(window.__amProfile.role); return;
+            }
           }
-          window.__amProfile = {
-            id:         authUser.id,
-            full_name:  pendingName  || meta.full_name || 'User',
-            phone:      pendingPhone || meta.phone     || null,
-            email:      authUser.email,
-            role:       pendingRole  || meta.role      || 'farmer',
-            district:   meta.district   || null,
-            sub_county: meta.sub_county || null,
-            status:     meta.status     ||
-                        (((pendingRole || meta.role) === 'farmer' ||
-                          (pendingRole || meta.role) === 'diaspora') ? 'active' : 'pending_approval'),
-            /* Agent-specific */
-            home_outlet:             meta.home_outlet             || null,
-            years_in_trade:          meta.years_in_trade          || null,
-            national_id:             meta.national_id             || null,
-            bank_name:               meta.bank_name               || null,
-            bank_account_number:     meta.bank_account_number     || null,
-            bank_account_name:       meta.bank_account_name       || null,
-            bank_branch:             meta.bank_branch             || null,
-            commission_payout_phone: meta.commission_payout_phone || null,
-            /* FO-specific */
-            fo_university:        meta.fo_university        || null,
-            fo_grad_year:         meta.fo_grad_year         || null,
-            fo_experience:        meta.fo_experience        || null,
-            fo_specialities:      meta.fo_specialities      || [],
-            fo_districts_covered: meta.fo_districts_covered || [],
-            fo_languages:         meta.fo_languages         || null,
-            created_at:           new Date().toISOString()
-          };
-          goHome(window.__amProfile.role);
+
+          /* ── 4) Single role — go home directly ────────────────── */
+          if (allRows.length === 1) {
+            window.__amProfile = allRows[0];
+            goHome(allRows[0].role); return;
+          }
+
+          /* ── 5) Multiple roles — show role picker ─────────────── */
+          window.__amAllProfiles = allRows;
+          showRolePicker(allRows, pendingRole || allRows[0].role);
         } catch(e) {
           console.warn('[auth] verify exception', e);
           showOtpError('Something went wrong — please retry');
@@ -13561,8 +13707,11 @@
             email: pendingEmail,
             options: { shouldCreateUser: isSignup, data: window.__amSignupExtras || undefined }
           });
-          if (rs && rs.error) { toast(friendlyAuthError(rs.error.message)); }
-          else { toast('Code resent to email + SMS'); }
+          if (rs && rs.error) {
+            var cm = (rs.error.message || '').match(/after\s+(\d+)\s*seconds?/i);
+            if (cm) { toast('Still cooling down — wait ' + cm[1] + ' more seconds.'); }
+            else    { toast(friendlyAuthError(rs.error.message)); }
+          } else { toast('Code resent to email + SMS'); }
         } catch(e) {
           toast('Could not resend — please try again later');
         }
@@ -13597,6 +13746,9 @@
       return data || { ok: false };
     } catch (e) { return { ok: false, error: e.message }; }
   }
+
+  /* ---- HTML escape helper (used below) ---- */
+  function escHtml(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 
   /* ---- Set OTP subtitle ---- */
   function setOtpSubtitle(email) {
@@ -14216,8 +14368,24 @@
           });
           if (res.error) {
             console.error('[signup] signInWithOtp error:', res.error);
-            toast(friendlyAuthError(res.error.message));
-            this.disabled = false; this.textContent = origText; return;
+            /* Extract cooldown seconds from Supabase rate-limit message */
+            var coolMatch = (res.error.message || '').match(/after\s+(\d+)\s*seconds?/i);
+            var coolSecs  = coolMatch ? parseInt(coolMatch[1], 10) : 0;
+            if (coolSecs > 0) {
+              /* Show a live countdown on the button instead of a brief toast */
+              var _btn = this;
+              var _secs = coolSecs;
+              _btn.disabled = true;
+              (function tick() {
+                _btn.textContent = 'Resend in ' + _secs + 's…';
+                if (_secs-- > 0) { setTimeout(tick, 1000); }
+                else { _btn.disabled = false; _btn.textContent = origText; toast('You can now resend the code.'); }
+              })();
+            } else {
+              toast(friendlyAuthError(res.error.message));
+              this.disabled = false; this.textContent = origText;
+            }
+            return;
           }
         } catch(err) {
           console.error('[signup] signInWithOtp exception:', err);
@@ -14246,6 +14414,19 @@
         a.style.cursor = 'pointer';
         a.addEventListener('click', function(e) { e.preventDefault(); showLogin(); });
       }
+    });
+
+    /* ── Pill delegation safety-net ───────────────────────────────────────
+       Individual wirePillsMulti/wirePillsSingle listeners call stopPropagation,
+       so this only fires when those listeners weren't attached (safety net).
+       Handles all .pill toggles inside this signup container. */
+    container.addEventListener('click', function(e) {
+      var p = e.target.closest('.pill');
+      if (!p) return;
+      e.preventDefault();
+      e.stopPropagation();
+      if (p.textContent.trim() === '+ Add') return; /* handled by its own listener */
+      p.classList.toggle('on');
     });
   }
 
@@ -14430,10 +14611,12 @@
       var tries = 0;
       var iv = setInterval(function() { if (initSb() || ++tries > 40) clearInterval(iv); }, 200);
     }
-    wireSignup('onboarding-4', 'farmer');
-    wireSignup('onboarding-5', 'agent');
-    wireSignup('onboarding-6', 'field_officer');
-    wireSignup('onboarding-7', 'diaspora');
+    setTimeout(function() {
+      wireSignup('onboarding-4', 'farmer');
+      wireSignup('onboarding-5', 'agent');
+      wireSignup('onboarding-6', 'field_officer');
+      wireSignup('onboarding-7', 'diaspora');
+    }, 0);
     buildLoginSheet();
     wireOnboardingLogin();
     wireLogout();
@@ -15988,6 +16171,313 @@
   } else {
     bootToggleWiring();
   }
+})();
+</script>
+
+<!-- =================== STEP N: REMAINING DEAD-BUTTON WIRING =================== -->
+<script>
+(function(){
+
+  /* ── Helpers ─────────────────────────────────────────────────────── */
+  function scr(id){ return document.querySelector('[data-screen="'+id+'"], #'+id+', [id="'+id+'"]') || (function(){ var all = document.querySelectorAll('.screen'); for(var i=0;i<all.length;i++){ if(all[i].closest('[data-section]') && all[i].closest('[data-section]').dataset.section===id) return all[i].closest('[data-section]'); } })() || null; }
+
+  /* Use the existing protoShow-scoped scr if available, else fall back */
+  function getScr(id){
+    /* Screens are wrapped in divs with sequential position inside section */
+    var sections = { 'agent-5': '#sec-agent', 'agent-8': '#sec-agent', 'agent-flows-6': '#sec-agent-flows', 'agent-flows-8': '#sec-agent-flows', 'fo-5': '#sec-fo', 'fo-8': '#sec-fo', 'profile-3': '#sec-profile', 'profile-5': '#sec-profile' };
+    /* Try window.protoShow-exposed map first */
+    if(window.__screenMap && window.__screenMap[id]) return window.__screenMap[id];
+    /* Fallback: look for the screen via the internal screenMap (exposed in boot) */
+    return null;
+  }
+
+  function toast(msg){
+    /* Reuse existing showToast if available */
+    if(window.showToast){ window.showToast(msg); return; }
+    var t=document.createElement('div');
+    t.style.cssText='position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#001524;color:#fff;padding:10px 18px;border-radius:20px;font-size:12.5px;font-weight:600;z-index:9999;opacity:0;transition:opacity .2s;max-width:86vw;text-align:center';
+    t.textContent=msg; document.body.appendChild(t);
+    setTimeout(function(){ t.style.opacity='1'; },10);
+    setTimeout(function(){ t.style.opacity='0'; setTimeout(function(){ t.remove(); },200); },2800);
+  }
+
+  /* ── Agent-5: Commission Report exports ─────────────────────────── */
+  function wireAgent5Exports(container){
+    if(!container || container.dataset.a5Wired) return; container.dataset.a5Wired='1';
+    var btns = Array.from(container.querySelectorAll('.btn'));
+    btns.forEach(function(btn){
+      var t = btn.textContent.trim();
+      if(t === 'Download Excel'){
+        btn.addEventListener('click', function(){
+          var rows=[['Item','Value']];
+          container.querySelectorAll('.comm-row').forEach(function(r){
+            var k=(r.querySelector('.comm-k')||r.querySelector('span:first-child')||{}).textContent||'';
+            var v=(r.querySelector('.comm-v')||r.querySelector('span:last-child')||{}).textContent||'';
+            if(k&&v) rows.push([k,v]);
+          });
+          var big = container.querySelector('.big-num');
+          if(big) rows.unshift(['Total MTD Sales', big.textContent.trim()]);
+          var csv=rows.map(function(r){ return r.map(function(c){ return '"'+String(c).replace(/"/g,'""')+'"'; }).join(','); }).join('\n');
+          var a=document.createElement('a'); a.href='data:text/csv;charset=utf-8,'+encodeURIComponent(csv); a.download='commission-report.csv'; a.click();
+        });
+      } else if(t === 'PDF'){
+        btn.addEventListener('click', function(){
+          if(window.html2pdf){ window.html2pdf().set({filename:'commission-report.pdf',margin:8}).from(container.querySelector('.content')||container).save(); }
+          else { toast('PDF export loading… try again in a moment.'); }
+        });
+      }
+    });
+  }
+
+  /* ── Agent-8: Message farmer + Reorder ──────────────────────────── */
+  function wireAgent8Actions(container){
+    if(!container || container.dataset.a8Wired) return; container.dataset.a8Wired='1';
+    container.querySelectorAll('.btn').forEach(function(btn){
+      var t = btn.textContent.trim();
+      if(t === 'Message farmer'){
+        btn.addEventListener('click', function(){
+          var phone = ''; /* Would come from order data in production */
+          var msg = 'Hello, I\'m following up on your Agro and More order. Please let me know if you need assistance.';
+          window.open('https://wa.me/?text='+encodeURIComponent(msg),'_blank');
+        });
+      } else if(t === 'Reorder'){
+        btn.addEventListener('click', function(){
+          if(window.protoShow) window.protoShow('agent-7');
+        });
+      }
+    });
+  }
+
+  /* ── Agent-flows-6: Call + WhatsApp icon buttons ─────────────────── */
+  function wireAgentFlows6Contacts(container){
+    if(!container || container.dataset.af6Wired) return; container.dataset.af6Wired='1';
+    /* The phone inside the customer profile name meta span */
+    var phoneMeta = container.querySelector('.meta span:last-child, .cp');
+    var phone = phoneMeta ? phoneMeta.textContent.trim().replace(/[^\d+]/g,'') : '';
+
+    var secBtns = Array.from(container.querySelectorAll('.btn.secondary[style*="padding:0"]'));
+    secBtns.forEach(function(btn){
+      var svgPath = btn.innerHTML;
+      var isPhone = svgPath.indexOf('M4 4h4l2') >= 0;  /* call path */
+      var isWA    = svgPath.indexOf('17.5 14.3') >= 0;  /* WA path */
+      if(isPhone){
+        btn.addEventListener('click', function(){
+          if(phone){ window.location.href='tel:'+phone; }
+          else { toast('Customer phone not on record'); }
+        });
+      } else if(isWA){
+        btn.addEventListener('click', function(){
+          if(phone){ window.open('https://wa.me/'+phone,'_blank'); }
+          else { toast('Customer phone not on record'); }
+        });
+      }
+    });
+  }
+
+  /* ── Agent-flows-8: Year filter chips ───────────────────────────── */
+  function wirePayoutFilters(container){
+    if(!container || container.dataset.pfWired) return; container.dataset.pfWired='1';
+    var chips = Array.from(container.querySelectorAll('.filter-row .chip'));
+    chips.forEach(function(chip){
+      chip.style.cursor='pointer';
+      chip.addEventListener('click', function(){
+        chips.forEach(function(c){ c.classList.remove('orange'); c.classList.add('ghost'); });
+        chip.classList.remove('ghost'); chip.classList.add('orange');
+        var label = chip.textContent.trim();
+        container.querySelectorAll('.payout-row').forEach(function(row){
+          if(label==='All time'){ row.style.display=''; return; }
+          var yr=(row.querySelector('.pmo .y')||{}).textContent||'';
+          row.style.display = yr.indexOf(label)>=0 ? '' : 'none';
+        });
+      });
+    });
+  }
+
+  /* ── FO-5: Retry GPS ─────────────────────────────────────────────── */
+  function wireFO5GPS(container){
+    if(!container || container.dataset.fo5Wired) return; container.dataset.fo5Wired='1';
+    container.querySelectorAll('.btn.secondary').forEach(function(btn){
+      if(btn.textContent.trim().indexOf('Retry')>=0 || btn.textContent.trim().indexOf('GPS')>=0){
+        btn.addEventListener('click', function(){
+          btn.textContent='Getting location…'; btn.disabled=true;
+          if(!navigator.geolocation){ toast('GPS not supported on this device.'); btn.textContent='Retry GPS'; btn.disabled=false; return; }
+          navigator.geolocation.getCurrentPosition(
+            function(pos){
+              window.__lastGPS={lat:pos.coords.latitude,lng:pos.coords.longitude,accuracy:pos.coords.accuracy};
+              toast('Location found · '+pos.coords.accuracy.toFixed(0)+'m accuracy');
+              if(window.protoShow) window.protoShow('fo-4');
+            },
+            function(err){ toast('GPS unavailable: '+(err.message||'permission denied')); btn.textContent='Retry GPS'; btn.disabled=false; },
+            {timeout:12000,maximumAge:0}
+          );
+        });
+      }
+    });
+  }
+
+  /* ── FO-8 visit detail: Request rating / Talk to farmer / Edit ───── */
+  function wireFO8Actions(container){
+    if(!container || container.dataset.fo8ActWired) return; container.dataset.fo8ActWired='1';
+    container.querySelectorAll('.btn.small.primary, .btn.small[style*="teal"]').forEach(function(btn){
+      if(btn.textContent.trim().indexOf('rating')>=0||btn.textContent.trim().indexOf('Rating')>=0){
+        btn.addEventListener('click', function(){
+          toast('Rating request sent to farmer via SMS');
+          btn.textContent='✓ Sent'; btn.disabled=true;
+          setTimeout(function(){ btn.textContent='Request rating'; btn.disabled=false; },3000);
+        });
+      }
+    });
+    container.querySelectorAll('.btn.primary').forEach(function(btn){
+      if(btn.textContent.trim().indexOf('Talk')>=0||btn.textContent.trim().indexOf('farmer')>=0){
+        btn.addEventListener('click', function(){
+          var phoneEl=btn.closest('.screen')||container; var p=phoneEl.querySelector('.cp, .phone');
+          var phone=p?p.textContent.trim().replace(/[^\d+]/g,''):'';
+          if(phone&&phone!=='') window.location.href='tel:'+phone;
+          else toast('Farmer phone number not on record');
+        });
+      }
+    });
+    container.querySelectorAll('.btn.secondary').forEach(function(btn){
+      if(btn.textContent.trim()==='Edit'){ btn.addEventListener('click',function(){ if(window.protoShow) window.protoShow('fo-4'); }); }
+    });
+  }
+
+  /* ── Profile-3: Change outlet + Add address ──────────────────────── */
+  function wireProfile3(container){
+    if(!container || container.dataset.p3ActWired) return; container.dataset.p3ActWired='1';
+    container.querySelectorAll('.btn.secondary').forEach(function(btn){
+      var t = btn.textContent.trim();
+      if(t.indexOf('Change pickup')>=0||t.indexOf('outlet')>=0){
+        btn.addEventListener('click', function(){ toast('Contact support to change your pickup outlet'); });
+      } else if(t.indexOf('Add another')>=0||t.indexOf('address')>=0){
+        btn.addEventListener('click', function(){
+          var emptyState=container.querySelector('.empty-state');
+          if(emptyState&&!emptyState.dataset.addrFormOpen){
+            emptyState.dataset.addrFormOpen='1';
+            emptyState.style.padding='0';
+            emptyState.innerHTML='<div style="padding:12px;background:#f8f8f8;border-radius:10px;margin-top:4px"><input placeholder="Street / village" style="width:100%;padding:10px;border:1.5px solid #ddd;border-radius:8px;font-size:13px;margin-bottom:8px;box-sizing:border-box"><input placeholder="District" style="width:100%;padding:10px;border:1.5px solid #ddd;border-radius:8px;font-size:13px;box-sizing:border-box"><button style="width:100%;margin-top:8px;padding:10px;background:var(--teal);color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer">Save address</button></div>';
+            emptyState.querySelector('button').addEventListener('click',function(){ toast('Address saved'); emptyState.innerHTML='<div style="padding:10px 0;font-size:12.5px;color:var(--teal);font-weight:600">✓ Address saved</div>'; });
+          } else { toast('Form already open above'); }
+        });
+      }
+    });
+  }
+
+  /* ── Profile-5: Language radio rows ─────────────────────────────── */
+  function wireProfile5(container){
+    if(!container || container.dataset.p5ActWired) return; container.dataset.p5ActWired='1';
+    var rows=Array.from(container.querySelectorAll('.radio-row:not(.disabled)'));
+    rows.forEach(function(row){
+      row.style.cursor='pointer';
+      row.addEventListener('click',function(){
+        rows.forEach(function(r){ r.classList.remove('on'); });
+        row.classList.add('on');
+        var lang=(row.querySelector('.t')||{}).textContent||'';
+        try{ localStorage.setItem('am_language',lang); } catch(e){}
+        toast(lang+' selected');
+      });
+    });
+    try{ var saved=localStorage.getItem('am_language'); if(saved) rows.forEach(function(r){ if((r.querySelector('.t')||{}).textContent===saved) r.classList.add('on'); }); } catch(e){}
+  }
+
+  /* ── Hook into protoShow ─────────────────────────────────────────── */
+  function hookProtoShow(){
+    var orig = window.protoShow;
+    if(!orig){ setTimeout(hookProtoShow, 200); return; }
+    /* Avoid double-wrapping */
+    if(orig.__deadBtnHooked) return;
+    var wrapped = function(id, opts){
+      orig(id, opts);
+      /* Use a short delay so the screen is visible before we query it */
+      setTimeout(function(){
+        /* Find the active screen element — use the internal __screenMap if exposed */
+        var map = window.__screenMap;
+        var el = map ? map[id] : null;
+        if(!el){
+          /* Fallback: query by dataset.screen or the section's nth child */
+          el = document.querySelector('[data-screen="'+id+'"]');
+        }
+        if(!el) return;
+        if(id==='agent-5')        wireAgent5Exports(el);
+        if(id==='agent-8')        wireAgent8Actions(el);
+        if(id==='agent-flows-6')  wireAgentFlows6Contacts(el);
+        if(id==='agent-flows-8')  wirePayoutFilters(el);
+        if(id==='fo-5')           wireFO5GPS(el);
+        if(id==='fo-8')           wireFO8Actions(el);
+        if(id==='profile-3')      wireProfile3(el);
+        if(id==='profile-5')      wireProfile5(el);
+      }, 80);
+    };
+    wrapped.__deadBtnHooked = true;
+    window.protoShow = wrapped;
+  }
+
+  if(document.readyState==='loading'){
+    document.addEventListener('DOMContentLoaded', hookProtoShow);
+  } else {
+    hookProtoShow();
+  }
+
+})();
+</script>
+
+<!-- ── Role-picker overlay (shown after OTP when user has multiple roles) ── -->
+<div id="role-picker-overlay" style="display:none;position:fixed;inset:0;background:var(--cream,#FDEFD6);z-index:9999;overflow-y:auto;padding:32px 16px 60px;font-family:'Inter',sans-serif">
+  <div style="max-width:420px;margin:0 auto">
+    <div style="margin-bottom:28px">
+      <div style="width:48px;height:48px;border-radius:50%;background:var(--orange,#E76F51);display:flex;align-items:center;justify-content:center;margin-bottom:16px">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+      </div>
+      <h2 style="font-size:22px;font-weight:800;color:var(--ink,#001524);margin:0 0 6px">Welcome back</h2>
+      <p style="font-size:14px;color:var(--ink-60,rgba(0,21,36,.6));margin:0">You have multiple roles. Choose which to use.</p>
+    </div>
+    <div id="role-picker-cards" style="display:flex;flex-direction:column;gap:12px"></div>
+  </div>
+</div>
+
+<script>
+/* ── Role-picker: show overlay after multi-role OTP verify ────────── */
+(function() {
+  var ROLE_META = {
+    farmer:       { name:'Farmer',          desc:'I grow crops or keep animals',       icon:'<path d="M12 3c-4 3-5 9-2 13 2-1 5-5 2-13z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M10 16v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>' },
+    agent:        { name:'Agent (Agro-dealer)', desc:'I sell Agro and More products',   icon:'<path d="M4 8h16l-1 5H5L4 8z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M4 8l1-3h14l1 3M7 13v7h10v-7" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>' },
+    field_officer:{ name:'Field Officer',   desc:'I give advisory services',            icon:'<rect x="5" y="4" width="14" height="17" rx="2" stroke="currentColor" stroke-width="1.8"/><path d="M9 3h6v3H9z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M9 11h6M9 15h4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>' },
+    diaspora:     { name:'Diaspora Client', desc:'I live abroad, sending to a farmer', icon:'<circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.8"/><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18" stroke="currentColor" stroke-width="1.8"/>' },
+  };
+
+  window.showRolePicker = function(profiles, preferredRole) {
+    var overlay = document.getElementById('role-picker-overlay');
+    var cards   = document.getElementById('role-picker-cards');
+    if (!overlay || !cards) return;
+
+    cards.innerHTML = '';
+    profiles.forEach(function(p) {
+      var m   = ROLE_META[p.role] || { name: p.role, desc: '', icon: '' };
+      var sel = (p.role === preferredRole);
+      var card = document.createElement('button');
+      card.style.cssText = 'width:100%;background:#fff;border:2px solid '+(sel?'var(--orange,#E76F51)':'#E0E0E0')+';border-radius:16px;padding:16px 18px;cursor:pointer;display:flex;align-items:center;gap:14px;text-align:left;transition:border-color .15s';
+      card.innerHTML =
+        '<div style="width:46px;height:46px;border-radius:50%;background:'+(sel?'var(--orange,#E76F51)':'#F5F5F5')+';display:flex;align-items:center;justify-content:center;flex-shrink:0;color:'+(sel?'#fff':'var(--ink-60,rgba(0,21,36,.55))')+'">'+
+          '<svg width="20" height="20" viewBox="0 0 24 24" fill="none">'+m.icon+'</svg>'+
+        '</div>'+
+        '<div>'+
+          '<div style="font-weight:700;font-size:15px;color:var(--ink,#001524);line-height:1.2">'+m.name+'</div>'+
+          '<div style="font-size:12.5px;color:var(--ink-60,rgba(0,21,36,.6));margin-top:2px">'+m.desc+'</div>'+
+          (p.status==='pending_approval'?'<div style="font-size:11px;color:var(--orange,#E76F51);font-weight:600;margin-top:4px">⏳ Pending approval</div>':'')+
+        '</div>';
+      card.addEventListener('click', function() {
+        window.__amProfile = p;
+        overlay.style.display = 'none';
+        if (window.goHome) window.goHome(p.role);
+      });
+      card.addEventListener('mouseover', function() { if (!sel) this.style.borderColor='rgba(231,111,81,.4)'; });
+      card.addEventListener('mouseout',  function() { if (!sel) this.style.borderColor='#E0E0E0'; });
+      cards.appendChild(card);
+    });
+
+    overlay.style.display = '';
+    overlay.scrollTop = 0;
+  };
 })();
 </script>
 
