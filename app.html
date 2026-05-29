@@ -14612,6 +14612,13 @@
   function wireLogout() {
     document.addEventListener('click', async function(e) {
       var btn = e.target.closest('.logout-item, [data-logout]');
+      /* Field Officer / Agent / Diaspora profiles render log-out as a plain
+         destructive row (no .logout-item class), so also match a destructive
+         row whose text is "Log out". */
+      if (!btn) {
+        var dz = e.target.closest('.set-row.destructive');
+        if (dz && /log\s*out/i.test(dz.textContent || '')) btn = dz;
+      }
       if (!btn || !sb) return;
       await sb.auth.signOut();
       pendingEmail = ''; pendingName = ''; pendingPhone = ''; pendingRole = 'farmer';
@@ -16029,6 +16036,205 @@
   }
 
   /* ════════════════════════════════════════════════════════════════════════
+     fo-9  AVAILABILITY & PROFILE  —  fill chips + footer from the real profile
+     (replaces the hardcoded Coffee/Cocoa / Butambala / "640+ farmers" mockup)
+  ════════════════════════════════════════════════════════════════════════ */
+  function populateFO9Profile(profile){
+    var container = scr('fo-9');
+    if(!container || !profile) return;
+
+    function toList(v){
+      if(!v) return [];
+      if(Array.isArray(v)) return v.filter(Boolean);
+      return String(v).split(/[,·]/).map(function(s){ return s.trim(); }).filter(Boolean);
+    }
+    function chip(text, on){
+      var span = document.createElement('span');
+      span.className = 'crop-chip' + (on ? ' on' : '');
+      span.innerHTML = (on ? '<span class="tick">✓</span> ' : '') + text;
+      return span;
+    }
+    function fill(block, items, addLabel){
+      if(!block) return;
+      block.innerHTML = '';
+      items.forEach(function(it){ block.appendChild(chip(it, true)); });
+      if(addLabel) block.appendChild(chip(addLabel, false));
+      if(!items.length && !addLabel) block.appendChild(chip('None set', false));
+    }
+
+    /* The three .crop-multi blocks appear in markup order:
+       [0] Specialities, [1] Districts, [2] Languages */
+    var blocks = Array.from(container.querySelectorAll('.crop-multi'));
+    fill(blocks[0], toList(profile.fo_specialities),      null);
+    fill(blocks[1], toList(profile.fo_districts_covered), '+ Add district');
+    fill(blocks[2], toList(profile.fo_languages),         '+ Add language');
+
+    /* "Since <Month Year> · N farmers helped · …" footer */
+    var strongEl = container.querySelector('.card.cream strong');
+    var textDiv  = strongEl ? strongEl.parentNode : null;
+    if(textDiv){
+      var sinceTxt = '—';
+      if(profile.created_at){
+        var d = new Date(profile.created_at);
+        var MO = ['January','February','March','April','May','June','July',
+                  'August','September','October','November','December'];
+        sinceTxt = MO[d.getMonth()] + ' ' + d.getFullYear();
+      }
+      var helped = (typeof profile.farmers_helped === 'number') ? profile.farmers_helped : 0;
+      textDiv.innerHTML = '<strong>Since ' + sinceTxt + '</strong> · ' +
+        helped + ' farmer' + (helped === 1 ? '' : 's') +
+        ' helped · member of Agro and More\'s approved agronomist network.';
+    }
+  }
+
+  /* ════════════════════════════════════════════════════════════════════════
+     FO DATA SCREENS — replace the mockup "—" rows / hardcoded samples on
+     Home (fo-2), Dashboard (fo-3), My Visits (fo-6) and Talks & Ratings
+     (fo-8) with REAL farm_visits data, or a clean empty state when the
+     officer has no activity yet. Ratings / scheduled-visits / call-minutes
+     have no backend table, so those always render an empty state.
+  ════════════════════════════════════════════════════════════════════════ */
+  function foEsc(s){ return String(s==null?'':s).replace(/[&<>"]/g,function(ch){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[ch]; }); }
+  function foEmpty(msg){
+    var d=document.createElement('div');
+    d.className='fo-empty';
+    d.style.cssText='text-align:center;color:var(--ink-60,#8a94a0);font-size:12px;font-weight:500;padding:20px 14px;line-height:1.5';
+    d.textContent=msg;
+    return d;
+  }
+  function foMonthStartISO(){ var n=new Date(); return new Date(n.getFullYear(),n.getMonth(),1).toISOString(); }
+  function foMonthLabel(){ var n=new Date(); var MO=['JANUARY','FEBRUARY','MARCH','APRIL','MAY','JUNE','JULY','AUGUST','SEPTEMBER','OCTOBER','NOVEMBER','DECEMBER']; return MO[n.getMonth()]+' '+n.getFullYear(); }
+  async function foFetchVisits(profile, sinceISO){
+    var sb=window.__sb; if(!sb||!profile||!profile.id) return [];
+    try{
+      var q=sb.from('farm_visits')
+        .select('farmer_name,district,sub_county,crop,issue_observed,advice_given,urgency,status,created_at')
+        .eq('fo_id',profile.id).order('created_at',{ascending:false});
+      if(sinceISO) q=q.gte('created_at',sinceISO);
+      var r=await q; return r.data||[];
+    }catch(e){ return []; }
+  }
+
+  /* ── Home (fo-2): today's schedule has no backend → empty state ── */
+  async function renderFOHomeExtras(profile){
+    var c=scr('fo-2'); if(!c||!profile) return;
+    /* Date header + scheduled count */
+    var hdr=c.querySelector('.scroll > div[style*="justify-content:space-between"]');
+    if(hdr){
+      var spans=hdr.querySelectorAll('span'); var now=new Date();
+      if(spans[0]) spans[0].textContent='TODAY · '+now.toLocaleString('en-UG',{weekday:'short'}).toUpperCase()+' '+now.getDate()+' '+now.toLocaleString('en-UG',{month:'short'}).toUpperCase();
+      if(spans[1]) spans[1].textContent='No visits scheduled';
+    }
+    /* Remove the 3 placeholder schedule-items + any prior empty state */
+    Array.from(c.querySelectorAll('.schedule-item, .fo-empty-home')).forEach(function(el){el.remove();});
+    var emptyH=foEmpty('No scheduled visits today. Use "Log a farm visit" to record one.');
+    emptyH.className+=' fo-empty-home';
+    if(hdr&&hdr.parentNode) hdr.parentNode.insertBefore(emptyH, hdr.nextSibling);
+    /* Rating KPI in the strip */
+    var ratEl=c.querySelector('.kpi-strip .row > div:nth-child(3) .k');
+    if(ratEl) ratEl.textContent= profile.rating ? ('★ '+profile.rating) : '★ —';
+  }
+
+  /* ── Dashboard (fo-3): real month stats + 6-week chart; ratings empty ── */
+  async function renderFODashboard(profile){
+    var c=scr('fo-3'); if(!c||!profile) return;
+    var mo=c.querySelector('.perf-hero .mo'); if(mo) mo.textContent=foMonthLabel()+' · SO FAR';
+    var visits=await foFetchVisits(profile, foMonthStartISO());
+    var uniqueFarmers=new Set(visits.map(function(v){return v.farmer_name;})).size;
+    var big=c.querySelector('.big-num'); if(big) big.textContent=uniqueFarmers+' farmer'+(uniqueFarmers===1?'':'s')+' helped';
+    var vals=c.querySelectorAll('.perf-hero .sub .val');
+    if(vals[0]) vals[0].textContent= profile.rating ? ('★ '+profile.rating) : '★ —';
+    if(vals[1]) vals[1].textContent= visits.length;
+    if(vals[2]) vals[2].textContent= '—'; /* call minutes — no backend */
+    /* Rating distribution — no ratings backend → all zero */
+    var distHdr=Array.from(c.querySelectorAll('div')).find(function(d){return /RATING DISTRIBUTION/.test(d.textContent)&&d.children.length===0;});
+    if(distHdr) distHdr.textContent='RATING DISTRIBUTION · 0 rated calls';
+    c.querySelectorAll('.rating-dist-row').forEach(function(row){
+      var fill=row.querySelector('.rd-fill'); if(fill) fill.style.width='0%';
+      var cnt=row.querySelector('.rd-count'); if(cnt) cnt.textContent='0';
+    });
+    /* 6-week bar chart from real visit counts (most recent week last) */
+    var cols=c.querySelectorAll('.bar-chart .bars .col');
+    if(cols.length){
+      var all=await foFetchVisits(profile, null);
+      var now=new Date(); var buckets=[0,0,0,0,0,0];
+      all.forEach(function(v){
+        var wk=Math.floor((now-new Date(v.created_at))/(7*864e5));
+        if(wk>=0&&wk<6) buckets[5-wk]++;
+      });
+      var max=Math.max(1,Math.max.apply(null,buckets));
+      cols.forEach(function(col,i){
+        var bar=col.querySelector('.bar'); var v=col.querySelector('.bar .v');
+        var val=buckets[i]||0;
+        if(bar) bar.style.height=Math.round((val/max)*82)+'%';
+        if(v) v.textContent=val;
+      });
+    }
+    /* Coverage chips from the officer's covered districts */
+    var covWrap=c.querySelector('.card div[style*="flex-wrap:wrap"]');
+    if(covWrap){
+      var dists=Array.isArray(profile.fo_districts_covered)?profile.fo_districts_covered:
+                (profile.fo_districts_covered?String(profile.fo_districts_covered).split(/[,·]/):[]);
+      dists=dists.map(function(s){return s.trim();}).filter(Boolean);
+      covWrap.innerHTML= dists.length ? dists.map(function(d){return '<span class="chip teal">'+foEsc(d)+'</span>';}).join('')
+                                      : '<span class="chip teal" style="opacity:.6">No districts set</span>';
+    }
+  }
+
+  /* ── My Visits (fo-6): real list or empty state ── */
+  async function renderFOVisits(profile){
+    var c=scr('fo-6'); if(!c||!profile) return;
+    var scroll=c.querySelector('.scroll'); if(!scroll) return;
+    Array.from(scroll.querySelectorAll('.visit-item, .fo-empty')).forEach(function(el){el.remove();});
+    var visits=await foFetchVisits(profile, foMonthStartISO());
+    var cntChip=c.querySelector('.filter-row .chip.orange');
+    if(cntChip) cntChip.textContent='This month · '+visits.length;
+    if(!visits.length){ scroll.appendChild(foEmpty('No visits logged yet. Tap "Log visit" to record your first farm visit.')); return; }
+    visits.forEach(function(v){
+      var d=new Date(v.created_at);
+      var item=document.createElement('div'); item.className='visit-item';
+      item.innerHTML='<div class="vi-top"><div><div class="vi-farmer">'+foEsc(v.farmer_name||'Farmer')+'</div>'+
+        '<div class="vi-date">'+d.toLocaleDateString('en-UG',{day:'numeric',month:'short',year:'numeric'})+'</div></div>'+
+        '<span class="chip teal">'+foEsc(v.status||'logged')+'</span></div>'+
+        '<div class="vi-chip-row">'+(v.crop?'<span class="chip teal">'+foEsc(v.crop)+'</span>':'')+
+        (v.district?'<span class="chip" style="background:rgba(21,97,109,.1);color:var(--teal);font-size:9px">'+foEsc(v.district)+'</span>':'')+'</div>'+
+        ((v.advice_given||v.issue_observed)?'<div class="vi-note">'+foEsc(v.advice_given||v.issue_observed)+'</div>':'');
+      scroll.appendChild(item);
+    });
+  }
+
+  /* ── Talks & Ratings (fo-8): no backend → empty state ── */
+  function renderFORatings(profile){
+    var c=scr('fo-8'); if(!c) return;
+    Array.from(c.querySelectorAll('.call-log-item, .fo-empty')).forEach(function(el){el.remove();});
+    /* Summary card → zeroed */
+    var sumCard=c.querySelector('.card.cream');
+    if(sumCard){
+      var big=sumCard.querySelector('div[style*="font-size:30px"]');
+      if(big) big.innerHTML='—<span style="font-size:12px;color:var(--ink-60);font-weight:500">/5</span>';
+      var lines=sumCard.querySelectorAll('div[style*="font-family"]');
+      if(lines[0]) lines[0].textContent='No ratings yet';
+      var month=sumCard.querySelector('div[style*="text-transform:uppercase"]');
+      if(month) month.textContent=foMonthLabel();
+    }
+    c.querySelectorAll('.filter-row .chip').forEach(function(ch){
+      if(/All/.test(ch.textContent)) ch.textContent='All · 0';
+      else if(/Rated/.test(ch.textContent)) ch.textContent='Rated · 0';
+      else if(/Unrated/.test(ch.textContent)) ch.textContent='Unrated · 0';
+    });
+    var scroll=c.querySelector('.scroll');
+    if(scroll) scroll.appendChild(foEmpty('No call ratings yet. Farmer ratings from "Talk to an Expert" calls will appear here.'));
+  }
+
+  function renderFODataScreen(id){
+    var p=window.__amProfile; if(!p) return;
+    if(id==='fo-2') renderFOHomeExtras(p);
+    else if(id==='fo-3') renderFODashboard(p);
+    else if(id==='fo-6') renderFOVisits(p);
+    else if(id==='fo-8') renderFORatings(p);
+  }
+
+  /* ════════════════════════════════════════════════════════════════════════
      BOOTSTRAP
   ════════════════════════════════════════════════════════════════════════ */
   function bootFOExtras(){
@@ -16046,8 +16252,9 @@
       var orig = window.protoShow;
       window.protoShow = function(id, opts){
         orig(id, opts);
-        if(id === 'fo-9') setTimeout(wireFO9Toggles, 80);
+        if(id === 'fo-9') setTimeout(function(){ wireFO9Toggles(); populateFO9Profile(window.__amProfile); }, 80);
         if(id === 'fo-3') setTimeout(wireFO3Exports,  80);
+        if(id === 'fo-2' || id === 'fo-3' || id === 'fo-6' || id === 'fo-8') setTimeout(function(){ renderFODataScreen(id); }, 120);
       };
     }, 100);
   }
