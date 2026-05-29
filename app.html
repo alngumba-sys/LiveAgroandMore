@@ -14575,17 +14575,20 @@
       if (!s.data || !s.data.session) return;
       var authUser = s.data.session.user;
       var uid = authUser.id;
-      var p = await sb.from('app_users').select('*').eq('id', uid).single();
-      if (p.data) {
-        window.__amProfile = p.data;
-        goHome(p.data.role);
+      /* Look up by auth_user_id (NOT id): since the multi_role migration,
+         app_users.id is a random PK and auth_user_id is what equals the
+         auth uid. A user may hold several role rows, so don't use .single(). */
+      var p = await sb.from('app_users').select('*').eq('auth_user_id', uid).order('created_at', { ascending: true });
+      if (p.data && p.data.length) {
+        window.__amProfile = p.data[0];
+        goHome(p.data[0].role);
         return;
       }
       /* No app_users row — the upsert may have been silently blocked on first signup.
          Re-attempt saveProfile, then route via auth user_metadata as fallback. */
       try { await saveProfile(authUser); } catch(_) {}
-      var p2 = await sb.from('app_users').select('*').eq('id', uid).single();
-      if (p2.data) { window.__amProfile = p2.data; goHome(p2.data.role); return; }
+      var p2 = await sb.from('app_users').select('*').eq('auth_user_id', uid).order('created_at', { ascending: true });
+      if (p2.data && p2.data.length) { window.__amProfile = p2.data[0]; goHome(p2.data[0].role); return; }
       /* Still no row (RLS blocking client writes) — build in-memory profile from
          auth user_metadata so the agent/FO at least sees their own name. */
       var meta = authUser.user_metadata || {};
