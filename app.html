@@ -13426,12 +13426,26 @@
 
   /* ---- Wire OTP screen (once) ---- */
   function wireOtp() {
-    if (otpWired) return;
-    otpWired = true;
     var container = scr('onboarding-8');
     if (!container) return;
 
     var row = container.querySelector('.otp-row');
+
+    /* Always reset the verify button + boxes on (re)entry — even if the OTP
+       screen was already wired during a previous cycle. On a successful
+       verify the button is left reading "Verifying…" and disabled as we
+       navigate away; without this reset it stays stuck in that state when
+       the user returns to sign up or log in again. */
+    var rb = container.querySelector('.btn.primary');
+    if (rb) { rb.disabled = false; rb.textContent = 'Verify & Continue'; }
+    if (otpWired) {
+      if (row) row.querySelectorAll('input').forEach(function(b){ b.value = ''; b.style.borderColor = '#E0E0E0'; });
+      var pe = container.querySelector('.otp-inline-err');
+      if (pe) { pe.textContent = ''; pe.style.opacity = '0'; }
+      return;
+    }
+    otpWired = true;
+
     if (row) {
       row.innerHTML = '';
       for (var i = 0; i < 6; i++) {

@@ -10072,13 +10072,13 @@ window.exportNotifCSV = function() {
   toast('CSV downloaded.', 'success');
 };
 
-function updateCharCount(inputId, countId, max) {
+window.updateCharCount = function(inputId, countId, max) {
   const val = document.getElementById(inputId)?.value || '';
   const ct  = document.getElementById(countId);
   if (!ct) return;
   ct.textContent = `${val.length}/${max}`;
   ct.style.color = val.length > max ? 'var(--rust)' : 'var(--ink-40)';
-}
+};
 
 window.saveNotif = async function() {
   const id    = document.getElementById('nf-id').value;
@@ -11861,7 +11861,7 @@ window.openOnboardOfficer = function() {
   document.getElementById('of-district').value = '';
   document.getElementById('of-off-day').value  = '';
   document.getElementById('of-commission').value = '0';
-  const r = document.querySelector('input[name="of-status"][value="active"]');
+  const r = document.querySelector('input[name="of-status"][value="pending_approval"]');
   if (r) r.checked = true;
   document.getElementById('onboard-officer-drawer').classList.add('open');
   document.getElementById('onboard-officer-overlay').classList.add('open');
