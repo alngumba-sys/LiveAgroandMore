@@ -9482,7 +9482,28 @@
         .eq('agent_id', profile.id)
         .gte('created_at', monthStart())
         .order('created_at', { ascending: false });
-      if (!res.data || !res.data.length) return;
+      if (!res.data) return;
+
+      /* Always clear the static mockup cards (and any prior render / empty
+         state) BEFORE deciding what to show — otherwise a brand-new agent
+         keeps seeing the hardcoded sample order cards. */
+      container.querySelectorAll('.agent-order-card, .ag-empty').forEach(function(el){ el.remove(); });
+      if (!res.data.length) {
+        var sumLine0 = container.querySelector('.scroll > div[style*="color:var(--ink-60)"]');
+        if (sumLine0) sumLine0.textContent = '0 orders this month';
+        var seg0 = container.querySelector('.seg-agent .so.on');
+        if (seg0) seg0.textContent = 'Orders · 0';
+        var emptyScroll = container.querySelector('.scroll');
+        if (emptyScroll) {
+          var e0 = document.createElement('div');
+          e0.className = 'ag-empty';
+          e0.style.cssText = 'text-align:center;color:var(--ink-60,#8a94a0);font-size:12px;font-weight:500;padding:20px 14px;line-height:1.5';
+          e0.textContent = 'No orders yet. Tap "Order for a farmer" to place your first order and earn commission.';
+          var fab0 = emptyScroll.querySelector('.fab');
+          if (fab0) emptyScroll.insertBefore(e0, fab0); else emptyScroll.appendChild(e0);
+        }
+        return;
+      }
 
       var orders = res.data;
       var commRate = (profile.commission_rate != null ? profile.commission_rate : 5) / 100;
@@ -16235,6 +16256,109 @@
   }
 
   /* ════════════════════════════════════════════════════════════════════════
+     AGENT DATA SCREENS — real orders / referred-farmer data or empty states
+     on Home rank (agent-1), Leaderboard (agent-4), Commission (agent-5),
+     My Customers (agent-flows-5) and Payout History (agent-flows-8).
+  ════════════════════════════════════════════════════════════════════════ */
+  function agFmt(n){ return 'UGX ' + Math.round(n||0).toLocaleString('en-UG'); }
+  function foMonthTitle(){ var n=new Date(); var MO=['January','February','March','April','May','June','July','August','September','October','November','December']; return MO[n.getMonth()]+' '+n.getFullYear(); }
+  async function foFetchOrders(profile, sinceISO){
+    var sb=window.__sb; if(!sb||!profile||!profile.id) return [];
+    try{
+      var q=sb.from('orders').select('order_number,customer_name,customer_id,total_ugx,status,created_at').eq('agent_id',profile.id).order('created_at',{ascending:false});
+      if(sinceISO) q=q.gte('created_at',sinceISO);
+      var r=await q; return r.data||[];
+    }catch(e){ return []; }
+  }
+
+  function renderAgentHomeExtras(profile){
+    var c=scr('agent-1'); if(!c) return;
+    var rankCard=Array.from(c.querySelectorAll('.card.cream')).find(function(d){ return /leading Uganda|#\s*\d/.test(d.textContent); });
+    if(rankCard){
+      rankCard.style.border='1.5px solid var(--teal)';
+      rankCard.innerHTML='<div style="font-size:11.5px;color:var(--ink-90);line-height:1.5"><strong>Leaderboard</strong> · place orders for farmers to start earning commission and climb the monthly ranking.</div>';
+    }
+  }
+
+  function renderAgentLeaderboard(){
+    var c=scr('agent-4'); if(!c) return;
+    var podium=c.querySelector('.podium-wrap'); if(podium) podium.style.display='none';
+    var list=c.querySelector('.lb-list');
+    if(list && !list._emptied){ list._emptied=true; list.innerHTML=''; list.appendChild(foEmpty('The agent leaderboard appears once orders are flowing. Place orders to claim your spot.')); }
+  }
+
+  async function renderAgentCommission(profile){
+    var c=scr('agent-5'); if(!c) return;
+    var per=c.querySelector('.card.cream div[style*="font-family"]'); if(per) per.textContent=foMonthTitle();
+    var orders=await foFetchOrders(profile, foMonthStartISO());
+    var rate=(profile.commission_rate!=null?profile.commission_rate:5);
+    var sales=orders.reduce(function(s,o){ return s+(parseFloat(o.total_ugx)||0); },0);
+    var farmers=new Set(orders.map(function(o){ return o.customer_id; })).size;
+    var comm=Math.round(sales*rate/100);
+    var cards=c.querySelectorAll('.comm-card');
+    if(cards[0]){
+      var v=cards[0].querySelectorAll('.comm-v');
+      if(v[0]) v[0].textContent=rate+'%';
+      if(v[1]) v[1].textContent=agFmt(sales);
+      if(v[2]) v[2].textContent=orders.length;
+      if(v[3]) v[3].textContent=farmers;
+      if(v[4]) v[4].textContent=agFmt(comm);
+    }
+    if(cards[1]){
+      var wv=cards[1].querySelectorAll('.comm-v'); var wk=[0,0,0,0];
+      orders.forEach(function(o){ var day=new Date(o.created_at).getDate(); var idx=Math.min(3,Math.floor((day-1)/7)); wk[idx]+=parseFloat(o.total_ugx)||0; });
+      for(var i=0;i<4;i++){ if(wv[i]) wv[i].textContent=agFmt(wk[i]); }
+    }
+    var ps=c.querySelector('.payout-status');
+    if(ps) ps.innerHTML='<strong>💰 Payout status:</strong> commission is paid monthly to your registered payout account once your orders are confirmed.';
+  }
+
+  async function renderAgentCustomers(profile){
+    var c=scr('agent-flows-5'); if(!c||!profile) return;
+    var scroll=c.querySelector('.scroll'); if(!scroll) return;
+    Array.from(scroll.querySelectorAll('.customer-card, .fo-empty')).forEach(function(el){el.remove();});
+    var sb=window.__sb; var farmers=[];
+    if(sb&&profile.id){ try{ var r=await sb.from('app_users').select('full_name,phone,district,sub_county,created_at').eq('referral_agent_id',profile.id).order('created_at',{ascending:false}); farmers=r.data||[]; }catch(e){} }
+    var orders=await foFetchOrders(profile, null);
+    var sales=orders.reduce(function(s,o){ return s+(parseFloat(o.total_ugx)||0); },0);
+    var rate=(profile.commission_rate!=null?profile.commission_rate:5);
+    var stats=c.querySelectorAll('.cust-stats .ck');
+    if(stats[0]) stats[0].textContent=farmers.length;
+    if(stats[1]) stats[1].textContent=agFmt(sales);
+    if(stats[2]) stats[2].textContent=orders.length;
+    if(stats[3]) stats[3].textContent=agFmt(Math.round(sales*rate/100));
+    c.querySelectorAll('.tabs .t').forEach(function(t){ if(/All/.test(t.textContent)) t.textContent='All · '+farmers.length; });
+    if(!farmers.length){ scroll.appendChild(foEmpty('No customers yet. Register a farmer or place an order on their behalf to build your customer book.')); return; }
+    farmers.forEach(function(f){
+      var initials=(f.full_name||'?').split(' ').map(function(w){return w[0]||'';}).join('').slice(0,2).toUpperCase();
+      var card=document.createElement('div'); card.className='customer-card';
+      card.innerHTML='<div class="ava-c">'+foEsc(initials)+'</div>'+
+        '<div class="ci"><div class="cn">'+foEsc(f.full_name||'Farmer')+'</div>'+
+        '<div class="cp">'+foEsc(f.phone||'')+'</div>'+
+        '<div class="cl">'+foEsc([f.sub_county,f.district].filter(Boolean).join(', '))+'</div></div>'+
+        '<div style="text-align:right"><div class="count">—</div></div>';
+      scroll.appendChild(card);
+    });
+  }
+
+  function renderAgentPayouts(){
+    var c=scr('agent-flows-8'); if(!c) return;
+    Array.from(c.querySelectorAll('.payout-row, .fo-empty')).forEach(function(el){el.remove();});
+    var big=c.querySelector('.perf-hero .big-num'); if(big) big.textContent=agFmt(0);
+    var vals=c.querySelectorAll('.perf-hero .val'); if(vals[0]) vals[0].textContent='0'; if(vals[1]) vals[1].textContent=agFmt(0);
+    var scroll=c.querySelector('.scroll'); if(scroll) scroll.appendChild(foEmpty('No payouts yet. Your monthly commission payouts will be listed here once issued.'));
+  }
+
+  function renderAgentDataScreen(id){
+    var p=window.__amProfile; if(!p) return;
+    if(id==='agent-1') renderAgentHomeExtras(p);
+    else if(id==='agent-4') renderAgentLeaderboard();
+    else if(id==='agent-5') renderAgentCommission(p);
+    else if(id==='agent-flows-5') renderAgentCustomers(p);
+    else if(id==='agent-flows-8') renderAgentPayouts();
+  }
+
+  /* ════════════════════════════════════════════════════════════════════════
      BOOTSTRAP
   ════════════════════════════════════════════════════════════════════════ */
   function bootFOExtras(){
@@ -16255,6 +16379,7 @@
         if(id === 'fo-9') setTimeout(function(){ wireFO9Toggles(); populateFO9Profile(window.__amProfile); }, 80);
         if(id === 'fo-3') setTimeout(wireFO3Exports,  80);
         if(id === 'fo-2' || id === 'fo-3' || id === 'fo-6' || id === 'fo-8') setTimeout(function(){ renderFODataScreen(id); }, 120);
+        if(id && id.indexOf('agent') === 0) setTimeout(function(){ renderAgentDataScreen(id); }, 120);
       };
     }, 100);
   }
