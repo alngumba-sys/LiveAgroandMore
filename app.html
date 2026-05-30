@@ -17256,7 +17256,15 @@
         var village=((regInputs.village&&regInputs.village.value)||'').trim();
         var orig=submit.textContent; submit.disabled=true; submit.textContent='Registering…';
         try{
-          var rowData={ full_name:name, phone:phone, role:'farmer', status:'active', referral_agent_id:profile.id };
+          /* app_users.auth_user_id is NOT NULL (multi-role migration) but has no
+             FK to auth.users. An agent-registered farmer has no login, so we
+             give the row its own generated UUID to satisfy the constraint.
+             It's never a real auth UID, so it can't collide with any sign-in. */
+          var genUUID = (window.crypto && crypto.randomUUID) ? crypto.randomUUID()
+            : 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c){
+                var r = Math.random()*16|0, v = c==='x' ? r : (r&0x3|0x8); return v.toString(16);
+              });
+          var rowData={ auth_user_id:genUUID, full_name:name, phone:phone, role:'farmer', status:'active', referral_agent_id:profile.id };
           if(district) rowData.district=district;
           if(sub||village) rowData.sub_county=sub||village;
           var res=await sb.from('app_users').insert(rowData)
