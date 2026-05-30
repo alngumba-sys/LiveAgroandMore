@@ -10206,53 +10206,58 @@
   /* ── Populate Agent pending-approval screen (agent-flows-1) ──────────────── */
   function populateAgentPending(profile) {
     var container = scr('agent-flows-1'); if (!container) return;
-    /* If profile is missing or has no name (timing / missing DB row),
-       fetch from Supabase then re-run. */
-    if (!profile || !profile.full_name) {
-      var sb2 = window.__sb;
-      if (sb2) {
-        sb2.auth.getUser().then(function(u) {
-          if (!u.data || !u.data.user) return;
-          sb2.from('app_users').select('*').eq('auth_user_id', u.data.user.id).limit(1).maybeSingle()
-            .then(function(r) {
-              var p = r.data || profile;
-              if (!p && u.data.user.user_metadata) {
-                var m = u.data.user.user_metadata;
-                p = { id: u.data.user.id, full_name: m.full_name || '', phone: m.phone || '',
-                      home_outlet: m.home_outlet || null, role: m.role || 'agent',
-                      created_at: u.data.user.created_at };
-              }
-              if (p && p.full_name) { window.__amProfile = p; populateAgentPending(p); }
-            }).catch(function(){});
+    profile = profile || {};
+
+    /* Render the YOUR APPLICATION card from the best data available — the
+       app_users row, the in-session signup extras, then auth user_metadata
+       (what the agent entered at signup, which persists across sessions). This
+       guarantees Name / Phone / Home outlet / Applied show even when the DB
+       row can't be read. */
+    function render(extra) {
+      extra = extra || {};
+      var full   = foPickValue(profile.full_name, extra.full_name) || 'Agent';
+      var phone  = foPickValue(profile.phone, extra.phone);
+      var outlet = foPickValue(profile.home_outlet, extra.home_outlet, profile.district, extra.district);
+      var created = profile.created_at || extra.created_at;
+
+      var nameEl = container.querySelector('.app-bar .greet .name');
+      if (nameEl) nameEl.textContent = 'Welcome, ' + full;
+      var avEl = container.querySelector('.app-bar .avatar');
+      if (avEl) {
+        var ini = full.trim().split(/\s+/).map(function(p){ return p[0]||''; }).join('').slice(0,2).toUpperCase() || '?';
+        avEl.textContent = ini;
+      }
+      var rows = container.querySelectorAll('.card .info-row');
+      var data = {
+        'name':        full,
+        'phone':       phone  || '—',
+        'home outlet': outlet || '—',
+        'applied':     fmtAppliedDate(created)
+      };
+      rows.forEach(function(row) {
+        var k = (row.querySelector('.k')||{}).textContent || '';
+        var v = row.querySelector('.v'); if (!v) return;
+        var key = k.trim().toLowerCase();
+        if (data[key] != null) v.textContent = data[key];
+      });
+      var step = container.querySelector('.timeline .step:not(.active):not(.pending)');
+      if (step) { var sub = step.querySelector('.s'); if (sub) sub.textContent = fmtAppliedDate(created); }
+      return { full: full, phone: phone, outlet: outlet };
+    }
+
+    /* First paint: profile + in-session signup extras (no flash). */
+    var got = render(window.__amSignupExtras || {});
+
+    /* If anything is still missing, pull from auth user_metadata and re-render. */
+    if (!got.full || got.full === 'Agent' || !got.phone || !got.outlet) {
+      var sb = window.__sb;
+      if (sb && sb.auth && sb.auth.getUser) {
+        sb.auth.getUser().then(function(u) {
+          var meta = (u && u.data && u.data.user && u.data.user.user_metadata) || {};
+          if (u && u.data && u.data.user && !profile.created_at) profile.created_at = u.data.user.created_at;
+          render(meta);
         }).catch(function(){});
       }
-      return;
-    }
-    var nameEl = container.querySelector('.app-bar .greet .name');
-    if (nameEl) nameEl.textContent = 'Welcome, ' + (profile.full_name || 'Agent');
-    var avEl = container.querySelector('.app-bar .avatar');
-    if (avEl) {
-      var ini = (profile.full_name || '?').trim().split(/\s+/).map(function(p){ return p[0]||''; }).join('').slice(0,2).toUpperCase() || '?';
-      avEl.textContent = ini;
-    }
-    /* YOUR APPLICATION info-rows: Name, Phone, Home outlet, Applied */
-    var rows = container.querySelectorAll('.card .info-row');
-    var data = {
-      'name':         profile.full_name || '—',
-      'phone':        profile.phone || '—',
-      'home outlet':  profile.home_outlet || profile.district || '—',
-      'applied':      fmtAppliedDate(profile.created_at)
-    };
-    rows.forEach(function(row) {
-      var k = (row.querySelector('.k')||{}).textContent || '';
-      var v = row.querySelector('.v'); if (!v) return;
-      var key = k.trim().toLowerCase();
-      if (data[key] != null) v.textContent = data[key];
-    });
-    var step = container.querySelector('.timeline .step:not(.active):not(.pending)');
-    if (step) {
-      var sub = step.querySelector('.s');
-      if (sub) sub.textContent = fmtAppliedDate(profile.created_at);
     }
   }
 
@@ -17256,6 +17261,21 @@
         var village=((regInputs.village&&regInputs.village.value)||'').trim();
         var orig=submit.textContent; submit.disabled=true; submit.textContent='Registering…';
         try{
+          /* Resolve the agent's REAL app_users row id for referral_agent_id.
+             window.__amProfile can be an in-memory fallback (id = auth uid),
+             which would NOT match the RLS check on referral_agent_id, so fetch
+             the genuine row by auth_user_id. */
+          var agentId = profile.id;
+          try {
+            var who = await sb.auth.getUser();
+            var uid = who && who.data && who.data.user && who.data.user.id;
+            if (uid) {
+              var ar = await sb.from('app_users').select('id,role').eq('auth_user_id', uid);
+              var rows = (ar && ar.data) || [];
+              var agentRow = rows.filter(function(r){ return r.role === 'agent'; })[0] || rows[0];
+              if (agentRow && agentRow.id) agentId = agentRow.id;
+            }
+          } catch(e2) {}
           /* app_users.auth_user_id is NOT NULL (multi-role migration) but has no
              FK to auth.users. An agent-registered farmer has no login, so we
              give the row its own generated UUID to satisfy the constraint.
@@ -17264,7 +17284,7 @@
             : 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c){
                 var r = Math.random()*16|0, v = c==='x' ? r : (r&0x3|0x8); return v.toString(16);
               });
-          var rowData={ auth_user_id:genUUID, full_name:name, phone:phone, role:'farmer', status:'active', referral_agent_id:profile.id };
+          var rowData={ auth_user_id:genUUID, full_name:name, phone:phone, role:'farmer', status:'active', referral_agent_id:agentId };
           if(district) rowData.district=district;
           if(sub||village) rowData.sub_county=sub||village;
           var res=await sb.from('app_users').insert(rowData)
