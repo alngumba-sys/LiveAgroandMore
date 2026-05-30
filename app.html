@@ -9132,6 +9132,16 @@
             after.insertAdjacentElement('afterend', chip);
             after = chip;
           });
+          /* Multi-role accounts: offer a one-tap switch that re-opens the role
+             chooser (and re-persists the new choice). */
+          if (others.length && !holder.querySelector('.role-switch')) {
+            var sw = document.createElement('span');
+            sw.className = 'role role-extra role-switch';
+            sw.style.cssText = 'background:rgba(21,97,109,.16);color:var(--teal);margin-left:6px;cursor:pointer';
+            sw.textContent = 'Switch ⇄';
+            sw.addEventListener('click', function(){ if (window.__amOpenRoleSwitch) window.__amOpenRoleSwitch(); });
+            after.insertAdjacentElement('afterend', sw);
+          }
         }).catch(function(){});
       }
     }
@@ -14823,6 +14833,27 @@
     });
   }
 
+  /* ---- Active-role persistence for multi-role accounts ----
+     One login can hold several app_users rows (farmer + agent + …). We remember
+     which role the user last chose (keyed by auth uid) so a refresh doesn't
+     silently fall back to the oldest row (which is usually 'farmer'). */
+  function amGetStoredRole(uid) { try { return localStorage.getItem('am_active_role_' + uid) || ''; } catch(_) { return ''; } }
+  window.__amSetActiveRole = function(uid, role) { try { if (uid && role) localStorage.setItem('am_active_role_' + uid, role); } catch(_) {} };
+  /* Re-open the role chooser on demand (used by the Profile "Switch" control). */
+  window.__amOpenRoleSwitch = async function() {
+    if (!sb) return;
+    try {
+      var s = await sb.auth.getSession(); if (!s.data || !s.data.session) return;
+      var uid = s.data.session.user.id;
+      var r = await sb.from('app_users').select('*').eq('auth_user_id', uid).order('created_at', { ascending: true });
+      var rows = (r && r.data) || [];
+      if (rows.length > 1 && window.showRolePicker) {
+        window.__amAllProfiles = rows;
+        showRolePicker(rows, (window.__amProfile && window.__amProfile.role) || rows[0].role);
+      }
+    } catch(_) {}
+  };
+
   /* ---- Check existing session on load ---- */
   async function checkSession() {
     if (!sb) return;
@@ -14836,9 +14867,17 @@
          auth uid. A user may hold several role rows, so don't use .single(). */
       var p = await sb.from('app_users').select('*').eq('auth_user_id', uid).order('created_at', { ascending: true });
       if (p.data && p.data.length) {
-        window.__amProfile = p.data[0];
-        goHome(p.data[0].role);
-        return;
+        var rows = p.data;
+        /* Single role — straight in. */
+        if (rows.length === 1) { window.__amProfile = rows[0]; goHome(rows[0].role); return; }
+        /* Multi-role — honour the remembered choice; otherwise let the user
+           pick rather than defaulting to the oldest row (usually 'farmer'). */
+        var storedRole = amGetStoredRole(uid);
+        var chosen = storedRole ? rows.filter(function(r){ return r.role === storedRole; })[0] : null;
+        if (chosen) { window.__amProfile = chosen; goHome(chosen.role); return; }
+        window.__amAllProfiles = rows;
+        if (window.showRolePicker) { showRolePicker(rows, rows[0].role); return; }
+        window.__amProfile = rows[0]; goHome(rows[0].role); return;
       }
       /* No app_users row — the upsert may have been silently blocked on first signup.
          Re-attempt saveProfile, then route via auth user_metadata as fallback. */
@@ -17116,6 +17155,9 @@
         '</div>';
       card.addEventListener('click', function() {
         window.__amProfile = p;
+        /* Remember this choice so a refresh lands on the same role instead of
+           defaulting back to the oldest (farmer) row. */
+        try { if (p.auth_user_id && window.__amSetActiveRole) window.__amSetActiveRole(p.auth_user_id, p.role); } catch(_) {}
         overlay.style.display = 'none';
         if (window.goHome) window.goHome(p.role);
       });
