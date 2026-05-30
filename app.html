@@ -9552,6 +9552,21 @@
   function boot() {
     wrapForProfile();
     wireProfileLogout();
+    /* The initial route (handleHash) and the hashchange handler call the
+       *unwrapped* local showScreen, so the populate-on-show wrap never fires on
+       a direct load / refresh / hash navigation to #profile-1 — which leaves the
+       static "FARMER / —" mockup on screen. Populate explicitly for those paths.
+       populateProfileLanding self-heals (fetches the row by auth_user_id) even
+       when __amProfile isn't ready yet; we just wait for the Supabase client. */
+    var _ppTries = 0;
+    function populateIfProfile() {
+      if ((location.hash || '').replace(/^#/, '') !== 'profile-1') { _ppTries = 0; return; }
+      if (!window.__sb && _ppTries++ < 40) { setTimeout(populateIfProfile, 200); return; }
+      _ppTries = 0;
+      populateProfileLanding(window.__amProfile);
+    }
+    window.addEventListener('hashchange', populateIfProfile);
+    populateIfProfile();
   }
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', boot);
