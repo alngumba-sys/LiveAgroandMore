@@ -12360,11 +12360,34 @@
           var _subtotal = cartTotal();
           var _fee = _method.baseFee || 0;
           var _total = _subtotal + _fee;
+          /* ── Order attribution ────────────────────────────────────────────
+             When an AGENT places an order it must be tagged to the agent
+             (orders.agent_id) so commission / leaderboard / customer counts
+             work, and the CUSTOMER fields must record the farmer the agent is
+             buying for — not the agent. window.__amOrderFarmer holds the chosen
+             farmer (set on agent-6 or right after registering a farmer). With
+             no farmer selected the agent is buying for a walk-in: still tag the
+             agent so they earn commission, but mark the customer as walk-in.
+             Non-agent roles keep the original behaviour (customer = self). */
+          var _isAgent  = !!(profile && profile.role === 'agent');
+          var _farmer   = _isAgent ? (window.__amOrderFarmer || null) : null;
+          var _custId, _custName, _custPhone, _agentId = null;
+          if (_isAgent) {
+            _agentId   = profile.id;                 /* agent's app_users id (from checkSession) */
+            _custId    = _farmer ? (_farmer.id || null) : null;
+            _custName  = _farmer ? (_farmer.full_name || 'Farmer') : 'Walk-in customer';
+            _custPhone = _farmer ? (_farmer.phone || profile.phone || '') : (profile.phone || '');
+          } else {
+            _custId    = profile ? profile.id : null;
+            _custName  = profile ? profile.full_name : 'Guest';
+            _custPhone = profile ? profile.phone : '';
+          }
           // Insert order
           var orderRes=await sb.from('orders').insert({
-            customer_id:    profile ? profile.id : null,
-            customer_name:  profile ? profile.full_name : 'Guest',
-            customer_phone: profile ? profile.phone : '',
+            customer_id:    _custId,
+            customer_name:  _custName,
+            customer_phone: _custPhone,
+            agent_id:       _agentId,
             status:         'awaiting_payment',
             payment_method: selectedPayMethod,
             payment_proof_url: uploadedProofUrl,  // null for cash-on-collection
@@ -16580,7 +16603,7 @@
     var scroll=c.querySelector('.scroll'); if(!scroll) return;
     Array.from(scroll.querySelectorAll('.customer-card, .fo-empty')).forEach(function(el){el.remove();});
     var sb=window.__sb; var farmers=[];
-    if(sb&&profile.id){ try{ var r=await sb.from('app_users').select('full_name,phone,district,sub_county,created_at').eq('referral_agent_id',profile.id).order('created_at',{ascending:false}); farmers=r.data||[]; }catch(e){} }
+    if(sb&&profile.id){ try{ var r=await sb.from('app_users').select('full_name,phone,district,sub_county,created_at').eq('referral_agent_id',profile.id).eq('status','active').order('created_at',{ascending:false}); farmers=r.data||[]; }catch(e){} }
     var orders=await foFetchOrders(profile, null);
     var sales=orders.reduce(function(s,o){ return s+(parseFloat(o.total_ugx)||0); },0);
     var rate=(profile.commission_rate!=null?profile.commission_rate:5);

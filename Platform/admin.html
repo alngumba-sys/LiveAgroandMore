@@ -11040,8 +11040,8 @@ function renderAgentsContent(tab) {
             const rank = parseInt(podiumRank[i]);
             const avatarBg = podiumBg[i];
             const initials = (a.full_name||'?').split(' ').slice(0,2).map(w=>(w||'')[0]||'').join('').toUpperCase();
-            const salesStr = a.sales>0 ? 'UGX '+(a.sales/1e6).toFixed(1)+'M' : (rank===1?'UGX 12.4M':rank===2?'UGX 9.8M':'UGX 8.6M');
-            const orderStr = a.ordersCount > 0 ? a.ordersCount : (rank===1?48:rank===2?37:31);
+            const salesStr = a.sales>0 ? 'UGX '+(a.sales/1e6).toFixed(1)+'M' : 'UGX 0';
+            const orderStr = a.ordersCount || 0;
             return `
             <div style="display:flex;flex-direction:column;align-items:center;gap:6px;min-width:160px">
               ${rank===1?`<div style="margin-bottom:2px">${crownIcon}</div>`:'<div style="height:22px"></div>'}
@@ -11300,9 +11300,26 @@ window.filterAgentList = function(q) {
   });
 };
 
+/* Unique agent code, matching the admin create-agent form convention (AGT-####).
+   Avoids collisions against codes already loaded in memory. */
+function genAgentCode() {
+  const used = new Set([...(AGT.all||[]), ...(AGT.pending||[])]
+    .map(a => (a.agent_code||'').toUpperCase()).filter(Boolean));
+  let code;
+  do { code = 'AGT-' + String(Math.floor(1000 + Math.random() * 8999)); } while (used.has(code));
+  return code;
+}
+function _agentRowById(id) {
+  return [...(AGT.pending||[]), ...(AGT.all||[])].find(a => String(a.id) === String(id));
+}
+
 window.approveAgent = async function(id, name) {
   if (String(id).startsWith('fp')) { toast(`Demo data — connect Supabase to approve ${name}.`, 'info'); return; }
-  const { error } = await sb.from('app_users').update({ verified: true, status: 'active' }).eq('id', id);
+  /* Assign an agent code on approval if the applicant doesn't already have one. */
+  const _row = _agentRowById(id);
+  const _patch = { verified: true, status: 'active' };
+  if (!_row || !_row.agent_code) _patch.agent_code = genAgentCode();
+  const { error } = await sb.from('app_users').update(_patch).eq('id', id);
   if (error) { toast(error.message, 'error'); return; }
   toast(`${name} approved as agent.`, 'success');
   logAudit('Approved agent', { targetType:'app_user', targetId:id, notes:name });
@@ -11414,13 +11431,16 @@ window.executeAgentApprove = async function() {
   if (btn) btn.disabled = true;
   if (lbl) lbl.textContent = 'Approving…';
 
+  /* Assign an agent code on approval if the applicant doesn't already have one. */
+  const _arRow  = _agentRowById(_AR.id);
+  const _arCode = (!_arRow || !_arRow.agent_code) ? genAgentCode() : null;
   /* Try full payload first; fall back to core fields if approval_note column absent */
   let { error } = await sb.from('app_users')
-    .update({ verified: true, status: 'active', approval_note: note || null, updated_at: new Date().toISOString() })
+    .update({ verified: true, status: 'active', approval_note: note || null, ...(_arCode ? { agent_code: _arCode } : {}), updated_at: new Date().toISOString() })
     .eq('id', _AR.id);
   if (error) {
     ({ error } = await sb.from('app_users')
-      .update({ verified: true, status: 'active' })
+      .update({ verified: true, status: 'active', ...(_arCode ? { agent_code: _arCode } : {}) })
       .eq('id', _AR.id));
   }
   if (error) {
