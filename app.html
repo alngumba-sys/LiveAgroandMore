@@ -9040,22 +9040,32 @@
   async function populateProfileLanding(profile) {
     var container = scr('profile-1');
     if (!container) return;
+    profile = profile || {};
 
-    /* If profile has no name, re-fetch from DB — it may have been updated
-       by admin after the last login (ensureFullProfile only re-fetches if
-       the district field is literally undefined, so we bypass it here). */
-    if (!profile.full_name) {
+    /* Self-heal: when the profile is missing, or is the minimal in-memory
+       fallback (no id / created_at / name — which is what leaves the static
+       "FARMER" badge and "—" stats showing), re-fetch the real row(s) for
+       this auth user. For a multi-role user we prefer the currently-active
+       role so the badge reflects who is actually signed in (e.g. a Field
+       Officer is never mislabelled as a Farmer). */
+    if (!profile.full_name || !profile.id || !profile.created_at) {
       var sb = window.__sb;
       if (sb) {
         try {
           var sess = await sb.auth.getSession();
           if (sess.data && sess.data.session) {
-            var fresh = await sb.from('app_users').select('*').eq('auth_user_id', sess.data.session.user.id).limit(1).maybeSingle();
-            if (fresh.data) { profile = fresh.data; window.__amProfile = fresh.data; }
+            var fres = await sb.from('app_users').select('*').eq('auth_user_id', sess.data.session.user.id);
+            var rows = (fres && fres.data) || [];
+            if (rows.length) {
+              var activeRole = profile.role || (window.__amProfile && window.__amProfile.role);
+              var picked = rows.filter(function(r){ return r.role === activeRole; })[0] || rows[0];
+              profile = picked; window.__amProfile = picked;
+            }
           }
         } catch(_) {}
       }
     }
+    if (!profile || !profile.id) { /* nothing to show yet, leave placeholders */ }
 
     /* Avatar initials + colour */
     var ava = container.querySelector('.ava-xxl');
@@ -9138,22 +9148,39 @@
       metaSpans[3].textContent = ph;
     }
 
-    /* Member since */
-    if (profile.created_at) {
-      var since = new Date(profile.created_at).toLocaleDateString('en-UG', { month: 'short', year: '2-digit' });
-      var sinceEl = container.querySelector('.prof-stats .prof-stat:first-child .k');
-      if (sinceEl) sinceEl.textContent = since;
+    /* Member since — show the join date AND time */
+    var sinceEl = container.querySelector('.prof-stats .prof-stat:first-child .k');
+    if (sinceEl) {
+      if (profile.created_at) {
+        var dCreated = new Date(profile.created_at);
+        sinceEl.textContent =
+          dCreated.toLocaleDateString('en-GB', { day:'2-digit', month:'short', year:'numeric' }) +
+          ' · ' + dCreated.toLocaleTimeString('en-GB', { hour:'2-digit', minute:'2-digit' });
+      } else {
+        sinceEl.textContent = '—';
+      }
     }
 
-    /* Orders count */
-    try {
-      var sb = window.__sb; if (!sb || !profile.id) return;
-      var r = await sb.from('orders').select('id', { count: 'exact' }).eq('customer_id', profile.id);
-      if (r.count !== null) {
-        var ordEl = container.querySelector('.prof-stats .prof-stat:nth-child(2) .k');
-        if (ordEl) ordEl.textContent = r.count;
-      }
-    } catch(e) {}
+    /* Orders placed + Talks with experts — real counts, default to 0 (never "—"
+       once we have a profile). Orders come from the orders table; "talks" are
+       the farm visits an expert logged against this person's phone. */
+    var ordEl  = container.querySelector('.prof-stats .prof-stat:nth-child(2) .k');
+    var talkEl = container.querySelector('.prof-stats .prof-stat:nth-child(3) .k');
+    if (profile.id) {
+      if (ordEl)  ordEl.textContent  = '0';
+      if (talkEl) talkEl.textContent = '0';
+      try {
+        var sbStats = window.__sb;
+        if (sbStats) {
+          var ro = await sbStats.from('orders').select('id', { count:'exact', head:true }).eq('customer_id', profile.id);
+          if (ordEl && (ro.count || ro.count === 0)) ordEl.textContent = ro.count;
+          if (profile.phone && !String(profile.phone).startsWith('ph-')) {
+            var rt = await sbStats.from('farm_visits').select('id', { count:'exact', head:true }).eq('farmer_phone', profile.phone);
+            if (talkEl && (rt.count || rt.count === 0)) talkEl.textContent = rt.count;
+          }
+        }
+      } catch(e) {}
+    }
 
     /* Update outlet row subtitle with district */
     var outletRow = container.querySelector('.set-row:nth-child(2) .st');
@@ -9475,9 +9502,11 @@
       orig(id, opts);
       var profile = window.__amProfile;
       if (id === 'profile-6') wireHelpSupport();
+      /* profile-1 self-heals (fetches the row) even if __amProfile is missing,
+         so it never gets stuck on the static FARMER / "—" mockup. */
+      if (id === 'profile-1') { populateProfileLanding(profile); return; }
       if (!profile) return;
-      if      (id === 'profile-1') populateProfileLanding(profile);
-      else if (id === 'profile-2') populateEditProfile(profile);
+      if (id === 'profile-2') populateEditProfile(profile);
     };
   }
 
