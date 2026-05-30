@@ -9469,30 +9469,69 @@
   var HQ_WA         = '+256700000000'; // AgroBot WhatsApp from settings
   var HELP_EMAIL    = 'help@agroandmore.ug';
 
+  /* Small confirmation toast — gives visible feedback when tel:/mailto: are
+     opened (especially on desktop, where the OS may not act on them). */
+  function helpToast(msg){
+    var t=document.createElement('div');
+    t.style.cssText='position:fixed;bottom:84px;left:50%;transform:translateX(-50%);background:#001524;color:#fff;padding:10px 18px;border-radius:20px;font-size:12.5px;font-weight:600;z-index:99999;max-width:86vw;text-align:center;box-shadow:0 4px 16px rgba(0,21,36,.25)';
+    t.textContent=msg; document.body.appendChild(t);
+    setTimeout(function(){ t.remove(); }, 2800);
+  }
+
   function wireHelpSupport() {
     var container = scr('profile-6'); if (!container) return;
     if (container.dataset.helpWired) return; container.dataset.helpWired = '1';
+
+    /* Live contact details — start with defaults, then override from the
+       settings table (keys: whatsapp_number, support_phone, support_email).
+       Handlers read this object at click time, so they pick up the real
+       values once the async fetch resolves. */
+    var contact = { phone: HQ_PHONE, wa: HQ_WA, email: HELP_EMAIL };
+
     container.querySelectorAll('.contact-card').forEach(function(card) {
       var icEl = card.querySelector('.ic');
       if (!icEl) return;
+      card.style.cursor = 'pointer';
       if (icEl.classList.contains('wa')) {
-        card.style.cursor = 'pointer';
         card.onclick = function() {
+          var num = String(contact.wa || contact.phone || '').replace(/[^\d]/g,'');
           var msg = 'Hello, I need help with the Agro and More app.';
-          window.open('https://wa.me/' + HQ_WA.replace(/[^\d]/g,'') + '?text=' + encodeURIComponent(msg), '_blank');
+          window.open('https://wa.me/' + num + '?text=' + encodeURIComponent(msg), '_blank');
         };
       } else if (icEl.classList.contains('call')) {
-        card.style.cursor = 'pointer';
-        card.onclick = function() { window.location.href = 'tel:' + HQ_PHONE; };
+        card.onclick = function() {
+          helpToast('Call us at ' + contact.phone);
+          window.location.href = 'tel:' + String(contact.phone).replace(/\s/g,'');
+        };
       } else if (icEl.classList.contains('mail')) {
-        card.style.cursor = 'pointer';
-        card.onclick = function() { window.location.href = 'mailto:' + HELP_EMAIL; };
+        card.onclick = function() {
+          helpToast('Email us at ' + contact.email);
+          window.location.href = 'mailto:' + contact.email;
+        };
       }
     });
+
     /* FAQ accordion — tap a question to expand/collapse its answer */
     container.querySelectorAll('.faq-card').forEach(function(card) {
       card.addEventListener('click', function() { card.classList.toggle('open'); });
     });
+
+    /* Pull the real contact details from settings (override defaults). */
+    var sb = window.__sb;
+    if (sb) {
+      sb.from('settings').select('key,value').in('key', ['whatsapp_number','support_phone','support_email'])
+        .then(function(r) {
+          (r.data || []).forEach(function(row) {
+            var v = row.value;
+            if (typeof v === 'string') v = v.replace(/^"+|"+$/g, '');
+            else if (v != null) v = String(v);
+            if (!v) return;
+            if (row.key === 'whatsapp_number') contact.wa    = v;
+            if (row.key === 'support_phone')   contact.phone = v;
+            if (row.key === 'support_email')   contact.email = v;
+          });
+        }).catch(function(){});
+    }
   }
 
   function wrapForProfile() {
