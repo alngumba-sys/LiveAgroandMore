@@ -1221,12 +1221,15 @@
 
   .faq-card{
     background:#FFF6E5;border-radius:12px;padding:12px 14px;margin-bottom:8px;cursor:pointer;
-    display:flex;justify-content:space-between;align-items:flex-start;gap:10px;
+    display:flex;flex-direction:column;gap:6px;
   }
+  .faq-card .faq-head{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;width:100%}
   .faq-card .q{font-size:12px;font-weight:700;color:var(--ink);line-height:1.3}
-  .faq-card .chev{color:var(--teal);flex-shrink:0}
-  .faq-card.open{background:#fff;border:1px solid var(--ink-10);flex-direction:column}
-  .faq-card .a{font-size:11px;color:var(--ink-60);line-height:1.5;margin-top:6px}
+  .faq-card .chev{color:var(--teal);flex-shrink:0;transition:transform .2s}
+  .faq-card.open{background:#fff;border:1px solid var(--ink-10)}
+  .faq-card.open .chev{transform:rotate(180deg)}
+  .faq-card .a{font-size:11px;color:var(--ink-60);line-height:1.5;margin-top:2px;display:none}
+  .faq-card.open .a{display:block}
 
   /* About */
   .about-hero{text-align:center;padding:16px 0 10px}
@@ -4311,7 +4314,7 @@
           <div style="font-size:11px;font-weight:700;color:var(--ink);text-transform:uppercase;letter-spacing:.05em;margin:10px 0 8px">POPULAR QUESTIONS</div>
 
           <div class="faq-card open">
-            <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px;width:100%">
+            <div class="faq-head">
               <div class="q">My payment was successful but my order shows "Awaiting payment" — what do I do?</div>
               <svg class="chev" width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
             </div>
@@ -4319,20 +4322,32 @@
           </div>
 
           <div class="faq-card">
-            <div class="q">How do I trace my coffee batch?</div>
-            <svg class="chev" width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
+            <div class="faq-head">
+              <div class="q">How do I trace my coffee batch?</div>
+              <svg class="chev" width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
+            </div>
+            <div class="a">Open the Trace tool and enter the Batch ID printed on your receipt or sack tag. You'll see the full journey — farm, pack-house, warehouse and export.</div>
           </div>
           <div class="faq-card">
-            <div class="q">What's the difference between mobile money and cash on collection?</div>
-            <svg class="chev" width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
+            <div class="faq-head">
+              <div class="q">What's the difference between mobile money and cash on collection?</div>
+              <svg class="chev" width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
+            </div>
+            <div class="a">Mobile money lets you pay instantly with MTN or Airtel and we reserve your items right away. Cash on collection means you pay at the outlet when you pick up — stock isn't held until you arrive.</div>
           </div>
           <div class="faq-card">
-            <div class="q">Can I change my phone number?</div>
-            <svg class="chev" width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
+            <div class="faq-head">
+              <div class="q">Can I change my phone number?</div>
+              <svg class="chev" width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
+            </div>
+            <div class="a">Your phone number is also your login, so it can't be changed in the app. Contact us on WhatsApp or by phone and we'll update it for you after verifying your identity.</div>
           </div>
           <div class="faq-card">
-            <div class="q">How do I become an Agent?</div>
-            <svg class="chev" width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
+            <div class="faq-head">
+              <div class="q">How do I become an Agent?</div>
+              <svg class="chev" width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
+            </div>
+            <div class="a">Tap your role on the Welcome screen or contact us to apply as an Agent. After you submit your details, your outlet manager reviews the application — approval usually takes 24–48 hours.</div>
           </div>
 
         </div></div>
@@ -4965,10 +4980,34 @@
           </div>
 
           <div class="cat-grid">
-            <div class="cat-card"><div class="cat-img olive"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#FFECD1" stroke-width="1.6"><path d="M12 3c-4 3-5 9-2 13 2-1 5-5 2-13z"/><path d="M10 16v4"/></svg></div><div class="cat-body"><div class="cat-name">Seeds</div><div class="cat-count">—</div></div></div>
-            <div class="cat-card"><div class="cat-img brown"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#FFECD1" stroke-width="1.6" stroke-linejoin="round"><rect x="6" y="5" width="12" height="16" rx="1"/><path d="M6 9h12"/></svg></div><div class="cat-body"><div class="cat-name">Fertilizers</div><div class="cat-count">—</div></div></div>
-            <div class="cat-card"><div class="cat-img orange"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#FFECD1" stroke-width="1.6" stroke-linejoin="round"><path d="M12 3l7 3v5c0 5-3 9-7 11-4-2-7-6-7-11V6z"/></svg></div><div class="cat-body"><div class="cat-name">Crop Protection</div><div class="cat-count">—</div></div></div>
-            <div class="cat-card"><div class="cat-img rust"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#FFECD1" stroke-width="1.6" stroke-linejoin="round"><path d="M4 20l5-5M14 3l3 3-9 9-3-3zM14 3l3-1 1 3"/></svg></div><div class="cat-body"><div class="cat-name">Tools</div><div class="cat-count">—</div></div></div>
+            <div class="cat-card">
+              <div class="cat-img olive">
+                <img data-cms-slot="cat-seeds" src="https://images.unsplash.com/photo-1530836369250-ef72a3f5cda8?auto=format&fit=crop&w=600&q=80" alt="Seeds" crossorigin="anonymous" referrerpolicy="no-referrer" onerror="this.style.display='none'">
+                <span class="ic-chip"><svg viewBox="0 0 24 24" width="17" height="17" fill="none"><path d="M12 22V13" stroke="var(--teal)" stroke-width="1.9" stroke-linecap="round"/><path d="M12 13Q12 7 18 5Q18 11 12 13z" stroke="var(--teal)" stroke-width="1.7" stroke-linejoin="round"/><path d="M12 13Q12 7 6 5Q6 11 12 13z" stroke="var(--teal)" stroke-width="1.7" stroke-linejoin="round"/></svg></span>
+              </div>
+              <div class="cat-body"><div class="cat-name">Seeds</div><div class="cat-count">—</div></div>
+            </div>
+            <div class="cat-card">
+              <div class="cat-img brown">
+                <img data-cms-slot="cat-fertilizers" src="https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=600&q=80" alt="Fertilizers" crossorigin="anonymous" referrerpolicy="no-referrer" onerror="this.style.display='none'">
+                <span class="ic-chip"><svg viewBox="0 0 24 24" width="17" height="17" fill="none"><path d="M8 7h8v11a1 1 0 01-1 1H9a1 1 0 01-1-1V7z" stroke="var(--teal)" stroke-width="1.8"/><path d="M10 7V5a2 2 0 014 0v2" stroke="var(--teal)" stroke-width="1.7" stroke-linecap="round"/><path d="M11 11h2M12 10v3" stroke="var(--teal)" stroke-width="1.4" stroke-linecap="round"/></svg></span>
+              </div>
+              <div class="cat-body"><div class="cat-name">Fertilizers</div><div class="cat-count">—</div></div>
+            </div>
+            <div class="cat-card">
+              <div class="cat-img orange">
+                <img data-cms-slot="cat-crop-protection" src="https://images.unsplash.com/photo-1519162808019-7de1683fa2ad?auto=format&fit=crop&w=600&q=80" alt="Crop Protection" crossorigin="anonymous" referrerpolicy="no-referrer" onerror="this.style.display='none'">
+                <span class="ic-chip"><svg viewBox="0 0 24 24" width="17" height="17" fill="none"><path d="M12 3L4 6.5v5.5c0 5 3.5 9 8 10.5 4.5-1.5 8-5.5 8-10.5V6.5L12 3z" stroke="var(--teal)" stroke-width="1.8" stroke-linejoin="round"/><path d="M9 12l2 2 4-4" stroke="var(--teal)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+              </div>
+              <div class="cat-body"><div class="cat-name">Crop Protection</div><div class="cat-count">—</div></div>
+            </div>
+            <div class="cat-card">
+              <div class="cat-img rust">
+                <img data-cms-slot="cat-tools" src="https://images.unsplash.com/photo-1589928964692-cae7b5c7c14e?auto=format&fit=crop&w=600&q=80" alt="Tools" crossorigin="anonymous" referrerpolicy="no-referrer" onerror="this.style.display='none'">
+                <span class="ic-chip"><svg viewBox="0 0 24 24" width="17" height="17" fill="none"><path d="M5 20L15 10M13 6l2-2 3 1 1 3-2 2-4-4z" stroke="var(--teal)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M5 20l2-2" stroke="var(--teal)" stroke-width="1.8" stroke-linecap="round"/></svg></span>
+              </div>
+              <div class="cat-body"><div class="cat-name">Tools</div><div class="cat-count">—</div></div>
+            </div>
           </div>
 
           <div class="card cream" style="margin-top:12px;border-left:3px solid var(--orange)">
@@ -9060,6 +9099,33 @@
     var roleLabel = { farmer: 'FARMER', agent: 'AGENT', field_officer: 'FIELD OFFICER', diaspora: 'DIASPORA' };
     if (roleEl) roleEl.textContent = roleLabel[profile.role] || (profile.role || 'USER').toUpperCase();
 
+    /* Multi-role recognition: a single user can hold several roles (e.g. a
+       farmer who is also an agent). Show every role they have — not just the
+       active one — as extra chips beside the main badge. */
+    if (roleEl && profile.auth_user_id) {
+      var sbRoles = window.__sb;
+      if (sbRoles) {
+        sbRoles.from('app_users').select('role').eq('auth_user_id', profile.auth_user_id).then(function(r){
+          var rows = (r && r.data) || [];
+          var seen = {}, others = [];
+          rows.forEach(function(x){
+            if (x.role && x.role !== profile.role && !seen[x.role]) { seen[x.role] = 1; others.push(x.role); }
+          });
+          var holder = roleEl.parentNode; if (!holder) return;
+          holder.querySelectorAll('.role-extra').forEach(function(c){ c.remove(); });
+          var after = roleEl;
+          others.forEach(function(rr){
+            var chip = document.createElement('span');
+            chip.className = 'role role-extra';
+            chip.style.cssText = 'background:rgba(0,21,36,.14);color:var(--ink);margin-left:6px';
+            chip.textContent = roleLabel[rr] || rr.toUpperCase();
+            after.insertAdjacentElement('afterend', chip);
+            after = chip;
+          });
+        }).catch(function(){});
+      }
+    }
+
     /* Location + phone */
     var metaSpans = container.querySelectorAll('.meta span');
     if (metaSpans[1]) {
@@ -9395,6 +9461,10 @@
         card.style.cursor = 'pointer';
         card.onclick = function() { window.location.href = 'mailto:' + HELP_EMAIL; };
       }
+    });
+    /* FAQ accordion — tap a question to expand/collapse its answer */
+    container.querySelectorAll('.faq-card').forEach(function(card) {
+      card.addEventListener('click', function() { card.classList.toggle('open'); });
     });
   }
 
@@ -9985,37 +10055,83 @@
     if (typeof v === 'string') return v.trim() || '—';
     return String(v);
   }
+  /* Return the first argument that holds a real value (non-empty string or
+     non-empty array). Lets us prefer the app_users row but fall back to the
+     signup extras / auth metadata when a column is blank. */
+  function foPickValue() {
+    for (var i = 0; i < arguments.length; i++) {
+      var v = arguments[i];
+      if (Array.isArray(v)) { if (v.length) return v; }
+      else if (v != null && String(v).trim() !== '') return v;
+    }
+    return null;
+  }
   function populateFOPending(profile) {
     var container = scr('fo-1'); if (!container || !profile) return;
-    /* Welcome header */
-    var nameEl = container.querySelector('.app-bar .greet .name');
-    if (nameEl) nameEl.textContent = 'Welcome, ' + (profile.full_name || 'Field Officer');
-    var avEl = container.querySelector('.app-bar .avatar');
-    if (avEl) {
-      var ini = (profile.full_name || '?').trim().split(/\s+/).map(function(p){ return p[0]||''; }).join('').slice(0,2).toUpperCase() || '?';
-      avEl.textContent = ini;
+
+    /* Render the YOUR APPLICATION card from the best data available. The
+       app_users row is the source of truth, but a freshly-submitted
+       application may not yet carry the FO columns on the in-memory profile,
+       so we also draw on the signup extras (same session) and, as a final
+       fallback, the auth user_metadata — which the officer entered themselves
+       at signup and which persists across sessions. This guarantees
+       University / Specialities / Districts show what the officer specified
+       instead of `—` placeholders. */
+    function render(extra) {
+      extra = extra || {};
+      var full  = foPickValue(profile.full_name, extra.full_name) || 'Field Officer';
+      var phone = foPickValue(profile.phone, extra.phone);
+      var uni   = foPickValue(profile.fo_university,        extra.fo_university);
+      var specs = foPickValue(profile.fo_specialities,      extra.fo_specialities);
+      var dists = foPickValue(profile.fo_districts_covered, extra.fo_districts_covered);
+
+      /* Welcome header */
+      var nameEl = container.querySelector('.app-bar .greet .name');
+      if (nameEl) nameEl.textContent = 'Welcome, ' + full;
+      var avEl = container.querySelector('.app-bar .avatar');
+      if (avEl) {
+        var ini = full.trim().split(/\s+/).map(function(p){ return p[0]||''; }).join('').slice(0,2).toUpperCase() || '?';
+        avEl.textContent = ini;
+      }
+      /* YOUR APPLICATION info-rows: Name, Phone, University, Specialities, Districts, Submitted */
+      var rows = container.querySelectorAll('.card .info-row');
+      var data = {
+        'name':         full,
+        'phone':        phone || '—',
+        'university':   uni   || '—',
+        'specialities': asListString(specs),
+        'districts':    asListString(dists),
+        'submitted':    fmtAppliedDate(profile.created_at)
+      };
+      rows.forEach(function(row) {
+        var k = (row.querySelector('.k')||{}).textContent || '';
+        var v = row.querySelector('.v'); if (!v) return;
+        var key = k.trim().toLowerCase();
+        if (data[key] != null) v.textContent = data[key];
+      });
+      /* Timeline — fill the "Application submitted" date sub-line */
+      var step = container.querySelector('.timeline .step:not(.active):not(.pending)');
+      if (step) {
+        var sub = step.querySelector('.s');
+        if (sub) sub.textContent = fmtAppliedDate(profile.created_at);
+      }
+      return { uni: uni, specs: specs, dists: dists };
     }
-    /* YOUR APPLICATION info-rows: order is Name, Phone, University, Specialities, Districts, Submitted */
-    var rows = container.querySelectorAll('.card .info-row');
-    var data = {
-      'name':         profile.full_name || '—',
-      'phone':        profile.phone || '—',
-      'university':   profile.fo_university || '—',
-      'specialities': asListString(profile.fo_specialities),
-      'districts':    asListString(profile.fo_districts_covered),
-      'submitted':    fmtAppliedDate(profile.created_at)
-    };
-    rows.forEach(function(row) {
-      var k = (row.querySelector('.k')||{}).textContent || '';
-      var v = row.querySelector('.v'); if (!v) return;
-      var key = k.trim().toLowerCase();
-      if (data[key] != null) v.textContent = data[key];
-    });
-    /* Timeline — fill the "Application submitted" date sub-line */
-    var step = container.querySelector('.timeline .step:not(.active):not(.pending)');
-    if (step) {
-      var sub = step.querySelector('.s');
-      if (sub) sub.textContent = fmtAppliedDate(profile.created_at);
+
+    /* First paint: profile + in-session signup extras (instant, no flash). */
+    var got = render(window.__amSignupExtras || {});
+
+    /* If University / Specialities / Districts are still missing, pull them
+       from auth user_metadata and re-render — covers a returning officer
+       whose pending row predates the FO columns being captured. */
+    if (!got.uni || !got.specs || !got.dists) {
+      var sb = window.__sb;
+      if (sb && sb.auth && sb.auth.getUser) {
+        sb.auth.getUser().then(function(gu) {
+          var meta = (gu && gu.data && gu.data.user && gu.data.user.user_metadata) || {};
+          render(meta);
+        }).catch(function(){});
+      }
     }
   }
 
@@ -11362,21 +11478,29 @@
     }catch(e){}
   }
 
-  /* ---- Wire category click on shop-1 ---- */
+  /* ---- Wire category click on the shop landings ----
+     Both the farmer shop (shop-1) and the agent "order on behalf of" shop
+     (agent-7) use the same .cat-card grid and feed the same shop-2 product
+     list. Without this, agent-7 cards navigate to shop-2 via their static
+     data-proto-go but never set selectedCat, so every category opened the
+     same (stale) list — which looked like "everything fetches Seeds". */
   function wireShopCategories(){
-    var shop1=scr('shop-1'); if(!shop1) return;
-    shop1.addEventListener('click', function(e){
-      var card=e.target.closest('.cat-card');
-      if(!card) return;
-      var nameEl=card.querySelector('.cat-name');
-      if(nameEl) selectedCat=nameEl.textContent.trim();
-      /* Reset any price/new-filter when entering a category */
-      _shopPriceFilter = false;
-      _shopNewFilter   = false;
-      /* Dynamically-created category cards are added after tag() runs at
-         init time, so they never get data-proto-go="shop-2" assigned.
-         Navigate manually for those cards; static cards are handled by tag(). */
-      if (!card.dataset.protoGo) window.protoShow('shop-2');
+    ['shop-1','agent-7'].forEach(function(sid){
+      var screen=scr(sid); if(!screen) return;
+      if(screen.dataset.catWired) return; screen.dataset.catWired='1';
+      screen.addEventListener('click', function(e){
+        var card=e.target.closest('.cat-card');
+        if(!card) return;
+        var nameEl=card.querySelector('.cat-name');
+        if(nameEl) selectedCat=nameEl.textContent.trim();
+        /* Reset any price/new-filter when entering a category */
+        _shopPriceFilter = false;
+        _shopNewFilter   = false;
+        /* Dynamically-created category cards are added after tag() runs at
+           init time, so they never get data-proto-go="shop-2" assigned.
+           Navigate manually for those cards; static cards are handled by tag(). */
+        if (!card.dataset.protoGo) window.protoShow('shop-2');
+      });
     });
   }
 
@@ -13890,7 +14014,7 @@
     var bankNameInp   = null;
     if (role === 'agent') {
       var outletField = findField(container, 'Home outlet');
-      var outletSel = outletField ? injectSelect(outletField, ['Kampala Nakawa outlet','Mpigi outlet','Mbarara outlet','Jinja outlet','Other']) : null;
+      var outletSel = outletField ? injectSelect(outletField, ['Mpigi Branch','Gomba Branch','Butambala Branch','Isingiro Branch','Nakapiripirit Branch','Moroto Branch','Soroti Branch']) : null;
       outletGetter = function() { return outletSel ? outletSel.value : ''; };
       /* Years + National ID are in a row; Account number + Branch are in a row too */
       var yearsChild = null, nidChild = null, acctChild = null, branchChild = null;
@@ -14127,8 +14251,8 @@
       ];
       var DIASPORA_OUTLETS = [
         '— Select outlet —',
-        'Kampala Nakawa outlet','Mpigi Town outlet','Mbarara outlet',
-        'Jinja outlet','Other'
+        'Mpigi Branch','Gomba Branch','Butambala Branch','Isingiro Branch',
+        'Nakapiripirit Branch','Moroto Branch','Soroti Branch'
       ];
 
       var dSectionCards = Array.from(container.querySelectorAll('.section-card'));
@@ -16086,7 +16210,7 @@
     /* The three .crop-multi blocks appear in markup order:
        [0] Specialities, [1] Districts, [2] Languages */
     var blocks = Array.from(container.querySelectorAll('.crop-multi'));
-    fill(blocks[0], toList(profile.fo_specialities),      null);
+    fill(blocks[0], toList(profile.fo_specialities),      '+ Add speciality');
     fill(blocks[1], toList(profile.fo_districts_covered), '+ Add district');
     fill(blocks[2], toList(profile.fo_languages),         '+ Add language');
 
@@ -16106,6 +16230,71 @@
         helped + ' farmer' + (helped === 1 ? '' : 's') +
         ' helped · member of Agro and More\'s approved agronomist network.';
     }
+  }
+
+  /* fo-9 — make Specialities / Districts / Languages editable + persistent.
+     The "+ Add …" chips were never wired, so the officer could not set any of
+     these. Tap "+ Add" to pick a value; tap an existing chip to remove it.
+     Changes save straight to app_users. */
+  var FO9_OPTS = {
+    fo_specialities:      ['Coffee','Hass Avocado','Maize','Beans','Matooke','Bananas','Livestock','Dairy','Poultry','Horticulture','Cassava','Groundnuts'],
+    fo_districts_covered: ['Mpigi','Gomba','Butambala','Isingiro','Nakapiripirit','Moroto','Soroti'],
+    fo_languages:         ['English','Luganda','Runyankole','Rukiga','Acholi','Luo','Lusoga','Ateso','Lugbara','Langi','Samia','Lumasaba','Swahili']
+  };
+  function fo9ChipValues(block){
+    return Array.from(block.querySelectorAll('.crop-chip.on')).map(function(c){
+      return c.textContent.replace('✓','').trim();
+    }).filter(Boolean);
+  }
+  function fo9Save(col, values){
+    var sb=window.__sb, profile=window.__amProfile;
+    if(!sb||!profile||!profile.id) return;
+    var patch={ updated_at:new Date().toISOString() }; patch[col]=values;
+    sb.from('app_users').update(patch).eq('id',profile.id).then(function(r){
+      if(!r.error){ profile[col]=values; }
+      else if(typeof toast==='function'){ toast('Could not save — please try again'); }
+    }).catch(function(){});
+  }
+  function fo9OpenPicker(addChip, options, onPick){
+    if(!options.length){ if(typeof toast==='function') toast('Nothing left to add'); return; }
+    var sel=document.createElement('select');
+    sel.style.cssText='position:fixed;z-index:99999;background:#fff;border:1.5px solid var(--teal,#15616D);border-radius:8px;padding:6px 10px;font-size:13px;font-family:inherit;cursor:pointer;box-shadow:0 4px 16px rgba(0,21,36,.2)';
+    var ph=document.createElement('option'); ph.value=''; ph.textContent='Select…'; ph.disabled=true; ph.selected=true; sel.appendChild(ph);
+    options.forEach(function(o){ var op=document.createElement('option'); op.value=o; op.textContent=o; sel.appendChild(op); });
+    var r=addChip.getBoundingClientRect();
+    sel.style.top=(r.bottom+window.scrollY+4)+'px';
+    sel.style.left=Math.max(8,r.left)+'px';
+    sel.size=Math.min(options.length+1,7);
+    document.body.appendChild(sel); sel.focus();
+    function close(){ if(document.body.contains(sel)) document.body.removeChild(sel); }
+    sel.addEventListener('change', function(){ var v=sel.value; close(); if(v) onPick(v); });
+    sel.addEventListener('blur', close);
+  }
+  function wireFO9Editors(){
+    var container=scr('fo-9'); if(!container) return;
+    var blocks=Array.from(container.querySelectorAll('.crop-multi'));
+    var cols=['fo_specialities','fo_districts_covered','fo_languages'];
+    blocks.slice(0,3).forEach(function(block,i){
+      if(block.dataset.editWired) return; block.dataset.editWired='1';
+      var col=cols[i];
+      block.addEventListener('click', function(e){
+        var chip=e.target.closest('.crop-chip'); if(!chip) return;
+        var isAdd = !chip.classList.contains('on') && /\+\s*add/i.test(chip.textContent);
+        if(isAdd){
+          var present=fo9ChipValues(block);
+          var avail=(FO9_OPTS[col]||[]).filter(function(o){ return present.indexOf(o)<0; });
+          fo9OpenPicker(chip, avail, function(val){
+            var nc=document.createElement('span'); nc.className='crop-chip on';
+            nc.innerHTML='<span class="tick">✓</span> '+val;
+            block.insertBefore(nc, chip);
+            fo9Save(col, fo9ChipValues(block));
+          });
+        } else if(chip.classList.contains('on')){
+          chip.remove();
+          fo9Save(col, fo9ChipValues(block));
+        }
+      });
+    });
   }
 
   /* ════════════════════════════════════════════════════════════════════════
@@ -16376,7 +16565,7 @@
       var orig = window.protoShow;
       window.protoShow = function(id, opts){
         orig(id, opts);
-        if(id === 'fo-9') setTimeout(function(){ wireFO9Toggles(); populateFO9Profile(window.__amProfile); }, 80);
+        if(id === 'fo-9') setTimeout(function(){ wireFO9Toggles(); populateFO9Profile(window.__amProfile); wireFO9Editors(); }, 80);
         if(id === 'fo-3') setTimeout(wireFO3Exports,  80);
         if(id === 'fo-2' || id === 'fo-3' || id === 'fo-6' || id === 'fo-8') setTimeout(function(){ renderFODataScreen(id); }, 120);
         if(id && id.indexOf('agent') === 0) setTimeout(function(){ renderAgentDataScreen(id); }, 120);
@@ -16812,7 +17001,7 @@
         '<div>'+
           '<div style="font-weight:700;font-size:15px;color:var(--ink,#001524);line-height:1.2">'+m.name+'</div>'+
           '<div style="font-size:12.5px;color:var(--ink-60,rgba(0,21,36,.6));margin-top:2px">'+m.desc+'</div>'+
-          (p.status==='pending_approval'?'<div style="font-size:11px;color:var(--orange,#E76F51);font-weight:600;margin-top:4px">⏳ Pending approval</div>':'')+
+          ((p.status==='pending_approval' && (p.role==='agent' || p.role==='field_officer'))?'<div style="font-size:11px;color:var(--orange,#E76F51);font-weight:600;margin-top:4px">⏳ Pending approval</div>':'')+
         '</div>';
       card.addEventListener('click', function() {
         window.__amProfile = p;
@@ -16827,6 +17016,265 @@
     overlay.style.display = '';
     overlay.scrollTop = 0;
   };
+})();
+</script>
+
+<script>
+/* ════════════════════════════════════════════════════════════════
+   AGENT · ORDER FOR A FARMER + REGISTER NEW FARMER (record-only)
+   The "Order for a farmer" flow (agent-6) and its registration screens
+   (agent-flows-2/4) shipped as static mockups, so the "+ Register a new
+   farmer" button did nothing. This makes the flow real:
+     • loads the agent's existing farmers into agent-6 (recent customers)
+     • wires "+ Register a new farmer" → registration form (agent-flows-2)
+     • turns agent-flows-2 into a working form that inserts an app_users
+       farmer row tagged to the agent (referral_agent_id) for the 5%
+       commission attribution — no OTP, no login for the farmer
+     • tracks the chosen farmer in window.__amOrderFarmer and shows it in
+       the "Ordering for" banner on the shop (agent-7)
+   ════════════════════════════════════════════════════════════════ */
+(function(){
+  function scr(id){ return document.querySelector('[data-proto-id="'+id+'"]'); }
+  function esc(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+  function toast(m){
+    if(window.showToast){ window.showToast(m); return; }
+    var t=document.createElement('div');
+    t.style.cssText='position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#001524;color:#fff;padding:10px 18px;border-radius:20px;font-size:12.5px;font-weight:600;z-index:99999;max-width:86vw;text-align:center';
+    t.textContent=m; document.body.appendChild(t);
+    setTimeout(function(){ t.remove(); }, 2600);
+  }
+  function initials(n){ return (n||'').trim().split(/\s+/).map(function(w){return w[0]||'';}).slice(0,2).join('').toUpperCase()||'?'; }
+  function normPhone(raw){
+    var d=(raw||'').replace(/[^0-9]/g,'');
+    if(d.indexOf('256')===0) d=d.slice(3);
+    if(d.indexOf('0')===0)   d=d.slice(1);
+    return d ? '+256'+d : '';
+  }
+
+  /* ── Recent customers on agent-6 ─────────────────────────────────── */
+  async function loadOrderForCustomers(){
+    var s=scr('agent-6'); if(!s) return;
+    var scroll=s.querySelector('.scroll'); if(!scroll) return;
+    var anchor=scroll.querySelector('.btn.secondary'); /* register button — cards go before it */
+    scroll.querySelectorAll('.customer-card').forEach(function(c){ c.remove(); });
+    var prev=scroll.querySelector('.ofc-empty'); if(prev) prev.remove();
+    var sb=window.__sb, profile=window.__amProfile;
+    if(!sb||!profile||!profile.id) return;
+    try{
+      var res=await sb.from('app_users')
+        .select('id,full_name,phone,district,sub_county,created_at')
+        .eq('referral_agent_id',profile.id).eq('status','active')
+        .order('created_at',{ascending:false}).limit(8);
+      var rows=res.data||[];
+      if(!rows.length){
+        var e=document.createElement('div');
+        e.className='ofc-empty';
+        e.style.cssText='font-size:12px;color:var(--ink-60);padding:4px 2px 8px';
+        e.textContent='No customers yet — register your first farmer below.';
+        if(anchor) scroll.insertBefore(e,anchor); else scroll.appendChild(e);
+        return;
+      }
+      var COLORS=['var(--teal)','var(--rust)','var(--orange)','#5B7DB1'];
+      rows.forEach(function(u,i){
+        var loc=[u.sub_county,u.district].filter(Boolean).join(' · ');
+        var card=document.createElement('div');
+        card.className='customer-card recent';
+        card.style.cursor='pointer';
+        card.innerHTML='<div class="ava-c" style="background:'+COLORS[i%COLORS.length]+'">'+esc(initials(u.full_name))+'</div>'+
+          '<div class="ci"><div class="cn">'+esc(u.full_name||'—')+'</div>'+
+          '<div class="cp">'+esc(u.phone||'')+'</div>'+
+          '<div class="cl">'+esc(loc||'—')+'</div></div>'+
+          '<span class="count">Order</span>';
+        card.addEventListener('click',function(){
+          window.__amOrderFarmer=u;
+          if(window.protoShow) window.protoShow('agent-7');
+        });
+        if(anchor) scroll.insertBefore(card,anchor); else scroll.appendChild(card);
+      });
+    }catch(e){ /* leave list empty on error */ }
+  }
+
+  /* ── "+ Register a new farmer" button → registration form ────────── */
+  function wireRegisterButton(){
+    var s=scr('agent-6'); if(!s||s.dataset.regBtnWired) return; s.dataset.regBtnWired='1';
+    var btn=s.querySelector('.btn.secondary');
+    if(btn){
+      btn.removeAttribute('data-proto-go');
+      btn.style.cursor='pointer';
+      btn.addEventListener('click',function(e){
+        e.preventDefault(); e.stopPropagation();
+        if(window.protoShow) window.protoShow('agent-flows-2');
+      });
+    }
+  }
+
+  /* ── Make the agent-flows-2 mockup a real, saving form ───────────── */
+  function fieldByLabel(container,label){
+    var fields=container.querySelectorAll('.field');
+    for(var i=0;i<fields.length;i++){
+      var l=fields[i].querySelector('.label');
+      if(l && l.textContent.toLowerCase().indexOf(label.toLowerCase())>=0) return fields[i];
+    }
+    return null;
+  }
+  function injectInput(field,opts){
+    if(!field) return null; opts=opts||{};
+    var box=field.querySelector('.input'); if(!box) return null;
+    if(box.querySelector('input')) return box.querySelector('input');
+    var prefix=box.querySelector('.prefix');
+    box.innerHTML=''; if(prefix) box.appendChild(prefix);
+    var inp=document.createElement('input');
+    inp.type=opts.type||'text';
+    if(opts.inputmode) inp.inputMode=opts.inputmode;
+    inp.placeholder=opts.placeholder||'';
+    inp.style.cssText='flex:1;border:none;outline:none;background:transparent;font-family:inherit;font-size:13px;color:var(--ink);min-width:0;width:100%;padding:0';
+    box.appendChild(inp);
+    return inp;
+  }
+  var regInputs=null;
+  function wireRegisterForm(){
+    var s=scr('agent-flows-2'); if(!s) return;
+    if(s.dataset.regWired){ return; }
+    s.dataset.regWired='1';
+
+    var nameInp =injectInput(fieldByLabel(s,'Full Name'),{placeholder:"Farmer's full name"});
+    var phoneInp=injectInput(fieldByLabel(s,'Phone'),{type:'tel',inputmode:'numeric',placeholder:'772 000 000'});
+    var villInp =injectInput(fieldByLabel(s,'Village'),{placeholder:'Village / Parish'});
+
+    /* District + Sub-county share a .field.row — inject into each child */
+    var distInp=null, subInp=null;
+    var row=s.querySelector('.field.row');
+    if(row){
+      Array.from(row.children).forEach(function(child){
+        var l=child.querySelector('.label'); var box=child.querySelector('.input');
+        if(!l||!box) return;
+        var t=l.textContent.toLowerCase();
+        var inp=document.createElement('input'); inp.type='text';
+        inp.style.cssText='flex:1;border:none;outline:none;background:transparent;font-family:inherit;font-size:13px;color:var(--ink);min-width:0;width:100%;padding:0';
+        box.innerHTML=''; box.appendChild(inp);
+        if(t.indexOf('district')>=0){ inp.placeholder='District'; distInp=inp; }
+        else if(t.indexOf('sub')>=0){ inp.placeholder='Sub-county'; subInp=inp; }
+      });
+    }
+
+    /* Age pills + crop chips are cosmetic (no app_users columns) — just toggle */
+    s.querySelectorAll('.pills .pill').forEach(function(p){
+      p.style.cursor='pointer';
+      p.addEventListener('click',function(){
+        s.querySelectorAll('.pills .pill').forEach(function(x){x.classList.remove('on');});
+        p.classList.add('on');
+      });
+    });
+    s.querySelectorAll('.crop-chip').forEach(function(c){
+      c.style.cursor='pointer';
+      c.addEventListener('click',function(){ c.classList.toggle('on'); });
+    });
+
+    regInputs={name:nameInp,phone:phoneInp,district:distInp,sub:subInp,village:villInp};
+
+    var submit=s.querySelector('.sticky-btn .btn.primary')||s.querySelector('.btn.primary');
+    if(submit){
+      submit.removeAttribute('data-proto-go');
+      submit.textContent='Register farmer';
+      submit.addEventListener('click',async function(){
+        var sb=window.__sb, profile=window.__amProfile;
+        if(!sb||!profile||!profile.id){ toast('Please sign in again.'); return; }
+        var name=((regInputs.name&&regInputs.name.value)||'').trim();
+        var phone=normPhone(regInputs.phone&&regInputs.phone.value);
+        if(!name){ toast("Enter the farmer's name"); regInputs.name&&regInputs.name.focus(); return; }
+        if(!phone||phone.length<12){ toast('Enter a valid phone number'); regInputs.phone&&regInputs.phone.focus(); return; }
+        var district=((regInputs.district&&regInputs.district.value)||'').trim();
+        var sub=((regInputs.sub&&regInputs.sub.value)||'').trim();
+        var village=((regInputs.village&&regInputs.village.value)||'').trim();
+        var orig=submit.textContent; submit.disabled=true; submit.textContent='Registering…';
+        try{
+          var rowData={ full_name:name, phone:phone, role:'farmer', status:'active', referral_agent_id:profile.id };
+          if(district) rowData.district=district;
+          if(sub||village) rowData.sub_county=sub||village;
+          var res=await sb.from('app_users').insert(rowData)
+            .select('id,full_name,phone,district,sub_county,created_at').single();
+          if(res.error){
+            var m=(res.error.message||'').toLowerCase();
+            if(res.error.code==='23505'||m.indexOf('duplicate')>=0||m.indexOf('unique')>=0){
+              toast('A farmer with this phone is already registered.');
+            } else {
+              toast('Could not register: '+(res.error.message||'please try again'));
+            }
+            submit.disabled=false; submit.textContent=orig; return;
+          }
+          window.__amOrderFarmer=res.data;
+          /* Clear the form for the next registration */
+          [regInputs.name,regInputs.phone,regInputs.district,regInputs.sub,regInputs.village].forEach(function(i){ if(i) i.value=''; });
+          submit.disabled=false; submit.textContent=orig;
+          if(window.protoShow) window.protoShow('agent-flows-4');
+        }catch(err){
+          toast('Could not register — please try again');
+          submit.disabled=false; submit.textContent=orig;
+        }
+      });
+    }
+  }
+
+  /* ── Success screen (agent-flows-4) — show the registered farmer ─── */
+  function fillSuccess(){
+    var s=scr('agent-flows-4'); if(!s) return;
+    var f=window.__amOrderFarmer; if(!f) return;
+    var h2=s.querySelector('.confirm h2'); if(h2) h2.textContent=(f.full_name||'Farmer')+' is now on Agro and More';
+    var card=s.querySelector('.confirm-card');
+    if(card){
+      var ava=card.querySelector('.ava-c'); if(ava) ava.textContent=initials(f.full_name);
+      var nameEl=card.querySelector('div[style*="Poppins"]');
+      if(nameEl){
+        nameEl.textContent=f.full_name||'—';
+        var subEl=nameEl.nextElementSibling;
+        if(subEl) subEl.textContent=([f.sub_county,f.district].filter(Boolean).join(' · '))||(f.phone||'');
+      }
+    }
+  }
+
+  /* ── Shop "Ordering for" banner (agent-7) ────────────────────────── */
+  function fillOrderingBanner(){
+    var s=scr('agent-7'); if(!s) return;
+    var f=window.__amOrderFarmer;
+    var t=s.querySelector('.obo-banner .obo-t');
+    var sub=s.querySelector('.obo-banner .obo-s');
+    if(f){
+      if(t)   t.textContent='Ordering for '+(f.full_name||'farmer');
+      if(sub) sub.textContent=([f.phone,f.district].filter(Boolean).join(' · '))||'Tagged to you';
+    } else {
+      if(t)   t.textContent='Ordering for a walk-in';
+      if(sub) sub.textContent='Tap Switch to choose a farmer';
+    }
+    var sw=s.querySelector('.obo-banner .switch-btn');
+    if(sw && !sw.dataset.swWired){
+      sw.dataset.swWired='1'; sw.style.cursor='pointer';
+      sw.addEventListener('click',function(){ if(window.protoShow) window.protoShow('agent-6'); });
+    }
+  }
+
+  /* ── Hook into the screen router ─────────────────────────────────── */
+  function wrap(){
+    if(window.__ofWrapped) return;
+    var orig=window.protoShow; if(typeof orig!=='function') return;
+    window.__ofWrapped=true;
+    window.protoShow=function(id,opts){
+      orig(id,opts);
+      try{
+        if(id==='agent-6'){ wireRegisterButton(); loadOrderForCustomers(); }
+        else if(id==='agent-flows-2'){ wireRegisterForm(); }
+        else if(id==='agent-flows-4'){ fillSuccess(); }
+        else if(id==='agent-7'){ fillOrderingBanner(); }
+      }catch(e){}
+    };
+  }
+  function boot(){
+    if(typeof window.protoShow!=='function'){ return setTimeout(boot,150); }
+    wrap();
+    var cur=(location.hash||'').replace(/^#/,'');
+    if(cur==='agent-6'){ wireRegisterButton(); loadOrderForCustomers(); }
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',boot);
+  else boot();
 })();
 </script>
 

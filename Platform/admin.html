@@ -2637,7 +2637,7 @@ table.dt .cell-bold { color: var(--ink); font-weight: 700; }
         <div id="ar-phone" style="font-size:13px;font-weight:600"></div>
       </div>
       <div>
-        <div style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-40);margin-bottom:3px">District</div>
+        <div id="ar-district-lbl" style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-40);margin-bottom:3px">District</div>
         <div id="ar-district" style="font-size:13px;font-weight:600"></div>
       </div>
       <div>
@@ -2645,7 +2645,7 @@ table.dt .cell-bold { color: var(--ink); font-weight: 700; }
         <div id="ar-applied" style="font-size:13px;font-weight:600"></div>
       </div>
       <div>
-        <div style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-40);margin-bottom:3px">National ID (NIN)</div>
+        <div id="ar-nin-lbl" style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-40);margin-bottom:3px">National ID (NIN)</div>
         <div id="ar-nin" style="font-size:13px;font-weight:600"></div>
       </div>
       <div id="ar-email-row">
@@ -2653,7 +2653,7 @@ table.dt .cell-bold { color: var(--ink); font-weight: 700; }
         <div id="ar-email" style="font-size:13px;font-weight:600"></div>
       </div>
       <div id="ar-outlet-row">
-        <div style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-40);margin-bottom:3px">Outlet / Area</div>
+        <div id="ar-outlet-lbl" style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-40);margin-bottom:3px">Outlet / Area</div>
         <div id="ar-outlet" style="font-size:13px;font-weight:600"></div>
       </div>
     </div>
@@ -11333,15 +11333,40 @@ window.openAgentReview = function(id) {
     : '—';
   const daysWaiting = row.created_at ? Math.floor((Date.now()-new Date(row.created_at))/864e5) : null;
 
+  /* Role-aware detail cells. Field Officers don't submit a single district,
+     National ID or outlet — they submit a University, Specialities and the
+     districts they cover — so relabel those three cells for FO applicants.
+     Agents keep District / National ID / Outlet (outlet lives in the
+     `home_outlet` column, NOT `outlet`/`area` which don't exist — that was
+     why Outlet/Area always showed blank). */
+  const isFO     = row.role === 'field_officer';
+  const joinList = v => Array.isArray(v) ? (v.length ? v.join(', ') : '') : (v || '');
+  const setCell  = (lblId, valId, label, value) => {
+    const l = document.getElementById(lblId); if (l) l.textContent = label;
+    const v = document.getElementById(valId);
+    if (v) v.textContent = (value != null && String(value).trim() !== '') ? value : '—';
+  };
+
   document.getElementById('ar-avatar').textContent     = initials;
   document.getElementById('ar-name').textContent       = row.full_name || '—';
-  document.getElementById('ar-meta').textContent       = `${row.district||'District unknown'} · Applied ${applied}${daysWaiting!=null?' ('+daysWaiting+'d ago)':''}`;
   document.getElementById('ar-phone').textContent      = row.phone    || '—';
-  document.getElementById('ar-district').textContent   = row.district || '—';
   document.getElementById('ar-applied').textContent    = applied;
-  document.getElementById('ar-nin').textContent        = row.nin || row.national_id || '—';
   document.getElementById('ar-email').textContent      = row.email    || '—';
-  document.getElementById('ar-outlet').textContent     = row.outlet   || row.area || '—';
+
+  if (isFO) {
+    const dcov = joinList(row.fo_districts_covered) || row.district;
+    document.getElementById('ar-meta').textContent = `${dcov||'District unknown'} · Applied ${applied}${daysWaiting!=null?' ('+daysWaiting+'d ago)':''}`;
+    setCell('ar-district-lbl','ar-district','Districts covered', dcov);
+    setCell('ar-nin-lbl',     'ar-nin',     'University',        row.fo_university);
+    setCell('ar-outlet-lbl',  'ar-outlet',  'Specialities',     joinList(row.fo_specialities));
+    const al = document.getElementById('ar-approve-label'); if (al) al.textContent = '✓ Approve as Field Officer';
+  } else {
+    document.getElementById('ar-meta').textContent = `${row.district||'District unknown'} · Applied ${applied}${daysWaiting!=null?' ('+daysWaiting+'d ago)':''}`;
+    setCell('ar-district-lbl','ar-district','District',          row.district);
+    setCell('ar-nin-lbl',     'ar-nin',     'National ID (NIN)', row.nin || row.national_id);
+    setCell('ar-outlet-lbl',  'ar-outlet',  'Outlet / Area',     row.home_outlet || row.outlet || row.area);
+    const al = document.getElementById('ar-approve-label'); if (al) al.textContent = '✓ Approve as Agent';
+  }
 
   /* ID photo */
   const photoUrl = row.id_photo_url || row.photo_url || '';

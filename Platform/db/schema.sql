@@ -11,7 +11,7 @@ CREATE EXTENSION IF NOT EXISTS "pg_trgm"; -- for fuzzy search
 -- ─── ENUMS ──────────────────────────────────────────────────
 CREATE TYPE staff_role         AS ENUM ('md','sales_manager','it_admin','agronomist','outlet_clerk');
 CREATE TYPE app_user_role      AS ENUM ('farmer','agent','field_officer','diaspora');
-CREATE TYPE user_status        AS ENUM ('pending_approval','active','blocked');
+CREATE TYPE user_status        AS ENUM ('pending_approval','active','blocked','inactive');
 CREATE TYPE order_status       AS ENUM ('pending','awaiting_payment','confirmed','dispatched','delivered','completed','cancelled');
 CREATE TYPE payment_method     AS ENUM ('mobile_money','cash','visa');
 CREATE TYPE content_lang       AS ENUM ('english','luganda','runyankole','ateso','acholi');
@@ -35,14 +35,13 @@ CREATE TABLE outlets (
 );
 
 INSERT INTO outlets (name, district, sub_county) VALUES
-  ('Mpigi Town',     'Mpigi',    'Mpigi Town Council'),
-  ('Butambala',      'Butambala','Gombe'),
-  ('Gomba',          'Gomba',    'Maddu'),
-  ('Masaka Central', 'Masaka',   'Masaka City'),
-  ('Kampala Nakawa', 'Kampala',  'Nakawa'),
-  ('Mbale',          'Mbale',    'Mbale City'),
-  ('Gulu',           'Gulu',     'Gulu City'),
-  ('Jinja',          'Jinja',    'Jinja City');
+  ('Mpigi Branch',         'Mpigi',         'Mpigi Town Council'),
+  ('Gomba Branch',         'Gomba',         'Maddu'),
+  ('Butambala Branch',     'Butambala',     'Gombe'),
+  ('Isingiro Branch',      'Isingiro',      'Isingiro Town Council'),
+  ('Nakapiripirit Branch', 'Nakapiripirit', 'Nakapiripirit Town Council'),
+  ('Moroto Branch',        'Moroto',        'Moroto Municipality'),
+  ('Soroti Branch',        'Soroti',        'Soroti City');
 
 -- ─── STAFF PROFILES ─────────────────────────────────────────
 CREATE TABLE staff_profiles (
