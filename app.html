@@ -17454,5 +17454,129 @@
 })();
 </script>
 
+<!-- =================== PROFILE LANDING · ROBUST SELF-CONTAINED POPULATOR ===================
+     The profile screen is normally filled by populateProfileLanding(), which is
+     wired through the window.protoShow wrap chain. That chain is fragile (a dozen
+     scripts re-wrap protoShow) and on some builds the profile branch never fires,
+     leaving the static "FARMER / —" mockup even though window.__amProfile is correct.
+     This block fills profile-1 independently of that chain: it triggers on load, on
+     hash navigation to #profile-1, and whenever the profile-1 screen becomes active
+     (MutationObserver on its class). It is idempotent with populateProfileLanding. -->
+<script>
+(function(){
+  'use strict';
+  function scr(){ return document.querySelector('[data-proto-id="profile-1"]'); }
+  var ROLE_LABEL = { farmer:'FARMER', agent:'AGENT', field_officer:'FIELD OFFICER', diaspora:'DIASPORA' };
+  var ROLE_COLOR = { agent:'var(--orange)', field_officer:'var(--teal)', diaspora:'var(--rust)', farmer:'var(--teal)' };
+
+  async function resolveProfile(){
+    var p = window.__amProfile;
+    if (p && p.id && p.full_name && p.created_at) return p;
+    var sb = window.__sb; if (!sb) return p || null;
+    try {
+      var s = await sb.auth.getSession();
+      if (!s.data || !s.data.session) return p || null;
+      var uid = s.data.session.user.id;
+      var r = await sb.from('app_users').select('*').eq('auth_user_id', uid).order('created_at', { ascending: true });
+      var rows = (r && r.data) || [];
+      if (!rows.length) return p || null;
+      var storedRole = null;
+      try { storedRole = localStorage.getItem('am_active_role_' + uid); } catch(_) {}
+      var activeRole = (p && p.role) || storedRole;
+      var picked = (activeRole ? rows.filter(function(x){ return x.role === activeRole; })[0] : null) || rows[0];
+      window.__amProfile = picked;
+      return picked;
+    } catch(_) { return p || null; }
+  }
+
+  async function fill(){
+    var c = scr(); if (!c) return;
+    var p = await resolveProfile(); if (!p) return;
+
+    var displayName = p.full_name || p.email || '';
+    /* Avatar */
+    var ava = c.querySelector('.ava-xxl');
+    if (ava) {
+      var parts = displayName ? displayName.split(' ') : [];
+      ava.textContent = (parts.length ? ((parts[0][0]||'') + (parts[1] ? parts[1][0] : '')) : '?').toUpperCase() || '?';
+      ava.style.background = ROLE_COLOR[p.role] || 'var(--teal)';
+    }
+    /* Name */
+    var nameEl = c.querySelector('.prof-hero .name');
+    if (nameEl) nameEl.textContent = displayName || '—';
+    /* Role badge */
+    var roleEl = c.querySelector('.meta .role');
+    if (roleEl) roleEl.textContent = ROLE_LABEL[p.role] || (p.role || 'USER').toUpperCase();
+    /* Location + phone */
+    var metaSpans = c.querySelectorAll('.meta span');
+    if (metaSpans[1]) {
+      var loc = [p.district, p.sub_county].filter(Boolean).join(' · ');
+      metaSpans[1].textContent = loc ? '📍 ' + loc : '';
+    }
+    if (metaSpans[3]) {
+      var ph = (p.phone && !String(p.phone).startsWith('ph-')) ? p.phone : '';
+      metaSpans[3].textContent = ph;
+    }
+    /* Member since */
+    var k0 = c.querySelector('.prof-stats .prof-stat:first-child .k');
+    if (k0) {
+      if (p.created_at) {
+        var d = new Date(p.created_at);
+        k0.textContent = d.toLocaleDateString('en-GB', { day:'2-digit', month:'short', year:'numeric' }) +
+          ' · ' + d.toLocaleTimeString('en-GB', { hour:'2-digit', minute:'2-digit' });
+      } else { k0.textContent = '—'; }
+    }
+    /* Orders + talks counts (default 0 once we have a real row) */
+    var kOrders = c.querySelector('.prof-stats .prof-stat:nth-child(2) .k');
+    var kTalks  = c.querySelector('.prof-stats .prof-stat:nth-child(3) .k');
+    if (p.id) {
+      if (kOrders) kOrders.textContent = '0';
+      if (kTalks)  kTalks.textContent  = '0';
+      var sb = window.__sb;
+      if (sb) {
+        try {
+          var ro = await sb.from('orders').select('id', { count:'exact', head:true }).eq('customer_id', p.id);
+          if (kOrders && (ro.count || ro.count === 0)) kOrders.textContent = ro.count;
+          if (p.phone && !String(p.phone).startsWith('ph-')) {
+            var rt = await sb.from('farm_visits').select('id', { count:'exact', head:true }).eq('farmer_phone', p.phone);
+            if (kTalks && (rt.count || rt.count === 0)) kTalks.textContent = rt.count;
+          }
+        } catch(_) {}
+      }
+    }
+  }
+
+  /* Fire whenever the profile screen is or becomes visible. */
+  function isProfileActive(){
+    var c = scr();
+    return !!(c && (c.classList.contains('proto-active') ||
+      (location.hash || '').replace(/^#/, '') === 'profile-1'));
+  }
+  function maybeFill(){ if (isProfileActive()) fill(); }
+
+  function start(){
+    /* 1) Initial load / refresh straight onto #profile-1 */
+    maybeFill();
+    /* 2) Hash navigation */
+    window.addEventListener('hashchange', maybeFill);
+    /* 3) Screen activation via class change (covers tab clicks / router nav,
+          regardless of whether the protoShow profile wrap is in the chain). */
+    var c = scr();
+    if (c && window.MutationObserver) {
+      new MutationObserver(maybeFill).observe(c, { attributes:true, attributeFilter:['class'] });
+    }
+    /* 4) Safety: if __sb wasn't ready at load, retry briefly. */
+    var tries = 0;
+    var iv = setInterval(function(){
+      if (++tries > 20) { clearInterval(iv); return; }
+      if (window.__sb && isProfileActive()) { fill(); clearInterval(iv); }
+    }, 250);
+  }
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start);
+  else start();
+})();
+</script>
+
 </body>
 </html>

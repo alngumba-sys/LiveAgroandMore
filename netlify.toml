@@ -1,0 +1,23 @@
+# Netlify config for the farmer/agent app (root site).
+# Routing is handled by ./_redirects (/ -> /app.html?mode=app). This file only
+# adds headers — most importantly, never cache the HTML so a new deploy is served
+# immediately instead of a stale app.html lingering in the browser/CDN.
+
+# ── Never cache HTML (all JS/CSS is inlined, so no cache-busting needed) ──
+[[headers]]
+  for = "/*.html"
+  [headers.values]
+    Cache-Control = "no-cache, no-store, must-revalidate"
+
+# Also cover the bare path, which rewrites to app.html.
+[[headers]]
+  for = "/"
+  [headers.values]
+    Cache-Control = "no-cache, no-store, must-revalidate"
+
+# ── Security headers ──────────────────────────────────────────────
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy        = "strict-origin-when-cross-origin"
