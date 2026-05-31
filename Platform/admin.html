@@ -6824,6 +6824,17 @@ window.clearUserOverrides = async function(uid) {
   }
 };
 
+/* Friendly messaging for offline / DNS / network failures (e.g.
+   ERR_NAME_NOT_RESOLVED, "Failed to fetch") so admins see a clear cause
+   instead of a raw error string. */
+function netErrToast(prefix, e) {
+  var msg = String((e && e.message) || e || '');
+  var offline = (typeof navigator !== 'undefined' && navigator.onLine === false) ||
+                /failed to fetch|networkerror|err_name_not_resolved|load failed|network ?request ?failed/i.test(msg);
+  if (offline) toast('You appear to be offline or the network is unreachable — check your connection and try again.', 'error', 7000);
+  else toast(prefix + (msg || 'unknown error'), 'error');
+}
+
 window.resetStaffPassword = async function(id, name, email) {
   if (!email) { toast('No email on file for this user — cannot reset password.', 'error'); return; }
 
@@ -6856,7 +6867,7 @@ window.resetStaffPassword = async function(id, name, email) {
     }
     logAudit('Reset staff password', { targetType:'staff_profiles', targetId:id, notes:email });
   } catch(e) {
-    toast('Password reset failed: ' + (e.message || 'unknown error'), 'error');
+    netErrToast('Password reset failed: ', e);
   }
 };
 
@@ -6875,7 +6886,7 @@ window.resendInvite = async function(id, email) {
     const json = await res.json().catch(() => ({}));
     if (!json.ok) throw new Error(json.error || 'Resend failed');
   } catch(e) {
-    toast('Resend failed: ' + (e.message || 'unknown error'), 'error'); return;
+    netErrToast('Resend failed: ', e); return;
   }
   toast(`Invite resent to ${email}.`, 'success');
   logAudit('Resent invite', { targetType:'staff_profiles', targetId:id, notes:email });
@@ -7102,7 +7113,7 @@ window.confirmBlockUser = async function() {
              { targetType: 'staff_profiles', targetId });
     loadUsers();
   } catch (e) {
-    toast('Network error: ' + e.message, 'error');
+    netErrToast('Network error: ', e);
   } finally {
     if (btn) btn.disabled = false;
   }
@@ -7125,7 +7136,7 @@ window.removeStaffUser = async function(id, name) {
     logAudit('Removed staff member permanently', { targetType: 'staff_profiles', targetId: id, notes: name });
     loadUsers();
   } catch (e) {
-    toast('Network error: ' + e.message, 'error');
+    netErrToast('Network error: ', e);
   }
 };
 
