@@ -17586,5 +17586,154 @@
 })();
 </script>
 
+<!-- =================== BOTTOM-NAV ROLE SYNC ===================
+     Shared screens (shop-1, advisory-1, profile-1, …) bake in the FARMER bottom
+     nav. When an AGENT (or FO / diaspora) navigates onto one of those screens,
+     the farmer nav would show — and tapping Home there sent the agent to the
+     farmer dashboard (home-1) instead of agent-1. This makes the bottom nav of
+     whatever screen is active match the logged-in role, so navigation stays in
+     the right role context. Independent of the protoShow wrap chain. -->
+<script>
+(function(){
+  'use strict';
+  var NAV_TARGETS = {
+    farmer:  ['home-1','shop-1','advisory-1','sell-1','profile-1'],
+    agent:   ['agent-1','shop-1','agent-flows-5','agent-2','profile-1'],
+    fo:      ['fo-2','fo-6','fo-8','fo-3','fo-9'],
+    diaspora:['diaspora-1','diaspora-4','diaspora-2','diaspora-8','profile-1']
+  };
+  function roleKey(){
+    var r = (window.__amProfile||{}).role;
+    return r==='agent' ? 'agent' : r==='field_officer' ? 'fo' : r==='diaspora' ? 'diaspora' : r==='farmer' ? 'farmer' : null;
+  }
+  var TPL = null;
+  function tpl(rk){
+    if(!TPL){
+      TPL = {
+        farmer:  (document.getElementById('tpl-bnav')||{}).innerHTML,
+        agent:   (document.getElementById('tpl-bnav-agent')||{}).innerHTML,
+        fo:      (document.getElementById('tpl-bnav-fo')||{}).innerHTML,
+        diaspora:(document.getElementById('tpl-bnav-diaspora')||{}).innerHTML
+      };
+    }
+    return TPL[rk];
+  }
+  function syncNav(screen){
+    if(!screen) return;
+    var rk = roleKey(); if(!rk) return;
+    var nav = screen.querySelector('.bnav'); if(!nav) return;
+    var sid = screen.getAttribute('data-proto-id');
+    var idx = NAV_TARGETS[rk].indexOf(sid);
+    /* Already the right role: just make sure the correct item is highlighted. */
+    if(nav.getAttribute('data-role') === rk){
+      if(idx >= 0){
+        var its = nav.querySelectorAll('.item');
+        its.forEach(function(x){ x.classList.remove('active'); });
+        if(its[idx]) its[idx].classList.add('active');
+      }
+      return;
+    }
+    var html = tpl(rk); if(!html) return;
+    var wrap = document.createElement('div'); wrap.innerHTML = html;
+    var newNav = wrap.querySelector('.bnav'); if(!newNav) return;
+    newNav.setAttribute('data-role', rk);
+    if(idx >= 0){ var items = newNav.querySelectorAll('.item'); if(items[idx]) items[idx].classList.add('active'); }
+    nav.parentNode.replaceChild(newNav, nav);
+  }
+  function activeScreen(){ return document.querySelector('[data-proto-id].proto-active'); }
+  function tick(){ syncNav(activeScreen()); }
+  function start(){
+    tick();
+    window.addEventListener('hashchange', tick);
+    if(window.MutationObserver){
+      new MutationObserver(function(muts){
+        for(var i=0;i<muts.length;i++){
+          var t = muts[i].target;
+          if(t.nodeType===1 && t.hasAttribute && t.hasAttribute('data-proto-id') &&
+             t.classList && t.classList.contains('proto-active')){ syncNav(t); }
+        }
+      }).observe(document.body, { attributes:true, attributeFilter:['class'], subtree:true });
+    }
+  }
+  if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start);
+  else start();
+})();
+</script>
+
+<!-- =================== HELP & SUPPORT CONTACT BUTTONS (robust) ===================
+     The WhatsApp / Call / Email cards on profile-6 were wired only through the
+     protoShow profile wrap, which doesn't reliably fire for all roles — so the
+     buttons did nothing for many users. Wire them independently whenever the
+     Help & Support screen is active. Pulls live numbers from settings, falls
+     back to HQ defaults. -->
+<script>
+(function(){
+  'use strict';
+  var DEF = { phone:'+256414696100', wa:'+256700000000', email:'help@agroandmore.ug' };
+  var contact = { phone:DEF.phone, wa:DEF.wa, email:DEF.email };
+  var fetched = false;
+  function loadContact(){
+    if(fetched) return; fetched = true;
+    var sb = window.__sb; if(!sb) { fetched = false; return; }
+    try {
+      sb.from('settings').select('key,value').in('key',['whatsapp_number','support_phone','support_email'])
+        .then(function(r){
+          (r.data||[]).forEach(function(row){
+            var v = row.value; if(v==null||v==='') return;
+            if(row.key==='whatsapp_number') contact.wa = v;
+            if(row.key==='support_phone')   contact.phone = v;
+            if(row.key==='support_email')   contact.email = v;
+          });
+        }).catch(function(){});
+    } catch(_) {}
+  }
+  function toast(m){
+    if(window.showToast){ window.showToast(m); return; }
+    var t=document.createElement('div');
+    t.style.cssText='position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#001524;color:#fff;padding:10px 18px;border-radius:20px;font-size:12.5px;font-weight:600;z-index:99999;max-width:86vw;text-align:center';
+    t.textContent=m; document.body.appendChild(t); setTimeout(function(){ t.remove(); }, 2600);
+  }
+  function wire(container){
+    if(!container || container.dataset.helpWired2) return;
+    container.dataset.helpWired2 = '1';
+    loadContact();
+    container.querySelectorAll('.contact-card').forEach(function(card){
+      var ic = card.querySelector('.ic'); if(!ic) return;
+      card.style.cursor = 'pointer';
+      if(ic.classList.contains('wa')){
+        card.onclick = function(){
+          var num = String(contact.wa||contact.phone||'').replace(/[^\d]/g,'');
+          window.open('https://wa.me/'+num+'?text='+encodeURIComponent('Hello, I need help with the Agro and More app.'), '_blank');
+        };
+      } else if(ic.classList.contains('call')){
+        card.onclick = function(){ toast('Call us at '+contact.phone); window.location.href='tel:'+String(contact.phone).replace(/\s/g,''); };
+      } else if(ic.classList.contains('mail')){
+        card.onclick = function(){ toast('Email us at '+contact.email); window.location.href='mailto:'+contact.email; };
+      }
+    });
+  }
+  function activeHelp(){
+    var c = document.querySelector('[data-proto-id="profile-6"]');
+    return (c && c.classList.contains('proto-active')) ? c : null;
+  }
+  function tick(){ var c = activeHelp(); if(c) wire(c); }
+  function start(){
+    tick();
+    window.addEventListener('hashchange', tick);
+    if(window.MutationObserver){
+      new MutationObserver(function(muts){
+        for(var i=0;i<muts.length;i++){
+          var t = muts[i].target;
+          if(t.nodeType===1 && t.getAttribute && t.getAttribute('data-proto-id')==='profile-6' &&
+             t.classList && t.classList.contains('proto-active')){ wire(t); }
+        }
+      }).observe(document.body, { attributes:true, attributeFilter:['class'], subtree:true });
+    }
+  }
+  if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start);
+  else start();
+})();
+</script>
+
 </body>
 </html>
