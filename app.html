@@ -23,9 +23,12 @@
     if (!preview) {
       document.documentElement.classList.add('proto-pre');
       /* Safety net: if app boot hasn't initialised within 2.5s, strip the
-         guard so the user always sees something. */
+         guard so the user always sees something. Crucially, also apply
+         proto-mode here so the fallback reveals the APP (single active screen),
+         never the raw design-preview gallery. */
       setTimeout(function(){
         if (!document.documentElement.classList.contains('proto-ready')) {
+          if (document.body) document.body.classList.add('proto-mode');
           document.documentElement.classList.remove('proto-pre');
           document.documentElement.classList.add('proto-ready');
         }
@@ -64,7 +67,12 @@
 <link rel="apple-touch-icon" sizes="512x512" href="icons/icon-512.png">
 
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Poppins:wght@600;700;800&family=Fredoka:wght@600;700&display=swap" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<!-- defer: html2pdf is only used by PDF-export click handlers (all guarded by
+     `if (window.html2pdf)`), never during boot. Loading it synchronously here
+     blocked HTML parsing — when the CDN was slow the app-boot script ran late,
+     the 2.5s flash-guard fired first, and the design-preview gallery flashed on
+     refresh. defer lets parsing (and app-mode init) proceed immediately. -->
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
 <!-- ════════════════════════════════════════════════════════════════════════
      ANALYTICS — privacy-first usage stats.
