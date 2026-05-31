@@ -12475,9 +12475,12 @@ function renderFarmersContent() {
           <td>${statusChip(f.status)}</td>
           <td style="font-size:11.5px;color:var(--ink-60)">${f.created_at ? new Date(f.created_at).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}) : '—'}</td>
           <td>
+            <div style="display:flex;gap:6px;justify-content:flex-end">
+            <button class="btn btn-secondary btn-sm" onclick="openFarmerDetail('${f.id}')">View</button>
             ${f.status === 'pending_approval' ? `<button class="btn btn-primary btn-sm" onclick="approveFarmer('${f.id}','${(f.full_name||'').replace(/'/g,"\\'")}')">Approve</button>` : ''}
             ${f.status === 'blocked' ? `<button class="btn btn-ghost btn-sm" onclick="toggleFarmerBlock('${f.id}','${(f.full_name||'').replace(/'/g,"\\'")}', true)">Unblock</button>`
               : (f.status !== 'pending_approval' ? `<button class="btn btn-ghost btn-sm" onclick="toggleFarmerBlock('${f.id}','${(f.full_name||'').replace(/'/g,"\\'")}', false)">Block</button>` : '')}
+            </div>
           </td>
         </tr>`).join('')}
         </tbody>
@@ -12504,6 +12507,117 @@ window.toggleFarmerBlock = async function(id, name, isBlocked) {
   toast(`${name || 'Farmer'} ${isBlocked ? 'unblocked' : 'blocked'}.`, isBlocked?'success':'info');
   logAudit(isBlocked ? 'Unblocked farmer' : 'Blocked farmer', { targetType:'app_user', targetId:id, notes:name||null });
   loadFarmers();
+};
+
+/* ── Farmer detail drawer ─────────────────────────────────────────────
+   Shows every stored field for the farmer plus what they've done:
+   orders placed, total spent, advisory talks, recent orders, and which
+   agent (if any) referred them. Reuses the shared user-drawer. */
+window.openFarmerDetail = async function(id) {
+  const f = (FRM.all || []).find(x => x.id === id);
+  if (!f) { toast('Farmer not found.', 'error'); return; }
+
+  document.getElementById('user-drawer-overlay').classList.add('open');
+  document.getElementById('user-drawer').classList.add('open');
+  if (document.getElementById('ud-name')) document.getElementById('ud-name').textContent = f.full_name || 'Farmer';
+  if (document.getElementById('ud-sub'))  document.getElementById('ud-sub').textContent  = `Farmer · ${f.district||'—'} · ${f.id}`;
+
+  const initials = (f.full_name||'?').split(' ').slice(0,2).map(w=>(w||'')[0]||'').join('').toUpperCase();
+  const money = n => 'UGX ' + Math.round(Number(n)||0).toLocaleString('en-UG');
+  const chip = (s) => {
+    if (s === 'pending_approval') return '<span class="chip chip-orange">Pending</span>';
+    if (s === 'blocked')  return '<span class="chip" style="background:var(--rust);color:#fff">Blocked</span>';
+    if (s === 'inactive') return '<span class="chip" style="background:var(--ink-08);color:var(--ink-60)">Inactive</span>';
+    return '<span class="chip" style="background:rgba(58,125,68,.12);color:#3A7D44">Active</span>';
+  };
+  const cell = (l, v) => `<div>
+      <div style="font-size:9.5px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-60);margin-bottom:3px">${l}</div>
+      <div style="font-size:13px;font-weight:600;word-break:break-word">${v==null||v===''?'—':v}</div>
+    </div>`;
+  const stat = (l, v, color) => `<div style="background:var(--ink-05);border-radius:var(--radius);padding:12px;text-align:center">
+      <div style="font-size:9.5px;font-weight:700;text-transform:uppercase;color:var(--ink-60);margin-bottom:4px">${l}</div>
+      <div style="font-weight:800;font-size:15px;${color?`color:${color}`:''}">${v}</div>
+    </div>`;
+
+  const body = document.getElementById('ud-body');
+  const renderBody = (extra) => {
+    extra = extra || {};
+    const ph = (f.phone && !String(f.phone).startsWith('ph-')) ? f.phone : '—';
+    body.innerHTML = `
+      <div style="display:flex;align-items:center;gap:14px;padding:4px 0 20px;border-bottom:1px solid var(--ink-05);margin-bottom:18px">
+        <div style="width:52px;height:52px;border-radius:50%;background:var(--teal);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:18px;font-family:'Poppins';flex-shrink:0">${initials||'?'}</div>
+        <div style="flex:1">
+          <div style="font-weight:800;font-size:15px">${f.full_name||'Farmer'}</div>
+          <div style="display:flex;gap:8px;margin-top:4px;flex-wrap:wrap">
+            <span class="chip" style="background:rgba(58,125,68,.12);color:#3A7D44">Farmer</span>
+            ${chip(f.status||'active')}
+          </div>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px">
+        ${cell('Phone', ph)}
+        ${cell('Email', f.email)}
+        ${cell('WhatsApp', f.whatsapp)}
+        ${cell('District', f.district)}
+        ${cell('Sub-county', f.sub_county)}
+        ${cell('National ID', f.national_id || f.nin)}
+        ${cell('Referred by', extra.agentLabel !== undefined ? extra.agentLabel : (f.referral_agent_id ? 'Loading…' : 'Direct sign-up'))}
+        ${cell('Member since', f.created_at ? fmtDate(f.created_at) : '—')}
+        ${cell('Last active', f.last_active_at ? fmtDate(f.last_active_at) : 'Never')}
+        ${cell('Status', (f.status||'active').replace(/_/g,' '))}
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:18px">
+        ${stat('Orders placed', extra.ordersCount!=null ? extra.ordersCount : '…')}
+        ${stat('Total spent',   extra.totalSpent!=null ? money(extra.totalSpent) : '…', 'var(--orange)')}
+        ${stat('Advisory talks',extra.talks!=null ? extra.talks : '…')}
+      </div>
+      <div>
+        <div style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-60);margin-bottom:8px">Recent orders</div>
+        ${extra.ordersHtml != null ? extra.ordersHtml : '<div style="font-size:12.5px;color:var(--ink-40)">Loading…</div>'}
+      </div>`;
+  };
+  renderBody();
+
+  /* Fetch activity + referring agent in parallel, then re-render. */
+  try {
+    const phoneClean = (f.phone && !String(f.phone).startsWith('ph-')) ? f.phone : null;
+    const [ordersRes, talksRes, agentRes] = await Promise.all([
+      sb.from('orders').select('order_number,total_ugx,status,created_at').eq('customer_id', f.id).order('created_at',{ascending:false}),
+      sb.from('farm_visits').select('id', { count:'exact', head:true }).eq('farmer_id', f.id),
+      f.referral_agent_id
+        ? sb.from('app_users').select('full_name,agent_code').eq('id', f.referral_agent_id).maybeSingle()
+        : Promise.resolve({ data:null })
+    ]);
+    const orders = ordersRes.data || [];
+    let talks = talksRes.count || 0;
+    /* Some visits are tagged by phone rather than farmer_id — add those too. */
+    if (phoneClean) {
+      try {
+        const byPhone = await sb.from('farm_visits').select('id', { count:'exact', head:true }).eq('farmer_phone', phoneClean).is('farmer_id', null);
+        talks += (byPhone.count || 0);
+      } catch(_) {}
+    }
+    const totalSpent = orders
+      .filter(o => o.status !== 'cancelled')
+      .reduce((s,o)=>s+(Number(o.total_ugx)||0), 0);
+    const colorFor = s => ({awaiting_payment:'var(--orange)',confirmed:'#3A7D44',dispatched:'var(--orange)',delivered:'#3A7D44',completed:'#3A7D44',cancelled:'var(--rust)'}[s]||'var(--ink-60)');
+    const ordersHtml = orders.length
+      ? orders.slice(0,8).map(o=>`
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--ink-05)">
+            <div>
+              <div style="font-size:12.5px;font-weight:700">${o.order_number||'—'}</div>
+              <div style="font-size:10.5px;color:var(--ink-60)">${o.created_at?fmtDate(o.created_at):''} · <span style="color:${colorFor(o.status)};font-weight:600">${(o.status||'').replace(/_/g,' ')}</span></div>
+            </div>
+            <div style="font-size:12.5px;font-weight:700">${money(o.total_ugx)}</div>
+          </div>`).join('')
+      : '<div style="font-size:12.5px;color:var(--ink-40)">No orders yet.</div>';
+    const agentLabel = f.referral_agent_id
+      ? (agentRes.data ? (agentRes.data.full_name + (agentRes.data.agent_code?` (${agentRes.data.agent_code})`:'')) : 'Unknown agent')
+      : 'Direct sign-up';
+    renderBody({ ordersCount: orders.length, totalSpent, talks, ordersHtml, agentLabel });
+  } catch(e) {
+    renderBody({ ordersCount: 0, totalSpent: 0, talks: 0, ordersHtml: '<div style="font-size:12.5px;color:var(--rust)">Could not load activity.</div>', agentLabel: f.referral_agent_id ? 'Unknown agent' : 'Direct sign-up' });
+  }
 };
 
 window.exportFarmersCSV = function() {
