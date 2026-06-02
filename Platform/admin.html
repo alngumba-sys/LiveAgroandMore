@@ -1312,7 +1312,6 @@ table.dt .cell-bold { color: var(--ink); font-weight: 700; }
               <button class="sb-item" id="stab-odoo"            style="color:var(--ink);font-size:12.5px" onclick="switchSettingsTab('odoo',this)">Odoo connection</button>
               <button class="sb-item" id="stab-export"          style="color:var(--ink);font-size:12.5px" onclick="switchSettingsTab('export',this)">Data export schedule</button>
               <button class="sb-item" id="stab-audit"           style="color:var(--ink);font-size:12.5px" onclick="switchSettingsTab('audit',this)">Audit log</button>
-              <button class="sb-item" id="stab-knowledge_base" style="color:var(--ink);font-size:12.5px;display:flex;align-items:center;gap:7px" onclick="switchSettingsTab('knowledge_base',this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;flex-shrink:0"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg> Knowledge Base</button>
               <button class="sb-item" id="stab-images" style="color:var(--ink);font-size:12.5px;display:flex;align-items:center;gap:7px" onclick="switchSettingsTab('images',this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;flex-shrink:0"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-5-5L5 21"/></svg> Images &amp; Media</button>
               <div style="height:1px;background:var(--ink-08);margin:6px 8px"></div>
               <div style="font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-40);padding:4px 10px 2px">My Account</div>
@@ -3417,7 +3416,16 @@ async function initAuth() {
   paintProfile(profile, session.user.email);
 
   // ── Force password change on first login ──────────────────────
-  if (session.user.user_metadata?.must_change_password) {
+  // Read the flag from the SERVER (getUser hits /auth/v1/user), not from
+  // session.user.user_metadata — the latter is a snapshot baked into the
+  // locally-stored JWT at issue time, so an admin-set flag won't appear
+  // there if the browser is reusing an older token.
+  let mustChangePw = !!session.user.user_metadata?.must_change_password;
+  try {
+    const { data: { user: freshUser } } = await sb.auth.getUser();
+    if (freshUser) mustChangePw = !!freshUser.user_metadata?.must_change_password;
+  } catch(_) {}
+  if (mustChangePw) {
     document.getElementById('change-pw-modal')?.classList.add('active');
     setTimeout(() => document.getElementById('change-pw-new')?.focus(), 100);
   }
@@ -4460,7 +4468,7 @@ const PROD = {
   page: 0, perPage: 20,
   archivePendingId: null,
 };
-const CATEGORIES = ['Seeds','Fertilizers','Crop Protection','Tools','Irrigation','Livestock','Post-harvest'];
+const CATEGORIES = ['Seeds','Fertilizers','Crop Protection','Insecticides','Herbicides','Tools'];
 
 window.loadProducts = async function() {
   // Load outlets for stock form (once)
@@ -5419,23 +5427,42 @@ window.runBulkImport = async function() {
     created_by:          userId,
   }));
 
-  // ── Check for existing products with matching SKUs ──────
-  const skusInFile = payload.map(r => r.sku).filter(Boolean);
-  let duplicateAction = null; // 'add' | 'duplicate' | null (no duplicates)
-  let existingBySkuMap = {};  // sku → { id, total_stock }
+  // ── Detect products that already exist ──────────────────
+  // Match is fuzzy on purpose: exact-SKU matching let the same product
+  // re-import as a new row whenever the SKU format changed (e.g. "SED-00001"
+  // vs "SED00001") or a category was renamed/misspelled ("Fertilizers" vs
+  // "Ferterlizers"). We normalise SKU (uppercase, alphanumeric only) AND
+  // name+category so the same product is recognised regardless of formatting.
+  const _normSku  = s => String(s || '').trim().toUpperCase().replace(/[^A-Z0-9]/g, '');
+  const _normName = s => String(s || '').trim().toLowerCase().replace(/\s+/g, ' ');
+  const _normCat  = s => { const c = String(s || '').trim().toLowerCase(); return c === 'ferterlizers' ? 'fertilizers' : c; };
 
-  if (skusInFile.length > 0) {
-    const { data: existingProds } = await sb.from('products')
-      .select('id,name,sku,total_stock')
-      .in('sku', skusInFile);
-    if (existingProds && existingProds.length > 0) {
+  let duplicateAction = null; // 'add' | 'duplicate' | null (no duplicates)
+
+  // Load the full existing catalogue once and index it both ways.
+  const { data: allExisting } = await sb.from('products')
+    .select('id,name,sku,category,total_stock');
+  const bySku = {}, byNameCat = {};
+  (allExisting || []).forEach(p => {
+    const ns = _normSku(p.sku);
+    if (ns) bySku[ns] = p;
+    byNameCat[_normName(p.name) + '|' + _normCat(p.category)] = p;
+  });
+  const matchExisting = row => {
+    const ns = _normSku(row.sku);
+    return (ns && bySku[ns]) || byNameCat[_normName(row.name) + '|' + _normCat(row.category)] || null;
+  };
+
+  // Pair each uploaded row with the existing product it matches (if any).
+  const matchMap = new Map(); // payload row → existing product
+  payload.forEach(row => { const ex = matchExisting(row); if (ex) matchMap.set(row, ex); });
+
+  if (matchMap.size > 0) {
+    btn.disabled = false; btn.innerHTML = 'Next → Import';
+    duplicateAction = await askBulkDuplicateAction(Array.from(matchMap.values()));
+    if (duplicateAction === 'cancel') {
       btn.disabled = false; btn.innerHTML = 'Next → Import';
-      duplicateAction = await askBulkDuplicateAction(existingProds);
-      if (duplicateAction === 'cancel') {
-        btn.disabled = false; btn.innerHTML = 'Next → Import';
-        return;
-      }
-      existingProds.forEach(p => { existingBySkuMap[p.sku] = p; });
+      return;
     }
   }
 
@@ -5446,44 +5473,27 @@ window.runBulkImport = async function() {
   let failed   = 0;
   const firstErrors = [];
 
-  if (duplicateAction === 'add') {
-    // ── Add mode: only increment total_stock for matching SKUs ──
-    // Update existing rows (quantity only)
-    for (const row of payload) {
-      if (row.sku && existingBySkuMap[row.sku]) {
-        const ex       = existingBySkuMap[row.sku];
-        const newStock = (ex.total_stock || 0) + (row.total_stock || 0);
-        const { error } = await sb.from('products')
-          .update({ total_stock: newStock })
-          .eq('id', ex.id);
-        if (error) { failed++; if (firstErrors.length < 3) firstErrors.push(error.message); }
-        else imported++;
+  // For each row: update the matched product, or insert a new one.
+  // 'add'       → only increment the existing product's stock.
+  // 'duplicate' → user explicitly wants a fresh row, so ignore matches.
+  // default     → update the existing product in place (no new duplicate row).
+  for (const row of payload) {
+    const ex = (duplicateAction === 'duplicate') ? null : matchMap.get(row);
+    try {
+      if (ex) {
+        const patch = (duplicateAction === 'add')
+          ? { total_stock: (ex.total_stock || 0) + (row.total_stock || 0) }
+          : row;
+        const { error } = await sb.from('products').update(patch).eq('id', ex.id);
+        if (error) throw error;
       } else {
-        // No existing match — insert as new
         const { error } = await sb.from('products').insert(row);
-        if (error) { failed++; if (firstErrors.length < 3) firstErrors.push(error.message); }
-        else imported++;
+        if (error) throw error;
       }
-    }
-  } else {
-    // ── Duplicate mode (or no conflicts): insert/upsert all rows ──
-    if (duplicateAction === 'duplicate') {
-      // Strip SKU from matching rows so they insert fresh instead of updating
-      payload.forEach(r => {
-        if (r.sku && existingBySkuMap[r.sku]) r.sku = null;
-      });
-    }
-    for (let i = 0; i < payload.length; i += 50) {
-      const batch = payload.slice(i, i + 50);
-      const { error } = await sb.from('products')
-        .upsert(batch, { onConflict: 'sku', ignoreDuplicates: false });
-      if (error) {
-        failed += batch.length;
-        if (firstErrors.length < 3 && !firstErrors.includes(error.message))
-          firstErrors.push(error.message);
-      } else {
-        imported += batch.length;
-      }
+      imported++;
+    } catch (e) {
+      failed++;
+      if (firstErrors.length < 3 && !firstErrors.includes(e.message)) firstErrors.push(e.message);
     }
   }
 
@@ -9562,6 +9572,13 @@ function renderChatbot() {
   const el = document.getElementById('chatbot-content');
 
   if (CBT.tab === 'kb') {
+    /* Consolidated: the AI Chatbot Knowledge base tab now renders the full
+       article KB (category, status, sort/filter, add/edit/remove, Excel import)
+       — the same UI formerly under Settings. */
+    loadKnowledgeBase(el);
+    return;
+  }
+  if (false) {
     const FILE_ICON = { pdf:'PDF', docx:'DOC', doc:'DOC', csv:'CSV', xlsx:'XLS', mp3:'MP3', mp4:'MP4', txt:'TXT' };
     el.innerHTML = `
       <div style="padding:14px 16px;display:flex;justify-content:flex-end;border-bottom:1px solid var(--ink-08)">
@@ -14205,6 +14222,7 @@ function kbCatIcon(key, sz, color) {
 }
 
 async function loadKnowledgeBase(el) {
+  window._kbHost = el;   // remember container (Settings or AI Chatbot tab) for refreshes
   el.innerHTML = `<div class="shimmer sk-row" style="height:60px;border-radius:12px"></div>`;
   const { data: articles, error } = await sb
     .from('knowledge_base')
@@ -14233,10 +14251,21 @@ async function loadKnowledgeBase(el) {
         <div style="display:flex;align-items:center;gap:8px;font-family:'Poppins';font-weight:800;font-size:18px">${kbCatIcon('agronomy','20px','var(--teal)')} Knowledge Base</div>
         <div id="kb-count-label" style="font-size:12.5px;color:var(--ink-60);margin-top:2px">${articles.length} article${articles.length !== 1 ? 's' : ''} — shown in the mobile app chat</div>
       </div>
-      <button class="btn btn-primary" onclick="kbNewArticle()">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:14px;height:14px"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-        Add Article
-      </button>
+      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;justify-content:flex-end">
+        <input type="file" id="kb-xlsx-input" accept=".xlsx,.xls,.csv" style="display:none" onchange="kbImportExcel(this)">
+        <button class="btn btn-ghost" onclick="kbDownloadTemplate()" title="Download an Excel template to fill in">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Template
+        </button>
+        <button class="btn btn-ghost" onclick="document.getElementById('kb-xlsx-input').click()" title="Bulk-add articles from an Excel/CSV file">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+          Import Excel
+        </button>
+        <button class="btn btn-primary" onclick="kbNewArticle()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:14px;height:14px"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Add Article
+        </button>
+      </div>
     </div>
 
     <!-- ── Toolbar ── -->
@@ -14600,7 +14629,7 @@ window.kbSaveArticle = async function() {
   document.getElementById('kb-modal-overlay').remove();
 
   // Reload the tab
-  const contentEl = document.getElementById('settings-content');
+  const contentEl = window._kbHost || document.getElementById('settings-content');
   if (contentEl) loadKnowledgeBase(contentEl);
 };
 
@@ -14609,8 +14638,66 @@ window.kbDeleteArticle = async function(id, title) {
   const { error } = await sb.from('knowledge_base').delete().eq('id', id);
   if (error) { toast('Delete failed: ' + error.message, 'error'); return; }
   toast('Article deleted.', 'success');
-  const contentEl = document.getElementById('settings-content');
+  const contentEl = window._kbHost || document.getElementById('settings-content');
   if (contentEl) loadKnowledgeBase(contentEl);
+};
+
+/* ── Knowledge Base: Excel template + bulk import ───────────────────── */
+window.kbDownloadTemplate = async function() {
+  const ok = await ensureXLSX();
+  if (!ok || !window.XLSX) { toast('Could not load the Excel tool — check your connection.', 'error'); return; }
+  const cats = KB_CATS.map(c => c.key).join(' / ');
+  const rows = [
+    ['title', 'content', 'category', 'tags', 'is_active'],
+    ['Maize planting time', 'Plant maize at the onset of the rains. Use certified hybrid seed such as Longe 10H. Space 75cm between rows and 25cm within rows.', 'agronomy', 'maize,planting,seed', 'TRUE'],
+    ['(category must be one of)', cats, 'faq', 'tags,comma,separated', 'TRUE'],
+  ];
+  const ws = XLSX.utils.aoa_to_sheet(rows);
+  ws['!cols'] = [{ wch: 32 }, { wch: 72 }, { wch: 16 }, { wch: 26 }, { wch: 10 }];
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, 'Knowledge Base');
+  XLSX.writeFile(wb, 'knowledge_base_template.xlsx');
+};
+
+window.kbImportExcel = async function(input) {
+  const file = input.files && input.files[0];
+  input.value = '';
+  if (!file) return;
+  const ok = await ensureXLSX();
+  if (!ok || !window.XLSX) { toast('Could not load the Excel tool — check your connection.', 'error'); return; }
+  const CATS = KB_CATS.map(c => c.key);
+  try {
+    const buf  = await file.arrayBuffer();
+    const wb   = XLSX.read(buf, { type: 'array' });
+    const ws   = wb.Sheets[wb.SheetNames[0]];
+    const json = XLSX.utils.sheet_to_json(ws, { defval: '' });
+    if (!json.length) { toast('No rows found in that file.', 'error'); return; }
+
+    const rows = [], skipped = [];
+    json.forEach((r, i) => {
+      const get = k => { const kk = Object.keys(r).find(x => x.toLowerCase().trim() === k); return kk ? String(r[kk]).trim() : ''; };
+      const title = get('title'), content = get('content');
+      if (!title || !content) { skipped.push(i + 2); return; }
+      if (/^\(category must be one of\)$/i.test(title)) return; // skip template hint row
+      let category = get('category').toLowerCase().replace(/\s+/g, '_');
+      if (CATS.indexOf(category) < 0) category = 'faq';
+      const tagsRaw = get('tags');
+      const tags = tagsRaw ? tagsRaw.split(/[,;]/).map(t => t.trim()).filter(Boolean) : [];
+      const av = (get('is_active') || get('active') || 'true').toLowerCase();
+      const is_active = !(av === 'false' || av === '0' || av === 'no' || av === 'hidden');
+      rows.push({ title, content, category, tags, is_active });
+    });
+
+    if (!rows.length) { toast('No valid rows — each needs a title and content.', 'error'); return; }
+    if (!confirm(`Import ${rows.length} article${rows.length !== 1 ? 's' : ''}?` + (skipped.length ? `\n\n${skipped.length} row(s) skipped (missing title/content).` : ''))) return;
+
+    const { error } = await sb.from('knowledge_base').insert(rows);
+    if (error) { toast('Import failed: ' + error.message, 'error'); return; }
+    toast(`Imported ${rows.length} article${rows.length !== 1 ? 's' : ''} ✓`, 'success', 5000);
+    if (window._kbHost) loadKnowledgeBase(window._kbHost);
+  } catch (e) {
+    toast('Could not read that file: ' + (e.message || 'error'), 'error');
+  }
 };
 
 /* ════════════════════════════════════════════════════════════════════
