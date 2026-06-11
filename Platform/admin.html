@@ -1276,6 +1276,17 @@ table.dt .cell-bold { color: var(--ink); font-weight: 700; }
             <button class="btn btn-primary" onclick="openExportPDF()">Export PDF</button>
           </div>
         </div>
+        <!-- Group tabs — the period / compare / export controls above apply to every tab -->
+        <div class="page-tabs" id="analytics-tab-bar" style="overflow-x:auto;flex-wrap:nowrap">
+          <button class="ptab on" data-antab="summary"     onclick="switchAnalyticsTab('summary')">Summary</button>
+          <button class="ptab"    data-antab="sales"       onclick="switchAnalyticsTab('sales')">Sales &amp; Revenue</button>
+          <button class="ptab"    data-antab="officer"     onclick="switchAnalyticsTab('officer')">Field Officer</button>
+          <button class="ptab"    data-antab="agents"      onclick="switchAnalyticsTab('agents')">Agents</button>
+          <button class="ptab"    data-antab="farmers"     onclick="switchAnalyticsTab('farmers')">Farmers</button>
+          <button class="ptab"    data-antab="diaspora"    onclick="switchAnalyticsTab('diaspora')">Diaspora</button>
+          <button class="ptab"    data-antab="marketplace" onclick="switchAnalyticsTab('marketplace')">Marketplace</button>
+          <button class="ptab"    data-antab="operations"  onclick="switchAnalyticsTab('operations')">Operations</button>
+        </div>
         <div id="analytics-content"><div style="padding:40px" class="shimmer sk-row"></div></div>
       </section>
 
@@ -1305,6 +1316,7 @@ table.dt .cell-bold { color: var(--ink); font-weight: 700; }
               <button class="sb-item active" id="stab-org"      style="color:var(--ink);font-size:12.5px;font-weight:600" onclick="switchSettingsTab('org',this)">Organization profile</button>
               <button class="sb-item" id="stab-branding"        style="color:var(--ink);font-size:12.5px" onclick="switchSettingsTab('branding',this)">Branding &amp; palette</button>
               <button class="sb-item" id="stab-commission"      style="color:var(--ink);font-size:12.5px" onclick="switchSettingsTab('commission',this)">Commission rate</button>
+              <button class="sb-item" id="stab-delivery"       style="color:var(--ink);font-size:12.5px" onclick="switchSettingsTab('delivery',this)">Delivery pricing</button>
               <button class="sb-item" id="stab-payments"        style="color:var(--ink);font-size:12.5px" onclick="switchSettingsTab('payments',this)">Payment methods</button>
               <button class="sb-item" id="stab-fx"              style="color:var(--ink);font-size:12.5px" onclick="switchSettingsTab('fx',this)">FX rate (USD → UGX)</button>
               <button class="sb-item" id="stab-sms"             style="color:var(--ink);font-size:12.5px" onclick="switchSettingsTab('sms',this)">SMS provider</button>
@@ -2413,8 +2425,23 @@ table.dt .cell-bold { color: var(--ink); font-weight: 700; }
       <input type="text" id="ad-title" placeholder="e.g. Pruning Hass avocado before the rains">
     </div>
     <div class="field">
-      <label>Description</label>
-      <textarea id="ad-desc" rows="3" placeholder="Short description shown in the farmer app…" style="resize:vertical"></textarea>
+      <label>Body text <span style="font-size:11px;font-weight:400;color:var(--ink-40)">(shown on the tip card &amp; detail page in the app)</span></label>
+      <textarea id="ad-desc" rows="7" placeholder="Write the full tip content here. For a Seasonal Tip this is the article body shown under the title in the app's Featured This Week card." style="resize:vertical"></textarea>
+    </div>
+    <div class="field">
+      <label>District <span style="font-size:11px;font-weight:400;color:var(--ink-40)">(optional — shown as "FROM … · SENIOR AGRONOMIST" on the card)</span></label>
+      <input type="text" id="ad-district" placeholder="e.g. Mpigi District">
+    </div>
+    <div class="field">
+      <label>Cover Image</label>
+      <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+        <img id="ad-thumb-preview" src="" alt="" style="display:none;width:80px;height:56px;object-fit:cover;border-radius:6px;border:1px solid var(--ink-10)">
+        <div style="flex:1;min-width:160px">
+          <input type="file" id="ad-thumb-file" accept="image/*" style="font-size:12px;width:100%" onchange="previewAdvisoryThumb(this)">
+          <div id="ad-thumb-upload-status" style="font-size:11px;color:var(--ink-40);margin-top:4px">JPG, PNG or WebP — shown on the tip card in the farmer app.</div>
+        </div>
+      </div>
+      <input type="hidden" id="ad-thumbnail-url">
     </div>
     <div class="field">
       <label>Source URL</label>
@@ -2815,6 +2842,18 @@ table.dt .cell-bold { color: var(--ink); font-weight: 700; }
         </div>
         <div class="field"><label>Languages</label><input type="text" id="of-languages" placeholder="English · Luganda · Lusoga"></div>
       </div>
+      <div class="field-row">
+        <div class="field"><label>Organisation <span class="hint">who the officer works for</span></label>
+          <select id="of-organisation" onchange="syncOfOrgOther()">
+            <option value="">— Select —</option>
+            <option>Agro &amp; More</option>
+            <option>Local government</option>
+            <option>Ministry of Agriculture</option>
+            <option>Other</option>
+          </select>
+        </div>
+        <div class="field" id="of-organisation-other-wrap" style="display:none"><label>If other, specify</label><input type="text" id="of-organisation-other" placeholder="Name of organisation"></div>
+      </div>
     </div>
     <div class="form-section">
       <h4>Expertise</h4>
@@ -2880,6 +2919,13 @@ table.dt .cell-bold { color: var(--ink); font-weight: 700; }
       <div class="form-section">
         <h4>Application details</h4>
         <div id="aom-details" style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:4px"></div>
+      </div>
+      <!-- Organisation (editable) -->
+      <div class="form-section">
+        <h4>Organisation</h4>
+        <div class="field" style="margin-bottom:0">
+          <input type="text" id="aom-organisation" placeholder="e.g. Agro & More, Local Government, Ministry of Agriculture…" style="width:100%">
+        </div>
       </div>
       <!-- Checklist -->
       <div class="form-section">
@@ -3597,7 +3643,7 @@ window.statusChip = (status) => {
   };
   const labels = {
     active:'Active', pending_invite:'Invite sent', pending_approval:'Pending Approval', blocked:'Blocked',
-    pending:'Pending', awaiting_payment:'Awaiting pay', confirmed:'Confirmed',
+    pending:'Pending', awaiting_payment:'Awaiting payment', confirmed:'Confirmed',
     dispatched:'Dispatched', delivered:'Delivered', completed:'Completed', cancelled:'Cancelled',
     draft:'Draft', scheduled:'Scheduled', sent:'Sent',
     harvested:'Harvested', warehoused:'Warehoused', processing:'Processing', in_transit:'In Transit', exported:'Exported',
@@ -4038,7 +4084,7 @@ window.loadDashboard = async function(rangeDays) {
   };
   const pmLabels = { mobile_money:'MTN/Airtel', cash:'Cash', visa:'Visa' };
   const ORD_CHIP = {
-    awaiting_payment:`<span class="chip chip-orange" style="font-size:10px;padding:2px 8px">Awaiting pay</span>`,
+    awaiting_payment:`<span class="chip chip-orange" style="font-size:10px;padding:2px 8px">Awaiting payment</span>`,
     pending:`<span class="chip" style="font-size:10px;padding:2px 8px;background:var(--ink-08)">Pending</span>`,
   };
 
@@ -4181,7 +4227,7 @@ window.openDashModal = async function(type) {
       dispatched:`<span style="background:#e8f0fe;color:#1a56db;padding:2px 7px;border-radius:4px;font-size:10px;font-weight:700">Dispatched</span>`,
       delivered:`<span style="background:#dcfce7;color:#15803d;padding:2px 7px;border-radius:4px;font-size:10px;font-weight:700">Delivered</span>`,
       completed:`<span style="background:#dcfce7;color:#15803d;padding:2px 7px;border-radius:4px;font-size:10px;font-weight:700">Completed</span>`,
-      awaiting_payment:`<span style="background:#fff4e4;color:var(--orange);padding:2px 7px;border-radius:4px;font-size:10px;font-weight:700">Awaiting pay</span>`,
+      awaiting_payment:`<span style="background:#fff4e4;color:var(--orange);padding:2px 7px;border-radius:4px;font-size:10px;font-weight:700">Awaiting payment</span>`,
       pending:`<span style="background:var(--ink-05);color:var(--ink-60);padding:2px 7px;border-radius:4px;font-size:10px;font-weight:700">Pending</span>`,
     };
     const ageStr = c => { const m=Math.round((Date.now()-new Date(c))/60000); return m<60?`${m}m`:m<1440?`${Math.round(m/60)}h`:`${Math.round(m/1440)}d`; };
@@ -4468,7 +4514,7 @@ const PROD = {
   page: 0, perPage: 20,
   archivePendingId: null,
 };
-const CATEGORIES = ['Seeds','Fertilizers','Crop Protection','Insecticides','Herbicides','Tools'];
+const CATEGORIES = ['Seeds','Ferterlizers','Insecticides','Fungicides & Herbicides','Tools','Irrigation','Other Inputs'];
 
 window.loadProducts = async function() {
   // Load outlets for stock form (once)
@@ -5562,7 +5608,7 @@ const ORD = {
 };
 
 const ORD_STATUSES = ['pending','awaiting_payment','confirmed','dispatched','delivered','completed','cancelled'];
-const ORD_LABELS   = { pending:'Pending', awaiting_payment:'Awaiting Pay', confirmed:'Confirmed',
+const ORD_LABELS   = { pending:'Pending', awaiting_payment:'Awaiting payment', confirmed:'Confirmed',
   dispatched:'Dispatched', delivered:'Delivered', completed:'Completed', cancelled:'Cancelled' };
 const PM_LABELS    = { mobile_money:'MTN MoMo', cash:'Cash · outlet', visa:'Visa' };
 const ORD_ROLE_CHIP = {
@@ -7357,18 +7403,18 @@ const CROP_EMOJI = {
 };
 const CROP_ICON = c => {
   const l = (c||'').toLowerCase();
-  if (l.includes('matooke')||l.includes('matoke')) return 'Mat';
-  if (l.includes('maize'))     return 'Mz';
-  if (l.includes('beans'))     return 'Bn';
-  if (l.includes('coffee'))    return 'Cof';
-  if (l.includes('avocado'))   return 'Av';
-  if (l.includes('cassava'))   return 'Cs';
-  if (l.includes('sweet pot')) return 'SwP';
-  if (l.includes('groundnut')) return 'Gn';
-  if (l.includes('sorghum'))   return 'Sg';
-  if (l.includes('sunflower')) return 'Sf';
-  if (l.includes('sim'))       return 'Ss';
-  return '—';
+  if (l.includes('matooke')||l.includes('matoke')||l.includes('banana')) return '🍌';
+  if (l.includes('maize'))     return '🌽';
+  if (l.includes('beans'))     return '🫘';
+  if (l.includes('coffee'))    return '☕';
+  if (l.includes('avocado'))   return '🥑';
+  if (l.includes('cassava'))   return '🥔';
+  if (l.includes('sweet pot')) return '🍠';
+  if (l.includes('groundnut')) return '🥜';
+  if (l.includes('sorghum'))   return '🌾';
+  if (l.includes('sunflower')) return '🌻';
+  if (l.includes('sim'))       return '🌱';
+  return ''; /* no icon → show just the crop name (no leading dash) */
 };
 
 function renderPriceTable(rows, editable) {
@@ -7376,7 +7422,7 @@ function renderPriceTable(rows, editable) {
   const fmtP = n => n == null ? null : Number(n);
   const cell = (n, isMax) => n == null
     ? '<span style="color:var(--ink-20)">—</span>'
-    : `<span style="font-weight:600;font-size:13.5px;font-variant-numeric:tabular-nums;${isMax ? 'color:var(--teal)' : ''}">UGX ${Number(n).toLocaleString()}</span>`;
+    : `<span style="font-size:13.5px;font-variant-numeric:tabular-nums;${isMax ? 'font-weight:800;color:var(--teal);background:rgba(21,97,109,.14);padding:3px 9px;border-radius:7px' : 'font-weight:600'}">UGX ${Number(n).toLocaleString()}</span>`;
 
   return `<table class="dt" style="font-size:13px">
     <thead><tr>
@@ -7394,7 +7440,7 @@ function renderPriceTable(rows, editable) {
       const maxVal = Math.max(...vals.filter(v => v != null));
       const isMax = v => v != null && v === maxVal;
       return `<tr>
-        <td style="font-weight:700">${CROP_ICON(r.crop)} ${r.crop}</td>
+        <td style="font-weight:700">${[CROP_ICON(r.crop), r.crop].filter(Boolean).join(' ')}</td>
         <td><span class="chip chip-ghost" style="font-size:11px">${r.unit}</span></td>
         <td style="text-align:right">${cell(r.central_ugx,  isMax(r.central_ugx))}</td>
         <td style="text-align:right">${cell(r.eastern_ugx,  isMax(r.eastern_ugx))}</td>
@@ -9003,10 +9049,18 @@ window.openAdvisoryModal = function(id) {
   document.getElementById('ad-type').value       = row?.type || 'video';
   document.getElementById('ad-title').value      = row?.title || '';
   document.getElementById('ad-desc').value       = row?.description || '';
+  document.getElementById('ad-district').value   = row?.district || '';
   document.getElementById('ad-language').value   = row?.language || 'english';
   document.getElementById('ad-url').value        = row?.source_url || '';
   document.getElementById('ad-duration').value   = row?.duration_seconds || '';
   document.getElementById('ad-visibility').value = row?.visibility || 'public';
+  // thumbnail
+  document.getElementById('ad-thumbnail-url').value = row?.thumbnail_url || '';
+  document.getElementById('ad-thumb-file').value = '';
+  const prevImg = document.getElementById('ad-thumb-preview');
+  if (row?.thumbnail_url) { prevImg.src = row.thumbnail_url; prevImg.style.display = ''; }
+  else { prevImg.src = ''; prevImg.style.display = 'none'; }
+  document.getElementById('ad-thumb-upload-status').textContent = 'JPG, PNG or WebP — shown on the tip card in the farmer app.';
   document.getElementById('ad-drawer-title').textContent = row ? 'Edit Content' : 'Add Content';
   document.getElementById('ad-save-label').textContent   = 'Save Content';
   document.getElementById('ad-save-btn').disabled        = false;
@@ -9018,6 +9072,21 @@ window.openAdvisoryModal = function(id) {
 window.closeAdvisoryDrawer = function() {
   document.getElementById('advisory-drawer').classList.remove('open');
   document.getElementById('advisory-drawer-overlay').classList.remove('open');
+};
+
+/* Instant local preview when an image is chosen, so it's obvious the file
+   was picked (it still uploads on Save). */
+window.previewAdvisoryThumb = function(input) {
+  const file = input.files && input.files[0];
+  const statusEl = document.getElementById('ad-thumb-upload-status');
+  const prevImg  = document.getElementById('ad-thumb-preview');
+  if (!file) return;
+  try {
+    prevImg.src = URL.createObjectURL(file);
+    prevImg.style.display = '';
+  } catch (e) {}
+  const kb = Math.round(file.size / 1024);
+  if (statusEl) statusEl.textContent = `Selected ${file.name} (${kb} KB) — saves on “Save Content”.`;
 };
 
 window.saveAdvisory = async function() {
@@ -9032,12 +9101,39 @@ window.saveAdvisory = async function() {
   const lbl = document.getElementById('ad-save-label');
   btn.disabled = true; lbl.textContent = 'Saving…';
 
+  // Upload image if a new file was chosen
+  const thumbFile = document.getElementById('ad-thumb-file').files[0];
+  let thumbnailUrl = document.getElementById('ad-thumbnail-url').value || null;
+  if (thumbFile) {
+    const statusEl = document.getElementById('ad-thumb-upload-status');
+    statusEl.textContent = 'Uploading image…';
+    try {
+      const ext  = thumbFile.name.split('.').pop().toLowerCase() || 'jpg';
+      const path = `advisory/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
+      const upRes = await sb.storage.from('cms-images').upload(path, thumbFile, { upsert: true, contentType: thumbFile.type });
+      if (upRes.error) throw upRes.error;
+      thumbnailUrl = sb.storage.from('cms-images').getPublicUrl(path).data.publicUrl;
+      document.getElementById('ad-thumbnail-url').value = thumbnailUrl;
+      const prevImg = document.getElementById('ad-thumb-preview');
+      prevImg.src = thumbnailUrl; prevImg.style.display = '';
+      statusEl.textContent = 'Image uploaded ✓';
+    } catch(e) {
+      const msg = (e && e.message) || String(e);
+      statusEl.textContent = 'Image upload failed: ' + msg;
+      toast('Image upload failed: ' + msg, 'error');
+      btn.disabled = false; lbl.textContent = 'Save Content';
+      return;
+    }
+  }
+
   const payload = {
     type:             document.getElementById('ad-type').value,
     title,
     description:      document.getElementById('ad-desc').value     || null,
+    district:         document.getElementById('ad-district').value.trim() || null,
     language:         document.getElementById('ad-language').value,
     source_url:       document.getElementById('ad-url').value      || null,
+    thumbnail_url:    thumbnailUrl,
     duration_seconds: parseInt(document.getElementById('ad-duration').value) || null,
     visibility:       document.getElementById('ad-visibility').value,
     published_at:     new Date().toISOString(),
@@ -10206,6 +10302,7 @@ const AN_STATE = {
   customFrom:'',
   customTo:  '',
   compare:   false,           // when true, fetch previous period + show deltas
+  tab:       'summary',       // active group tab: summary | sales | officer | agents | farmers | diaspora | marketplace | operations
 };
 
 /* Format a date as "23 May 2026". */
@@ -10763,7 +10860,7 @@ window.loadAnalytics = async function() {
   const STATUS_COLOR = { completed:'var(--teal)', delivered:'#15803d', dispatched:'var(--orange)',
     confirmed:'#6C4FBF', awaiting_payment:'#FF7D00', cancelled:'var(--rust)', refunded:'var(--ink-40)' };
 
-  el.innerHTML = demoBanner + `
+  const summaryHTML = demoBanner + `
 
     <!-- ── Executive KPI summary (with optional vs-previous deltas) ────── -->
     <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px">
@@ -10948,7 +11045,902 @@ window.loadAnalytics = async function() {
         Traceability values are point-in-time snapshots of current active batches, so they are not period-over-period comparable. Use the metrics above for growth/decline.
       </div>` : ''}
     </div>`;
+
+  /* ── Tab dispatch — the shared period/compare controls feed every tab ── */
+  const TAB = AN_STATE.tab || 'summary';
+  if (TAB === 'sales') {
+    el.innerHTML = renderSalesRevenueTab({
+      allOrders, statusMap, STATUS_LABELS, STATUS_COLOR, totalAllOrders,
+      orders, avgOrderVal, totalRevenue, prodList, maxProd,
+      lineChart, dayKeys, monthLabel, prevSummary,
+    });
+  } else if (TAB === 'summary') {
+    el.innerHTML = summaryHTML;
+  } else {
+    /* Live group tabs each fetch their own data. Keep the shimmer until the
+       async renderer resolves; guard so one failing query shows a message
+       rather than a blank tab. */
+    const RENDERERS = {
+      officer:     renderOfficerTab,
+      agents:      renderAgentsAnalyticsTab,
+      farmers:     renderFarmersTab,
+      diaspora:    renderDiasporaTab,
+      marketplace: renderMarketplaceTab,
+      operations:  renderOperationsTab,
+    };
+    const fn = RENDERERS[TAB];
+    if (fn) {
+      try {
+        el.innerHTML = await fn({ from, to, monthLabel });
+      } catch (e) {
+        console.warn('[analytics] tab render failed', TAB, e);
+        el.innerHTML = `<div class="card" style="padding:28px;color:var(--rust)">Could not load this report: ${String(e && e.message || e)}</div>`;
+      }
+    } else {
+      el.innerHTML = anComingSoon(TAB);
+    }
+  }
+  paintAnalyticsTabs();
 };
+
+/* ── Group-tab switching ─────────────────────────────────
+   Tabs share the period / compare / export controls. Summary + Sales
+   are live; the rest render a tidy "coming soon" card for now. */
+window.switchAnalyticsTab = function(tab) {
+  AN_STATE.tab = tab;
+  paintAnalyticsTabs();
+  loadAnalytics();
+};
+function paintAnalyticsTabs() {
+  document.querySelectorAll('#analytics-tab-bar .ptab').forEach(b => {
+    b.classList.toggle('on', b.dataset.antab === (AN_STATE.tab || 'summary'));
+  });
+}
+
+/* "Coming soon" placeholder for group-tabs not yet wired to live data. */
+function anComingSoon(tab) {
+  const NAMES = {
+    officer: 'Field Officer', agents: 'Agents', farmers: 'Farmers',
+    diaspora: 'Diaspora', marketplace: 'Marketplace', operations: 'Operations',
+  };
+  const REPORTS = {
+    officer: ['Officer Performance Scorecard','Performance by Organisation','Farm Visit Coverage','Officer Ratings & Feedback','Advisory Demand'],
+    agents: ['Agent Sales Leaderboard','Commission Payout & Reconciliation','Onboarding Funnel'],
+    farmers: ['Farmer Acquisition & Growth','Retention / Dormancy','Farmer Crop & Land Profile'],
+    diaspora: ['Diaspora Orders & Recipients','Diaspora Repeat-Order & Retention'],
+    marketplace: ['Produce Traceability','Market Price Trends','Product Catalogue & Stockout'],
+    operations: ['Hire Utilisation & Bookings','AgroBot Usage & Topics','Notification Delivery & Engagement','Verification & Approval SLA','Visit Verification (GPS)','User & Role Overview'],
+  };
+  const name = NAMES[tab] || 'This group';
+  const list = (REPORTS[tab] || []).map(r => `
+    <div style="display:flex;align-items:center;gap:10px;padding:11px 14px;background:var(--ink-05);border:1px solid var(--ink-08);border-radius:10px">
+      <span style="width:7px;height:7px;border-radius:50%;background:var(--orange);flex-shrink:0"></span>
+      <span style="font-size:12.5px;font-weight:600;color:var(--ink)">${r}</span>
+      <span style="margin-left:auto;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-40)">Planned</span>
+    </div>`).join('');
+  return `
+    <div class="card" style="padding:28px">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px">
+        <h2 style="font-family:'Poppins';font-weight:800;font-size:18px;color:var(--ink);margin:0">${name} reports</h2>
+        <span style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:var(--teal);background:rgba(21,97,109,.12);padding:3px 8px;border-radius:5px">Coming soon</span>
+      </div>
+      <p style="font-size:13px;color:var(--ink-60);margin:0 0 18px;max-width:620px">These reports are designed and queued. They'll plug into the same period and compare controls above once wired to live data.</p>
+      <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:10px;max-width:680px">${list}</div>
+    </div>`;
+}
+
+/* ══════════════════════════════════════════════════════
+   SALES & REVENUE TAB — 4 reports, live data only
+   1) GMV & Revenue Trend  2) Order Fulfilment Funnel
+   3) Average Order Value & Basket Mix  4) Outstanding Payments
+══════════════════════════════════════════════════════ */
+function renderSalesRevenueTab(d) {
+  const cnt = s => (d.statusMap[s]?.count) || 0;
+  const rev = s => (d.statusMap[s]?.revenue) || 0;
+
+  /* ── Report 1: GMV & Revenue Trend ── */
+  const gmv = d.totalRevenue;
+  const r1 = `
+    <div class="pa-section-title">1 · GMV &amp; Revenue Trend</div>
+    <div class="card" style="padding:20px;margin-bottom:20px">
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px">
+        <div style="border-left:3px solid var(--orange);padding-left:12px">
+          <div style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--orange)">Gross Merchandise Value</div>
+          <div style="font-family:'Poppins';font-weight:800;font-size:20px;display:flex;align-items:baseline;flex-wrap:wrap">${fmtUGX(gmv)}${d.prevSummary ? anDeltaPill(gmv, d.prevSummary.revenue) : ''}</div>
+          <div style="font-size:11px;color:var(--ink-60)">${d.monthLabel}</div>
+        </div>
+        <div style="border-left:3px solid var(--teal);padding-left:12px">
+          <div style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--teal)">Confirmed Orders</div>
+          <div style="font-family:'Poppins';font-weight:800;font-size:20px;display:flex;align-items:baseline;flex-wrap:wrap">${d.orders.length.toLocaleString()}${d.prevSummary ? anDeltaPill(d.orders.length, d.prevSummary.orderCount) : ''}</div>
+          <div style="font-size:11px;color:var(--ink-60)">paid &amp; fulfilling</div>
+        </div>
+        <div style="border-left:3px solid #6C4FBF;padding-left:12px">
+          <div style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:#6C4FBF">Avg Order Value</div>
+          <div style="font-family:'Poppins';font-weight:800;font-size:20px;display:flex;align-items:baseline;flex-wrap:wrap">${fmtUGX(d.avgOrderVal)}${d.prevSummary ? anDeltaPill(d.avgOrderVal, d.prevSummary.avgOrderVal) : ''}</div>
+          <div style="font-size:11px;color:var(--ink-60)">per confirmed order</div>
+        </div>
+      </div>
+      <div style="font-family:'Poppins';font-weight:700;font-size:13px;margin-bottom:8px">Daily GMV · ${d.monthLabel}</div>
+      ${d.lineChart}
+      <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--ink-40);margin-top:4px">
+        <span>${new Date(d.dayKeys[0]).toLocaleDateString('en-UG',{day:'numeric',month:'short'})}</span>
+        <span>${new Date(d.dayKeys[d.dayKeys.length-1]).toLocaleDateString('en-UG',{day:'numeric',month:'short'})}</span>
+      </div>
+    </div>`;
+
+  /* ── Report 2: Order Fulfilment Funnel ── */
+  const placed        = d.totalAllOrders;
+  const confirmedPlus = cnt('confirmed')+cnt('dispatched')+cnt('delivered')+cnt('completed');
+  const dispatchPlus  = cnt('dispatched')+cnt('delivered')+cnt('completed');
+  const deliveredPlus = cnt('delivered')+cnt('completed');
+  const completed     = cnt('completed');
+  const lost          = cnt('cancelled')+cnt('refunded');
+  const STAGES = [
+    ['Placed',         placed,        'var(--ink)'],
+    ['Confirmed / paid',confirmedPlus,'#6C4FBF'],
+    ['Dispatched',     dispatchPlus,  'var(--orange)'],
+    ['Delivered',      deliveredPlus, '#15803d'],
+    ['Completed',      completed,     'var(--teal)'],
+  ];
+  const base = Math.max(placed, 1);
+  const funnel = STAGES.map(([label,val,color],i) => {
+    const pct = Math.round(val/base*100);
+    const drop = i>0 ? (STAGES[i-1][1] - val) : 0;
+    return `
+      <div style="margin-bottom:11px">
+        <div style="display:flex;justify-content:space-between;font-size:12.5px;margin-bottom:4px">
+          <span style="font-weight:600">${label}</span>
+          <span style="color:var(--ink-60);font-weight:600">${val.toLocaleString()} · ${pct}%${i>0&&drop>0?` <span style="color:var(--rust);font-size:10.5px">−${drop.toLocaleString()}</span>`:''}</span>
+        </div>
+        <div style="height:14px;background:var(--ink-08);border-radius:4px;overflow:hidden">
+          <div style="height:100%;background:${color};border-radius:4px;width:${Math.max(pct,1)}%"></div>
+        </div>
+      </div>`;
+  }).join('');
+  const convRate = placed ? Math.round(completed/placed*100) : 0;
+  const r2 = `
+    <div class="pa-section-title">2 · Order Fulfilment Funnel</div>
+    <div class="card" style="padding:20px;margin-bottom:20px">
+      <div style="display:flex;align-items:baseline;gap:8px;margin-bottom:16px">
+        <span style="font-family:'Poppins';font-weight:800;font-size:20px;color:var(--teal)">${convRate}%</span>
+        <span style="font-size:12px;color:var(--ink-60)">placed → completed conversion</span>
+        ${lost>0?`<span style="margin-left:auto;font-size:11.5px;color:var(--rust);font-weight:600">${lost.toLocaleString()} cancelled / refunded</span>`:''}
+      </div>
+      ${funnel}
+    </div>`;
+
+  /* ── Report 3: Average Order Value & Basket Mix ── */
+  const basket = (d.prodList || []);
+  const basketTotal = basket.reduce((s,[,v]) => s+v, 0) || 1;
+  const r3 = `
+    <div class="pa-section-title">3 · Average Order Value &amp; Basket Mix</div>
+    <div style="display:grid;grid-template-columns:0.8fr 1.2fr;gap:20px;margin-bottom:20px">
+      <div class="card" style="padding:20px;display:flex;flex-direction:column;justify-content:center">
+        <div style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:#6C4FBF;margin-bottom:4px">Average Order Value</div>
+        <div style="font-family:'Poppins';font-weight:800;font-size:30px;display:flex;align-items:baseline;flex-wrap:wrap">${fmtUGX(d.avgOrderVal)}${d.prevSummary ? anDeltaPill(d.avgOrderVal, d.prevSummary.avgOrderVal) : ''}</div>
+        <div style="font-size:11.5px;color:var(--ink-60);margin-top:4px">Across ${d.orders.length.toLocaleString()} confirmed order${d.orders.length!==1?'s':''} · GMV ${fmtUGX(d.totalRevenue)}</div>
+      </div>
+      <div class="card" style="padding:20px">
+        <div style="font-family:'Poppins';font-weight:700;font-size:13px;margin-bottom:14px">Basket mix · revenue share by product</div>
+        ${basket.length ? basket.map(([name,val]) => {
+          const share = Math.round(val/basketTotal*100);
+          return `
+          <div style="margin-bottom:9px">
+            <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:3px">
+              <span style="font-weight:600;max-width:58%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${name}</span>
+              <span style="color:var(--ink-60);font-weight:600">${fmtUGX(val)} · ${share}%</span>
+            </div>
+            <div style="height:5px;background:var(--ink-08);border-radius:3px">
+              <div style="height:100%;background:var(--orange);border-radius:3px;width:${Math.max(Math.round(val/d.maxProd*100),2)}%"></div>
+            </div>
+          </div>`;
+        }).join('') : `<div style="padding:18px 0;text-align:center;color:var(--ink-40);font-size:12.5px">No products sold in ${d.monthLabel} yet.</div>`}
+      </div>
+    </div>`;
+
+  /* ── Report 4: Outstanding Payments (Receivables) ── */
+  const UNPAID = ['awaiting_payment','pending','unpaid'];
+  const now = Date.now();
+  const buckets = { '0-7 days':{c:0,v:0}, '8-30 days':{c:0,v:0}, 'Over 30 days':{c:0,v:0} };
+  let outCount = 0, outValue = 0;
+  (d.allOrders || []).forEach(o => {
+    if (!UNPAID.includes(o.status)) return;
+    const v = o.total_ugx || 0;
+    outCount++; outValue += v;
+    const ageDays = o.created_at ? (now - new Date(o.created_at).getTime())/864e5 : 0;
+    const k = ageDays <= 7 ? '0-7 days' : ageDays <= 30 ? '8-30 days' : 'Over 30 days';
+    buckets[k].c++; buckets[k].v += v;
+  });
+  const ageRows = Object.entries(buckets).map(([label,b]) => `
+    <tr style="border-bottom:1px solid var(--ink-05)">
+      <td style="padding:7px 0;font-weight:600">${label}</td>
+      <td style="text-align:right;padding:7px 0;font-variant-numeric:tabular-nums">${b.c}</td>
+      <td style="text-align:right;padding:7px 0;color:${label==='Over 30 days'&&b.v>0?'var(--rust)':'var(--ink-60)'};font-weight:600">${b.v>0?fmtUGX(b.v):'—'}</td>
+    </tr>`).join('');
+  const r4 = `
+    <div class="pa-section-title">4 · Outstanding Payments (Receivables)</div>
+    <div style="display:grid;grid-template-columns:0.8fr 1.2fr;gap:20px;margin-bottom:8px">
+      <div class="card" style="padding:20px;display:flex;flex-direction:column;justify-content:center;border-top:3px solid var(--rust)">
+        <div style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--rust);margin-bottom:4px">Total Outstanding</div>
+        <div style="font-family:'Poppins';font-weight:800;font-size:30px">${fmtUGX(outValue)}</div>
+        <div style="font-size:11.5px;color:var(--ink-60);margin-top:4px">${outCount.toLocaleString()} unpaid order${outCount!==1?'s':''} awaiting payment</div>
+      </div>
+      <div class="card" style="padding:20px">
+        <div style="font-family:'Poppins';font-weight:700;font-size:13px;margin-bottom:10px">Ageing of receivables</div>
+        ${outCount ? `<table style="width:100%;border-collapse:collapse;font-size:12px">
+          <thead><tr style="border-bottom:2px solid var(--ink-08)">
+            <th style="text-align:left;padding:4px 0;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-60)">Age</th>
+            <th style="text-align:right;padding:4px 0;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-60)">Orders</th>
+            <th style="text-align:right;padding:4px 0;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-60)">Value</th>
+          </tr></thead>
+          <tbody>${ageRows}</tbody>
+        </table>` : `<div style="padding:18px 0;text-align:center;color:var(--teal);font-size:12.5px;font-weight:600">No outstanding payments — all orders in ${d.monthLabel} are settled.</div>`}
+      </div>
+    </div>`;
+
+  return r1 + r2 + r3 + r4;
+}
+
+/* ══════════════════════════════════════════════════════
+   Shared report helpers (theme-consistent)
+══════════════════════════════════════════════════════ */
+function anSec(n, title) {
+  return `<div class="pa-section-title">${n} · ${title}</div>`;
+}
+function anEmpty(msg) {
+  return `<div style="padding:18px 0;text-align:center;color:var(--ink-40);font-size:12.5px">${msg}</div>`;
+}
+/* Horizontal labelled bar. valText is pre-formatted; pct 0-100. */
+function anBar(label, valText, pct, color) {
+  return `
+    <div style="margin-bottom:10px">
+      <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:3px">
+        <span style="font-weight:600;max-width:62%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${label}</span>
+        <span style="color:var(--ink-60);font-weight:600">${valText}</span>
+      </div>
+      <div style="height:6px;background:var(--ink-08);border-radius:3px">
+        <div style="height:100%;background:${color||'var(--orange)'};border-radius:3px;width:${Math.max(pct,2)}%"></div>
+      </div>
+    </div>`;
+}
+/* KPI tile with coloured left border. */
+function anKpi(label, value, sub, color) {
+  return `
+    <div style="border-left:3px solid ${color};padding-left:12px">
+      <div style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:${color}">${label}</div>
+      <div style="font-family:'Poppins';font-weight:800;font-size:20px">${value}</div>
+      ${sub ? `<div style="font-size:11px;color:var(--ink-60)">${sub}</div>` : ''}
+    </div>`;
+}
+/* Filter an array of rows to [from,to] by their created_at (ISO). */
+function anInRange(rows, from, to) {
+  const a = from.getTime(), b = to.getTime();
+  return (rows || []).filter(r => {
+    const t = r && r.created_at ? new Date(r.created_at).getTime() : NaN;
+    return !isNaN(t) && t >= a && t <= b;
+  });
+}
+function anStars(n) { n = Math.max(0, Math.min(5, Math.round(n))); return '★★★★★'.slice(0,n) + '☆☆☆☆☆'.slice(0,5-n); }
+
+/* ══════════════════════════════════════════════════════
+   FIELD OFFICER TAB — reports 5-9 (live data)
+══════════════════════════════════════════════════════ */
+async function renderOfficerTab({ from, to, monthLabel }) {
+  const iso = d => d.toISOString();
+  const [offRes, visRes, vrRes, orRes] = await Promise.all([
+    sb.from('app_users').select('*').eq('role','field_officer'),
+    sb.from('farm_visits').select('*').gte('created_at', iso(from)).lte('created_at', iso(to)),
+    sb.from('visit_ratings').select('*').gte('created_at', iso(from)).lte('created_at', iso(to)),
+    sb.from('officer_ratings').select('*').gte('created_at', iso(from)).lte('created_at', iso(to)),
+  ]);
+  const officers = offRes.data || [];
+  const visits   = visRes.data || [];
+  const vrat     = vrRes.data  || [];
+  const orat     = orRes.data  || [];
+  const offById  = {}; officers.forEach(o => offById[o.id] = o);
+
+  /* Per-officer aggregates */
+  const agg = {};
+  officers.forEach(o => agg[o.id] = { o, visits:0, resolved:0, farmers:new Set(), stars:[], });
+  visits.forEach(v => { const a = agg[v.fo_id]; if (!a) return; a.visits++; if (v.status === 'resolved') a.resolved++; if (v.farmer_phone) a.farmers.add(v.farmer_phone); });
+  vrat.forEach(r => { const a = agg[r.fo_id]; if (a) a.stars.push(r.stars); });
+  orat.forEach(r => { const a = agg[r.fo_id]; if (a) a.stars.push(r.stars); });
+  const rowsArr = Object.values(agg);
+  const totalVisits = visits.length;
+  const totalResolved = visits.filter(v => v.status === 'resolved').length;
+  const allStars = [...vrat, ...orat].map(r => r.stars).filter(n => n != null);
+  const avgStar = allStars.length ? (allStars.reduce((a,b)=>a+b,0)/allStars.length) : 0;
+  const activeOfficers = officers.filter(o => (o.status||'active') === 'active').length;
+
+  /* ── Report 5: Officer Performance Scorecard ── */
+  const scored = rowsArr.filter(a => a.visits > 0 || a.stars.length > 0)
+    .sort((a,b) => b.visits - a.visits).slice(0, 12);
+  const scoreRows = scored.map(a => {
+    const avg = a.stars.length ? (a.stars.reduce((s,x)=>s+x,0)/a.stars.length) : null;
+    const resPct = a.visits ? Math.round(a.resolved/a.visits*100) : 0;
+    return `
+      <tr style="border-bottom:1px solid var(--ink-05)">
+        <td style="padding:7px 0;font-weight:600">${a.o.full_name||'—'}</td>
+        <td style="padding:7px 0;color:var(--ink-60)">${a.o.fo_organisation||'—'}</td>
+        <td style="padding:7px 0;color:var(--ink-60)">${a.o.district||'—'}</td>
+        <td style="text-align:right;padding:7px 0;font-variant-numeric:tabular-nums">${a.visits}</td>
+        <td style="text-align:right;padding:7px 0;color:var(--ink-60)">${a.farmers.size}</td>
+        <td style="text-align:right;padding:7px 0;color:${resPct>=70?'var(--teal)':'var(--ink-60)'}">${resPct}%</td>
+        <td style="text-align:right;padding:7px 0;font-weight:600">${avg!=null?('★ '+avg.toFixed(1)):'—'}</td>
+      </tr>`;
+  }).join('');
+  const r5 = anSec('5','Officer Performance Scorecard') + `
+    <div class="card" style="padding:20px;margin-bottom:20px">
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px">
+        ${anKpi('Active Officers', activeOfficers.toLocaleString(), `${officers.length} total`, 'var(--teal)')}
+        ${anKpi('Visits Logged', totalVisits.toLocaleString(), monthLabel, 'var(--orange)')}
+        ${anKpi('Resolution Rate', (totalVisits?Math.round(totalResolved/totalVisits*100):0)+'%', `${totalResolved} resolved`, '#15803d')}
+        ${anKpi('Avg Rating', allStars.length?('★ '+avgStar.toFixed(1)):'—', `${allStars.length} ratings`, '#6C4FBF')}
+      </div>
+      ${scored.length ? `<table style="width:100%;border-collapse:collapse;font-size:12px">
+        <thead><tr style="border-bottom:2px solid var(--ink-08)">
+          <th style="text-align:left;padding:4px 0;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-60)">Officer</th>
+          <th style="text-align:left;padding:4px 0;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-60)">Organisation</th>
+          <th style="text-align:left;padding:4px 0;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-60)">District</th>
+          <th style="text-align:right;padding:4px 0;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-60)">Visits</th>
+          <th style="text-align:right;padding:4px 0;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-60)">Farmers</th>
+          <th style="text-align:right;padding:4px 0;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-60)">Resolved</th>
+          <th style="text-align:right;padding:4px 0;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-60)">Rating</th>
+        </tr></thead><tbody>${scoreRows}</tbody></table>`
+      : anEmpty(`No officer activity recorded in ${monthLabel}.`)}
+    </div>`;
+
+  /* ── Report 6: Performance by Organisation ── */
+  const ORG_FALLBACK = 'Unspecified';
+  const orgAgg = {};
+  officers.forEach(o => { const k = o.fo_organisation || ORG_FALLBACK; (orgAgg[k] = orgAgg[k] || { officers:0, visits:0, stars:[] }).officers++; });
+  rowsArr.forEach(a => { const k = a.o.fo_organisation || ORG_FALLBACK; if (!orgAgg[k]) orgAgg[k] = { officers:0, visits:0, stars:[] }; orgAgg[k].visits += a.visits; orgAgg[k].stars.push(...a.stars); });
+  const orgRows = Object.entries(orgAgg).sort((a,b) => b[1].visits - a[1].visits);
+  const maxOrgVisits = Math.max(...orgRows.map(([,v]) => v.visits), 1);
+  const r6 = anSec('6','Performance by Organisation') + `
+    <div class="card" style="padding:20px;margin-bottom:20px">
+      <div style="font-size:12px;color:var(--ink-60);margin-bottom:14px">Visits and ratings grouped by the organisation each officer works for.</div>
+      ${orgRows.map(([org,v]) => {
+        const avg = v.stars.length ? (v.stars.reduce((s,x)=>s+x,0)/v.stars.length) : null;
+        return anBar(
+          `${org} <span style="color:var(--ink-40);font-weight:500;font-size:10.5px">· ${v.officers} officer${v.officers!==1?'s':''}${avg!=null?` · ★ ${avg.toFixed(1)}`:''}</span>`,
+          `${v.visits} visit${v.visits!==1?'s':''}`,
+          Math.round(v.visits/maxOrgVisits*100),
+          'var(--teal)');
+      }).join('') || anEmpty('No officers onboarded yet.')}
+    </div>`;
+
+  /* ── Report 7: Farm Visit Coverage ── */
+  const byCrop = {}, byDistrict = {};
+  visits.forEach(v => {
+    const c = (v.crop || 'General').trim() || 'General';
+    byCrop[c] = (byCrop[c]||0) + 1;
+    const d = (offById[v.fo_id] && offById[v.fo_id].district) || 'Unknown';
+    byDistrict[d] = (byDistrict[d]||0) + 1;
+  });
+  const cropRows = Object.entries(byCrop).sort((a,b)=>b[1]-a[1]).slice(0,8);
+  const distRows = Object.entries(byDistrict).sort((a,b)=>b[1]-a[1]).slice(0,8);
+  const maxCrop = Math.max(...cropRows.map(r=>r[1]),1), maxDist = Math.max(...distRows.map(r=>r[1]),1);
+  const r7 = anSec('7','Farm Visit Coverage') + `
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:20px">
+      <div class="card" style="padding:20px">
+        <div style="font-family:'Poppins';font-weight:700;font-size:13px;margin-bottom:14px">Visits by crop</div>
+        ${cropRows.length ? cropRows.map(([c,n])=>anBar(c, String(n), Math.round(n/maxCrop*100), 'var(--orange)')).join('') : anEmpty('No visits logged this period.')}
+      </div>
+      <div class="card" style="padding:20px">
+        <div style="font-family:'Poppins';font-weight:700;font-size:13px;margin-bottom:14px">Visits by district <span style="color:var(--ink-40);font-weight:500;font-size:10.5px">· officer's district</span></div>
+        ${distRows.length ? distRows.map(([d,n])=>anBar(d, String(n), Math.round(n/maxDist*100), 'var(--teal)')).join('') : anEmpty('No visits logged this period.')}
+      </div>
+    </div>`;
+
+  /* ── Report 8: Officer Ratings & Feedback ── */
+  const dist = {1:0,2:0,3:0,4:0,5:0};
+  allStars.forEach(s => { if (dist[s] != null) dist[s]++; });
+  const maxDistCnt = Math.max(...Object.values(dist), 1);
+  const lowComments = [...vrat, ...orat]
+    .filter(r => r.stars <= 2 && r.comment)
+    .sort((a,b)=> (b.created_at||'').localeCompare(a.created_at||''))
+    .slice(0,5)
+    .map(r => `<div style="padding:9px 0;border-bottom:1px solid var(--ink-05)">
+        <div style="font-size:11.5px;color:var(--orange);font-weight:700">${anStars(r.stars)} <span style="color:${offById[r.fo_id]?'var(--ink-60)':'var(--ink-40)'};font-weight:500">${(offById[r.fo_id]&&offById[r.fo_id].full_name)||'Officer'}</span></div>
+        <div style="font-size:12px;color:var(--ink-90);margin-top:2px">“${String(r.comment).replace(/</g,'&lt;')}”</div>
+      </div>`).join('');
+  const r8 = anSec('8','Officer Ratings &amp; Feedback') + `
+    <div style="display:grid;grid-template-columns:1fr 1.2fr;gap:20px;margin-bottom:20px">
+      <div class="card" style="padding:20px">
+        <div style="font-family:'Poppins';font-weight:700;font-size:13px;margin-bottom:4px">Rating distribution</div>
+        <div style="font-size:11.5px;color:var(--ink-60);margin-bottom:14px">${allStars.length} rating${allStars.length!==1?'s':''} · avg ${allStars.length?avgStar.toFixed(1):'—'} (visit + talk)</div>
+        ${[5,4,3,2,1].map(s=>anBar(anStars(s), String(dist[s]), Math.round(dist[s]/maxDistCnt*100), s>=4?'var(--teal)':s===3?'var(--orange)':'var(--rust)')).join('')}
+      </div>
+      <div class="card" style="padding:20px">
+        <div style="font-family:'Poppins';font-weight:700;font-size:13px;margin-bottom:10px">Recent low ratings (≤2★)</div>
+        ${lowComments || anEmpty('No low ratings this period — nice work.')}
+      </div>
+    </div>`;
+
+  /* ── Report 9: Advisory Demand ── */
+  const talkReviews = orat.length;
+  const followups = visits.filter(v => v.followup_weeks).length;
+  const r9 = anSec('9','Advisory Demand') + `
+    <div class="card" style="padding:20px;margin-bottom:8px">
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:12px">
+        ${anKpi('Direct Talk Reviews', talkReviews.toLocaleString(), 'farmers who rated a talk', 'var(--orange)')}
+        ${anKpi('Follow-ups Scheduled', followups.toLocaleString(), 'visits needing a return', 'var(--teal)')}
+        ${anKpi('Available Experts', activeOfficers.toLocaleString(), 'live in the directory', '#6C4FBF')}
+      </div>
+      <div style="font-size:11px;color:var(--ink-40);line-height:1.5;border-top:1px solid var(--ink-08);padding-top:10px">
+        These are proxy signals for advisory demand. Counting every "Talk to an Expert" attempt (including unrated calls) needs talk-session logging, which isn't captured yet — once added it will populate here.
+      </div>
+    </div>`;
+
+  return r5 + r6 + r7 + r8 + r9;
+}
+
+/* ══════════════════════════════════════════════════════
+   AGENTS TAB — reports 10-12 (live data)
+══════════════════════════════════════════════════════ */
+async function renderAgentsAnalyticsTab({ from, to, monthLabel }) {
+  const iso = d => d.toISOString();
+  const [agRes, ordRes, cfgRes] = await Promise.all([
+    sb.from('app_users').select('*').eq('role','agent'),
+    sb.from('orders').select('agent_id,total_ugx,status,created_at')
+      .gte('created_at', iso(from)).lte('created_at', iso(to))
+      .in('status', ['confirmed','dispatched','delivered','completed']),
+    sb.from('settings').select('key,value').eq('key','commission_rate').limit(1),
+  ]);
+  const agents = agRes.data || [];
+  const orders = ordRes.data || [];
+  const globalRate = parseFloat(cfgRes.data?.[0]?.value) || 5;
+  const agById = {}; agents.forEach(a => agById[a.id] = a);
+
+  /* Per-agent sales */
+  const sales = {};
+  orders.forEach(o => { if (!o.agent_id) return; const s = sales[o.agent_id] || (sales[o.agent_id] = { orders:0, total:0 }); s.orders++; s.total += o.total_ugx || 0; });
+  const totalSales = orders.reduce((s,o)=>s+(o.total_ugx||0),0);
+  const attributed = orders.filter(o=>o.agent_id).length;
+
+  /* ── Report 10: Agent Sales Leaderboard ── */
+  const board = Object.entries(sales)
+    .map(([id,s]) => ({ a: agById[id], ...s }))
+    .filter(x => x.a)
+    .sort((a,b)=>b.total-a.total).slice(0,12);
+  const maxBoard = Math.max(...board.map(b=>b.total),1);
+  const boardRows = board.map((b,i) => `
+    <tr style="border-bottom:1px solid var(--ink-05)">
+      <td style="padding:7px 0;color:var(--ink-40);font-weight:800;width:22px">${i+1}</td>
+      <td style="padding:7px 0;font-weight:600">${b.a.full_name||'—'}</td>
+      <td style="padding:7px 0;color:var(--ink-60)">${b.a.district||'—'}</td>
+      <td style="text-align:right;padding:7px 0;font-variant-numeric:tabular-nums">${b.orders}</td>
+      <td style="text-align:right;padding:7px 0;font-weight:700">${fmtUGX(b.total)}</td>
+      <td style="padding:7px 0 7px 12px;width:28%"><div style="height:6px;background:var(--ink-08);border-radius:3px"><div style="height:100%;background:${i===0?'var(--orange)':'var(--teal)'};border-radius:3px;width:${Math.max(Math.round(b.total/maxBoard*100),2)}%"></div></div></td>
+    </tr>`).join('');
+  const r10 = anSec('10','Agent Sales Leaderboard') + `
+    <div class="card" style="padding:20px;margin-bottom:20px">
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px">
+        ${anKpi('Agent Sales', fmtUGX(totalSales), monthLabel, 'var(--orange)')}
+        ${anKpi('Orders via Agents', attributed.toLocaleString(), `${orders.length} total confirmed`, 'var(--teal)')}
+        ${anKpi('Active Sellers', String(board.length), 'agents with sales', '#6C4FBF')}
+      </div>
+      ${board.length ? `<table style="width:100%;border-collapse:collapse;font-size:12px">
+        <thead><tr style="border-bottom:2px solid var(--ink-08)">
+          <th style="text-align:left;padding:4px 0;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-60)">#</th>
+          <th style="text-align:left;padding:4px 0;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-60)">Agent</th>
+          <th style="text-align:left;padding:4px 0;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-60)">District</th>
+          <th style="text-align:right;padding:4px 0;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-60)">Orders</th>
+          <th style="text-align:right;padding:4px 0;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-60)">Sales</th>
+          <th></th>
+        </tr></thead><tbody>${boardRows}</tbody></table>`
+      : anEmpty(`No agent-attributed sales in ${monthLabel}.`)}
+    </div>`;
+
+  /* ── Report 11: Commission Payout & Reconciliation ── */
+  let totalComm = 0;
+  const commRows = board.map(b => {
+    const rate = (b.a.commission_rate != null && b.a.commission_rate !== '') ? parseFloat(b.a.commission_rate) : globalRate;
+    const comm = Math.round(b.total * rate / 100);
+    totalComm += comm;
+    return `
+      <tr style="border-bottom:1px solid var(--ink-05)">
+        <td style="padding:7px 0;font-weight:600">${b.a.full_name||'—'}</td>
+        <td style="text-align:right;padding:7px 0">${fmtUGX(b.total)}</td>
+        <td style="text-align:right;padding:7px 0;color:var(--ink-60)">${rate}%</td>
+        <td style="text-align:right;padding:7px 0;font-weight:700;color:var(--teal)">${fmtUGX(comm)}</td>
+        <td style="padding:7px 0 7px 12px;color:var(--ink-60);font-size:11px">${b.a.commission_payout_phone||'—'}</td>
+      </tr>`;
+  }).join('');
+  const r11 = anSec('11','Commission Payout &amp; Reconciliation') + `
+    <div class="card" style="padding:20px;margin-bottom:20px">
+      <div style="display:flex;align-items:baseline;gap:10px;margin-bottom:14px">
+        <span style="font-family:'Poppins';font-weight:800;font-size:20px;color:var(--teal)">${fmtUGX(totalComm)}</span>
+        <span style="font-size:12px;color:var(--ink-60)">commission owed for ${monthLabel} · platform default ${globalRate}%</span>
+      </div>
+      ${board.length ? `<table style="width:100%;border-collapse:collapse;font-size:12px">
+        <thead><tr style="border-bottom:2px solid var(--ink-08)">
+          <th style="text-align:left;padding:4px 0;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-60)">Agent</th>
+          <th style="text-align:right;padding:4px 0;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-60)">Sales</th>
+          <th style="text-align:right;padding:4px 0;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-60)">Rate</th>
+          <th style="text-align:right;padding:4px 0;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-60)">Commission</th>
+          <th style="text-align:left;padding:4px 0 4px 12px;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-60)">Payout to</th>
+        </tr></thead><tbody>${commRows}</tbody></table>
+        <div style="font-size:11px;color:var(--ink-40);margin-top:10px;line-height:1.5">Commission is computed from confirmed sales × rate. Paid-vs-owed reconciliation will show once payout confirmations are recorded.</div>`
+      : anEmpty('No commissions to reconcile this period.')}
+    </div>`;
+
+  /* ── Report 12: Onboarding Funnel ── */
+  const newSignups = anInRange(agents, from, to).length;
+  const pending = agents.filter(a => a.status === 'pending_approval' || a.verified === false).length;
+  const active  = agents.filter(a => (a.status||'active') === 'active').length;
+  const FUN = [['Signed up (this period)', newSignups, 'var(--ink)'], ['Approved (all-time)', agents.length - pending, '#6C4FBF'], ['Active (all-time)', active, 'var(--teal)']];
+  const funBase = Math.max(agents.length, newSignups, 1);
+  const r12 = anSec('12','Onboarding Funnel') + `
+    <div class="card" style="padding:20px;margin-bottom:8px">
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px">
+        ${anKpi('New Signups', newSignups.toLocaleString(), monthLabel, 'var(--orange)')}
+        ${anKpi('Pending Approval', pending.toLocaleString(), 'awaiting review', pending>0?'var(--rust)':'var(--teal)')}
+        ${anKpi('Total Agents', agents.length.toLocaleString(), `${active} active`, 'var(--teal)')}
+      </div>
+      ${FUN.map(([l,v,c])=>anBar(l, v.toLocaleString(), Math.round(v/funBase*100), c)).join('')}
+    </div>`;
+
+  return r10 + r11 + r12;
+}
+
+/* ══════════════════════════════════════════════════════
+   FARMERS TAB — reports 13-15 (live data)
+══════════════════════════════════════════════════════ */
+async function renderFarmersTab({ from, to, monthLabel }) {
+  const iso = d => d.toISOString();
+  const [fmRes, ordRes, visRes] = await Promise.all([
+    sb.from('app_users').select('id,full_name,district,status,created_at').eq('role','farmer'),
+    sb.from('orders').select('customer_id,created_at').gte('created_at', iso(from)).lte('created_at', iso(to)),
+    sb.from('farm_visits').select('farmer_phone,crop,plot_size,created_at'),
+  ]);
+  const farmers = fmRes.data || [];
+  const orders  = ordRes.data || [];
+  const visits  = visRes.data || [];
+
+  /* ── Report 13: Farmer Acquisition & Growth ── */
+  const newF = anInRange(farmers, from, to);
+  const byDistrict = {};
+  newF.forEach(f => { const d = f.district || 'Unknown'; byDistrict[d] = (byDistrict[d]||0)+1; });
+  const distRows = Object.entries(byDistrict).sort((a,b)=>b[1]-a[1]).slice(0,8);
+  const maxDist = Math.max(...distRows.map(r=>r[1]),1);
+  /* 6-month signup trend */
+  const trend = [];
+  for (let i=5;i>=0;i--) { const dt = new Date(to.getFullYear(), to.getMonth()-i, 1); trend.push({ key:`${dt.getFullYear()}-${dt.getMonth()}`, label:AN_MONTHS[dt.getMonth()], n:0 }); }
+  const trendIdx = {}; trend.forEach((t,i)=>trendIdx[t.key]=i);
+  farmers.forEach(f => { if(!f.created_at) return; const d=new Date(f.created_at); const k=`${d.getFullYear()}-${d.getMonth()}`; if(trendIdx[k]!=null) trend[trendIdx[k]].n++; });
+  const maxTrend = Math.max(...trend.map(t=>t.n),1);
+  const r13 = anSec('13','Farmer Acquisition &amp; Growth') + `
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:20px">
+      <div class="card" style="padding:20px">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
+          ${anKpi('New Farmers', newF.length.toLocaleString(), monthLabel, 'var(--orange)')}
+          ${anKpi('Total Farmers', farmers.length.toLocaleString(), 'all-time', 'var(--teal)')}
+        </div>
+        <div style="font-family:'Poppins';font-weight:700;font-size:13px;margin-bottom:10px">Signups · last 6 months</div>
+        <div style="display:flex;align-items:flex-end;gap:8px;height:90px">
+          ${trend.map(t=>`<div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%">
+            <div style="font-size:10px;color:var(--ink-60);font-weight:700">${t.n}</div>
+            <div style="width:100%;background:var(--teal);border-radius:4px 4px 0 0;height:${Math.max(Math.round(t.n/maxTrend*70),3)}px"></div>
+            <div style="font-size:9.5px;color:var(--ink-40);margin-top:4px">${t.label}</div>
+          </div>`).join('')}
+        </div>
+      </div>
+      <div class="card" style="padding:20px">
+        <div style="font-family:'Poppins';font-weight:700;font-size:13px;margin-bottom:14px">New farmers by district · ${monthLabel}</div>
+        ${distRows.length ? distRows.map(([d,n])=>anBar(d, String(n), Math.round(n/maxDist*100), 'var(--orange)')).join('') : anEmpty('No new farmers this period.')}
+      </div>
+    </div>`;
+
+  /* ── Report 14: Retention / Dormancy ── */
+  const activeIds = new Set(orders.map(o=>o.customer_id).filter(Boolean));
+  const farmerIds = new Set(farmers.map(f=>f.id));
+  let active = 0; activeIds.forEach(id => { if (farmerIds.has(id)) active++; });
+  const dormant = Math.max(farmers.length - active, 0);
+  const actPct = farmers.length ? Math.round(active/farmers.length*100) : 0;
+  const r14 = anSec('14','Retention / Dormancy') + `
+    <div class="card" style="padding:20px;margin-bottom:20px">
+      <div style="display:flex;align-items:baseline;gap:10px;margin-bottom:16px">
+        <span style="font-family:'Poppins';font-weight:800;font-size:20px;color:var(--teal)">${actPct}%</span>
+        <span style="font-size:12px;color:var(--ink-60)">of farmers ordered in ${monthLabel}</span>
+      </div>
+      ${anBar('Active · ordered this period', active.toLocaleString(), farmers.length?Math.round(active/farmers.length*100):0, 'var(--teal)')}
+      ${anBar('Dormant · no order this period', dormant.toLocaleString(), farmers.length?Math.round(dormant/farmers.length*100):0, 'var(--ink-20)')}
+      <div style="font-size:11px;color:var(--ink-40);margin-top:8px;line-height:1.5">Activity is measured by placing an order. Farmers registered but not ordering in the selected period count as dormant — candidates for re-engagement.</div>
+    </div>`;
+
+  /* ── Report 15: Farmer Crop & Land Profile ── */
+  const cropFarmers = {}, plotBands = { '< 1 acre':0, '1–2 acres':0, '2–5 acres':0, '5+ acres':0, 'Unspecified':0 };
+  visits.forEach(v => {
+    const c = (v.crop||'General').trim()||'General';
+    (cropFarmers[c] = cropFarmers[c] || new Set()).add(v.farmer_phone||Math.random());
+    const m = String(v.plot_size||'').match(/([\d.]+)/);
+    if (!m) { plotBands['Unspecified']++; }
+    else { const n=parseFloat(m[1]); plotBands[n<1?'< 1 acre':n<2?'1–2 acres':n<5?'2–5 acres':'5+ acres']++; }
+  });
+  const cropRows = Object.entries(cropFarmers).map(([c,set])=>[c,set.size]).sort((a,b)=>b[1]-a[1]).slice(0,8);
+  const maxCrop = Math.max(...cropRows.map(r=>r[1]),1);
+  const totalPlots = Object.values(plotBands).reduce((a,b)=>a+b,0)||1;
+  const maxBand = Math.max(...Object.values(plotBands),1);
+  const r15 = anSec('15','Farmer Crop &amp; Land Profile') + `
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:8px">
+      <div class="card" style="padding:20px">
+        <div style="font-family:'Poppins';font-weight:700;font-size:13px;margin-bottom:14px">Crops grown <span style="color:var(--ink-40);font-weight:500;font-size:10.5px">· farms visited</span></div>
+        ${cropRows.length ? cropRows.map(([c,n])=>anBar(c, String(n), Math.round(n/maxCrop*100), 'var(--teal)')).join('') : anEmpty('No farm visit data yet.')}
+      </div>
+      <div class="card" style="padding:20px">
+        <div style="font-family:'Poppins';font-weight:700;font-size:13px;margin-bottom:14px">Plot size distribution</div>
+        ${totalPlots>0 ? Object.entries(plotBands).map(([b,n])=>anBar(b, `${n} · ${Math.round(n/totalPlots*100)}%`, Math.round(n/maxBand*100), b==='Unspecified'?'var(--ink-20)':'var(--orange)')).join('') : anEmpty('No plot data captured yet.')}
+        <div style="font-size:11px;color:var(--ink-40);margin-top:8px">Parsed from the plot size recorded during farm visits.</div>
+      </div>
+    </div>`;
+
+  return r13 + r14 + r15;
+}
+
+/* ══════════════════════════════════════════════════════
+   DIASPORA TAB — reports 16-17 (live data)
+══════════════════════════════════════════════════════ */
+async function renderDiasporaTab({ from, to, monthLabel }) {
+  const all = (await sb.from('diaspora_orders').select('*')).data || [];
+  const fromMs = from.getTime(), toMs = to.getTime();
+  const usd = n => '$' + Number(n||0).toLocaleString(undefined,{maximumFractionDigits:0});
+  const inPeriod = all.filter(o => { const t = o.created_at ? new Date(o.created_at).getTime() : NaN; return !isNaN(t) && t>=fromMs && t<=toMs; });
+
+  /* ── Report 16: Diaspora Orders & Recipients ── */
+  const gmvUsd = inPeriod.reduce((s,o)=>s+Number(o.total_usd||0),0);
+  const avgUsd = inPeriod.length ? gmvUsd/inPeriod.length : 0;
+  const statusCount = {};
+  inPeriod.forEach(o => { const s = o.status||'unknown'; statusCount[s]=(statusCount[s]||0)+1; });
+  const statusRows = Object.entries(statusCount).sort((a,b)=>b[1]-a[1]);
+  const maxStatus = Math.max(...statusRows.map(r=>r[1]),1);
+  const destKey = o => o.recipient_district || o.recipient_name || o.recipient_phone || null;
+  const dest = {};
+  inPeriod.forEach(o => { const k = destKey(o); if (k) dest[k]=(dest[k]||0)+1; });
+  const destRows = Object.entries(dest).sort((a,b)=>b[1]-a[1]).slice(0,8);
+  const maxDest = Math.max(...destRows.map(r=>r[1]),1);
+  const r16 = anSec('16','Diaspora Orders &amp; Recipients') + `
+    <div class="card" style="padding:20px;margin-bottom:20px">
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px">
+        ${anKpi('Diaspora Orders', inPeriod.length.toLocaleString(), monthLabel, 'var(--orange)')}
+        ${anKpi('Order Value', usd(gmvUsd), 'gross (USD)', 'var(--teal)')}
+        ${anKpi('Avg Order', usd(avgUsd), 'per order', '#6C4FBF')}
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
+        <div>
+          <div style="font-family:'Poppins';font-weight:700;font-size:13px;margin-bottom:12px">By status</div>
+          ${statusRows.length ? statusRows.map(([s,n])=>anBar(s.replace(/_/g,' '), String(n), Math.round(n/maxStatus*100), 'var(--teal)')).join('') : anEmpty('No diaspora orders this period.')}
+        </div>
+        <div>
+          <div style="font-family:'Poppins';font-weight:700;font-size:13px;margin-bottom:12px">Top recipients</div>
+          ${destRows.length ? destRows.map(([d,n])=>anBar(d, `${n} order${n!==1?'s':''}`, Math.round(n/maxDest*100), 'var(--orange)')).join('') : anEmpty('Recipient details not recorded.')}
+        </div>
+      </div>
+    </div>`;
+
+  /* ── Report 17: Repeat-Order & Retention ── */
+  const firstSeen = {}; /* payer_email -> earliest order ms */
+  const everCount = {};
+  all.forEach(o => {
+    const k = o.payer_email; if (!k) return;
+    const t = o.created_at ? new Date(o.created_at).getTime() : Infinity;
+    if (firstSeen[k]==null || t<firstSeen[k]) firstSeen[k]=t;
+    everCount[k]=(everCount[k]||0)+1;
+  });
+  const periodSenders = new Set(inPeriod.map(o=>o.payer_email).filter(Boolean));
+  let newSenders=0, returningSenders=0;
+  periodSenders.forEach(k => { if ((firstSeen[k]||Infinity) >= fromMs) newSenders++; else returningSenders++; });
+  const uniqueAll = Object.keys(everCount).length;
+  const repeatAll = Object.values(everCount).filter(n=>n>1).length;
+  const repeatRate = uniqueAll ? Math.round(repeatAll/uniqueAll*100) : 0;
+  const totSenders = Math.max(periodSenders.size,1);
+  const r17 = anSec('17','Diaspora Repeat-Order &amp; Retention') + `
+    <div class="card" style="padding:20px;margin-bottom:8px">
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px">
+        ${anKpi('Senders', periodSenders.size.toLocaleString(), monthLabel, 'var(--orange)')}
+        ${anKpi('Repeat Rate', repeatRate+'%', `${repeatAll}/${uniqueAll} ever reordered`, 'var(--teal)')}
+        ${anKpi('Returning', returningSenders.toLocaleString(), 'ordered before', '#6C4FBF')}
+      </div>
+      ${anBar('New senders this period', newSenders.toLocaleString(), Math.round(newSenders/totSenders*100), 'var(--orange)')}
+      ${anBar('Returning senders', returningSenders.toLocaleString(), Math.round(returningSenders/totSenders*100), 'var(--teal)')}
+      <div style="font-size:11px;color:var(--ink-40);margin-top:8px;line-height:1.5">Senders are grouped by payer email. Returning = had at least one earlier order before this period.</div>
+    </div>`;
+
+  return r16 + r17;
+}
+
+/* ══════════════════════════════════════════════════════
+   MARKETPLACE TAB — reports 18-20 (live data)
+══════════════════════════════════════════════════════ */
+async function renderMarketplaceTab({ from, to, monthLabel }) {
+  const iso = d => d.toISOString();
+  const [batchRes, priceRes, prodRes, itemRes] = await Promise.all([
+    sb.from('traceability_batches').select('*').limit(1000),
+    sb.from('produce_prices').select('*').limit(1000),
+    sb.from('products').select('*, product_outlet_stock(outlet_id,stock)').limit(1000),
+    sb.from('order_items').select('product_name,total_ugx,orders!inner(created_at)')
+      .gte('orders.created_at', iso(from)).lte('orders.created_at', iso(to)),
+  ]);
+  const batches = batchRes.data || [];
+  const prices  = priceRes.data || [];
+  const products= prodRes.data  || [];
+  const items   = itemRes.data  || [];
+
+  /* ── Report 18: Produce Traceability ── */
+  const byStage = {}, byCrop = {};
+  batches.forEach(b => { const s=(b.current_stage||'unknown').replace(/_/g,' '); byStage[s]=(byStage[s]||0)+1; const c=(b.crop||'Other').trim()||'Other'; byCrop[c]=(byCrop[c]||0)+1; });
+  const overdue = batches.filter(b => b.updated_at && (Date.now()-new Date(b.updated_at).getTime())/864e5 > 14).length;
+  const stageRows = Object.entries(byStage).sort((a,b)=>b[1]-a[1]);
+  const cropRows = Object.entries(byCrop).sort((a,b)=>b[1]-a[1]).slice(0,8);
+  const maxStage = Math.max(...stageRows.map(r=>r[1]),1), maxCrop = Math.max(...cropRows.map(r=>r[1]),1);
+  const r18 = anSec('18','Produce Traceability') + `
+    <div class="card" style="padding:20px;margin-bottom:20px">
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px">
+        ${anKpi('Tracked Batches', batches.length.toLocaleString(), 'all stages', 'var(--teal)')}
+        ${anKpi('Crops', String(Object.keys(byCrop).length), 'distinct', 'var(--orange)')}
+        ${anKpi('Overdue in Stage', String(overdue), '>14 days idle', overdue>0?'var(--rust)':'var(--teal)')}
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
+        <div>
+          <div style="font-family:'Poppins';font-weight:700;font-size:13px;margin-bottom:12px">By stage</div>
+          ${stageRows.length ? stageRows.map(([s,n])=>anBar(s, String(n), Math.round(n/maxStage*100), 'var(--teal)')).join('') : anEmpty('No batches tracked yet.')}
+        </div>
+        <div>
+          <div style="font-family:'Poppins';font-weight:700;font-size:13px;margin-bottom:12px">By crop</div>
+          ${cropRows.length ? cropRows.map(([c,n])=>anBar(c, String(n), Math.round(n/maxCrop*100), 'var(--orange)')).join('') : anEmpty('No batches tracked yet.')}
+        </div>
+      </div>
+    </div>`;
+
+  /* ── Report 19: Market Prices (current) ── */
+  const priceAgg = {};
+  prices.forEach(p => { const k=(p.crop||p.category||'Other').trim()||'Other'; const v=Number(p.price_ugx||0); if(!v) return; (priceAgg[k]=priceAgg[k]||{sum:0,n:0}).sum+=v; priceAgg[k].n++; });
+  const priceRows = Object.entries(priceAgg).map(([k,a])=>[k, Math.round(a.sum/a.n)]).sort((a,b)=>b[1]-a[1]).slice(0,10);
+  const maxPrice = Math.max(...priceRows.map(r=>r[1]),1);
+  const r19 = anSec('19','Market Prices · current') + `
+    <div class="card" style="padding:20px;margin-bottom:20px">
+      <div style="font-size:12px;color:var(--ink-60);margin-bottom:14px">Average listed price per unit by crop, across ${prices.length} price point${prices.length!==1?'s':''}. Historical trend lines will appear once price history is retained.</div>
+      ${priceRows.length ? priceRows.map(([c,v])=>anBar(c, fmtUGX(v), Math.round(v/maxPrice*100), 'var(--orange)')).join('') : anEmpty('No market prices recorded yet.')}
+    </div>`;
+
+  /* ── Report 20: Product Catalogue & Stockout ── */
+  const stockOf = p => Array.isArray(p.product_outlet_stock) ? p.product_outlet_stock.reduce((s,r)=>s+Number(r.stock||0),0) : null;
+  let tracked=0, outOfStock=0; const stockoutList=[];
+  products.forEach(p => { const st=stockOf(p); if(st==null) return; tracked++; if(st<=0){ outOfStock++; stockoutList.push(p.name||'Unnamed'); } });
+  const sellers = {};
+  items.forEach(it => { const k=it.product_name||'Unknown'; sellers[k]=(sellers[k]||0)+Number(it.total_ugx||0); });
+  const sellerRows = Object.entries(sellers).sort((a,b)=>b[1]-a[1]).slice(0,8);
+  const maxSeller = Math.max(...sellerRows.map(r=>r[1]),1);
+  const r20 = anSec('20','Product Catalogue &amp; Stockout') + `
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:8px">
+      <div class="card" style="padding:20px">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px">
+          ${anKpi('Products', products.length.toLocaleString(), 'in catalogue', 'var(--teal)')}
+          ${anKpi('Out of Stock', String(outOfStock), `${tracked} stock-tracked`, outOfStock>0?'var(--rust)':'var(--teal)')}
+        </div>
+        <div style="font-family:'Poppins';font-weight:700;font-size:13px;margin-bottom:10px">Stockouts</div>
+        ${stockoutList.length ? stockoutList.slice(0,10).map(n=>`<div style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--ink-05);font-size:12px"><span style="width:7px;height:7px;border-radius:50%;background:var(--rust)"></span>${n}</div>`).join('') : anEmpty('Everything in stock.')}
+      </div>
+      <div class="card" style="padding:20px">
+        <div style="font-family:'Poppins';font-weight:700;font-size:13px;margin-bottom:14px">Top sellers · ${monthLabel}</div>
+        ${sellerRows.length ? sellerRows.map(([n,v])=>anBar(n, fmtUGX(v), Math.round(v/maxSeller*100), 'var(--orange)')).join('') : anEmpty('No sales this period.')}
+      </div>
+    </div>`;
+
+  return r18 + r19 + r20;
+}
+
+/* ══════════════════════════════════════════════════════
+   OPERATIONS TAB — reports 21-26 (live data, resilient to missing tables)
+══════════════════════════════════════════════════════ */
+async function renderOperationsTab({ from, to, monthLabel }) {
+  const iso = d => d.toISOString();
+  const settled = await Promise.allSettled([
+    sb.from('hire_bookings').select('*'),
+    sb.from('hire_providers').select('*'),
+    sb.from('chatbot_conversations').select('*'),
+    sb.from('push_notifications').select('*'),
+    sb.from('app_users').select('id,role,status,district,verified,created_at'),
+    sb.from('farm_visits').select('lat,lng,location_type,created_at').gte('created_at', iso(from)).lte('created_at', iso(to)),
+  ]);
+  const data = settled.map(s => (s.status === 'fulfilled' && s.value && s.value.data) ? s.value.data : []);
+  const [hireB, hireP, convs, notifs, users, visits] = data;
+
+  /* ── Report 21: Hire Utilisation & Bookings ── */
+  const hb = anInRange(hireB, from, to);
+  const hbStatus = {}, hbEquip = {};
+  hb.forEach(b => { const s=(b.status||'unknown').replace(/_/g,' '); hbStatus[s]=(hbStatus[s]||0)+1; const e=(b.equipment_type||'Other').trim()||'Other'; hbEquip[e]=(hbEquip[e]||0)+1; });
+  const hbStatusRows = Object.entries(hbStatus).sort((a,b)=>b[1]-a[1]);
+  const hbEquipRows = Object.entries(hbEquip).sort((a,b)=>b[1]-a[1]).slice(0,8);
+  const maxHbS = Math.max(...hbStatusRows.map(r=>r[1]),1), maxHbE = Math.max(...hbEquipRows.map(r=>r[1]),1);
+  const activeProv = hireP.filter(p => p.active !== false && p.verified !== false).length;
+  const r21 = anSec('21','Hire Utilisation &amp; Bookings') + `
+    <div class="card" style="padding:20px;margin-bottom:20px">
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px">
+        ${anKpi('Bookings', hb.length.toLocaleString(), monthLabel, 'var(--orange)')}
+        ${anKpi('Providers', hireP.length.toLocaleString(), `${activeProv} active`, 'var(--teal)')}
+        ${anKpi('Equipment Types', String(Object.keys(hbEquip).length), 'booked', '#6C4FBF')}
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
+        <div><div style="font-family:'Poppins';font-weight:700;font-size:13px;margin-bottom:12px">By status</div>
+          ${hbStatusRows.length ? hbStatusRows.map(([s,n])=>anBar(s, String(n), Math.round(n/maxHbS*100), 'var(--teal)')).join('') : anEmpty('No bookings this period.')}</div>
+        <div><div style="font-family:'Poppins';font-weight:700;font-size:13px;margin-bottom:12px">By equipment</div>
+          ${hbEquipRows.length ? hbEquipRows.map(([e,n])=>anBar(e, String(n), Math.round(n/maxHbE*100), 'var(--orange)')).join('') : anEmpty('No bookings this period.')}</div>
+      </div>
+    </div>`;
+
+  /* ── Report 22: AgroBot Usage ── */
+  const cv = anInRange(convs, from, to);
+  const r22 = anSec('22','AgroBot Usage') + `
+    <div class="card" style="padding:20px;margin-bottom:20px">
+      <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:10px">
+        ${anKpi('Conversations', cv.length.toLocaleString(), monthLabel, 'var(--orange)')}
+        ${anKpi('All-time Chats', convs.length.toLocaleString(), 'total sessions', 'var(--teal)')}
+      </div>
+      <div style="font-size:11px;color:var(--ink-40);line-height:1.5;border-top:1px solid var(--ink-08);padding-top:10px">Volume reflects AgroBot sessions. Topic clustering needs message tagging, which isn't captured yet — it will populate the "top questions" breakdown once added.</div>
+    </div>`;
+
+  /* ── Report 23: Notification Delivery ── */
+  const nf = anInRange(notifs, from, to);
+  const nfStatus = {}; nf.forEach(n => { const s=(n.status||'sent').replace(/_/g,' '); nfStatus[s]=(nfStatus[s]||0)+1; });
+  const nfRows = Object.entries(nfStatus).sort((a,b)=>b[1]-a[1]);
+  const maxNf = Math.max(...nfRows.map(r=>r[1]),1);
+  const r23 = anSec('23','Notification Delivery') + `
+    <div class="card" style="padding:20px;margin-bottom:20px">
+      <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:14px">
+        ${anKpi('Sent', nf.length.toLocaleString(), monthLabel, 'var(--orange)')}
+        ${anKpi('All-time', notifs.length.toLocaleString(), 'notifications', 'var(--teal)')}
+      </div>
+      ${nfRows.length ? nfRows.map(([s,n])=>anBar(s, String(n), Math.round(n/maxNf*100), 'var(--teal)')).join('') : anEmpty('No notifications sent this period.')}
+      <div style="font-size:11px;color:var(--ink-40);margin-top:8px;line-height:1.5">Open / click engagement needs delivery receipts from the push provider — not captured yet.</div>
+    </div>`;
+
+  /* ── Report 24: Verification & Approval SLA ── */
+  const pending = users.filter(u => u.status === 'pending_approval' || u.verified === false);
+  const pendByRole = {}; pending.forEach(u => { const r=(u.role||'unknown'); pendByRole[r]=(pendByRole[r]||0)+1; });
+  const oldest = pending.reduce((mx,u) => { const t=u.created_at?new Date(u.created_at).getTime():Date.now(); const age=(Date.now()-t)/864e5; return Math.max(mx, age); }, 0);
+  const pendRows = Object.entries(pendByRole).sort((a,b)=>b[1]-a[1]);
+  const maxPend = Math.max(...pendRows.map(r=>r[1]),1);
+  const r24 = anSec('24','Verification &amp; Approval SLA') + `
+    <div class="card" style="padding:20px;margin-bottom:20px">
+      <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:14px">
+        ${anKpi('Pending Approval', pending.length.toLocaleString(), 'current backlog', pending.length>0?'var(--rust)':'var(--teal)')}
+        ${anKpi('Oldest Waiting', Math.round(oldest)+' d', 'since signup', oldest>7?'var(--rust)':'var(--ink)')}
+      </div>
+      ${pendRows.length ? pendRows.map(([r,n])=>anBar(r.replace(/_/g,' '), String(n), Math.round(n/maxPend*100), 'var(--orange)')).join('') : anEmpty('No applications waiting — backlog clear.')}
+      <div style="font-size:11px;color:var(--ink-40);margin-top:8px;line-height:1.5">Backlog age uses signup date. Exact time-to-approve will compute once an approval timestamp is recorded.</div>
+    </div>`;
+
+  /* ── Report 25: Visit Verification (GPS) ── */
+  let valid=0, manual=0;
+  visits.forEach(v => { const hasGps = v.lat!=null && v.lng!=null; const isManual = /manual|fallback|unavailable/i.test(String(v.location_type||'')); if (hasGps && !isManual) valid++; else manual++; });
+  const totV = Math.max(visits.length,1);
+  const r25 = anSec('25','Visit Verification (GPS)') + `
+    <div class="card" style="padding:20px;margin-bottom:20px">
+      <div style="display:flex;align-items:baseline;gap:10px;margin-bottom:16px">
+        <span style="font-family:'Poppins';font-weight:800;font-size:20px;color:var(--teal)">${Math.round(valid/totV*100)}%</span>
+        <span style="font-size:12px;color:var(--ink-60)">of ${visits.length} visit${visits.length!==1?'s':''} GPS-verified in ${monthLabel}</span>
+      </div>
+      ${anBar('GPS-verified', valid.toLocaleString(), Math.round(valid/totV*100), 'var(--teal)')}
+      ${anBar('Manual / no GPS', manual.toLocaleString(), Math.round(manual/totV*100), manual>valid?'var(--rust)':'var(--ink-20)')}
+      <div style="font-size:11px;color:var(--ink-40);margin-top:8px;line-height:1.5">A high manual share can indicate connectivity gaps in the field — or visits that need a second look.</div>
+    </div>`;
+
+  /* ── Report 26: User & Role Overview ── */
+  const ROLE_LABEL = { farmer:'Farmers', agent:'Agents', field_officer:'Field Officers', diaspora:'Diaspora' };
+  const roleAgg = {};
+  users.forEach(u => { const r=u.role||'other'; const a=roleAgg[r]||(roleAgg[r]={total:0,active:0}); a.total++; if((u.status||'active')==='active') a.active++; });
+  const roleRows = Object.entries(roleAgg).sort((a,b)=>b[1].total-a[1].total);
+  const maxRole = Math.max(...roleRows.map(r=>r[1].total),1);
+  const r26 = anSec('26','User &amp; Role Overview') + `
+    <div class="card" style="padding:20px;margin-bottom:8px">
+      <div style="font-size:12px;color:var(--ink-60);margin-bottom:14px">${users.length.toLocaleString()} total accounts across all roles.</div>
+      ${roleRows.map(([r,a])=>anBar(`${ROLE_LABEL[r]||r} <span style="color:var(--ink-40);font-weight:500;font-size:10.5px">· ${a.active} active</span>`, a.total.toLocaleString(), Math.round(a.total/maxRole*100), r==='farmer'?'var(--teal)':r==='agent'?'var(--orange)':r==='field_officer'?'#78290F':'var(--ink)')).join('')}
+    </div>`;
+
+  return r21 + r22 + r23 + r24 + r25 + r26;
+}
 /* ══════════════════════════════════════════════════════
    AGENTS & LEADERBOARD
 ══════════════════════════════════════════════════════ */
@@ -11109,6 +12101,8 @@ function renderAgentsContent(tab) {
             const initials = (a.full_name||'?').split(' ').slice(0,2).map(w=>(w||'')[0]||'').join('').toUpperCase();
             const comm = a.sales>0 ? Number(a.sales*commRate).toLocaleString() : '—';
             const safeName = (a.full_name||'').replace(/'/g,"\\'");
+            const isActiveAgent = (a.status||'active') === 'active';
+            const agId = a.id || '';
             return `<tr>
               <td style="font-weight:800;font-size:15px;color:var(--ink-20);text-align:center">${rank}</td>
               <td>
@@ -11124,10 +12118,10 @@ function renderAgentsContent(tab) {
               <td class="r" style="color:var(--orange);font-weight:700">${comm}</td>
               <td>${statusChip(a.status||'active')}</td>
               <td><button class="ctx-btn" onclick="openCtxMenu(this,[
-                {label:'View profile',fn:function(){openAgentDetail('${a.id||''}')}},
-                {label:'Edit',fn:function(){editAgent('${a.id||''}')}},
+                {label:'View profile',fn:function(){openAgentDetail('${agId}')}},
+                {label:'Edit',fn:function(){editAgent('${agId}')}},
                 '---',
-                {label:'${(a.status||'active')==='active'?'Deactivate':'Activate'}',danger:${(a.status||'active')==='active'},fn:function(){toggleAgentStatus('${a.id||''}','${(a.status||'active')==='active'?'inactive':'active'}','${safeName}')}}
+                {label:'${isActiveAgent?'Deactivate':'Reactivate'}',danger:${isActiveAgent},fn:function(){toggleAgentStatus('${agId}','${isActiveAgent?'inactive':'active'}','${safeName}')}}${!isActiveAgent ? `,{label:'Delete permanently',danger:true,fn:function(){deleteAgent('${agId}','${safeName}')}}` : ''}
               ])">⋮</button></td>
             </tr>`;
           }).join('')}
@@ -11169,6 +12163,8 @@ function renderAgentsContent(tab) {
             const isOverride = a.commission_rate != null && a.commission_rate !== globalCommPct;
             const rateChip = `<span style="font-size:11px;color:${isOverride?'var(--orange)':'var(--ink-60)'};font-weight:${isOverride?'700':'400'}">${agentCommPct}%${isOverride?' ✎':''}</span>`;
             const safeName = (a.full_name||'').replace(/'/g,"\\'");
+            const isActiveAgent = (a.status||'active') === 'active';
+            const agId = a.id || '';
             return `<tr>
               <td style="font-weight:800;font-size:15px;color:${rankColor};text-align:center">${i+1}</td>
               <td>
@@ -11184,11 +12180,11 @@ function renderAgentsContent(tab) {
               <td class="r" style="color:var(--orange);font-weight:700">${comm} ${rateChip}</td>
               <td>${statusChip(a.status||'active')}</td>
               <td><button class="ctx-btn" onclick="openCtxMenu(this,[
-                {label:'View profile',fn:function(){openAgentDetail('${a.id||''}')}},
-                {label:'Edit',fn:function(){editAgent('${a.id||''}')}},
-                {label:'Set commission',fn:function(){openSetCommission('${a.id||''}','${safeName}',${agentCommPct})}},
+                {label:'View profile',fn:function(){openAgentDetail('${agId}')}},
+                {label:'Edit',fn:function(){editAgent('${agId}')}},
+                {label:'Set commission',fn:function(){openSetCommission('${agId}','${safeName}',${agentCommPct})}},
                 '---',
-                {label:'${(a.status||'active')==='active'?'Deactivate':'Activate'}',danger:${(a.status||'active')==='active'},fn:function(){toggleAgentStatus('${a.id||''}','${(a.status||'active')==='active'?'inactive':'active'}','${safeName}')}}
+                {label:'${isActiveAgent?'Deactivate':'Reactivate'}',danger:${isActiveAgent},fn:function(){toggleAgentStatus('${agId}','${isActiveAgent?'inactive':'active'}','${safeName}')}}${!isActiveAgent ? `,{label:'Delete permanently',danger:true,fn:function(){deleteAgent('${agId}','${safeName}')}}` : ''}
               ])">⋮</button></td>
             </tr>`;
           }).join('')}
@@ -11582,6 +12578,7 @@ window.openAgentDetail = function(id) {
       <div style="margin-left:auto;display:flex;gap:8px">
         ${!isDemo ? `<button class="btn btn-secondary" onclick="closeUserDrawer();editAgent('${row.id}')">Edit</button>` : ''}
         ${!isDemo && row.status==='active' ? `<button class="btn btn-danger" onclick="closeUserDrawer();toggleAgentStatus('${row.id}','inactive','${(row.full_name||'').replace(/'/g,"\\'")}')">Deactivate</button>` : ''}
+        ${!isDemo && row.status==='inactive' ? `<button class="btn btn-secondary" onclick="closeUserDrawer();toggleAgentStatus('${row.id}','active','${(row.full_name||'').replace(/'/g,"\\'")}')">Reactivate</button><button class="btn btn-danger" onclick="closeUserDrawer();deleteAgent('${row.id}','${(row.full_name||'').replace(/'/g,"\\'")}')">Delete permanently</button>` : ''}
       </div>`;
   } else {
     openUserDetail(id);
@@ -11602,10 +12599,25 @@ window.toggleAgentStatus = async function(id, newStatus, name) {
   if (String(id).startsWith('fa') || String(id).startsWith('fp')) {
     toast('Demo data — connect Supabase to make changes.', 'info'); return;
   }
-  if (!confirm(`${newStatus==='inactive'?'Deactivate':'Activate'} ${name}?`)) return;
+  if (!confirm(`${newStatus==='inactive'?'Deactivate':'Reactivate'} ${name}?`)) return;
   const { error } = await sb.from('app_users').update({ status: newStatus }).eq('id', id);
   if (error) { toast(enumStatusError(error), 'error'); return; }
-  toast(`${name} ${newStatus==='inactive'?'deactivated':'activated'}.`, 'success');
+  toast(`${name} ${newStatus==='inactive'?'deactivated':'reactivated'}.`, 'success');
+  loadAgents();
+};
+
+window.deleteAgent = async function(id, name) {
+  if (String(id).startsWith('fa') || String(id).startsWith('fp')) {
+    toast('Demo data — connect Supabase to make changes.', 'info'); return;
+  }
+  if (!confirm(`Permanently delete ${name}? This cannot be undone.`)) return;
+  // Nullify FK references before deleting
+  await sb.from('orders').update({ agent_id: null }).eq('agent_id', id);
+  await sb.from('app_users').update({ referral_agent_id: null }).eq('referral_agent_id', id);
+  const { error } = await sb.from('app_users').delete().eq('id', id);
+  if (error) { toast('Could not delete: ' + error.message, 'error'); return; }
+  toast(`${name} deleted.`, 'success');
+  logAudit('Deleted agent', name);
   loadAgents();
 };
 
@@ -11844,7 +12856,7 @@ window.exportOfficersCSV = function() {
   const headers = ['Name','District','Speciality','Languages','Farmers Helped','Visits','Rating','Availability','Status'];
   const q = v => `"${String(v??'').replace(/"/g,'""')}"`;
   const lines = [headers.join(','), ...rows.map(o => [
-    q(o.full_name), q(o.district||''), q(o.speciality||''), q(o.languages||''),
+    q(o.full_name), q(o.district||''), q(o.fo_specialities||o.speciality||''), q(o.fo_languages||o.languages||''),
     o.farmers_helped||0, o.visits||0, o.rating||'',
     q(o.fo_available === false ? 'off_duty' : 'available'), q(o.status||'active')
   ].join(','))];
@@ -11870,7 +12882,7 @@ window.openOfficerDetail = function(id) {
   document.getElementById('user-drawer-overlay').classList.add('open');
   document.getElementById('user-drawer').classList.add('open');
   document.getElementById('ud-name').textContent = o.full_name;
-  document.getElementById('ud-sub').textContent  = `Field Officer · ${o.district||'—'} · ${o.speciality||'—'}`;
+  document.getElementById('ud-sub').textContent  = `Field Officer · ${o.district||'—'} · ${o.fo_specialities||o.speciality||'—'}`;
   document.getElementById('ud-body').innerHTML = `
     <div style="display:flex;align-items:center;gap:14px;padding:4px 0 20px;border-bottom:1px solid var(--ink-05);margin-bottom:18px">
       <div style="width:52px;height:52px;border-radius:50%;background:${avBg};color:#fff;
@@ -11891,8 +12903,8 @@ window.openOfficerDetail = function(id) {
       ${[
         ['Phone',         o.phone||'—'],
         ['District',      o.district||'—'],
-        ['Speciality',    o.speciality||'—'],
-        ['Languages',     o.languages||'—'],
+        ['Speciality',    o.fo_specialities||o.speciality||'—'],
+        ['Languages',     o.fo_languages||o.languages||'—'],
         ['Off day',       o.off_day||'—'],
         ['Last active',   o.last_active_at ? fmtDate(o.last_active_at) : 'Never'],
       ].map(([l,v])=>`
@@ -11935,11 +12947,23 @@ window.openOnboardOfficer = function() {
   document.getElementById('of-district').value = '';
   document.getElementById('of-off-day').value  = '';
   document.getElementById('of-commission').value = '0';
+  const orgSel = document.getElementById('of-organisation'); if (orgSel) orgSel.value = '';
+  const orgOther = document.getElementById('of-organisation-other'); if (orgOther) orgOther.value = '';
+  syncOfOrgOther();
   const r = document.querySelector('input[name="of-status"][value="pending_approval"]');
   if (r) r.checked = true;
   document.getElementById('onboard-officer-drawer').classList.add('open');
   document.getElementById('onboard-officer-overlay').classList.add('open');
   setTimeout(() => { const f = document.getElementById('of-name'); if (f) f.focus(); }, 100);
+};
+/* Only show/enable "If other, specify" when Organisation = Other */
+window.syncOfOrgOther = function() {
+  const sel = document.getElementById('of-organisation');
+  const wrap = document.getElementById('of-organisation-other-wrap');
+  const inp = document.getElementById('of-organisation-other');
+  const isOther = !!(sel && sel.value === 'Other');
+  if (wrap) wrap.style.display = isOther ? '' : 'none';
+  if (inp && !isOther) inp.value = '';
 };
 window.closeOnboardOfficer = function() {
   document.getElementById('onboard-officer-drawer').classList.remove('open');
@@ -11958,6 +12982,8 @@ window.saveOnboardOfficer = async function() {
   const momo      = (document.getElementById('of-momo').value || '').trim() || null;
   const status    = (document.querySelector('input[name="of-status"]:checked') || {}).value || 'active';
   const notes     = (document.getElementById('of-notes').value || '').trim() || null;
+  const orgSelVal = document.getElementById('of-organisation').value || null;
+  const orgOther  = (document.getElementById('of-organisation-other').value || '').trim() || null;
 
   if (!name)     { toast('Full name is required.', 'error');  return; }
   if (!phone)    { toast('Phone number is required.', 'error'); return; }
@@ -11965,6 +12991,34 @@ window.saveOnboardOfficer = async function() {
 
   const btn = document.getElementById('of-save-btn');
   if (btn) { btn.disabled = true; btn.textContent = 'Saving…'; }
+
+  /* ── Look up auth_user_id for existing registered users ──────────────────
+     The multi-role migration made auth_user_id NOT NULL. If this person is
+     already registered as a farmer or agent, we must reuse their auth_user_id
+     so the new field_officer row links to the same auth account. We match by
+     phone first (required), then email as fallback. */
+  let authUserId = null;
+  try {
+    let existingQuery = sb.from('app_users')
+      .select('auth_user_id')
+      .not('auth_user_id', 'is', null)
+      .limit(1);
+    if (email) {
+      existingQuery = sb.from('app_users')
+        .select('auth_user_id')
+        .or(`phone.eq.${phone},email.eq.${email}`)
+        .not('auth_user_id', 'is', null)
+        .limit(1);
+    } else {
+      existingQuery = sb.from('app_users')
+        .select('auth_user_id')
+        .eq('phone', phone)
+        .not('auth_user_id', 'is', null)
+        .limit(1);
+    }
+    const { data: existing } = await existingQuery;
+    if (existing && existing.length > 0) authUserId = existing[0].auth_user_id;
+  } catch (_) { /* non-fatal — fall through to insert without auth_user_id */ }
 
   const payload = {
     full_name:        name,
@@ -11981,14 +13035,23 @@ window.saveOnboardOfficer = async function() {
     fo_available:            true,  /* boolean column from the 2026-05-23 migration */
     status:                  status,
     notes:                   notes,
+    fo_organisation:         orgSelVal,
+    fo_organisation_other:   orgOther,
   };
-  /* The app_users schema varies between installs (speciality vs specialty,
-     availability/off_day may be missing entirely). Loop: try insert, if
-     Postgres complains about a specific column, drop that key and retry.
-     Cap at 8 attempts so a real error doesn't loop forever. */
+  if (authUserId) payload.auth_user_id = authUserId;
+
+  /* ── The app_users schema varies between installs (speciality vs specialty,
+     availability/off_day may be missing entirely). Loop: try upsert (handles
+     the case where this person already has a field_officer row), if Postgres
+     complains about a missing column, drop that key and retry.
+     Cap at 8 attempts so a real error doesn't loop forever. ── */
   let error = null;
   for (let attempt = 0; attempt < 8; attempt++) {
-    const res = await sb.from('app_users').insert(payload);
+    /* Use upsert with onConflict on (auth_user_id, role) when we have the
+       auth link; plain insert otherwise (brand-new person, no account yet). */
+    const res = authUserId
+      ? await sb.from('app_users').upsert(payload, { onConflict: 'auth_user_id,role' })
+      : await sb.from('app_users').insert(payload);
     error = res.error || null;
     if (!error) break;
     const m = (error.message || '').match(/(?:column|find the)\s+['"]?([a-zA-Z_]+)['"]?\s+(?:column\s+of\s+'app_users'\s+in\s+the\s+schema\s+cache|does not exist)/i);
@@ -12037,7 +13100,12 @@ window.removeOfficer = async function(id, name) {
   }
   /* Two-step confirm: a destructive permanent delete deserves a real prompt
      where the user types the name. confirm() is enough for the warning. */
-  if (!confirm(`Remove ${name} permanently?\n\nThis deletes their row from app_users and cannot be undone. Past orders & visits stay in history but won't link back to a user.`)) return;
+  if (!confirm(`Remove ${name} permanently?\n\nThis deletes their row from app_users and cannot be undone. Past visits stay in history but will no longer link to this officer.`)) return;
+  /* Clear the FK reference in farm_visits first so the delete doesn't hit the
+     farm_visits_fo_id_fkey constraint. Visits are kept for historical records
+     but fo_id becomes NULL (unlinked). */
+  const { error: fvErr } = await sb.from('farm_visits').update({ fo_id: null }).eq('fo_id', id);
+  if (fvErr) { toast('Could not unlink visits: ' + fvErr.message, 'error'); return; }
   const { error } = await sb.from('app_users').delete().eq('id', id);
   if (error) { toast('Could not remove: ' + error.message, 'error'); return; }
   toast(`${name} removed.`, 'success');
@@ -12113,8 +13181,8 @@ function renderOfficersContent(tab) {
                 </div>
               </td>
               <td style="font-size:12.5px">${o.district||'—'}</td>
-              <td style="font-size:12.5px">${o.speciality||'—'}</td>
-              <td style="font-size:12px;color:var(--ink-60)">${o.languages||'—'}</td>
+              <td style="font-size:12.5px">${o.fo_specialities||o.speciality||'—'}</td>
+              <td style="font-size:12px;color:var(--ink-60)">${o.fo_languages||o.languages||'—'}</td>
               <td class="r" style="font-weight:700">${o.farmers_helped||0}</td>
               <td class="r" style="font-size:12.5px">${o.visits||0}</td>
               <td class="r">${rating}</td>
@@ -12364,8 +13432,8 @@ function renderOfficersContent(tab) {
                 </div>
               </td>
               <td>${o.district||'—'}</td>
-              <td style="font-size:12.5px">${o.speciality||'—'}</td>
-              <td style="font-size:12px;color:var(--ink-60)">${o.languages||'—'}</td>
+              <td style="font-size:12.5px">${o.fo_specialities||o.speciality||'—'}</td>
+              <td style="font-size:12px;color:var(--ink-60)">${o.fo_languages||o.languages||'—'}</td>
               <td style="font-size:12px;color:var(--ink-60)">${fmtDate(o.created_at)}</td>
               <td><span class="chip chip-orange">Pending Approval</span></td>
               <td style="white-space:nowrap">
@@ -13429,7 +14497,7 @@ window.loadSettings = async function() {
     /* Hide every settings tab except the My Account section */
     ['stab-org','stab-branding','stab-commission','stab-payments','stab-fx',
      'stab-sms','stab-whatsapp','stab-odoo','stab-export','stab-audit',
-     'stab-knowledge_base','stab-images'].forEach(id => {
+     'stab-knowledge_base','stab-images','stab-delivery'].forEach(id => {
       const el = document.getElementById(id);
       if (el) el.style.display = 'none';
     });
@@ -13470,6 +14538,12 @@ function renderSettings(tab) {
   /* ── Knowledge Base ─────────────────────────────────── */
   if (tab === 'knowledge_base') {
     loadKnowledgeBase(el);
+    return;
+  }
+
+  /* ── Delivery Pricing ───────────────────────────────── */
+  if (tab === 'delivery') {
+    loadDeliveryPricingPanel(el);
     return;
   }
 
@@ -13755,7 +14829,24 @@ function renderSettings(tab) {
   /* ── WhatsApp Business (stub) ────────────────────────── */
   if (tab === 'whatsapp') {
     const cfg = SETS.cfg;
-    el.innerHTML = `<div class="card" style="padding:20px;max-width:580px">
+    const botNum = cfg.chatbot_whatsapp_number || '';
+    el.innerHTML = `<div class="card" style="padding:20px;max-width:580px;margin-bottom:14px">
+      <div style="font-family:'Poppins';font-weight:700;font-size:15px;margin-bottom:4px">AgroBot chatbot number</div>
+      <p style="font-size:12.5px;color:var(--ink-60);margin-bottom:16px">
+        The WhatsApp number that receives messages asked through the in-app <strong>Ask AgroBot</strong> chatbot.
+        When a farmer taps “Open WhatsApp” in the app, their question is directed here. Change it any time.
+      </p>
+      <div class="field">
+        <label>WhatsApp number <span style="color:var(--ink-40);font-weight:500">· include country code, e.g. +256 700 000000</span></label>
+        <input type="tel" id="s-chatbot-wa" value="${botNum}" placeholder="+256 700 000000" autocomplete="off">
+      </div>
+      <div style="display:flex;align-items:center;gap:10px;margin-top:4px;flex-wrap:wrap">
+        <button class="btn btn-primary" onclick="saveChatbotWhatsApp()">Save number</button>
+        ${botNum ? `<a href="https://wa.me/${botNum.replace(/\D/g,'')}" target="_blank" rel="noopener" style="font-size:12px;color:var(--teal);font-weight:600;text-decoration:none">Open this chat ↗</a>` : ''}
+        <span id="chatbot-wa-status" style="font-size:12px;color:var(--ink-60)"></span>
+      </div>
+    </div>
+    <div class="card" style="padding:20px;max-width:580px">
       <div style="font-family:'Poppins';font-weight:700;font-size:15px;margin-bottom:16px">WhatsApp Business API (Meta)</div>
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
         <span style="font-size:13px;color:var(--ink-60)">Connection status</span>
@@ -14708,6 +15799,198 @@ window.kbImportExcel = async function(input) {
    browser. The mobile app reads cms_images on boot and patches any
    element with data-cms-slot=<slot>.
    ──────────────────────────────────────────────────────────────────── */
+/* ── Delivery Pricing Panel ─────────────────────────────────────────────────
+   Manages the `delivery_pricing` key in the `settings` table.
+   Schema:
+     { "model": "fixed"|"zone",
+       "fee": 5000,                          // fixed model
+       "zones": [{"name":"Kampala","fee":3000}, …], // zone model
+       "free_above": 150000 }               // optional; 0 = disabled
+   ────────────────────────────────────────────────────────────────────────── */
+async function loadDeliveryPricingPanel(el) {
+  el.innerHTML = `
+    <div style="max-width:560px">
+      <div style="font-family:'Poppins';font-weight:700;font-size:15px;margin-bottom:4px">Delivery Pricing</div>
+      <p style="font-size:13px;color:var(--ink-60);margin:0 0 20px">
+        Configure how delivery fees are calculated for boda delivery orders in the mobile app.
+        Changes take effect immediately — no app deploy needed.
+      </p>
+      <div id="dlv-loading" style="padding:24px;text-align:center">
+        <div class="shimmer sk-row" style="height:18px;border-radius:8px;margin-bottom:12px"></div>
+        <div class="shimmer sk-row w-75" style="height:18px;border-radius:8px"></div>
+      </div>
+    </div>`;
+
+  /* ── Fetch current config ── */
+  let cfg = { model: 'fixed', fee: 5000, zones: [], free_above: 0 };
+  try {
+    const { data } = await sb.from('settings').select('value').eq('key','delivery_pricing').limit(1);
+    if (data?.[0]?.value) {
+      const parsed = typeof data[0].value === 'string' ? JSON.parse(data[0].value) : data[0].value;
+      if (parsed && typeof parsed === 'object') cfg = { ...cfg, ...parsed };
+    }
+  } catch(_) {}
+
+  /* ── Render ── */
+  const zonesJSON = JSON.stringify(cfg.zones || []);
+  el.querySelector('#dlv-loading').outerHTML = `
+    <div class="card" style="padding:20px;margin-bottom:16px">
+
+      <!-- Model selector -->
+      <div style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-60);margin-bottom:10px">Pricing Model</div>
+      <div style="display:flex;gap:10px;margin-bottom:20px">
+        <label style="flex:1;border:1.5px solid var(--ink-10);border-radius:10px;padding:12px;cursor:pointer;display:flex;align-items:center;gap:10px;transition:border-color .15s"
+               id="dlv-model-fixed-card">
+          <input type="radio" name="dlv-model" value="fixed" ${cfg.model==='fixed'?'checked':''} onchange="dlvModelChange()" style="accent-color:var(--orange)">
+          <div>
+            <div style="font-weight:700;font-size:12.5px">Fixed fee</div>
+            <div style="font-size:11px;color:var(--ink-60);margin-top:2px">Same delivery fee for every order</div>
+          </div>
+        </label>
+        <label style="flex:1;border:1.5px solid var(--ink-10);border-radius:10px;padding:12px;cursor:pointer;display:flex;align-items:center;gap:10px;transition:border-color .15s"
+               id="dlv-model-zone-card">
+          <input type="radio" name="dlv-model" value="zone" ${cfg.model==='zone'?'checked':''} onchange="dlvModelChange()" style="accent-color:var(--orange)">
+          <div>
+            <div style="font-weight:700;font-size:12.5px">Zone-based</div>
+            <div style="font-size:11px;color:var(--ink-60);margin-top:2px">Different fee per delivery area</div>
+          </div>
+        </label>
+      </div>
+
+      <!-- Fixed fee input -->
+      <div id="dlv-fixed-section" style="display:${cfg.model==='fixed'?'block':'none'};margin-bottom:16px">
+        <div style="font-size:11px;font-weight:700;color:var(--ink-60);margin-bottom:6px">Delivery fee (UGX)</div>
+        <input type="number" id="dlv-fixed-fee" value="${cfg.fee||5000}" min="0" step="500"
+               style="width:100%;max-width:220px;border:1.5px solid var(--ink-10);border-radius:8px;padding:9px 12px;font-size:13px;font-family:inherit;outline:none"
+               onfocus="this.style.borderColor='var(--orange)'" onblur="this.style.borderColor='var(--ink-10)'">
+      </div>
+
+      <!-- Zone-based section -->
+      <div id="dlv-zone-section" style="display:${cfg.model==='zone'?'block':'none'};margin-bottom:16px">
+        <div style="font-size:11px;font-weight:700;color:var(--ink-60);margin-bottom:8px">Delivery Zones</div>
+        <div id="dlv-zones-list" style="display:flex;flex-direction:column;gap:8px;margin-bottom:10px">
+          ${(cfg.zones||[]).map((z,i) => dlvZoneRowHTML(z.name, z.fee, i)).join('')}
+        </div>
+        <button onclick="dlvAddZone()" style="background:none;border:1.5px dashed var(--ink-20);border-radius:8px;padding:9px 16px;font-size:12.5px;color:var(--ink-60);cursor:pointer;width:100%;font-family:inherit;transition:border-color .15s"
+                onmouseover="this.style.borderColor='var(--orange)';this.style.color='var(--orange)'"
+                onmouseout="this.style.borderColor='var(--ink-20)';this.style.color='var(--ink-60)'">
+          + Add zone
+        </button>
+        <p style="font-size:11px;color:var(--ink-40);margin:8px 0 0;line-height:1.5">
+          Tip: zone names here should match the area names customers select at checkout.
+          Any area not listed will show a default fee or be unavailable.
+        </p>
+      </div>
+
+      <!-- Free-above threshold -->
+      <div style="border-top:1px solid var(--ink-08);padding-top:16px">
+        <label style="display:flex;align-items:center;gap:10px;cursor:pointer;margin-bottom:10px">
+          <input type="checkbox" id="dlv-free-above-toggle" ${cfg.free_above>0?'checked':''} onchange="dlvFreeAboveToggle()"
+                 style="width:16px;height:16px;accent-color:var(--orange);cursor:pointer">
+          <div>
+            <div style="font-weight:700;font-size:12.5px">Free delivery above a threshold</div>
+            <div style="font-size:11px;color:var(--ink-60);margin-top:1px">Waive the delivery fee when the cart total exceeds a set amount</div>
+          </div>
+        </label>
+        <div id="dlv-free-above-section" style="display:${cfg.free_above>0?'flex':'none'};align-items:center;gap:8px;padding-left:26px">
+          <span style="font-size:12.5px;color:var(--ink-60)">Free when order total ≥ UGX</span>
+          <input type="number" id="dlv-free-above-amt" value="${cfg.free_above||100000}" min="1000" step="5000"
+                 style="width:130px;border:1.5px solid var(--ink-10);border-radius:8px;padding:8px 12px;font-size:13px;font-family:inherit;outline:none"
+                 onfocus="this.style.borderColor='var(--orange)'" onblur="this.style.borderColor='var(--ink-10)'">
+        </div>
+      </div>
+
+      <!-- Save -->
+      <div style="margin-top:20px;display:flex;align-items:center;gap:12px">
+        <button class="btn btn-primary" onclick="saveDeliveryPricing()" id="dlv-save-btn">Save changes</button>
+        <span id="dlv-status" style="font-size:12.5px;color:var(--ink-60)"></span>
+      </div>
+    </div>`;
+
+  /* Highlight the selected card on load */
+  dlvModelChange();
+}
+
+function dlvZoneRowHTML(name, fee, idx) {
+  return `<div class="dlv-zone-row" style="display:flex;align-items:center;gap:8px">
+    <input type="text" placeholder="Zone name" value="${(name||'').replace(/"/g,'&quot;')}"
+           style="flex:1;border:1.5px solid var(--ink-10);border-radius:8px;padding:8px 10px;font-size:12.5px;font-family:inherit;outline:none"
+           onfocus="this.style.borderColor='var(--orange)'" onblur="this.style.borderColor='var(--ink-10)'">
+    <input type="number" placeholder="Fee (UGX)" value="${fee||''}" min="0" step="500"
+           style="width:130px;border:1.5px solid var(--ink-10);border-radius:8px;padding:8px 10px;font-size:12.5px;font-family:inherit;outline:none"
+           onfocus="this.style.borderColor='var(--orange)'" onblur="this.style.borderColor='var(--ink-10)'">
+    <button onclick="this.closest('.dlv-zone-row').remove()"
+            style="background:none;border:none;cursor:pointer;color:var(--rust);font-size:16px;padding:4px;line-height:1;flex-shrink:0"
+            title="Remove zone">×</button>
+  </div>`;
+}
+
+window.dlvModelChange = function() {
+  const model = document.querySelector('input[name="dlv-model"]:checked')?.value;
+  const fixedSec = document.getElementById('dlv-fixed-section');
+  const zoneSec  = document.getElementById('dlv-zone-section');
+  const fixedCard = document.getElementById('dlv-model-fixed-card');
+  const zoneCard  = document.getElementById('dlv-model-zone-card');
+  if (fixedSec) fixedSec.style.display = model === 'fixed' ? 'block' : 'none';
+  if (zoneSec)  zoneSec.style.display  = model === 'zone'  ? 'block' : 'none';
+  if (fixedCard) fixedCard.style.borderColor = model === 'fixed' ? 'var(--orange)' : 'var(--ink-10)';
+  if (zoneCard)  zoneCard.style.borderColor  = model === 'zone'  ? 'var(--orange)' : 'var(--ink-10)';
+};
+
+window.dlvFreeAboveToggle = function() {
+  const on = document.getElementById('dlv-free-above-toggle')?.checked;
+  const sec = document.getElementById('dlv-free-above-section');
+  if (sec) sec.style.display = on ? 'flex' : 'none';
+};
+
+window.dlvAddZone = function() {
+  const list = document.getElementById('dlv-zones-list');
+  if (!list) return;
+  const idx = list.querySelectorAll('.dlv-zone-row').length;
+  list.insertAdjacentHTML('beforeend', dlvZoneRowHTML('', '', idx));
+};
+
+window.saveDeliveryPricing = async function() {
+  const btn    = document.getElementById('dlv-save-btn');
+  const status = document.getElementById('dlv-status');
+  const model  = document.querySelector('input[name="dlv-model"]:checked')?.value || 'fixed';
+
+  let cfg = { model };
+
+  if (model === 'fixed') {
+    const fee = parseInt(document.getElementById('dlv-fixed-fee')?.value) || 0;
+    cfg.fee = fee;
+  } else {
+    const zones = [];
+    document.querySelectorAll('#dlv-zones-list .dlv-zone-row').forEach(row => {
+      const inputs = row.querySelectorAll('input');
+      const name = inputs[0]?.value?.trim();
+      const fee  = parseInt(inputs[1]?.value) || 0;
+      if (name) zones.push({ name, fee });
+    });
+    cfg.zones = zones;
+  }
+
+  const freeOn  = document.getElementById('dlv-free-above-toggle')?.checked;
+  cfg.free_above = freeOn ? (parseInt(document.getElementById('dlv-free-above-amt')?.value) || 0) : 0;
+
+  if (btn) { btn.disabled = true; btn.textContent = 'Saving…'; }
+  if (status) status.textContent = '';
+
+  try {
+    const { error } = await sb.from('settings')
+      .upsert({ key: 'delivery_pricing', value: JSON.stringify(cfg) }, { onConflict: 'key' });
+    if (error) throw error;
+    if (status) { status.textContent = 'Saved ✓'; status.style.color = 'var(--teal)'; }
+    logAudit('UPDATE', 'settings', 'delivery_pricing');
+    setTimeout(() => { if (status) status.textContent = ''; }, 3000);
+  } catch(e) {
+    if (status) { status.textContent = 'Error: ' + (e.message || e); status.style.color = 'var(--rust)'; }
+  } finally {
+    if (btn) { btn.disabled = false; btn.textContent = 'Save changes'; }
+  }
+};
+
 async function loadCmsImagesPanel(el) {
   el.innerHTML = `
     <div style="margin-bottom:18px">
@@ -14745,7 +16028,18 @@ async function loadCmsImagesPanel(el) {
       }).eq('slot', r.slot);
     }));
   }
-  const missing = CATEGORIES.filter(c => !existingSet.has(catSlug(c)));
+  /* Fetch live categories from DB so the panel always reflects the real list */
+  let liveCategories = CATEGORIES; // fallback to hardcoded
+  try {
+    const { data: catSetting } = await sb.from('settings').select('value').eq('key','product_categories').limit(1);
+    if (catSetting?.[0]?.value) {
+      const parsed = JSON.parse(catSetting[0].value);
+      if (Array.isArray(parsed) && parsed.length) liveCategories = parsed.map(c => String(c).trim()).filter(Boolean);
+    }
+  } catch(_) {}
+  const liveSlugs = new Set(liveCategories.map(catSlug));
+
+  const missing = liveCategories.filter(c => !existingSet.has(catSlug(c)));
   if (missing.length > 0) {
     await sb.from('cms_images').upsert(
       missing.map((c, i) => ({
@@ -14777,9 +16071,10 @@ async function loadCmsImagesPanel(el) {
     return;
   }
 
-  // Group by category
+  // Group by category, skipping stale cat-* slots that are no longer in the live category list
   const byCat = {};
   for (const row of data) {
+    if (row.slot && row.slot.startsWith('cat-') && !liveSlugs.has(row.slot)) continue;
     (byCat[row.category] || (byCat[row.category] = [])).push(row);
   }
 
@@ -14827,6 +16122,30 @@ const CMS_DEFAULTS = {
     color: '#FF7D00',
     svg: '<svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#FFECD1" stroke-width="1.6" stroke-linejoin="round"><path d="M12 3l7 3v5c0 5-3 9-7 11-4-2-7-6-7-11V6z"/></svg>',
     note: 'Currently: orange block + shield icon.'
+  },
+  'cat-insecticides': {
+    type: 'block',
+    color: '#4A7C59',
+    svg: '<svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#FFECD1" stroke-width="1.6" stroke-linejoin="round"><path d="M12 3c0 3-2 5-2 8s2 5 2 8M8 7l-3-2M16 7l3-2M8 12H4M20 12h-4M8 17l-3 2M16 17l3 2"/></svg>',
+    note: 'Currently: green block + spray icon.'
+  },
+  'cat-fungicides-herbicides': {
+    type: 'block',
+    color: '#5C6B2E',
+    svg: '<svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#FFECD1" stroke-width="1.6" stroke-linejoin="round"><path d="M12 22V12"/><path d="M12 12C12 7 8 3 3 3c0 5 4 9 9 9z"/><path d="M12 12c0-5 4-9 9-9-0 5-4 9-9 9z"/></svg>',
+    note: 'Currently: olive block + leaf icon.'
+  },
+  'cat-ferterlizers': {
+    type: 'block',
+    color: '#8B5A2B',
+    svg: '<svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#FFECD1" stroke-width="1.6" stroke-linejoin="round"><rect x="6" y="5" width="12" height="16" rx="1"/><path d="M6 9h12"/></svg>',
+    note: 'Currently: brown block + bag icon.'
+  },
+  'cat-other-inputs': {
+    type: 'block',
+    color: '#5A5A7A',
+    svg: '<svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#FFECD1" stroke-width="1.6" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M5.6 18.4l2.1-2.1M16.3 7.7l2.1-2.1"/></svg>',
+    note: 'Currently: purple block + asterisk icon.'
   },
   'cat-tools': {
     type: 'block',
@@ -15014,7 +16333,7 @@ window.switchSettingsTab = function(tab, el) {
   /* Non-admin roles can only access the account/password tab */
   const myRole = APP.profile?.role;
   const isAdminRole = ['md','it_admin'].includes(myRole);
-  const ADMIN_ONLY_TABS = ['org','branding','commission','payments','fx','sms','whatsapp','odoo','export','audit','knowledge_base','images'];
+  const ADMIN_ONLY_TABS = ['org','branding','commission','delivery','payments','fx','sms','whatsapp','odoo','export','audit','knowledge_base','images'];
   if (!isAdminRole && ADMIN_ONLY_TABS.includes(tab)) { return; }
   document.querySelectorAll('#page-settings .sb-item').forEach(b => b.classList.remove('active'));
   if (el) el.classList.add('active');
@@ -15399,6 +16718,28 @@ window.saveOrgSettings = async function() {
   }
   if (btn) { btn.disabled = false; btn.textContent = origLabel || 'Save changes'; }
   if (!failed) toast('Organisation settings saved.', 'success');
+};
+
+/* ── AgroBot chatbot WhatsApp destination number ──────── */
+window.saveChatbotWhatsApp = async function() {
+  const raw = document.getElementById('s-chatbot-wa')?.value?.trim() || '';
+  const status = document.getElementById('chatbot-wa-status');
+  const setStatus = (msg, color) => { if (status) { status.textContent = msg; status.style.color = color || 'var(--ink-60)'; } };
+  const digits = raw.replace(/\D/g, '');
+  if (!raw) { setStatus('Please enter a WhatsApp number.', 'var(--rust)'); return; }
+  if (digits.length < 9 || digits.length > 15) {
+    setStatus('Enter a valid number with country code, e.g. +256 700 000000.', 'var(--rust)');
+    return;
+  }
+  setStatus('Saving…', 'var(--ink-60)');
+  const { error } = await sb.from('settings')
+    .upsert({ key: 'chatbot_whatsapp_number', value: raw }, { onConflict: 'key' });
+  if (error) { setStatus('Save failed: ' + error.message, 'var(--rust)'); return; }
+  SETS.cfg.chatbot_whatsapp_number = raw;
+  setStatus('Saved ✓ ' + new Date().toLocaleTimeString('en-UG'), 'var(--teal)');
+  toast('AgroBot WhatsApp number updated.', 'success');
+  logAudit('Updated AgroBot WhatsApp number', { targetType:'settings', notes: raw });
+  renderSettings('whatsapp');
 };
 
 /* ── Africa's Talking SMS settings + test ─────────────── */
@@ -15787,50 +17128,49 @@ window.testOdooConnection = async function() {
   if (dot)    dot.style.background = 'var(--orange)';
   if (label)  label.textContent = 'Testing connection…';
   try {
-    const base = url.replace(/\/$/, '');
-    const res  = await fetch(`${base}/web/session/authenticate`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        jsonrpc: '2.0', method: 'call', id: 1,
-        params: { db, login: 'api', password: key },
-      }),
-    });
+    /* Connect via the server-side function (no CORS; uses Netlify env credentials). */
+    const res  = await fetch('https://agro-more-app.netlify.app/.netlify/functions/odoo-sync?action=ping');
     const json = await res.json();
-    if (json?.result?.uid) {
-      /* Odoo returned a valid session */
+    if (json && json.ok) {
       if (dot)    dot.style.background = 'var(--teal)';
-      if (label)  label.textContent = `Connected — Odoo ${json.result.server_version_info?.[0] ?? ''} · ${db}`;
-      toast('Connection successful.', 'success');
+      if (label)  label.textContent = `Connected — Odoo ${json.server_version || ''} · ${json.db || db}`;
+      toast('Odoo connection successful.', 'success');
     } else {
-      const msg = json?.error?.data?.message || json?.result?.reason || 'Authentication failed';
+      const msg = (json && json.error) || 'Authentication failed';
       if (dot)    dot.style.background = 'var(--rust)';
       if (label)  label.textContent = `Error: ${msg}`;
-      toast(`Odoo auth error: ${msg}`, 'error');
+      toast(`Odoo error: ${msg}`, 'error');
     }
   } catch (err) {
-    /* CORS / network error — likely the Odoo host blocked browser direct calls */
     if (dot)    dot.style.background = 'var(--ink-20)';
-    if (label)  label.textContent = 'Browser cannot reach Odoo directly (CORS). Save credentials — your server will connect.';
-    toast('Cannot reach Odoo from browser (CORS). Credentials saved after hitting Save.', 'info');
+    if (label)  label.textContent = 'Could not reach the sync service.';
+    toast('Sync service unreachable — try again.', 'error');
   }
   if (btn) btn.disabled = false;
   if (lbl) lbl.textContent = 'Test connection';
 };
 
+const ODOO_FN = 'https://agro-more-app.netlify.app/.netlify/functions/odoo-sync';
 window.odooSyncNow = async function() {
   const btn = document.getElementById('odoo-sync-btn');
   const lbl = document.getElementById('odoo-sync-label');
   const txt = document.getElementById('odoo-last-sync-txt');
   if (btn) btn.disabled = true;
   if (lbl) lbl.textContent = 'Syncing…';
-  const now = new Date().toISOString();
-  const { error } = await sb.from('settings').upsert({ key: 'odoo_last_sync', value: now }, { onConflict: 'key' });
-  if (error) { toast(error.message, 'error'); }
-  else {
-    SETS.cfg.odoo_last_sync = now;
-    if (txt) txt.textContent = new Date(now).toLocaleString('en-UG', { dateStyle:'medium', timeStyle:'short' });
-    toast('Sync timestamp recorded.', 'success');
+  try {
+    const r = await fetch(ODOO_FN + '?action=pull_products&commit=1');
+    const j = await r.json();
+    if (j && j.ok) {
+      const now = new Date().toISOString();
+      await sb.from('settings').upsert({ key: 'odoo_last_sync', value: now }, { onConflict: 'key' });
+      SETS.cfg.odoo_last_sync = now;
+      if (txt) txt.textContent = new Date(now).toLocaleString('en-UG', { dateStyle:'medium', timeStyle:'short' });
+      toast(`Synced ${j.committed} products from Odoo · ${j.updated} updated, ${j.inserted} new.`, 'success');
+    } else {
+      toast('Odoo sync failed: ' + ((j && j.error) || 'unknown error'), 'error');
+    }
+  } catch (e) {
+    toast('Could not reach the sync service. Try again.', 'error');
   }
   if (btn) btn.disabled = false;
   if (lbl) lbl.textContent = '↻ Sync now';
@@ -16075,11 +17415,13 @@ window.openApproveOfficer = function(officer) {
   av.style.background = 'var(--teal)';
   document.getElementById('aom-name').textContent = officer.full_name || '—';
   document.getElementById('aom-meta').textContent =
-    [officer.district, officer.speciality].filter(Boolean).join(' · ') || '—';
+    [officer.district, officer.fo_specialities||officer.speciality].filter(Boolean).join(' · ') || '—';
   // Chips
+  const _foLangs = officer.fo_languages || officer.languages || '';
+  const _foSpec  = officer.fo_specialities || officer.speciality || '';
   document.getElementById('aom-chips').innerHTML = [
-    officer.languages  ? `<span class="chip" style="background:var(--ink-08);font-size:11px">${officer.languages}</span>` : '',
-    officer.speciality ? `<span class="chip" style="background:rgba(21,97,109,.1);color:var(--teal);font-size:11px">${officer.speciality}</span>` : '',
+    _foLangs ? `<span class="chip" style="background:var(--ink-08);font-size:11px">${_foLangs}</span>` : '',
+    _foSpec  ? `<span class="chip" style="background:rgba(21,97,109,.1);color:var(--teal);font-size:11px">${_foSpec}</span>` : '',
   ].filter(Boolean).join('');
   // Detail grid
   const fmtD = d => d ? new Date(d).toLocaleDateString('en-UG',{day:'numeric',month:'short',year:'numeric'}) : '—';
@@ -16098,7 +17440,7 @@ window.openApproveOfficer = function(officer) {
     </div>
     <div style="padding:10px 12px;background:var(--ink-05);border-radius:8px">
       <div style="font-size:10px;font-weight:700;text-transform:uppercase;color:var(--ink-40);margin-bottom:4px">Languages</div>
-      <div style="font-size:13px;font-weight:600">${officer.languages || '—'}</div>
+      <div style="font-size:13px;font-weight:600">${officer.fo_languages||officer.languages || '—'}</div>
     </div>`;
   // Quick stats panel
   document.getElementById('aom-stat-farmers').textContent = officer.farmers_helped || '0';
@@ -16106,6 +17448,11 @@ window.openApproveOfficer = function(officer) {
   document.getElementById('aom-stat-rating').textContent  = officer.rating ? `★ ${officer.rating}` : '—';
   document.getElementById('aom-stat-avail').textContent   = officer.fo_available === false ? 'Off duty' : '● Available';
   document.getElementById('aom-submitted').textContent    = `Submitted ${fmtD(officer.created_at)}`;
+  // Organisation (editable)
+  const orgVal = officer.fo_organisation === 'Other'
+    ? (officer.fo_organisation_other || '')
+    : (officer.fo_organisation || '');
+  document.getElementById('aom-organisation').value = orgVal;
   // Reset checklist & notes
   ['aom-chk1','aom-chk2','aom-chk3','aom-chk4'].forEach(id => { const el = document.getElementById(id); if(el) el.checked = false; });
   document.getElementById('aom-notes').value = '';
@@ -16130,7 +17477,8 @@ window.decideOfficer = async function(newStatus) {
   /* Schema-tolerant update — different installs may not have `notes` (or
      other extra cols). Same auto-retry pattern as saveOnboardOfficer: try,
      on "column X not found" errors strip the offending key and retry. */
-  const payload = { status: newStatus, notes };
+  const orgInput = (document.getElementById('aom-organisation').value || '').trim();
+  const payload = { status: newStatus, notes, fo_organisation: orgInput || null };
   let error = null;
   for (let attempt = 0; attempt < 8; attempt++) {
     const res = await sb.from('app_users').update(payload).eq('id', id);

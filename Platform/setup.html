@@ -257,7 +257,9 @@ window.validateServiceKey = async function() {
 window.createAccounts = async function() {
   if (!adminSb) { alert('Please complete step 2 first.'); return; }
   const btn = document.getElementById('createBtn');
+  const spinner = document.getElementById('create-spinner');
   btn.disabled = true;
+  if (spinner) spinner.style.display = '';
   const logBox = document.getElementById('setup-log');
   logBox.style.display = 'block';
   let done = 0;
@@ -321,6 +323,7 @@ window.createAccounts = async function() {
     await new Promise(r => setTimeout(r, 400));
   }
 
+  if (spinner) spinner.style.display = 'none';
   setStepStatus(3,'done','✓ All accounts created');
   document.getElementById('done-banner').style.display = 'block';
   document.getElementById('done-banner').scrollIntoView({ behavior:'smooth' });

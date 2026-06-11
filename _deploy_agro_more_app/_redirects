@@ -1,0 +1,15 @@
+# Mobile PWA — Netlify redirect rules.
+#
+# Bare URL → land directly in the installed-app view of app.html. This stops
+# new visitors from seeing the design-preview mockup (all screens scrolled
+# vertically), which they'd otherwise hit if they typed just the hostname.
+#
+# Old shape: https://agro-more-app.netlify.app/
+#            → renders index.html, which is the design-preview, confusing.
+# New shape: same URL silently rewrites to /app.html?mode=app, which is what
+#            farmers actually use.
+#
+# The rewrite is server-side so the user URL stays "/" — they only ever see
+# the clean hostname. 200! status forces rewrite (not 301 redirect) so the
+# hash-routed app paths (#home-1 etc.) work without redirect loops.
+/   /app.html?mode=app   200!

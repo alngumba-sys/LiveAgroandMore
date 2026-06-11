@@ -1,0 +1,4 @@
+#Wed Jun 03 14:29:35 EAT 2026
+base.0=/Users/albert/Documents/Claude/Projects/UG App/app/build/intermediates/dex/release/minifyReleaseWithR8/classes.dex
+renamed.0=classes.dex
+path.0=classes.dex

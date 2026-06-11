@@ -247,10 +247,32 @@ const SUPABASE_URL  = 'https://nqyutflqzjjueemirgzr.supabase.co';
 const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5xeXV0ZmxxempqdWVlbWlyZ3pyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcyNzc1NDQsImV4cCI6MjA5Mjg1MzU0NH0.8UgCkfGIEZfpwtbx7ajg6IPJe6Dp4cbs2dahPIK5mYI';
 const sb = createClient(SUPABASE_URL, SUPABASE_ANON);
 
-// Check if already logged in
-sb.auth.getSession().then(({ data }) => {
+// Redirect to admin.html if already logged in —
+// UNLESS this is an invite/reset link (?email= in URL), in which case always show login.
+(async () => {
+  const params   = new URLSearchParams(window.location.search);
+  const urlEmail = params.get('email');
+
+  if (urlEmail) {
+    // If a session exists, sign out first then reload so the page
+    // renders completely fresh with no active session.
+    const { data } = await sb.auth.getSession();
+    if (data.session) {
+      await sb.auth.signOut();
+      window.location.replace(window.location.href); // reload same URL
+      return;
+    }
+    // No session — just pre-fill email and focus the password field
+    const el = document.getElementById('emailInput');
+    if (el) { el.value = urlEmail; }
+    setTimeout(() => document.getElementById('passwordInput')?.focus(), 60);
+    return;
+  }
+
+  // Normal visit — redirect to admin.html if already logged in
+  const { data } = await sb.auth.getSession();
   if (data.session) window.location.href = 'admin.html';
-});
+})();
 
 // Apply custom login background image from public config.json in Storage
 // (No auth or RLS needed — the file is in a public bucket)
@@ -322,8 +344,23 @@ window.doLogin = async function() {
   if (otpHdr) otpHdr.textContent = 'Open your authenticator app and enter the 6-digit code.';
   const helper = document.querySelector('#otpScreen .helper');
   if (helper) helper.textContent = 'Codes refresh every 30 seconds — make sure you type the current one.';
+  /* Start TOTP freshness countdown — codes rotate every 30 s */
   const cd = document.getElementById('countdown');
-  if (cd) cd.style.display = 'none';
+  if (cd) {
+    cd.style.display = '';
+    (function startTotpTimer() {
+      if (window.__totpTimer) clearInterval(window.__totpTimer);
+      // Align to the 30-second TOTP window
+      const remaining = 30 - (Math.floor(Date.now() / 1000) % 30);
+      function tick() {
+        const s = 30 - (Math.floor(Date.now() / 1000) % 30);
+        cd.textContent = 'Code refreshes in 0:' + String(s).padStart(2,'0');
+        cd.style.color = s <= 5 ? 'var(--rust)' : 'var(--teal)';
+      }
+      tick();
+      window.__totpTimer = setInterval(tick, 1000);
+    })();
+  }
   document.getElementById('otpError').classList.remove('show');
   document.getElementById('otpError').textContent = '';
   /* Clear any leftover digits, focus the first box. */
@@ -332,8 +369,18 @@ window.doLogin = async function() {
 };
 
 window.togglePw = function() {
-  const inp = document.getElementById('passwordInput');
-  inp.type = inp.type === 'password' ? 'text' : 'password';
+  const inp  = document.getElementById('passwordInput');
+  const show = inp.type === 'password';
+  inp.type   = show ? 'text' : 'password';
+  const eye  = document.getElementById('pwEye');
+  if (eye) {
+    // Open-eye (visible) vs closed-eye (hidden) SVG paths
+    eye.innerHTML = show
+      ? '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>'
+      : '<path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94"/>' +
+        '<path d="M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19"/>' +
+        '<line x1="1" y1="1" x2="23" y2="23"/>';
+  }
 };
 
 window.showForgot = async function() {
@@ -355,9 +402,10 @@ window.showForgot = async function() {
 window.showLogin = function() {
   document.getElementById('loginScreen').classList.remove('hide');
   document.getElementById('otpScreen').classList.remove('show');
+  if (window.__totpTimer) { clearInterval(window.__totpTimer); window.__totpTimer = null; }
 };
 
-// OTP helpers (for future 2FA integration)
+// OTP box helpers
 window.otpMove = function(el, idx) {
   el.value = el.value.replace(/\D/g,'');
   if (el.value.length === 1 && idx < 5) {
@@ -369,6 +417,7 @@ window.otpBack = function(e, idx) {
     document.querySelectorAll('#otpBoxes input')[idx-1].focus();
   }
 };
+
 window.verifyOtp = async function() {
   const btn  = document.getElementById('otpBtn');
   const errEl = document.getElementById('otpError');
@@ -383,15 +432,13 @@ window.verifyOtp = async function() {
     errEl.classList.add('show');
     return;
   }
-  if (!window.__pendingMfaFactor) {
-    /* Should never happen — we only show the OTP screen after a password
-       login. If a user navigates here directly without a session,
-       bounce them back to the login form. */
-    showLogin();
-    return;
-  }
 
   btn.classList.add('loading'); btn.disabled = true;
+
+  /* ── TOTP mode (authenticator app MFA) ── */
+  if (!window.__pendingMfaFactor) {
+    showLogin(); return;
+  }
   try {
     const ch = await sb.auth.mfa.challenge({ factorId: window.__pendingMfaFactor.id });
     if (ch.error) throw ch.error;
@@ -401,7 +448,6 @@ window.verifyOtp = async function() {
       code:        code,
     });
     if (v.error) throw v.error;
-    /* Session is now AAL2 — go to admin. */
     window.__pendingMfaFactor = null;
     window.location.href = 'admin.html';
   } catch(e) {
@@ -410,16 +456,22 @@ window.verifyOtp = async function() {
       ? "That code didn't match. Check the current 6-digit code in your authenticator app."
       : 'Verification failed: ' + (e.message || 'unknown');
     errEl.classList.add('show');
-    /* Clear inputs and refocus the first box for retry. */
     document.querySelectorAll('#otpBoxes input').forEach(i => i.value = '');
     document.querySelectorAll('#otpBoxes input')[0]?.focus();
   }
 };
 
+/* ── Handle magic-link clicks (invite email → user clicks link → lands here) ── */
+sb.auth.onAuthStateChange((event, session) => {
+  if ((event === 'SIGNED_IN' || event === 'USER_UPDATED') && session) {
+    window.location.href = 'admin.html';
+  }
+});
+
 // Enter key on login
 document.addEventListener('keydown', e => {
-  if (e.key === 'Enter' && document.getElementById('loginScreen').style.display !== 'none') {
-    window.doLogin();
+  if (e.key === 'Enter') {
+    if (!document.getElementById('loginScreen').classList.contains('hide')) window.doLogin();
   }
 });
 </script>

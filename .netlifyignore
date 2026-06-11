@@ -1,0 +1,12 @@
+tests/
+*.zip
+*.webm
+*.mp4
+db/
+_test_write*
+test-write
+ussd-agro-more/
+Stitch_Instructions*
+*.pdf
+*.docx
+Agro_and_More_*

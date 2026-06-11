@@ -38,10 +38,36 @@ function generateTempPassword() {
   );
 }
 
+/** Look up an auth user's id by email (admin API, paginated search). */
+async function findAuthUserIdByEmail(SUPABASE_URL, SUPABASE_SERVICE_KEY, email) {
+  const needle = String(email || '').trim().toLowerCase();
+  if (!needle) return null;
+  const listRes = await fetch(
+    `${SUPABASE_URL}/auth/v1/admin/users?page=1&per_page=1000`,
+    {
+      headers: {
+        apikey:        SUPABASE_SERVICE_KEY,
+        Authorization: `Bearer ${SUPABASE_SERVICE_KEY}`,
+        Accept:        'application/json',
+      },
+    }
+  );
+  if (!listRes.ok) {
+    const t = await listRes.text();
+    console.error('[admin-reset-password] user list failed', listRes.status, t);
+    return null;
+  }
+  const lj    = await listRes.json().catch(() => ({}));
+  const users = Array.isArray(lj) ? lj : (lj.users || []);
+  const match = users.find((u) => (u.email || '').trim().toLowerCase() === needle);
+  return match ? match.id : null;
+}
+
 exports.handler = async (event) => {
   if (event.httpMethod === 'OPTIONS') return { statusCode: 204, headers: CORS, body: '' };
   if (event.httpMethod !== 'POST')   return reply(405, { ok: false, error: 'POST required' });
 
+  try {
   const { SUPABASE_URL, SUPABASE_SERVICE_KEY, SUPABASE_ANON_KEY, RESEND_API_KEY } = process.env;
   if (!SUPABASE_URL || !SUPABASE_SERVICE_KEY) {
     return reply(500, { ok: false, error: 'Server not configured.' });
@@ -85,34 +111,55 @@ exports.handler = async (event) => {
   try { body = JSON.parse(event.body || '{}'); } catch (_) {}
 
   const { userId, email, fullName, loginUrl } = body;
-  if (!userId) return reply(400, { ok: false, error: 'userId required.' });
-  if (!email)  return reply(400, { ok: false, error: 'email required.' });
+  if (!userId && !email) return reply(400, { ok: false, error: 'userId or email required.' });
+  if (!email)            return reply(400, { ok: false, error: 'email required.' });
 
   /* Prevent resetting the caller's own password this way */
-  if (userId === callerId) {
+  if (userId && userId === callerId) {
     return reply(400, { ok: false, error: 'Use the profile settings to change your own password.' });
   }
 
   const tempPassword = generateTempPassword();
 
   /* ── Update password + set must_change_password flag ─── */
-  const updateRes = await fetch(`${SUPABASE_URL}/auth/v1/admin/users/${encodeURIComponent(userId)}`, {
+  const payload = JSON.stringify({
+    password:      tempPassword,
+    user_metadata: { must_change_password: true },
+  });
+  const putUser = (uid) => fetch(`${SUPABASE_URL}/auth/v1/admin/users/${encodeURIComponent(uid)}`, {
     method:  'PUT',
     headers: {
       apikey:         SUPABASE_SERVICE_KEY,
       Authorization: `Bearer ${SUPABASE_SERVICE_KEY}`,
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({
-      password:      tempPassword,
-      user_metadata: { must_change_password: true },
-    }),
+    body: payload,
   });
 
+  let updateRes = userId ? await putUser(userId) : { ok: false, status: 0, _skipped: true };
+
+  /* If the supplied id isn't a real auth user (id/auth mismatch), fall back
+     to resolving the auth user by email — the same approach send-admin-invite
+     uses — then retry once. */
   if (!updateRes.ok) {
-    const t = await updateRes.text();
+    if (!updateRes._skipped) {
+      const t = await updateRes.text().catch(() => '');
+      console.warn('[admin-reset-password] direct update by id failed, trying email lookup', updateRes.status, t);
+    }
+    const resolvedId = await findAuthUserIdByEmail(SUPABASE_URL, SUPABASE_SERVICE_KEY, email);
+    if (!resolvedId) {
+      return reply(404, { ok: false, error: `No account found for ${email}. The user may not have finished signing up.` });
+    }
+    if (resolvedId === callerId) {
+      return reply(400, { ok: false, error: 'Use the profile settings to change your own password.' });
+    }
+    updateRes = await putUser(resolvedId);
+  }
+
+  if (!updateRes.ok) {
+    const t = await updateRes.text().catch(() => '');
     console.error('[admin-reset-password] update failed', updateRes.status, t);
-    return reply(500, { ok: false, error: 'Could not reset password. Please try again.' });
+    return reply(502, { ok: false, error: `Could not reset password (auth error ${updateRes.status}). ${t.slice(0, 200)}` });
   }
 
   /* ── Send email via Resend ────────────────────────────── */
@@ -169,4 +216,8 @@ exports.handler = async (event) => {
   }
 
   return reply(200, { ok: true });
+  } catch (e) {
+    console.error('[admin-reset-password] unhandled', e);
+    return reply(500, { ok: false, error: `Server error: ${(e && e.message) || e}` });
+  }
 };

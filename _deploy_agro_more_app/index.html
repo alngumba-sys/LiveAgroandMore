@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>Agro and More · kisoboka</title>
+<meta name="description" content="Agro and More — agri-business platform for smallholder farmers, agro-dealers, field officers and diaspora clients in Uganda.">
+
+<!-- ===== PWA · installable Android app ===== -->
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#001524">
+<meta name="background-color" content="#FFECD1">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Agro & More">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="application-name" content="Agro and More">
+<link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
+<link rel="apple-touch-icon" sizes="192x192" href="icons/icon-192.png">
+<link rel="apple-touch-icon" sizes="512x512" href="icons/icon-512.png">
+
+<!-- Pre-warm the full mockup so the redirect is instant -->
+<link rel="preload" href="app.html?mode=app" as="document">
+<link rel="prefetch" href="app.html?mode=app">
+
+<!-- Fallback redirect for users without JavaScript -->
+<meta http-equiv="refresh" content="1; url=app.html?mode=app">
+
+<style>
+  *,*::before,*::after{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:#FFECD1;font-family:-apple-system,BlinkMacSystemFont,'Inter','Helvetica Neue',sans-serif;color:#001524;-webkit-font-smoothing:antialiased;height:100%;overflow:hidden}
+  .splash{
+    position:fixed;inset:0;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    gap:18px;padding:24px;
+    background:radial-gradient(ellipse at center,#FFECD1 0%,#FAE0B5 100%);
+  }
+  .splash .logo{
+    width:min(260px,62vw);height:auto;
+    filter:drop-shadow(0 8px 16px rgba(0,21,36,.12));
+    animation:fade-in .35s ease-out;
+  }
+  .splash .loader{
+    width:30px;height:30px;
+    border:3px solid rgba(0,21,36,.12);
+    border-top-color:#FF7D00;
+    border-radius:50%;
+    animation:spin .85s linear infinite;
+  }
+  .splash .msg{
+    font-size:11.5px;color:rgba(0,21,36,.55);
+    letter-spacing:.08em;text-transform:uppercase;font-weight:700;
+  }
+  .splash .powered{
+    position:fixed;bottom:24px;left:0;right:0;
+    text-align:center;font-size:10.5px;color:rgba(0,21,36,.45);
+    font-weight:600;letter-spacing:.06em;
+  }
+  @keyframes spin{to{transform:rotate(360deg)}}
+  @keyframes fade-in{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+
+  noscript{display:block;text-align:center;padding:60px 24px;line-height:1.5}
+  noscript a{color:#15616D;font-weight:700;text-decoration:none;border-bottom:1.5px solid #15616D}
+</style>
+</head>
+<body>
+
+  <div class="splash">
+    <img class="logo" src="brand/agmore-full.png" alt="Agro and More — Agribusiness Developers Ltd">
+    <div class="loader" aria-hidden="true"></div>
+    <div class="msg">Loading…</div>
+    <div class="powered">Agri-Business Developers Ltd</div>
+  </div>
+
+  <noscript>
+    <p>JavaScript is disabled. <a href="app.html">Tap here to open Agro and More</a>.</p>
+  </noscript>
+
+  <script>
+    // Register the service worker so the PWA is installable
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('service-worker.js').catch(function () {
+        // Silent — the page works without it
+      });
+    }
+    // Hand off to the prototype as soon as the splash is visible
+    setTimeout(function () { location.replace('app.html?mode=app'); }, 600);
+  </script>
+
+</body>
+</html>

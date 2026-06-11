@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Adaptive-icon background: cream fill with an orange ring/border -->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- Layer 1: solid cream/white fill -->
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="#FFF8E7" />
+        </shape>
+    </item>
+
+    <!-- Layer 2: orange ring hugging the rounded-square edge (Gmail-style) -->
+    <item
+        android:left="6dp"
+        android:top="6dp"
+        android:right="6dp"
+        android:bottom="6dp">
+        <shape android:shape="rectangle">
+            <solid android:color="@android:color/transparent" />
+            <corners android:radius="38dp" />
+            <stroke
+                android:width="6dp"
+                android:color="#FFA500" />
+        </shape>
+    </item>
+
+</layer-list>

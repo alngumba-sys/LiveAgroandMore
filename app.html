@@ -334,6 +334,7 @@
   .chip.teal{background:var(--teal);color:var(--cream)}
   .chip.orange{background:var(--orange);color:#fff}
   .chip.rust{background:var(--rust);color:#fff}
+  .chip.green{background:#2E7D32;color:#fff}
   .chip.ghost{background:transparent;border:1px solid var(--ink-20);color:var(--ink-60)}
 
   .input{
@@ -2240,6 +2241,8 @@
               <div><span class="label">Year of graduation</span><div class="input"><span>2025</span><span style="margin-left:auto">▾</span></div></div>
             </div>
             <div class="field"><span class="label">Years of experience</span><div class="input"><span>1 year</span><span style="margin-left:auto">▾</span></div></div>
+            <div class="field"><span class="label">Organisation <span style="color:var(--teal);font-weight:500;font-size:10px">· who you work for</span></span><div class="input"><span>Agro &amp; More</span><span style="margin-left:auto">▾</span></div></div>
+            <div class="field"><span class="label">If other, specify</span><div class="input"><input type="text" placeholder="Name of your organisation" autocomplete="off" style="flex:1;border:none;outline:none;background:transparent;font-family:inherit;font-size:13.5px;color:var(--ink);min-width:0;width:100%;padding:0"></div></div>
             <div class="field">
               <span class="label">Specialities <span style="color:var(--teal);font-weight:500;font-size:10px">· pick all that apply</span></span>
               <div style="display:flex;gap:6px;flex-wrap:wrap">
@@ -2407,7 +2410,7 @@
           </div>
           <div class="tip-card">
             <div class="tip-img">
-              <img src="https://images.unsplash.com/photo-1502741338009-cac2772e18bc?auto=format&fit=crop&w=800&q=80" alt="Coffee" crossorigin="anonymous" referrerpolicy="no-referrer" onerror="this.style.display='none'">
+              <img data-cms-slot="home-seasonal-tip" src="https://images.unsplash.com/photo-1502741338009-cac2772e18bc?auto=format&fit=crop&w=800&q=80" alt="Coffee" crossorigin="anonymous" referrerpolicy="no-referrer" onerror="this.style.display='none'">
               <div class="tag">SEASONAL TIP · MPIGI DISTRICT</div>
             </div>
             <div class="tip-body"><h4>Prune your Robusta before the rains</h4><p>Opening the canopy now lets next month's blossoms set better cherries. 3 minutes read.</p><a style="color:var(--teal);font-size:11px;font-weight:700;text-decoration:none">Read more ›</a></div>
@@ -2916,13 +2919,13 @@
               <div style="font-size:8px;font-weight:700;background:rgba(0,21,36,.6);color:#fff;padding:1px 5px;border-radius:3px;margin-top:4px;display:inline-block;letter-spacing:.04em">MPIGI TOWN</div>
             </div>
             <!-- Farmer pin (highlighted) -->
-            <div style="position:absolute;right:18%;top:48%;text-align:center;z-index:2">
+            <div data-boda-farmer-pin style="position:absolute;right:18%;top:48%;text-align:center;z-index:2;transition:right .35s ease">
               <div style="width:28px;height:28px;border-radius:50% 50% 50% 0;background:var(--orange);transform:rotate(-45deg);margin:0 auto;box-shadow:0 6px 14px rgba(255,125,0,.5);border:2px solid #fff;position:relative"><div style="position:absolute;inset:8px;border-radius:50%;background:#fff;transform:rotate(45deg)"></div></div>
               <div data-boda-pin-label style="font-size:8px;font-weight:700;background:rgba(255,125,0,.9);color:#fff;padding:1px 5px;border-radius:3px;margin-top:4px;display:inline-block;letter-spacing:.04em">YOU</div>
             </div>
             <!-- route line -->
             <svg style="position:absolute;inset:0;width:100%;height:100%" viewBox="0 0 340 120" preserveAspectRatio="none">
-              <path d="M85 50 Q 180 40 260 70" stroke="rgba(255,236,209,.7)" stroke-width="2.5" stroke-dasharray="6 4" fill="none"/>
+              <path data-boda-route-path d="M85 50 Q 180 40 260 70" stroke="rgba(255,236,209,.7)" stroke-width="2.5" stroke-dasharray="6 4" fill="none"/>
             </svg>
             <div style="position:absolute;bottom:8px;left:10px;background:rgba(0,21,36,.6);color:var(--cream);font-size:9.5px;font-weight:700;padding:3px 8px;border-radius:4px;display:inline-flex;align-items:center;gap:4px">
               <svg width="9" height="9" viewBox="0 0 24 24" fill="none"><path d="M12 21s-7-5-7-11a7 7 0 1114 0c0 6-7 11-7 11z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
@@ -2957,13 +2960,13 @@
               <div>
                 <div style="font-size:12px;font-weight:800;color:var(--rust)">Don't see your area?</div>
                 <div style="font-size:10.5px;color:var(--ink-90);line-height:1.5;margin-top:3px">If your village is beyond our zone, call Mpigi Town outlet for a custom rate or a meet-point.</div>
-                <button class="btn primary" style="margin-top:10px;width:100%;height:auto;padding:8px 12px;font-size:12px;display:flex;align-items:center;justify-content:center;gap:8px;line-height:1.25">
+                <a href="tel:+256414223045" class="btn primary" style="margin-top:10px;width:100%;height:auto;padding:8px 12px;font-size:12px;display:flex;align-items:center;justify-content:center;gap:8px;line-height:1.25;text-decoration:none">
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" style="flex-shrink:0"><path d="M4 4h4l2 4-2 2a11 11 0 006 6l2-2 4 2v4c0 1-1 2-2 2A17 17 0 012 6c0-1 1-2 2-2z" stroke="#fff" stroke-width="1.8" stroke-linejoin="round"/></svg>
                   <div style="text-align:left">
                     <div style="font-weight:700">Call Mpigi Town</div>
                     <div style="font-size:10.5px;font-weight:500;opacity:.85;font-family:monospace;letter-spacing:.02em;margin-top:1px">+256 414 223 045</div>
                   </div>
-                </button>
+                </a>
               </div>
             </div>
           </div>
@@ -3000,60 +3003,20 @@
 
           <div class="od-section-title">PAYMENT</div>
 
-          <div class="radio-card on">
+          <div class="radio-card on" data-pay-method="mobile_money" style="margin-bottom:8px">
             <div class="rdot"></div>
             <div class="rb">
-              <div class="rt">MTN Mobile Money</div>
-              <div class="rsub">Send to merchant code, then upload your SMS confirmation below.</div>
-              <span class="code">Merchant Code 256770</span>
-              <span style="font-size:10px;color:var(--teal);font-weight:700;margin-left:8px">📋 Copy</span>
+              <div class="rt">Mobile Money (MTN / Airtel)</div>
+              <div class="rsub">Tap <strong>Pay</strong> below — pick MTN or Airtel, then approve the prompt on your phone with your Mobile Money PIN. No screenshots needed.</div>
             </div>
           </div>
 
-          <div class="radio-card">
+          <div class="radio-card" data-pay-method="cash" style="margin-bottom:8px">
             <div class="rdot"></div>
             <div class="rb">
-              <div class="rt">Airtel Pay</div>
-              <div class="rsub">Pay with Airtel Money</div>
-              <span class="code">Merchant Code 885511</span>
+              <div class="rt">Cash</div>
+              <div class="rsub">Pay in cash at the outlet when you collect your order. Stock is not reserved until payment is confirmed.</div>
             </div>
-          </div>
-
-          <div class="radio-card">
-            <div class="rdot"></div>
-            <div class="rb">
-              <div class="rt">Cash on collection</div>
-              <div class="rsub">Pay when you pick up at the outlet</div>
-            </div>
-          </div>
-
-          <div class="od-section-title">PROOF OF PAYMENT</div>
-          <!-- Real upload UI wired in wireCheckout(). Hidden when payment method is "cash on collection". -->
-          <div id="proof-upload-wrap">
-            <label id="proof-upload-empty" class="upload-box" style="cursor:pointer;display:flex;gap:12px;align-items:center;padding:14px;border:1.5px dashed var(--ink-12);border-radius:10px;background:#fff">
-              <div style="width:44px;height:44px;border-radius:8px;background:var(--ink-05);display:flex;align-items:center;justify-content:center">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-              </div>
-              <div style="flex:1;font-size:12px">
-                <div style="font-weight:700;color:var(--ink)">Upload MTN/Airtel SMS screenshot</div>
-                <div style="color:var(--ink-60);font-size:10.5px">JPG, PNG or PDF · up to 5 MB</div>
-              </div>
-              <input type="file" id="proof-file-input" accept="image/*,application/pdf" style="display:none">
-            </label>
-            <div id="proof-upload-done" class="upload-box done" style="display:none;gap:12px;align-items:center;padding:12px;border-radius:10px;background:#E4F3F5">
-              <div id="proof-thumb" style="width:44px;height:44px;border-radius:8px;background:var(--teal);color:var(--cream);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:10px;overflow:hidden">JPG</div>
-              <div style="flex:1;font-size:11px;min-width:0">
-                <div id="proof-fname" style="font-weight:700;color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">proof.jpg</div>
-                <div id="proof-meta" style="color:var(--ink-60)">— KB · Uploaded just now</div>
-              </div>
-              <button type="button" id="proof-remove-btn" style="color:var(--rust);font-size:11px;font-weight:700;background:none;border:none;cursor:pointer">Remove</button>
-            </div>
-            <div id="proof-status" style="font-size:11px;color:var(--ink-60);margin-top:6px;min-height:14px"></div>
-          </div>
-
-          <div class="ref-line">
-            <span class="k">Your payment reference</span>
-            <span class="v">—</span>
           </div>
 
           <div class="summary-card" style="margin-top:12px">
@@ -3081,7 +3044,7 @@
             <svg width="44" height="44" viewBox="0 0 24 24" fill="none"><path d="M4 12l5 5L20 6" stroke="#fff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </div>
           <h2>Weebale! Order placed.</h2>
-          <div class="msg">We're verifying your payment. This usually takes 10–30 minutes.</div>
+          <div class="msg">Your payment is confirmed. We're preparing your order for pickup — you'll get an SMS when it's ready.</div>
 
           <div class="confirm-card">
             <div class="k">Order number</div>
@@ -3920,10 +3883,10 @@
           </div>
 
           <div style="display:flex;gap:8px;margin-top:10px">
-            <button class="btn primary">
+            <a href="tel:+256414223045" class="btn primary" style="text-decoration:none;display:inline-flex;align-items:center;gap:6px">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M4 4h4l2 4-2 2a11 11 0 006 6l2-2 4 2v4c0 1-1 2-2 2A17 17 0 012 6c0-1 1-2 2-2z" stroke="#fff" stroke-width="1.8" stroke-linejoin="round"/></svg>
               Call Mpigi outlet
-            </button>
+            </a>
             <button class="btn secondary" style="width:auto;padding:0 14px">Try again</button>
           </div>
 
@@ -6519,7 +6482,7 @@
           <div class="card" style="margin-bottom:12px;padding:10px 12px">
             <div style="display:flex;justify-content:space-between;align-items:center;font-size:11.5px">
               <div><div style="font-family:'Poppins';font-weight:800;color:var(--ink);font-size:12.5px">—</div><div style="font-size:10px;color:var(--ink-60);margin-top:1px">—</div></div>
-              <span class="chip orange">Awaiting pay</span>
+              <span class="chip orange">Awaiting payment</span>
             </div>
           </div>
 
@@ -7642,10 +7605,6 @@
             <span class="switch-btn">Switch</span>
           </div>
 
-          <div class="shop-toggle">
-            <div class="sto">📦 Inputs for her farm</div>
-            <div class="sto on">🎁 Produce gifts</div>
-          </div>
 
           <div class="shop-search">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="#001524" stroke-width="1.8"/><path d="M20 20l-3-3" stroke="#001524" stroke-width="1.8" stroke-linecap="round"/></svg>
@@ -7931,7 +7890,6 @@
             <div class="comm-row"><span class="comm-k">Subtotal</span><span class="comm-v">USD —</span></div>
             <div class="comm-row"><span class="comm-k">Handling &amp; pickup</span><span class="comm-v">USD —</span></div>
             <div class="comm-row"><span class="comm-k">Card</span><span class="comm-v">Visa ···4391</span></div>
-            <div class="comm-row"><span class="comm-k">FX rate used</span><span class="comm-v">—</span></div>
             <div class="comm-row total"><span>Paid</span><span class="comm-v">—</span></div>
           </div>
 
@@ -9193,6 +9151,11 @@
     if (!container) return;
     profile = profile || {};
 
+    /* Wait briefly for the Supabase client on direct loads/refreshes to
+       #profile-2 — otherwise the self-heal fetch below is skipped and every
+       field renders blank (the "not working for all users" symptom). */
+    var _wsb = 0; while (!window.__sb && _wsb++ < 25) { await new Promise(function(r){ setTimeout(r, 150); }); }
+
     /* Self-heal: if the profile wasn't passed in (e.g. a direct #profile-2
        load/refresh, or __amProfile not ready yet) re-fetch the real row for
        this auth user. Without this, the function used to bail and leave the
@@ -9230,7 +9193,16 @@
         var lbl = fields[i].querySelector('.label');
         if (!lbl || !lbl.textContent.toLowerCase().includes(labelText.toLowerCase())) continue;
         var inputDiv = fields[i].querySelector('.input');
-        if (!inputDiv || readOnly) return;
+        if (!inputDiv) return;
+        /* Read-only fields (e.g. verified Phone) must still DISPLAY the value —
+           previously this bailed out, leaving the phone number blank. */
+        if (readOnly) {
+          var roInput = inputDiv.querySelector('input');
+          if (roInput) { roInput.value = value || ''; return; }
+          var roSpan = inputDiv.querySelector('span:not(.prefix):not(.req)');
+          if (roSpan) roSpan.textContent = value || '';
+          return;
+        }
         if (inputDiv.querySelector('input')) {
           inputDiv.querySelector('input').value = value || '';
           return;
@@ -9639,7 +9611,8 @@
       var res = await sb.from('orders')
         .select('id, total_ugx')
         .eq('agent_id', profile.id)
-        .gte('created_at', todayStart());
+        .gte('created_at', todayStart())
+        .neq('status', 'awaiting_payment');
       if (!res.data) return;
       var sales = res.data.reduce(function(s,o){ return s + (parseFloat(o.total_ugx)||0); }, 0);
       var commRate = (profile.commission_rate != null ? profile.commission_rate : 5) / 100;
@@ -9703,8 +9676,8 @@
       var scroll = container.querySelector('.scroll');
       container.querySelectorAll('.agent-order-card').forEach(function(el){ el.remove(); });
 
-      var statusColor = { pending:'orange', confirmed:'teal', dispatched:'orange', delivered:'teal', completed:'teal', cancelled:'ghost' };
-      var statusLabel = { pending:'Awaiting pay', confirmed:'Confirmed', dispatched:'Dispatched', delivered:'Delivered', completed:'Completed', cancelled:'Cancelled' };
+      var statusColor = { awaiting_payment:'orange', pending:'orange', confirmed:'teal', dispatched:'orange', delivered:'teal', completed:'teal', cancelled:'ghost' };
+      var statusLabel = { awaiting_payment:'Awaiting payment', pending:'Awaiting payment', confirmed:'Confirmed', dispatched:'Dispatched', delivered:'Delivered', completed:'Completed', cancelled:'Cancelled' };
 
       orders.slice(0, 15).forEach(function(o) {
         var initials = (o.customer_name||'?').split(' ').map(function(w){ return w[0]||''; }).join('').slice(0,2).toUpperCase();
@@ -9773,7 +9746,8 @@
     var nameEl = container.querySelector('.greet .name');
     var locEl  = container.querySelector('.greet .loc');
     if (nameEl) nameEl.textContent = greet + ', ' + firstName;
-    if (locEl)  locEl.textContent  = 'Field Officer' + (profile.district ? ' · ' + profile.district : '') + (profile.rating ? ' · ★ ' + profile.rating : '');
+    var foOrg = (profile.fo_organisation === 'Other' ? profile.fo_organisation_other : profile.fo_organisation) || null;
+    if (locEl)  locEl.textContent  = 'Field Officer' + (foOrg ? ' · ' + foOrg : '') + (profile.rating ? ' · ★ ' + profile.rating : '');
 
     /* Avatar */
     var ava = container.querySelector('.avatar');
@@ -10379,6 +10353,10 @@
     };
   }
 
+  /* Expose so checkSession + OTP verify can call directly (not just via protoShow wrapper) */
+  window.populateAgentPending = populateAgentPending;
+  window.populateFOPending    = populateFOPending;
+
   function boot() { wrapForAgentFO(); }
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', boot);
@@ -10419,19 +10397,52 @@
   async function wireAdvisoryLanding(){
     var container = scr('advisory-1'); if(!container) return;
     personaliseAvatar(container);
-    // Load latest seasonal tip
-    var sb = window.__sb; if(!sb) return;
+    // Retry once if Supabase client not ready yet
+    var sb = window.__sb;
+    if(!sb){ setTimeout(wireAdvisoryLanding, 800); return; }
     try{
       var res = await sb.from('advisory_content')
-        .select('title,description')
+        .select('title,description,thumbnail_url,district')
         .eq('type','seasonal_tip').eq('visibility','public')
         .order('published_at',{ascending:false}).limit(1);
+      /* Fallback 1: any seasonal_tip regardless of visibility */
+      if((!res.data || !res.data.length) && !res.error){
+        res = await sb.from('advisory_content')
+          .select('title,description,thumbnail_url,district')
+          .eq('type','seasonal_tip')
+          .order('created_at',{ascending:false}).limit(1);
+      }
+      /* Fallback 2: most recent advisory record of any type
+         (catches wrong type saved from admin) */
+      if((!res.data || !res.data.length) && !res.error){
+        res = await sb.from('advisory_content')
+          .select('title,description,thumbnail_url,district')
+          .order('created_at',{ascending:false}).limit(1);
+      }
       if(!res.data||!res.data.length) return;
       var tip = res.data[0];
       var card = container.querySelector('.tip-card');
       if(!card) return;
-      var h4 = card.querySelector('h4'); if(h4) h4.textContent = tip.title;
-      var p  = card.querySelector('p');  if(p)  p.textContent  = tip.description||'';
+      var h4 = card.querySelector('h4');
+      if(h4 && tip.title)       h4.textContent = tip.title;
+      var p  = card.querySelector('p');
+      if(p)                     p.textContent  = tip.description || '';
+      /* Tag: "FROM {district} · SENIOR AGRONOMIST" or fallback "FEATURED THIS WEEK" */
+      var tagEl = card.querySelector('.tip-img .tag');
+      if(tagEl) tagEl.textContent = tip.district
+        ? 'FROM ' + tip.district.toUpperCase() + ' · SENIOR AGRONOMIST'
+        : 'FEATURED THIS WEEK';
+      /* Hero image */
+      if(tip.thumbnail_url){
+        var imgEl = card.querySelector('.tip-img img');
+        if(!imgEl){
+          imgEl = document.createElement('img');
+          imgEl.style.cssText='position:absolute;inset:0;width:100%;height:100%;object-fit:cover';
+          var tipImgDiv = card.querySelector('.tip-img');
+          if(tipImgDiv) tipImgDiv.appendChild(imgEl);
+        }
+        imgEl.src = tip.thumbnail_url;
+      }
     }catch(e){}
   }
 
@@ -10480,7 +10491,7 @@
     var sb = window.__sb; if(!sb) return;
     try{
       var res = await sb.from('app_users')
-        .select('id,full_name,phone,district')
+        .select('id,full_name,phone,district,rating,fo_organisation,fo_organisation_other')
         .eq('role','field_officer').eq('status','active')
         .order('full_name');
       if(!res.data||!res.data.length){ wireAdvisoryFilters(); return; } // keep proto static list
@@ -10499,8 +10510,8 @@
           '<div class="ava" style="background:'+avatarColor(fo.full_name)+'">'+ini+'</div>',
           '<div class="oi">',
             '<div class="on">'+fo.full_name+'</div>',
-            '<div class="od">'+(fo.district||'Uganda')+' · Field Officer</div>',
-            '<div class="om"><span class="st">★ —</span></div>',
+            '<div class="od">'+(fo.district||'Uganda')+' · Field Officer'+(fo.fo_organisation && fo.fo_organisation !== 'Other' ? ' · '+fo.fo_organisation : fo.fo_organisation === 'Other' && fo.fo_organisation_other ? ' · '+fo.fo_organisation_other : '')+'</div>',
+            '<div class="om"><span class="st">★ '+(fo.rating!=null?fo.rating:'—')+'</span></div>',
           '</div>',
           '<button class="call-btn"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M4 4h4l2 4-2 2a11 11 0 006 6l2-2 4 2v4c0 1-1 2-2 2A17 17 0 012 6c0-1 1-2 2-2z" stroke="#fff" stroke-width="1.8" stroke-linejoin="round"/></svg></button>'
         ].join('');
@@ -10512,6 +10523,7 @@
         });
         card.addEventListener('click', function(){
           selectedOfficer = foRef;
+          window.__amSelectedOfficer = foRef;
           if(window.protoShow) window.protoShow('advisory-3');
         });
         scroll.appendChild(card);
@@ -10524,11 +10536,14 @@
   function populateOfficerProfile(){
     var container = scr('advisory-3'); if(!container) return;
     var fo = selectedOfficer; if(!fo) return;
+    window.__amSelectedOfficer = fo;
     var ini = initials(fo.full_name);
 
     var avaEl = container.querySelector('.ava-xl');  if(avaEl) avaEl.textContent = ini;
     var nameEl = container.querySelector('.op-hero .name'); if(nameEl) nameEl.textContent = fo.full_name;
     var roleEl = container.querySelector('.op-hero .role'); if(roleEl) roleEl.textContent = 'Field Officer · '+(fo.district||'Uganda');
+    // Real average rating in the first stat tile
+    var ratStat = container.querySelector('.op-stat .k.orange'); if(ratStat) ratStat.textContent = (fo.rating!=null ? ('★ '+fo.rating) : '★ —');
 
     // Update Covers row
     container.querySelectorAll('.info-row').forEach(function(row){
@@ -10656,11 +10671,17 @@
     if(container.dataset.botWired) return; container.dataset.botWired='1';
     var sb = window.__sb; if(!sb) return;
 
-    /* ── 1) Fetch the WhatsApp escalation number once. ─────────── */
+    /* ── 1) Fetch the WhatsApp escalation number once. ───────────
+       Prefer the AgroBot-specific number the MD sets in admin
+       (settings key 'chatbot_whatsapp_number'); fall back to the
+       general support number ('whatsapp_number') only if it's blank. */
     var waNumber = '';
     try {
-      var nRes = await sb.from('settings').select('value').eq('key','whatsapp_number').single();
-      if (nRes.data) waNumber = nRes.data.value.replace(/[^0-9+]/g,'');
+      var nRes = await sb.from('settings').select('key,value').in('key',['chatbot_whatsapp_number','whatsapp_number']);
+      var rows = (nRes.data) || [];
+      var pick = rows.filter(function(r){ return r.key==='chatbot_whatsapp_number' && r.value; })[0]
+              || rows.filter(function(r){ return r.key==='whatsapp_number' && r.value; })[0];
+      if (pick && pick.value) waNumber = String(pick.value).replace(/[^0-9+]/g,'');
     } catch(e) {}
 
     /* ── 2) Convert the static .bot-preview "example chat" into the
@@ -12023,6 +12044,10 @@
   function refreshCartSummary(container){
     var method = window.__amDelivery || DELIVERY_METHODS.drive;
     var subtotal = cartTotal();
+    /* Resolve the actual fee via admin pricing config (handles fixed/zone/free-above) */
+    var fee = method.key === 'boda'
+      ? resolveDeliveryFee(window.__amBodaArea || DEFAULT_BODA_AREA, subtotal)
+      : (method.baseFee || 0);
     /* Update summary rows. */
     var summaryRows = container.querySelectorAll('.summary-card .summary-row');
     summaryRows.forEach(function(row){
@@ -12036,10 +12061,10 @@
                  kt.indexOf('boda') >= 0 || kt.indexOf('delivery') >= 0) {
         /* Update the delivery-line label too in case the user switched. */
         key.textContent = method.label;
-        val.textContent = method.baseFee === 0 ? 'Free' : fmt(method.baseFee);
-        val.style.color = method.baseFee === 0 ? 'var(--teal)' : 'var(--ink)';
+        val.textContent = fee === 0 ? 'Free' : fmt(fee);
+        val.style.color = fee === 0 ? 'var(--teal)' : 'var(--ink)';
       } else if (kt.indexOf('total') >= 0) {
-        val.textContent = fmt(subtotal + (method.baseFee || 0));
+        val.textContent = fmt(subtotal + fee);
       }
     });
     /* The "Proceed to Pay" button — drive/in-store skip the Boda address
@@ -12062,7 +12087,9 @@
     if (!container) return;
     var method = window.__amDelivery || DELIVERY_METHODS.drive;
     var subtotal = cartTotal();
-    var fee = method.baseFee || 0;
+    var fee = method.key === 'boda'
+      ? resolveDeliveryFee(window.__amBodaArea || DEFAULT_BODA_AREA, subtotal)
+      : (method.baseFee || 0);
     var total = subtotal + fee;
 
     /* Update the summary card rows (Subtotal / Pickup line / Total to pay). */
@@ -12096,7 +12123,7 @@
        number the whole way through. */
     var placeBtn = container.querySelector('.sticky-foot .btn');
     if (placeBtn && !placeBtn.dataset.placingOrder) {
-      placeBtn.innerHTML = 'Place Order <span style="font-family:\'Poppins\';font-weight:800;margin-left:6px;opacity:.9">· ' + fmt(total) + '</span>';
+      placeBtn.innerHTML = 'Pay <span style="font-family:\'Poppins\';font-weight:800;margin-left:6px;opacity:.9">· ' + fmt(total) + '</span>';
     }
   }
 
@@ -12162,17 +12189,32 @@
     var stEl   = container.querySelector('[data-boda-street]');
     if (stEl && !stEl.isContentEditable) stEl.textContent = street;
 
-    /* 2. Map pin label + distance strip */
+    /* 2. Map pin label + distance strip + dynamic pin/route position */
     var pinEl = container.querySelector('[data-boda-pin-label]');
     if (pinEl) pinEl.textContent = 'YOU · ' + areaName.toUpperCase();
     var distEl = container.querySelector('[data-boda-map-dist]');
     if (distEl) distEl.textContent = area.distanceKm + ' km from outlet · ~' + Math.round(area.distanceKm * 3.5) + ' min boda';
+    /* Move farmer pin and redraw route based on distance (4 km → right:25%, 22 km → right:3%) */
+    var minKm = 4.1, maxKm = 22;
+    var norm     = Math.min(1, Math.max(0, (area.distanceKm - minKm) / (maxKm - minKm)));
+    var rightPct = Math.round(25 - norm * 22);          // 25% … 3%
+    var pinDomEl = container.querySelector('[data-boda-farmer-pin]');
+    if (pinDomEl) pinDomEl.style.right = rightPct + '%';
+    /* Recalculate SVG route endpoint to match pin */
+    var pathEl = container.querySelector('[data-boda-route-path]');
+    if (pathEl) {
+      var endX   = Math.round(340 * (1 - rightPct / 100) - 14);
+      var midX   = Math.round((85 + endX) / 2);
+      var endY   = 58 + Math.round(norm * 14);
+      pathEl.setAttribute('d', 'M85 50 Q ' + midX + ' 38 ' + endX + ' ' + endY);
+    }
 
     /* 3. Price card */
     var paEl = container.querySelector('[data-boda-price-area]');
     if (paEl) paEl.textContent = areaName + ' · ✓ supported';
     var pmEl = container.querySelector('[data-boda-price-amount]');
-    if (pmEl) pmEl.textContent = fmt(area.fee);
+    var resolvedFee = resolveDeliveryFee(areaName, cartTotal());
+    if (pmEl) pmEl.textContent = resolvedFee === 0 ? 'Free' : fmt(resolvedFee);
     var peEl = container.querySelector('[data-boda-price-eta]');
     if (peEl) peEl.textContent = 'Same-day if you pay before 2pm · ETA ' + area.etaText;
 
@@ -12207,7 +12249,7 @@
     /* 5. Keep DELIVERY_METHODS.boda.baseFee in sync so the cart total
           uses the right fee on return to shop-3, and live-update if Boda
           happens to be the currently selected method. */
-    DELIVERY_METHODS.boda.baseFee = area.fee;
+    DELIVERY_METHODS.boda.baseFee = resolvedFee;
     DELIVERY_METHODS.boda.label   = 'Boda delivery · ' + areaName;
     if (window.__amDelivery && window.__amDelivery.key === 'boda') {
       window.__amDelivery = DELIVERY_METHODS.boda;
@@ -12223,6 +12265,47 @@
       return;
     }
     container.dataset.bodaWired = '1';
+
+    /* ── Auto-detect area from profile on very first open ── */
+    if (!window.__amBodaAreaDetected) {
+      window.__amBodaAreaDetected = true;
+      var prof = window.__amProfile || {};
+      var haystack = [prof.village, prof.parish, prof.sub_county]
+        .filter(Boolean).join(' ').toLowerCase();
+      if (haystack) {
+        var matched = Object.keys(BODA_AREAS).find(function(k){
+          return haystack.indexOf(k.toLowerCase()) !== -1 ||
+                 k.toLowerCase().split(' ').some(function(w){ return w.length > 3 && haystack.indexOf(w) !== -1; });
+        });
+        if (matched) {
+          window.__amBodaArea  = matched;
+          window.__amBodaStreet = BODA_AREAS[matched].streetHint;
+        }
+      }
+    }
+
+    /* ── Build "Other Areas" rows from BODA_AREAS ── */
+    var areasList = container.querySelector('[data-boda-areas-list]');
+    if (areasList) {
+      areasList.innerHTML = '';
+      var areaNames = Object.keys(BODA_AREAS);
+      areaNames.forEach(function(name, i){
+        var a   = BODA_AREAS[name];
+        var row = document.createElement('div');
+        row.setAttribute('data-boda-area-row', name);
+        row.style.cssText = 'display:flex;align-items:center;justify-content:space-between;padding:10px 14px;cursor:pointer;' +
+          (i < areaNames.length - 1 ? 'border-bottom:1px solid var(--ink-10);' : '');
+        row.innerHTML =
+          '<div style="min-width:0">' +
+            '<div style="display:flex;align-items:center;gap:6px">' +
+              '<span style="font-size:12px;color:var(--ink-60)">' + name + '</span>' +
+            '</div>' +
+            '<div data-boda-area-meta style="font-size:10.5px;color:var(--ink-60);margin-top:1px">' + a.distanceKm + ' km</div>' +
+          '</div>' +
+          '<strong data-boda-area-fee style="font-size:13px;color:var(--ink);white-space:nowrap">UGX ' + fmt(a.fee) + '</strong>';
+        areasList.appendChild(row);
+      });
+    }
 
     /* Apply current state on first entry. */
     applyBodaArea(container, window.__amBodaArea);
@@ -12440,13 +12523,16 @@
         if ((t.textContent || '').trim() === 'PROOF OF PAYMENT') t.style.display = needsProof ? '' : 'none';
       });
     }
-    container.querySelectorAll('.radio-card').forEach(function(card,i){
+    container.querySelectorAll('.radio-card').forEach(function(card){
       card.style.cursor='pointer';
       card.addEventListener('click', function(){
         container.querySelectorAll('.radio-card').forEach(function(c){ c.classList.remove('on'); });
         card.classList.add('on');
-        selectedPayMethod = i===0?'mobile_money': i===1?'mobile_money':'cash';
+        selectedPayMethod = card.dataset.payMethod || 'mobile_money';
         syncProofVisibility();
+        // Update Pay button label
+        var btn = container.querySelector('.sticky-foot .btn');
+        if (btn) btn.textContent = selectedPayMethod === 'cash' ? 'Place Order' : 'Pay';
       });
     });
     syncProofVisibility();
@@ -12461,25 +12547,20 @@
         if(!sb){ alert('Not connected'); return; }
         if(!cart.length){ alert('Your cart is empty'); return; }
 
-        /* Proof of payment is required for mobile-money orders. Cash-on-
-           collection skips this check (paid at the outlet). */
-        if (selectedPayMethod === 'mobile_money') {
-          if (proofUploadInFlight) { toast('Wait for the proof upload to finish.'); return; }
-          if (!uploadedProofUrl) {
-            toast('Upload your MTN/Airtel SMS screenshot before placing the order.');
-            if (typeof fileInput?.focus === 'function') fileInput.focus();
-            return;
-          }
-        }
+        /* Automated mobile money only — payment is collected via Pesapal after
+           the order row is created (status awaiting_payment). No manual proof. */
 
         placeBtn.dataset.placingOrder = '1';
-        placeBtn.disabled=true; placeBtn.textContent='Placing order…';
+        placeBtn.disabled=true; placeBtn.textContent='Starting payment…';
         try{
           /* Pull the live delivery method so any selected boda fee actually
-             lands on the order (was previously hardcoded to 0). */
+             lands on the order. Use resolveDeliveryFee so the admin-configured
+             pricing model (fixed / zone / free-above) is applied at submission. */
           var _method = window.__amDelivery || DELIVERY_METHODS.drive;
           var _subtotal = cartTotal();
-          var _fee = _method.baseFee || 0;
+          var _fee = _method.key === 'boda'
+            ? resolveDeliveryFee(window.__amBodaArea || DEFAULT_BODA_AREA, _subtotal)
+            : (_method.baseFee || 0);
           var _total = _subtotal + _fee;
           /* ── Order attribution ────────────────────────────────────────────
              When an AGENT places an order it must be tagged to the agent
@@ -12527,14 +12608,34 @@
           });
           await sb.from('order_items').insert(items);
 
-          // Show confirmation
-          placeBtn.disabled=false; placeBtn.textContent='Place Order';
+          // Cash: skip Pesapal, go straight to confirmation
+          if (selectedPayMethod === 'cash') {
+            clearCart();
+            showConfirmation(orderNum, _total);
+            placeBtn.disabled=false; placeBtn.textContent='Place Order';
+            delete placeBtn.dataset.placingOrder;
+            if (window.protoShow) window.protoShow('shop-6');
+            return;
+          }
+
+          // Hand off to Pesapal mobile money. The cart is kept until the
+          // payment callback confirms success (so a cancelled payment can be
+          // retried). On return, the injected callback shows shop-6.
+          try{ localStorage.setItem('amPesapalPending', JSON.stringify({ order_number:orderNum, id:orderId, flow:'farmer', total:_total })); }catch(e){}
+          var _nm=(_custName||'').trim().split(/\s+/);
+          var _payRes=null;
+          try{
+            var _fr=await fetch('/.netlify/functions/pesapal-pay', { method:'POST', headers:{'Content-Type':'application/json'},
+              body: JSON.stringify({ order_number:orderNum, amount:_total, currency:'UGX', email:((profile&&profile.email)||''), first_name:(_nm[0]||'Customer'), last_name:_nm.slice(1).join(' '), phone:(_custPhone||''), description:('Agro & More order '+orderNum) }) });
+            _payRes=await _fr.json();
+          }catch(e){}
+          if(_payRes && _payRes.redirect_url){ window.location.href=_payRes.redirect_url; return; }
+          placeBtn.disabled=false; placeBtn.textContent='Pay';
           delete placeBtn.dataset.placingOrder;
-          showConfirmation(orderNum, _total);
-          cart.splice(0); window.__cart=cart; // clear cart
-          if(window.protoShow) window.protoShow('shop-6');
+          var _errDetail = (_payRes&&_payRes.detail) ? ('\n\nPesapal: '+JSON.stringify(_payRes.detail)) : '';
+          alert('Could not start payment: '+((_payRes&&_payRes.error)||'please try again')+_errDetail);
         }catch(err){
-          placeBtn.disabled=false; placeBtn.textContent='Place Order';
+          placeBtn.disabled=false; placeBtn.textContent='Pay';
           delete placeBtn.dataset.placingOrder;
           alert('Order failed: '+(err.message||'please try again'));
         }
@@ -12550,6 +12651,9 @@
     var totEl=container.querySelector('.confirm-card .v[style*="orange"]');
     if(totEl) totEl.textContent=fmt(total);
   }
+  /* Exposed so the Pesapal return-callback (injected module) can paint the
+     farmer confirmation screen after a successful mobile money payment. */
+  window.__amShowFarmerConfirmation = showConfirmation;
 
   /* ---- Load My Orders (shop-7) ---- */
   async function loadMyOrders(){
@@ -12565,7 +12669,8 @@
       // Keep tabs
       res.data.forEach(function(order){
         var statusColor={awaiting_payment:'orange',confirmed:'teal',dispatched:'orange',delivered:'teal',completed:'teal',cancelled:'rust',pending:'orange'}[order.status]||'teal';
-        var statusLabel=order.status.replace(/_/g,' ');
+        var _sLabels={awaiting_payment:'Awaiting payment',confirmed:'Confirmed',dispatched:'Dispatched',delivered:'Delivered',completed:'Completed',cancelled:'Cancelled',pending:'Awaiting payment'};
+        var statusLabel=_sLabels[order.status]||(order.status.charAt(0).toUpperCase()+order.status.slice(1).replace(/_/g,' '));
         var dateStr=new Date(order.created_at).toLocaleDateString('en-UG',{day:'numeric',month:'short',year:'numeric'});
         var card=document.createElement('div');
         card.className='order-card';
@@ -12639,6 +12744,47 @@
     };
   }
 
+  /* ── resolveDeliveryFee ────────────────────────────────────────────────────
+     Returns the delivery fee (UGX) for a given boda area name, applying
+     the admin-configured pricing model from window.__deliveryPricing.
+       model=fixed  → always cfg.fee regardless of area
+       model=zone   → look up cfg.zones[name].fee; fall back to cfg.fee || 0
+     Also enforces the free_above threshold: if the cart subtotal is at or
+     above cfg.free_above (and free_above > 0), the fee is 0. */
+  function resolveDeliveryFee(areaName, subtotal) {
+    var cfg = window.__deliveryPricing;
+    if (!cfg) return BODA_AREAS[areaName] ? BODA_AREAS[areaName].fee : 0;
+    var fee = 0;
+    if (cfg.model === 'zone' && Array.isArray(cfg.zones)) {
+      var zoneMatch = cfg.zones.find(function(z){ return z.name === areaName; });
+      fee = zoneMatch ? (zoneMatch.fee || 0) : (cfg.fee || 0);
+    } else {
+      fee = cfg.fee || 0;
+    }
+    /* Free above threshold */
+    if (cfg.free_above > 0 && (subtotal || 0) >= cfg.free_above) fee = 0;
+    return fee;
+  }
+
+  /* ── applyDeliveryPricingConfig ─────────────────────────────────────────
+     Patches BODA_AREAS fees and DELIVERY_METHODS.boda.baseFee from the
+     admin config so every downstream consumer (cart summary, boda screen
+     price card, checkout summary) picks up the latest values automatically. */
+  function applyDeliveryPricingConfig() {
+    var cfg = window.__deliveryPricing;
+    if (!cfg) return;
+    /* Patch each BODA_AREAS entry */
+    Object.keys(BODA_AREAS).forEach(function(areaName) {
+      var fee = resolveDeliveryFee(areaName, 0); // no subtotal threshold at this point
+      BODA_AREAS[areaName].fee = fee;
+    });
+    /* Keep the selected boda method in sync */
+    DELIVERY_METHODS.boda.baseFee = resolveDeliveryFee(window.__amBodaArea || DEFAULT_BODA_AREA, 0);
+    if (window.__amDelivery && window.__amDelivery.key === 'boda') {
+      window.__amDelivery = Object.assign({}, DELIVERY_METHODS.boda);
+    }
+  }
+
   function boot(){
     wireShopCategories();
     wireShopSearch();
@@ -12650,6 +12796,24 @@
     wireDeliveryCards(scr('shop-3'));
     // If app opens on shop-1, load counts
     setTimeout(loadCategoryCounts, 1200);
+    /* Fetch delivery pricing config from admin settings */
+    setTimeout(function() {
+      var sbInst = window.__sb;
+      if (!sbInst) return;
+      sbInst.from('settings').select('value').eq('key','delivery_pricing').limit(1).then(function(res) {
+        if (res.data && res.data[0] && res.data[0].value) {
+          try {
+            var parsed = typeof res.data[0].value === 'string'
+              ? JSON.parse(res.data[0].value)
+              : res.data[0].value;
+            if (parsed && typeof parsed === 'object') {
+              window.__deliveryPricing = parsed;
+              applyDeliveryPricingConfig();
+            }
+          } catch(_) {}
+        }
+      }).catch(function(){});
+    }, 1500);
   }
 
   if(document.readyState==='loading'){
@@ -12720,9 +12884,16 @@
       } else {
         locationHint = profile.district || '';
       }
-      var roleTag  = { agent: 'Agent', field_officer: 'Field Officer', diaspora: 'Diaspora' }[profile.role] || '';
-      var parts = [locationHint, todayStr(), roleTag].filter(Boolean);
-      locEl.textContent = parts.join(' · ');
+      var roleTag;
+      if (profile.role === 'field_officer') {
+        var foOrg = (profile.fo_organisation === 'Other' ? profile.fo_organisation_other : profile.fo_organisation) || '';
+        roleTag = 'Field Officer' + (foOrg ? ' · ' + foOrg : '');
+        locEl.textContent = roleTag + (profile.rating ? ' · ★ ' + profile.rating : '');
+      } else {
+        roleTag = { agent: 'Agent', diaspora: 'Diaspora' }[profile.role] || '';
+        var parts = [locationHint, todayStr(), roleTag].filter(Boolean);
+        locEl.textContent = parts.join(' · ');
+      }
     }
 
     var avatarEl = container.querySelector('.avatar');
@@ -12798,8 +12969,8 @@
     96: {label:'Thunderstorm + hail', icon:'storm', safe:false},
     99: {label:'Severe thunderstorm', icon:'storm', safe:false},
   };
-  function wxIconSVG(variant) {
-    var stroke = '#FFECD1';
+  function wxIconSVG(variant, color) {
+    var stroke = color || '#FFECD1';
     if (variant === 'sun') return '<svg viewBox="0 0 24 24" fill="none" stroke="'+stroke+'" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 3v2M12 19v2M3 12h2M19 12h2M5.6 5.6l1.4 1.4M17 17l1.4 1.4M5.6 18.4l1.4-1.4M17 7l1.4-1.4"/></svg>';
     if (variant === 'partly') return '<svg viewBox="0 0 24 24" fill="none" stroke="'+stroke+'" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="9" r="3"/><path d="M10 17a4 4 0 110-8 5 5 0 019.9-1 4 4 0 011.1 7.9H10z"/></svg>';
     if (variant === 'cloud') return '<svg viewBox="0 0 24 24" fill="none" stroke="'+stroke+'" stroke-width="1.8" stroke-linejoin="round"><path d="M7 16a4 4 0 110-8 5 5 0 019.9-1 4 4 0 011.1 7.9H7z"/></svg>';
@@ -12808,7 +12979,7 @@
     return '<svg viewBox="0 0 24 24" fill="none" stroke="'+stroke+'" stroke-width="1.8"><circle cx="12" cy="12" r="6"/></svg>';
   }
 
-  var WX_CACHE_KEY = 'amWxCacheV1';
+  var WX_CACHE_KEY = 'amWxCacheV2';
   var WX_CACHE_MS  = 30 * 60 * 1000;          // 30 minutes
   async function fetchWeather(district) {
     var coords = WX_COORDS[district] || WX_COORDS['Other'];
@@ -12823,8 +12994,8 @@
     var url = 'https://api.open-meteo.com/v1/forecast'
             + '?latitude='  + coords[0]
             + '&longitude=' + coords[1]
-            + '&current=temperature_2m,apparent_temperature,weather_code,precipitation'
-            + '&daily=temperature_2m_max,temperature_2m_min,weather_code,precipitation_sum'
+            + '&current=temperature_2m,apparent_temperature,weather_code,precipitation,relative_humidity_2m,wind_speed_10m,wind_direction_10m'
+            + '&daily=temperature_2m_max,temperature_2m_min,weather_code,precipitation_sum,sunrise'
             + '&timezone=Africa/Kampala&forecast_days=7';
     var res = await fetch(url, { cache: 'no-store' });
     if (!res.ok) throw new Error('Weather API ' + res.status);
@@ -12911,6 +13082,41 @@
     if (!container) return;
     paintGreeting(container, profile);
     paintWeatherCard(container, profile.district);
+    // Load latest seasonal tip
+    var sb = window.__sb;
+    if(sb){
+      try{
+        var tipRes = await sb.from('advisory_content')
+          .select('title,description,thumbnail_url,district')
+          .eq('type','seasonal_tip').eq('visibility','public')
+          .order('published_at',{ascending:false}).limit(1);
+        if(tipRes.data && tipRes.data.length){
+          var tip = tipRes.data[0];
+          var card = container.querySelector('.tip-card');
+          if(card){
+            var h4 = card.querySelector('h4'); if(h4) h4.textContent = tip.title;
+            var p  = card.querySelector('p');  if(p)  p.textContent  = tip.description||'';
+            var tag = card.querySelector('.tip-img .tag');
+            if(tag && tip.district) tag.textContent = 'SEASONAL TIP · '+tip.district.toUpperCase();
+            /* Image precedence: a "home-seasonal-tip" CMS slot (Settings →
+               Images) is the authoritative source. Only fall back to the
+               advisory thumbnail when that slot has not been set. */
+            var cmsTipUrl = null;
+            try{ var cc = JSON.parse(localStorage.getItem('amCmsImagesV1')||'null'); cmsTipUrl = cc && cc.map && cc.map['home-seasonal-tip']; }catch(_){ }
+            if(tip.thumbnail_url && !cmsTipUrl){
+              var imgEl = card.querySelector('.tip-img img');
+              if(!imgEl){
+                imgEl = document.createElement('img');
+                imgEl.style.cssText='position:absolute;inset:0;width:100%;height:100%;object-fit:cover';
+                var tipImgDiv = card.querySelector('.tip-img');
+                if(tipImgDiv) tipImgDiv.appendChild(imgEl);
+              }
+              imgEl.src = tip.thumbnail_url;
+            }
+          }
+        }
+      }catch(e){}
+    }
   }
 
   /* ---- Populate agent home KPIs ---- */
@@ -12928,7 +13134,8 @@
         var res = await sb.from('orders')
           .select('id, total_amount', { count: 'exact' })
           .eq('agent_id', profile.id)
-          .gte('created_at', today.toISOString());
+          .gte('created_at', today.toISOString())
+          .neq('status', 'awaiting_payment');
         if (res.data) {
           var count  = res.data.length;
           var sales  = res.data.reduce(function(s, r) { return s + (r.total_amount || 0); }, 0);
@@ -13074,54 +13281,122 @@
      update the hero (location, big temp, condition, humidity, wind, sunrise). */
   async function paintWeatherDetail(container, district) {
     if (!container) return;
-    var hero    = container.querySelector('.wd-hero');
+    var hero = container.querySelector('.wd-hero');
     if (hero) {
       var loc = hero.querySelector('.loc');
-      if (loc) {
-        var sub = ''; // sub-county isn't on profile here — leave blank
-        loc.textContent = (district || 'UGANDA') + (sub ? ' · ' + sub : '');
-      }
+      if (loc) loc.textContent = district || 'Uganda';
     }
     var data;
     try { data = await fetchWeather(district || 'Kampala'); }
     catch (e) { console.warn('[weather detail] fetch failed', e); return; }
     if (!data) return;
 
-    /* Hero block */
+    /* ── Hero ── */
     if (hero) {
+      var c      = data.current || {};
+      var entry  = WX_CODES[c.weather_code] || { label:'—' };
       var bigTemp = hero.querySelector('.big-temp');
       var condEl  = hero.querySelector('.cond');
       var stats   = hero.querySelector('.sub-stats');
-      var c       = data.current || {};
-      var entry   = WX_CODES[c.weather_code] || { label: '—' };
       if (bigTemp) bigTemp.textContent = Math.round(c.temperature_2m) + '°';
       if (condEl)  condEl.textContent  = entry.label + ' · feels ' + Math.round(c.apparent_temperature) + '°';
-      /* Open-Meteo doesn't include humidity/wind/sunrise by default. The
-         hero's sub-stats line is left as-is for now (humidity/wind/sunrise
-         would need a second API call with extra `daily` fields). */
+      /* Live humidity, wind and sunrise */
+      if (stats) {
+        var dirs     = ['N','NE','E','SE','S','SW','W','NW'];
+        var windDir  = dirs[Math.round((c.wind_direction_10m || 0) / 45) % 8] || '';
+        var sunriseRaw = data.daily && data.daily.sunrise && data.daily.sunrise[0];
+        var sunrise  = sunriseRaw ? sunriseRaw.slice(11,16) : '—';
+        stats.innerHTML =
+          '<span>💧 ' + Math.round(c.relative_humidity_2m || 0) + '% humidity</span>' +
+          '<span>🌬 ' + Math.round(c.wind_speed_10m || 0) + ' km/h ' + windDir + '</span>' +
+          '<span>🌅 ' + sunrise + '</span>';
+      }
     }
 
-    /* 7-DAY forecast strip — TODAY + next 6 days, real day-of-week labels */
+    /* ── 7-day forecast strip ── */
     var row = container.querySelector('.forecast-row');
     if (row && data.daily) {
-      var times = data.daily.time || [];
-      var codes = data.daily.weather_code || [];
-      var maxes = data.daily.temperature_2m_max || [];
-      var mins  = data.daily.temperature_2m_min || [];
+      var times    = data.daily.time || [];
+      var codes    = data.daily.weather_code || [];
+      var maxes    = data.daily.temperature_2m_max || [];
+      var mins     = data.daily.temperature_2m_min || [];
       var dayNames = ['SUN','MON','TUE','WED','THU','FRI','SAT'];
       var html = '';
       for (var i = 0; i < Math.min(7, times.length); i++) {
-        var dt = new Date(times[i] + 'T00:00:00');
-        var label = (i === 0) ? 'TODAY' : dayNames[dt.getDay()];
-        var dEntry = WX_CODES[codes[i]] || { icon: 'cloud' };
+        var dt     = new Date(times[i] + 'T00:00:00');
+        var label  = (i === 0) ? 'TODAY' : dayNames[dt.getDay()];
+        var dEntry = WX_CODES[codes[i]] || { icon:'cloud' };
+        /* Use visible colours on the white forecast background */
+        var iconCol = (dEntry.icon === 'sun' || dEntry.icon === 'partly') ? 'var(--orange)' : 'var(--teal)';
         html += '<div class="forecast-day">' +
                   '<span class="d">' + label + '</span>' +
-                  wxIconSVG(dEntry.icon) +
+                  wxIconSVG(dEntry.icon, iconCol) +
                   '<span class="h">' + Math.round(maxes[i]) + '°</span>' +
-                  '<span class="l">' + Math.round(mins[i])  + '°</span>' +
+                  '<span class="l">' + Math.round(mins[i]) + '°</span>' +
                 '</div>';
       }
       row.innerHTML = html;
+    }
+
+    /* ── Agro-Advice ── replace static mockup cards with live weather-based advice ── */
+    var adviceCards = container.querySelectorAll('.advice-card');
+    var adviceParent = adviceCards.length ? adviceCards[0].parentNode : null;
+    if (adviceParent) {
+      /* Remove all existing advice cards */
+      adviceCards.forEach(function(el){ el.remove(); });
+
+      var daily   = data.daily || {};
+      var dcodes  = daily.weather_code || [];
+      var drain   = daily.precipitation_sum || [];
+      var dtimes  = daily.time || [];
+      var dayNms  = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+      var dayNmsS = ['SUN','MON','TUE','WED','THU','FRI','SAT'];
+      var c0      = data.current || {};
+      var todayEntry = WX_CODES[c0.weather_code] || WX_CODES[dcodes[0]] || { safe:true };
+      var tips = [];
+
+      /* Tip 1 — today's spray safety */
+      if (!todayEntry.safe || (drain[0]||0) >= 1) {
+        tips.push({ auto:true, msg:'<strong>Avoid spraying today</strong> — rain expected. Chemicals will wash off before absorption.' });
+      } else {
+        tips.push({ auto:true, msg:'<strong>Good day to spray</strong> — no significant rain expected. Apply early morning for best absorption.' });
+      }
+
+      /* Tip 2 — next rain warning */
+      var nextRainIdx = -1;
+      for (var ri = 1; ri < Math.min(7, drain.length); ri++) {
+        if ((drain[ri]||0) >= 2 || (WX_CODES[dcodes[ri]] && !WX_CODES[dcodes[ri]].safe)) { nextRainIdx = ri; break; }
+      }
+      if (nextRainIdx >= 1) {
+        var rainDay = new Date(dtimes[nextRainIdx] + 'T00:00:00');
+        var rainLabel = dayNms[rainDay.getDay()];
+        tips.push({ auto:true, msg:'<strong>Rain coming ' + rainLabel + '</strong> — harvest any ripe produce before then to avoid damage.' });
+      } else {
+        tips.push({ auto:true, msg:'<strong>Dry week ahead</strong> — good conditions for planting, transplanting or applying fertilizer.' });
+      }
+
+      /* Tip 3 — best field day this week */
+      var bestIdx = 1; var bestRain = Infinity;
+      for (var bi = 1; bi < Math.min(7, drain.length); bi++) {
+        if ((drain[bi]||0) < bestRain) { bestRain = drain[bi]||0; bestIdx = bi; }
+      }
+      if (bestIdx >= 1 && dtimes[bestIdx]) {
+        var bestDay = new Date(dtimes[bestIdx] + 'T00:00:00');
+        tips.push({ auto:true, msg:'<strong>Best field day: ' + dayNms[bestDay.getDay()] + '</strong> — lowest chance of rain this week. Ideal for transplanting or soil preparation.' });
+      }
+
+      /* Render */
+      var adviceLabel = adviceParent.querySelector('div[style*="AGRO-ADVICE"]') ||
+                        Array.from(adviceParent.querySelectorAll('div')).find(function(d){ return d.textContent.trim() === 'AGRO-ADVICE'; });
+      var insertRef   = adviceLabel ? adviceLabel.nextSibling : null;
+      tips.forEach(function(tip) {
+        var card = document.createElement('div');
+        card.className = 'advice-card';
+        card.innerHTML = '<div class="src">🌱 Auto-generated</div>' + tip.msg;
+        if (insertRef) adviceParent.insertBefore(card, insertRef);
+        else adviceParent.appendChild(card);
+        insertRef = card.nextSibling;
+      });
     }
   }
 
@@ -13443,6 +13718,91 @@
   }
 
   /* ---- Wrap window.protoShow to intercept home navigation ---- */
+  /* ---- Seasonal Tip Detail (home-4) ---- */
+  async function populateTipDetail() {
+    var container = scr('home-4'); if (!container) return;
+    var sb = window.__sb;
+    var tip = null;
+    if (sb) {
+      try {
+        var res = await sb.from('advisory_content')
+          .select('title,description,thumbnail_url,district,published_at')
+          .eq('type','seasonal_tip').eq('visibility','public')
+          .order('published_at',{ascending:false}).limit(1);
+        if (res.data && res.data.length) tip = res.data[0];
+      } catch(e) {}
+    }
+    if (!tip) return;
+
+    /* Hero image */
+    if (tip.thumbnail_url) {
+      var heroImg = container.querySelector('.tip-hero img');
+      if (heroImg) heroImg.src = tip.thumbnail_url;
+    }
+    /* Published chip */
+    var pubChip = container.querySelector('.cap .chip.orange');
+    if (pubChip && tip.published_at) {
+      var pd = new Date(tip.published_at);
+      pubChip.textContent = 'Published ' + pd.toLocaleDateString('en-UG', {day:'numeric', month:'short'});
+    }
+    /* Title */
+    var titleEl = container.querySelector('.cap h2');
+    if (titleEl && tip.title) titleEl.textContent = tip.title;
+    /* Body text — split double-newlines into paragraphs */
+    var bodyEl = container.querySelector('.tip-body-text');
+    if (bodyEl && tip.description) {
+      bodyEl.innerHTML = '';
+      tip.description.split(/\n\n+/).forEach(function(para) {
+        if (!para.trim()) return;
+        var p = document.createElement('p'); p.textContent = para.trim();
+        bodyEl.appendChild(p);
+      });
+    }
+    /* District chip */
+    if (tip.district) {
+      var chipRow = container.querySelector('.chip.teal');
+      if (chipRow && chipRow.parentElement) {
+        Array.from(chipRow.parentElement.querySelectorAll('.chip:not(.teal)')).forEach(function(c){ c.remove(); });
+        var dc = document.createElement('span'); dc.className = 'chip'; dc.textContent = tip.district;
+        chipRow.parentElement.appendChild(dc);
+      }
+    }
+
+    /* Wire buttons */
+    var btns = container.querySelectorAll('.btn');
+    var shareBtn = null, saveBtn = null;
+    btns.forEach(function(b) {
+      if (b.textContent.indexOf('Share') >= 0) shareBtn = b;
+      if (b.textContent.indexOf('Save') >= 0)  saveBtn  = b;
+    });
+
+    if (shareBtn) {
+      shareBtn.onclick = function() {
+        var snippet = (tip.description || '').slice(0, 280);
+        var text = (tip.title || '') + '\n\n' + snippet + (snippet.length < (tip.description||'').length ? '…' : '') + '\n\nvia Agro & More';
+        window.open('https://wa.me/?text=' + encodeURIComponent(text), '_blank');
+      };
+    }
+    if (saveBtn) {
+      var saved = [];
+      try { saved = JSON.parse(localStorage.getItem('amSavedTips') || '[]'); } catch(_) {}
+      var alreadySaved = saved.some(function(t){ return t.title === tip.title; });
+      saveBtn.textContent = alreadySaved ? 'Saved ✓' : 'Save';
+      saveBtn.onclick = function() {
+        var list = [];
+        try { list = JSON.parse(localStorage.getItem('amSavedTips') || '[]'); } catch(_) {}
+        if (list.some(function(t){ return t.title === tip.title; })) {
+          if (typeof toast === 'function') toast('Already saved.');
+          return;
+        }
+        list.unshift({ title: tip.title, description: tip.description, district: tip.district, saved_at: new Date().toISOString() });
+        try { localStorage.setItem('amSavedTips', JSON.stringify(list.slice(0, 20))); } catch(_) {}
+        saveBtn.textContent = 'Saved ✓';
+        if (typeof toast === 'function') toast('Tip saved!');
+      };
+    }
+  }
+
   var HOME_IDS = ['home-1', 'home-3', 'agent-1', 'fo-1', 'diaspora-1'];
   function wrapProtoShow() {
     var orig = window.protoShow;
@@ -13451,6 +13811,7 @@
       orig(id, opts);
       if (HOME_IDS.indexOf(id) >= 0) onHomeScreen(id);
       if (id === 'home-2') wireNotificationTabs();
+      if (id === 'home-4') populateTipDetail();
       if (id === 'home-5') wireHireCategoryPicker();
       if (id === 'home-6') loadHireProviders();
       if (id === 'home-7') populateProviderDetail();
@@ -13770,6 +14131,8 @@
     if (meta.fo_specialities)      row.fo_specialities      = meta.fo_specialities;
     if (meta.fo_districts_covered) row.fo_districts_covered = meta.fo_districts_covered;
     if (meta.fo_languages)         row.fo_languages         = meta.fo_languages;
+    if (meta.fo_organisation)       row.fo_organisation       = meta.fo_organisation;
+    if (meta.fo_organisation_other) row.fo_organisation_other = meta.fo_organisation_other;
     /* Diaspora-specific columns */
     if (meta.country)                row.country_of_residence    = meta.country;
     if (meta.local_contact_name)     row.local_contact_name      = meta.local_contact_name;
@@ -13825,6 +14188,7 @@
             this.value = this.value.replace(/\D/, '').slice(0, 1);
             updateOtpStyle();
             if (this.value && this.nextElementSibling) this.nextElementSibling.focus();
+            maybeAutoSubmit();
           });
           b.addEventListener('keydown', function(e) {
             if (e.key === 'Backspace' && !this.value && this.previousElementSibling) {
@@ -13841,6 +14205,7 @@
             var next = inputs[Math.min(text.length, 5)];
             if (next) next.focus();
             updateOtpStyle();
+            maybeAutoSubmit();
           });
         })(box);
         row.appendChild(box);
@@ -13854,6 +14219,18 @@
         else if (b.value)                   b.style.borderColor = 'rgba(0,21,36,.3)';
         else                                b.style.borderColor = '#E0E0E0';
       });
+    }
+
+    /* Auto-verify the moment all 6 digits are present (typed or pasted) so the
+       user doesn't have to tap "Verify & Continue". Guarded by the verify
+       button's disabled state so it never fires twice. */
+    function maybeAutoSubmit() {
+      if (!row) return;
+      var vals = Array.from(row.querySelectorAll('input')).map(function(b){ return (b.value||'').trim(); });
+      if (vals.length === 6 && vals.every(function(v){ return v !== ''; })) {
+        var vb = container.querySelector('.btn.primary');
+        if (vb && !vb.disabled) vb.click();
+      }
     }
 
     /* Inline error element — sits directly under the OTP boxes so the
@@ -13941,9 +14318,18 @@
           }
 
           var authUser = result.data.user;
-          var meta = authUser.user_metadata || {};
           var isSignupFlow = (window.__amOtpMode === 'signup');
-          var SELECT_COLS = 'id, auth_user_id, role, full_name, status, district, sub_county, phone, email, created_at, home_outlet, years_in_trade, national_id, bank_name, bank_account_number, bank_account_name, bank_branch, commission_payout_phone, fo_university, fo_grad_year, fo_experience, fo_specialities, fo_districts_covered, fo_languages, country_of_residence, local_contact_name, local_contact_rel, local_contact_phone, local_contact_district, local_contact_village, local_contact_outlet';
+          /* Merge signup extras into meta as a fallback.  Supabase may not
+             have updated user_metadata if this is an existing auth account
+             going through the SMS-OTP path (generate_link is called without
+             data). window.__amSignupExtras always has the freshest values
+             typed by the user; server meta wins when both are present. */
+          var meta = Object.assign(
+            {},
+            (isSignupFlow && window.__amSignupExtras) ? window.__amSignupExtras : {},
+            authUser.user_metadata || {}
+          );
+          var SELECT_COLS = 'id, auth_user_id, role, full_name, status, district, sub_county, phone, email, created_at, home_outlet, years_in_trade, national_id, bank_name, bank_account_number, bank_account_name, bank_branch, commission_payout_phone, fo_university, fo_grad_year, fo_experience, fo_specialities, fo_districts_covered, fo_languages, fo_organisation, fo_organisation_other, country_of_residence, local_contact_name, local_contact_rel, local_contact_phone, local_contact_district, local_contact_village, local_contact_outlet';
 
           /* ── Helper: fetch all role-rows for this auth user ─────── */
           async function fetchAllRoles() {
@@ -13993,6 +14379,8 @@
               if (meta.fo_specialities)      patch.fo_specialities      = meta.fo_specialities;
               if (meta.fo_districts_covered) patch.fo_districts_covered = meta.fo_districts_covered;
               if (meta.fo_languages)         patch.fo_languages         = meta.fo_languages;
+              if (meta.fo_organisation)       patch.fo_organisation       = meta.fo_organisation;
+              if (meta.fo_organisation_other) patch.fo_organisation_other = meta.fo_organisation_other;
               if (meta.country)                patch.country_of_residence   = meta.country;
               if (meta.local_contact_name)     patch.local_contact_name     = meta.local_contact_name;
               if (meta.local_contact_rel)      patch.local_contact_rel      = meta.local_contact_rel;
@@ -14014,22 +14402,63 @@
           if (!allRows || allRows.length === 0) {
             if (!isSignupFlow) {
               /* Returning sign-in but no profile — create one */
-              await saveProfile(authUser);
+              var spRes = await saveProfile(authUser);
+              if (spRes && spRes.error) {
+                console.error('[auth] profile create failed (sign-in path):', spRes.error);
+              }
               allRows = await fetchAllRoles();
             }
             if (!allRows || allRows.length === 0) {
-              /* Still nothing — build an in-memory fallback */
+              /* Signup path: saveProfile should have run in block 2 above, but
+                 if it was skipped (no pendingRole) or silently failed, try once more. */
+              if (isSignupFlow) {
+                var spRetry = await saveProfile(authUser);
+                if (spRetry && spRetry.error) {
+                  console.error('[auth] profile save failed (retry):', spRetry.error);
+                  showOtpError('We could not save your profile — please try again or contact support.');
+                  this.disabled = false; this.textContent = 'Verify & Continue'; return;
+                }
+                allRows = await fetchAllRoles();
+              }
+            }
+            if (!allRows || allRows.length === 0) {
+              /* Still nothing after retries — build an in-memory fallback so the
+                 user can at least see the pending screen. Also show a warning. */
+              console.error('[auth] saveProfile produced no DB row — proceeding with in-memory profile');
+              var _role = pendingRole || meta.role || 'farmer';
               window.__amProfile = {
                 auth_user_id: authUser.id,
                 id:           authUser.id,
                 full_name:    pendingName  || meta.full_name || 'User',
                 phone:        pendingPhone || meta.phone     || null,
                 email:        authUser.email,
-                role:         pendingRole  || meta.role      || 'farmer',
-                status:       (((pendingRole || meta.role) === 'farmer' ||
-                                (pendingRole || meta.role) === 'diaspora') ? 'active' : 'pending_approval'),
+                role:         _role,
+                status:       ((_role === 'farmer' || _role === 'diaspora') ? 'active' : 'pending_approval'),
+                /* Agent fields from signup extras */
+                home_outlet:             meta.home_outlet             || null,
+                years_in_trade:          meta.years_in_trade          || null,
+                national_id:             meta.national_id             || null,
+                /* Field Officer fields from signup extras */
+                fo_university:        meta.fo_university        || null,
+                fo_grad_year:         meta.fo_grad_year         || null,
+                fo_experience:        meta.fo_experience        || null,
+                fo_specialities:      meta.fo_specialities      || null,
+                fo_districts_covered: meta.fo_districts_covered || null,
+                fo_languages:         meta.fo_languages         || null,
+                fo_organisation:      meta.fo_organisation      || null,
+                fo_organisation_other:meta.fo_organisation_other|| null,
+                district:   meta.district   || null,
+                sub_county: meta.sub_county || null,
+                created_at: authUser.created_at || new Date().toISOString()
               };
-              goHome(window.__amProfile.role); return;
+              goHome(window.__amProfile.role);
+              /* Force-populate pending screen (in case protoShow wrapper snapshot was stale) */
+              setTimeout(function() {
+                var p = window.__amProfile; if (!p) return;
+                if (p.role === 'agent'         && window.populateAgentPending) window.populateAgentPending(p);
+                if (p.role === 'field_officer'  && window.populateFOPending)   window.populateFOPending(p);
+              }, 80);
+              return;
             }
           }
 
@@ -14291,6 +14720,8 @@
     var foSpecGetter      = function() { return []; };
     var foDistrictsGetter = function() { return []; };
     var foLangSel         = null;
+    var foOrgSel          = null;
+    var foOrgOtherInp     = null;
 
     if (role === 'field_officer') {
       /* University + Year of graduation live in a shared .field.row */
@@ -14325,6 +14756,14 @@
       /* Years of experience (standalone .field) */
       var foExpField = findField(container, 'Years of experience');
       foExpSel = foExpField ? injectSelect(foExpField, YEARS_IN_TRADE) : null;
+
+      /* Organisation the officer works for — free-text input */
+      var foOrgField = findField(container, 'Organisation');
+      foOrgSel = foOrgField ? injectInput(foOrgField, 'e.g. Agro & More, Local Government…') : null;
+      /* Hide the "If other, specify" field — no longer needed */
+      var foOrgOtherField = findField(container, 'If other');
+      if (foOrgOtherField) foOrgOtherField.style.display = 'none';
+      foOrgOtherInp = null;
 
       /* Specialities — multi-select pills */
       foSpecGetter = wirePillsMulti(findField(container, 'Specialities'));
@@ -14711,6 +15150,8 @@
           extras.fo_specialities      = foSpecGetter();
           extras.fo_districts_covered = foDistrictsGetter();
           extras.fo_languages         = foLangSel  ? foLangSel.value  : '';
+          extras.fo_organisation      = foOrgSel   ? foOrgSel.value   : '';
+          if (foOrgOtherInp && foOrgOtherInp.value.trim()) extras.fo_organisation_other = foOrgOtherInp.value.trim();
         }
         /* Mobile money number — shared by agent + field_officer */
         if (momoInp && momoInp.value.trim()) {
@@ -14983,21 +15424,48 @@
       var p2 = await sb.from('app_users').select('*').eq('auth_user_id', uid).order('created_at', { ascending: true });
       if (p2.data && p2.data.length) { window.__amProfile = p2.data[0]; goHome(p2.data[0].role); return; }
       /* Still no row (RLS blocking client writes) — build in-memory profile from
-         auth user_metadata so the agent/FO at least sees their own name. */
+         auth user_metadata so the agent/FO at least sees their own name and details. */
       var meta = authUser.user_metadata || {};
       var role   = meta.role   || 'farmer';
       var status = meta.status || (role === 'farmer' || role === 'diaspora' ? 'active' : 'pending_approval');
       window.__amProfile = {
-        id:         uid,
-        full_name:  meta.full_name  || '',
-        email:      authUser.email  || '',
-        phone:      meta.phone      || '',
-        role:       role,
-        status:     status,
-        home_outlet: meta.home_outlet || null,
+        auth_user_id: uid,
+        id:           uid,
+        full_name:    meta.full_name  || '',
+        email:        authUser.email  || '',
+        phone:        meta.phone      || '',
+        role:         role,
+        status:       status,
+        /* Agent fields */
+        home_outlet:             meta.home_outlet             || null,
+        years_in_trade:          meta.years_in_trade          || null,
+        national_id:             meta.national_id             || null,
+        bank_name:               meta.bank_name               || null,
+        bank_account_number:     meta.bank_account_number     || null,
+        commission_payout_phone: meta.commission_payout_phone || null,
+        /* Field Officer fields */
+        fo_university:        meta.fo_university        || null,
+        fo_grad_year:         meta.fo_grad_year         || null,
+        fo_experience:        meta.fo_experience        || null,
+        fo_specialities:      meta.fo_specialities      || null,
+        fo_districts_covered: meta.fo_districts_covered || null,
+        fo_languages:         meta.fo_languages         || null,
+        fo_organisation:      meta.fo_organisation      || null,
+        fo_organisation_other:meta.fo_organisation_other|| null,
+        /* Common */
+        district:    meta.district    || null,
+        sub_county:  meta.sub_county  || null,
         created_at:  authUser.created_at || new Date().toISOString()
       };
       goHome(role);
+      /* Force-populate the pending screen after navigation so fields show
+         even if the protoShow wrapper's profile snapshot was stale. */
+      setTimeout(function() {
+        var p = window.__amProfile;
+        if (!p) return;
+        if (p.role === 'agent'        && window.populateAgentPending) window.populateAgentPending(p);
+        if (p.role === 'field_officer' && window.populateFOPending)    window.populateFOPending(p);
+      }, 80);
     } catch(e) { /* silent */ }
   }
 
@@ -15550,7 +16018,9 @@
     window.protoShow = function(id, opts) {
       orig(id, opts);
       if (id === 'home-8')        loadTrace();
-      if (id === 'diaspora-4')    loadGiftProducts();
+      /* diaspora-4 shop is owned by renderShopProducts() (toggle + category
+         browsing). loadGiftProducts() is intentionally NOT called here — it
+         only rendered gifts and raced/overwrote the category grid. */
       if (id === 'agent-flows-5') loadMyCustomers();
       if (id === 'home-2')        loadPushNotifications();
     };
@@ -15562,7 +16032,7 @@
     /* Handle direct-link entry to a live screen */
     var hash = location.hash.replace(/^#/, '');
     if (hash === 'home-8')        loadTrace();
-    if (hash === 'diaspora-4')    loadGiftProducts();
+    /* diaspora-4 handled by renderShopProducts() — see note above. */
     if (hash === 'agent-flows-5') loadMyCustomers();
     if (hash === 'home-2')        loadPushNotifications();
   }
@@ -16553,11 +17023,43 @@
      have no backend table, so those always render an empty state.
   ════════════════════════════════════════════════════════════════════════ */
   function foEsc(s){ return String(s==null?'':s).replace(/[&<>"]/g,function(ch){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[ch]; }); }
-  function foEmpty(msg){
+  /* foEmpty(opts)
+     opts.icon   — SVG string (optional)
+     opts.title  — bold heading (optional)
+     opts.body   — secondary text
+     opts.cta    — { label, onClick } primary button (optional)
+     Backward-compat: foEmpty('plain string') still works.       */
+  function foEmpty(opts){
+    if(typeof opts==='string') opts={body:opts};
     var d=document.createElement('div');
     d.className='fo-empty';
-    d.style.cssText='text-align:center;color:var(--ink-60,#8a94a0);font-size:12px;font-weight:500;padding:20px 14px;line-height:1.5';
-    d.textContent=msg;
+    d.style.cssText='text-align:center;padding:28px 18px 22px;display:flex;flex-direction:column;align-items:center;gap:6px';
+    var html='';
+    if(opts.icon){
+      html+='<div style="width:48px;height:48px;border-radius:50%;background:var(--teal);opacity:.12;display:flex;align-items:center;justify-content:center;margin-bottom:4px;flex-shrink:0;align-self:center">' +
+            '<div style="opacity:0"></div></div>';
+      /* overlay icon properly */
+      var wrap=document.createElement('div');
+      wrap.style.cssText='position:relative;width:48px;height:48px;margin-bottom:4px;flex-shrink:0';
+      var bg=document.createElement('div');
+      bg.style.cssText='width:48px;height:48px;border-radius:50%;background:var(--teal);opacity:.1';
+      var ic=document.createElement('div');
+      ic.style.cssText='position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:var(--teal)';
+      ic.innerHTML=opts.icon;
+      wrap.appendChild(bg); wrap.appendChild(ic);
+      d.appendChild(wrap);
+      html='';
+    }
+    if(opts.title) html+='<div style="font-size:13px;font-weight:700;color:var(--ink);margin-top:2px">'+opts.title+'</div>';
+    if(opts.body)  html+='<div style="font-size:11.5px;color:var(--ink-60);line-height:1.5;max-width:240px;margin:0 auto">'+opts.body+'</div>';
+    d.insertAdjacentHTML('beforeend', html);
+    if(opts.cta){
+      var btn=document.createElement('button');
+      btn.textContent=opts.cta.label;
+      btn.style.cssText='margin-top:10px;background:var(--orange);color:#fff;border:none;border-radius:100px;padding:9px 22px;font-size:12.5px;font-weight:700;cursor:pointer;font-family:inherit';
+      btn.addEventListener('click', opts.cta.onClick);
+      d.appendChild(btn);
+    }
     return d;
   }
   function foMonthStartISO(){ var n=new Date(); return new Date(n.getFullYear(),n.getMonth(),1).toISOString(); }
@@ -16566,31 +17068,82 @@
     var sb=window.__sb; if(!sb||!profile||!profile.id) return [];
     try{
       var q=sb.from('farm_visits')
-        .select('farmer_name,district,sub_county,crop,issue_observed,advice_given,urgency,status,created_at')
+        .select('id,farmer_name,district,sub_county,crop,plot_size,issue_observed,advice_given,urgency,status,created_at,photo_urls,lat,lng,gps_accuracy,location_type')
         .eq('fo_id',profile.id).order('created_at',{ascending:false});
       if(sinceISO) q=q.gte('created_at',sinceISO);
       var r=await q; return r.data||[];
     }catch(e){ return []; }
   }
 
-  /* ── Home (fo-2): today's schedule has no backend → empty state ── */
+  /* ── Home (fo-2): today's schedule → empty state + getting-started nudge ── */
   async function renderFOHomeExtras(profile){
     var c=scr('fo-2'); if(!c||!profile) return;
-    /* Date header + scheduled count */
+
+    /* ── 1. Zero out the KPI strip ── */
+    var strip=c.querySelector('.kpi-strip .row');
+    if(strip){
+      var kpis=strip.querySelectorAll('div > .k');
+      if(kpis[0]) kpis[0].textContent='0';
+      if(kpis[1]) kpis[1].textContent='0';
+    }
+    var ratEl=c.querySelector('.kpi-strip .row > div:nth-child(3) .k');
+    if(ratEl) ratEl.textContent= profile.rating ? ('★ '+profile.rating) : '0';
+
+    /* ── 2. Date header ── */
     var hdr=c.querySelector('.scroll > div[style*="justify-content:space-between"]');
     if(hdr){
       var spans=hdr.querySelectorAll('span'); var now=new Date();
       if(spans[0]) spans[0].textContent='TODAY · '+now.toLocaleString('en-UG',{weekday:'short'}).toUpperCase()+' '+now.getDate()+' '+now.toLocaleString('en-UG',{month:'short'}).toUpperCase();
-      if(spans[1]) spans[1].textContent='No visits scheduled';
+      if(spans[1]) spans[1].textContent='0 VISITS SCHEDULED';
     }
-    /* Remove the 3 placeholder schedule-items + any prior empty state */
-    Array.from(c.querySelectorAll('.schedule-item, .fo-empty-home')).forEach(function(el){el.remove();});
-    var emptyH=foEmpty('No scheduled visits today. Use "Log a farm visit" to record one.');
-    emptyH.className+=' fo-empty-home';
-    if(hdr&&hdr.parentNode) hdr.parentNode.insertBefore(emptyH, hdr.nextSibling);
-    /* Rating KPI in the strip */
-    var ratEl=c.querySelector('.kpi-strip .row > div:nth-child(3) .k');
-    if(ratEl) ratEl.textContent= profile.rating ? ('★ '+profile.rating) : '★ —';
+
+    /* ── 3. Remove placeholder schedule-items + any prior states ── */
+    Array.from(c.querySelectorAll('.schedule-item, .fo-empty-home, .fo-nudge')).forEach(function(el){el.remove();});
+
+    /* ── 4. Friendly schedule slot message ── */
+    var slotMsg=document.createElement('div');
+    slotMsg.className='fo-empty-home';
+    slotMsg.style.cssText='padding:14px;text-align:center;font-size:11.5px;color:var(--ink-60);font-weight:500;border:1.5px dashed var(--ink-10);border-radius:12px;margin:4px 0 8px';
+    slotMsg.textContent='No visits scheduled today — log one whenever you\'re in the field.';
+    if(hdr&&hdr.parentNode) hdr.parentNode.insertBefore(slotMsg, hdr.nextSibling);
+
+    /* ── 5. Getting started nudge card (only when truly new — 0 visits ever) ── */
+    var allVisits=await foFetchVisits(profile, null);
+    if(allVisits.length>0) return; /* has history — skip nudge */
+
+    var nudge=document.createElement('div');
+    nudge.className='fo-nudge';
+    nudge.style.cssText='background:var(--teal);color:var(--cream);border-radius:14px;padding:14px 16px;margin-top:8px';
+    nudge.innerHTML=
+      '<div style="font-size:10px;font-weight:800;letter-spacing:.06em;opacity:.75;margin-bottom:6px">GETTING STARTED</div>'+
+      '<div style="font-size:13px;font-weight:700;margin-bottom:10px">Welcome! Here\'s what to do first.</div>'+
+      '<div style="display:flex;flex-direction:column;gap:8px">'+
+        _foNudgeStep('1','Log a farm visit','Record your first visit to a farmer — takes 2 minutes.','fo-4')+
+        _foNudgeStep('2','Set your availability','Let farmers find you on "Talk to an Expert".','fo-9')+
+        _foNudgeStep('3','Check your dashboard','Your stats and ratings will build up here.','fo-3')+
+      '</div>';
+    nudge.querySelectorAll('[data-nudge-go]').forEach(function(btn){
+      btn.addEventListener('click',function(e){
+        e.stopPropagation();
+        window.protoShow(btn.dataset.nudgeGo);
+      });
+    });
+    var scroll=c.querySelector('.scroll');
+    if(scroll){
+      var fab=scroll.querySelector('.fab');
+      if(fab) scroll.insertBefore(nudge,fab); else scroll.appendChild(nudge);
+    }
+  }
+
+  function _foNudgeStep(num, title, sub, goId){
+    return '<div style="display:flex;align-items:flex-start;gap:10px;background:rgba(255,255,255,.1);border-radius:10px;padding:9px 10px">'+
+      '<div style="width:22px;height:22px;border-radius:50%;background:var(--orange);color:#fff;font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0">'+num+'</div>'+
+      '<div style="flex:1">'+
+        '<div style="font-size:12.5px;font-weight:700">'+title+'</div>'+
+        '<div style="font-size:11px;opacity:.8;margin-top:1px">'+sub+'</div>'+
+      '</div>'+
+      '<button data-nudge-go="'+goId+'" style="background:rgba(255,255,255,.2);border:none;color:#fff;border-radius:100px;padding:5px 12px;font-size:11px;font-weight:700;cursor:pointer;align-self:center;white-space:nowrap;font-family:inherit">Go →</button>'+
+    '</div>';
   }
 
   /* ── Dashboard (fo-3): real month stats + 6-week chart; ratings empty ── */
@@ -16647,7 +17200,15 @@
     var visits=await foFetchVisits(profile, foMonthStartISO());
     var cntChip=c.querySelector('.filter-row .chip.orange');
     if(cntChip) cntChip.textContent='This month · '+visits.length;
-    if(!visits.length){ scroll.appendChild(foEmpty('No visits logged yet. Tap "Log visit" to record your first farm visit.')); return; }
+    if(!visits.length){
+      scroll.appendChild(foEmpty({
+        icon:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5"/></svg>',
+        title:'No visits yet',
+        body:'Your farm visit records will appear here. Tap the button below to log your first one.',
+        cta:{ label:'+ Log a visit', onClick:function(){ window.protoShow('fo-4'); }}
+      }));
+      return;
+    }
     visits.forEach(function(v){
       var d=new Date(v.created_at);
       var item=document.createElement('div'); item.className='visit-item';
@@ -16657,8 +17218,74 @@
         '<div class="vi-chip-row">'+(v.crop?'<span class="chip teal">'+foEsc(v.crop)+'</span>':'')+
         (v.district?'<span class="chip" style="background:rgba(21,97,109,.1);color:var(--teal);font-size:9px">'+foEsc(v.district)+'</span>':'')+'</div>'+
         ((v.advice_given||v.issue_observed)?'<div class="vi-note">'+foEsc(v.advice_given||v.issue_observed)+'</div>':'');
+      item.style.cursor='pointer';
+      item.addEventListener('click',function(){ foShowVisitDetail(v); });
       scroll.appendChild(item);
     });
+  }
+
+  /* Populate the Visit Detail screen (fo-7) from a visit row and open it */
+  function foShowVisitDetail(v){
+    var det=scr('fo-7');
+    if(det){
+      var dd=new Date(v.created_at);
+      var dateStr=dd.toLocaleDateString('en-UG',{day:'numeric',month:'short',year:'numeric'});
+      var locStr=[v.district,v.sub_county].filter(Boolean).join(' · ');
+      /* Header: farmer name, date/location, status chip */
+      var hdr=det.querySelector('.scroll > div[style*="justify-content:space-between"]');
+      if(hdr){
+        var nameEl=hdr.querySelector('div[style*="font-size:15px"]');
+        if(nameEl) nameEl.textContent=v.farmer_name||'Farmer';
+        var dateEl=hdr.querySelector('div[style*="var(--teal)"]');
+        if(dateEl) dateEl.textContent=dateStr+(locStr?' · '+locStr:'');
+        var statusChip=hdr.querySelector('.chip');
+        if(statusChip) statusChip.textContent=v.status||'logged';
+      }
+      /* Farmer section */
+      var fn=det.querySelector('.aoc-who .fn'); if(fn) fn.textContent=v.farmer_name||'—';
+      var sub=det.querySelector('.aoc-who span:not(.fn)'); if(sub) sub.textContent=locStr||'—';
+      var ava=det.querySelector('.aoc-who .ava-sm'); if(ava) ava.textContent=(v.farmer_name||'?').trim().slice(0,1).toUpperCase();
+      /* Crop & context info rows */
+      Array.prototype.forEach.call(det.querySelectorAll('.info-row'),function(row){
+        var k=row.querySelector('.k'), val=row.querySelector('.v'); if(!k||!val) return;
+        var key=k.textContent.trim().toLowerCase();
+        if(key==='crop') val.textContent=v.crop||'—';
+        else if(key==='plot size') val.textContent='—';
+        else if(key==='urgency') val.textContent=v.urgency||'—';
+      });
+      /* Notes boxes: [0] issue observed, [1] advice given */
+      var notes=det.querySelectorAll('.notes-box');
+      if(notes[0]) notes[0].textContent=v.issue_observed||'—';
+      if(notes[1]) notes[1].textContent=v.advice_given||'—';
+      /* Photos — render the actual uploaded images (were static placeholders) */
+      var pg=det.querySelector('.photo-grid');
+      if(pg){
+        var urls=Array.isArray(v.photo_urls)?v.photo_urls.filter(Boolean):[];
+        var ptitle=null; Array.prototype.forEach.call(det.querySelectorAll('.od-section-title'),function(h){ if((h.textContent||'').trim().toUpperCase().indexOf('PHOTOS')===0) ptitle=h; });
+        if(ptitle) ptitle.textContent='PHOTOS · '+urls.length;
+        if(!urls.length){
+          pg.innerHTML='<div style="grid-column:1/-1;padding:14px;text-align:center;color:var(--ink-60);font-size:11.5px">No photos attached to this visit.</div>';
+        } else {
+          pg.innerHTML=urls.map(function(u){
+            return '<a href="'+foEsc(u)+'" target="_blank" rel="noopener" class="photo-cell filled" style="aspect-ratio:1.4;display:block;background-size:cover;background-position:center;background-image:url('+JSON.stringify(u)+')"></a>';
+          }).join('');
+        }
+      }
+      /* Location — show a real map instead of the placeholder grid */
+      var mt=det.querySelector('.map-tile');
+      if(mt){
+        var mlat=parseFloat(v.lat), mlng=parseFloat(v.lng);
+        if(isFinite(mlat)&&isFinite(mlng)){
+          var dd2=0.008; var bbox=[(mlng-dd2),(mlat-dd2),(mlng+dd2),(mlat+dd2)].join('%2C');
+          mt.innerHTML='<iframe title="Visit location" loading="lazy" style="position:relative;z-index:3;width:100%;height:100%;border:0" src="https://www.openstreetmap.org/export/embed.html?bbox='+bbox+'&layer=mapnik&marker='+mlat+'%2C'+mlng+'"></iframe>';
+          mt.style.padding='0';
+        } else {
+          var acc=mt.querySelector('.accuracy'); if(acc) acc.textContent=(v.location_type==='manual'?'Manual location':'Location');
+          var coords=mt.querySelector('.coords'); if(coords) coords.textContent=locStr||'—';
+        }
+      }
+    }
+    if(window.protoShow) window.protoShow('fo-7');
   }
 
   /* ── Talks & Ratings (fo-8): no backend → empty state ── */
@@ -16681,7 +17308,11 @@
       else if(/Unrated/.test(ch.textContent)) ch.textContent='Unrated · 0';
     });
     var scroll=c.querySelector('.scroll');
-    if(scroll) scroll.appendChild(foEmpty('No call ratings yet. Farmer ratings from "Talk to an Expert" calls will appear here.'));
+    if(scroll) scroll.appendChild(foEmpty({
+      icon:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>',
+      title:'No ratings yet',
+      body:'When farmers rate your "Talk to an Expert" calls, their feedback will appear here.'
+    }));
   }
 
   function renderFODataScreen(id){
@@ -16702,7 +17333,7 @@
   async function foFetchOrders(profile, sinceISO){
     var sb=window.__sb; if(!sb||!profile||!profile.id) return [];
     try{
-      var q=sb.from('orders').select('order_number,customer_name,customer_id,total_ugx,status,created_at').eq('agent_id',profile.id).order('created_at',{ascending:false});
+      var q=sb.from('orders').select('order_number,customer_name,customer_id,total_ugx,status,created_at').eq('agent_id',profile.id).neq('status','awaiting_payment').order('created_at',{ascending:false});
       if(sinceISO) q=q.gte('created_at',sinceISO);
       var r=await q; return r.data||[];
     }catch(e){ return []; }
@@ -17218,6 +17849,12 @@
       <p style="font-size:14px;color:var(--ink-60,rgba(0,21,36,.6));margin:0">You have multiple roles. Choose which to use.</p>
     </div>
     <div id="role-picker-cards" style="display:flex;flex-direction:column;gap:12px"></div>
+    <div style="margin-top:24px;text-align:center">
+      <button onclick="window.__rolePickerBack&&window.__rolePickerBack()" style="background:none;border:none;cursor:pointer;font-size:13.5px;color:var(--ink-60,rgba(0,21,36,.6));font-family:inherit;padding:8px 0;display:inline-flex;align-items:center;gap:6px">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
+        Back to home
+      </button>
+    </div>
   </div>
 </div>
 
@@ -17266,6 +17903,14 @@
 
     overlay.style.display = '';
     overlay.scrollTop = 0;
+  };
+
+  window.__rolePickerBack = async function() {
+    var overlay = document.getElementById('role-picker-overlay');
+    if (overlay) overlay.style.display = 'none';
+    try { await (window.sb || window.supabase).auth.signOut(); } catch(_) {}
+    window.__amProfile = null;
+    if (window.protoShow) window.protoShow('onboarding-2');
   };
 })();
 </script>
@@ -17876,11 +18521,38 @@
   function fmtDate(ts){ return ts ? new Date(ts).toLocaleDateString('en-UG',{day:'numeric',month:'short',year:'numeric'}) : ''; }
   function fmtDT(ts){ return ts ? new Date(ts).toLocaleString('en-UG',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'}) : ''; }
   function statusLabel(s){ if(!s) return 'Pending'; var m={awaiting_payment:'Awaiting payment',paid:'Paid',confirmed:'Confirmed',processing:'Processing',ready:'Ready for pickup',delivered:'Delivered',collected:'Collected',cancelled:'Cancelled',refunded:'Refunded'}; return m[s]||(s.charAt(0).toUpperCase()+s.slice(1).replace(/_/g,' ')); }
-  function statusClass(s){ return (s==='collected'||s==='delivered') ? 'teal' : (s==='cancelled'||s==='refunded') ? 'rust' : 'orange'; }
+  function statusClass(s){ return (s==='confirmed'||s==='paid') ? 'green' : (s==='collected'||s==='delivered') ? 'teal' : (s==='cancelled'||s==='refunded'||s==='payment_failed') ? 'rust' : 'orange'; }
 
   var DISTRICTS=['Kampala','Wakiso','Mukono','Mpigi','Masaka','Jinja','Gulu','Mbarara','Mbale','Lira','Fort Portal','Hoima','Soroti','Arua','Kabale','Entebbe','Kasese','Mityana','Luwero','Iganga','Tororo','Bushenyi','Kamuli','Kayunga','Nakaseke','Ntungamo','Rukungiri','Kisoro','Apac','Kabarole'];
   var OUTLETS=['Mpigi Town','Masaka Central','Kampala Central','Jinja','Gulu','Mbarara','Mbale','Lira','Fort Portal','Hoima'];
   var RELATIONSHIPS=['Mother','Father','Sister','Brother','Spouse','Son','Daughter','Cousin','Friend','Other'];
+  /* Sub-counties keyed by district — cascades the Sub-county picker off the
+     chosen District. 'Other' is the fallback for districts not listed. */
+  var DIA_SUBCOUNTIES={
+    'Kampala':['Central Division','Kawempe Division','Makindye Division','Nakawa Division','Rubaga Division','Other'],
+    'Wakiso':['Nansana','Kira','Makindye-Ssabagabo','Entebbe','Wakiso Town','Busiro','Kajjansi','Gayaza','Nabweru','Kyengera','Other'],
+    'Mukono':['Mukono Town','Seeta-Namuganga','Nakisunga','Goma','Koome','Ntenjeru','Other'],
+    'Mpigi':['Nkozi','Buwama','Muduuma','Mpigi Town','Kiringente','Kammengo','Other'],
+    'Masaka':['Masaka Town','Nyendo-Senyange','Bukakata','Buwunga','Kimanya-Kyabakuza','Other'],
+    'Jinja':['Jinja Town','Bugembe','Kakira','Mafubira','Budondo','Butagaya','Other'],
+    'Gulu':['Gulu Town','Laroo','Pece','Koro','Awach','Patiko','Other'],
+    'Mbarara':['Mbarara Town','Kakiika','Nyamitanga','Biharwe','Rubaya','Rubindi','Other'],
+    'Mbale':['Mbale Town','Wanale','Bungokho','Bufumbo','Bumbobi','Other'],
+    'Lira':['Lira Town','Adyel','Central','Ojwina','Agali','Barr','Other'],
+    'Fort Portal':['Fort Portal Town','Burahya','Busoro','Bunyangabu','Other'],
+    'Hoima':['Hoima Town','Busiisi','Kahoora','Kigorobya','Kitoba','Other'],
+    'Soroti':['Soroti Town','Arapai','Gweri','Kamuda','Asuret','Other'],
+    'Arua':['Arua Town','Ayivu','Dadamu','Oluko','Logiri','Vurra','Other'],
+    'Kabale':['Kabale Town','Bufundi','Bubare','Ikumba','Kamwezi','Kaharo','Other'],
+    'Kasese':['Kasese Town','Bukonjo','Busongora','Ihandiro','Maliba','Other'],
+    'Mityana':['Mityana Town','Busimbi','Malangala','Muwanga','Other'],
+    'Luwero':['Luwero Town','Bamunanika','Bombo','Butuntumula','Makulubita','Other'],
+    'Iganga':['Iganga Town','Bulamogi','Buyanga','Iganga','Nakigo','Other'],
+    'Tororo':['Tororo Town','Mukujju','Kisoko','Rubongi','Osukuru','Other'],
+    'Kayunga':['Kayunga Town','Bbaale','Busaana','Galiraya','Kakoge','Other'],
+    'Entebbe':['Entebbe Division A','Entebbe Division B','Katabi','Other'],
+    'Other':['Other']
+  };
 
   var _recips=null, _recipsLoaded=false;
   async function loadRecipients(force){
@@ -17943,6 +18615,13 @@
     /* hero counters */
     var heroFrom=s.querySelector('.dia-hero .from');
     if(heroFrom) heroFrom.textContent=recips.length+' recipient'+(recips.length!==1?'s':'')+' · '+giftCount+' gift'+(giftCount!==1?'s':'')+' sent';
+
+    /* Today's FX rate (was a static "UGX —") */
+    try{
+      var rate=await getRate();
+      var rv=s.querySelector('.rate-card .rate-val'); if(rv) rv.textContent='1 USD = UGX '+Number(rate).toLocaleString('en-UG');
+      var ri=s.querySelector('.rate-card .rate-info'); if(ri) ri.textContent='Used for your Visa gift orders';
+    }catch(e){}
   }
 
   /* ---------- RECIPIENTS LIST (diaspora-2) ---------- */
@@ -18013,7 +18692,7 @@
       + '<label style="'+L+'">Relationship</label><select id="dia-f-rel" style="'+IN_STYLE+'"><option value="">Choose…</option>'+relOpts+'</select>'
       + '<label style="'+L+'">Phone *</label><input id="dia-f-phone" type="tel" placeholder="+256 772 000 000" style="'+IN_STYLE+'">'
       + '<label style="'+L+'">District</label><input id="dia-f-district" list="dia-districts" placeholder="Select or type" style="'+IN_STYLE+'"><datalist id="dia-districts">'+distOpts+'</datalist>'
-      + '<label style="'+L+'">Sub-county</label><input id="dia-f-sub" type="text" placeholder="Sub-county" style="'+IN_STYLE+'">'
+      + '<label style="'+L+'">Sub-county</label><input id="dia-f-sub" list="dia-subs" placeholder="Select or type" style="'+IN_STYLE+'"><datalist id="dia-subs"></datalist>'
       + '<label style="'+L+'">Village / Parish</label><input id="dia-f-village" type="text" placeholder="e.g. Kayabwe" style="'+IN_STYLE+'">'
       + '<label style="'+L+'">Nearest Agro &amp; More outlet *</label><input id="dia-f-outlet" list="dia-outlets" placeholder="Select or type" style="'+IN_STYLE+'"><datalist id="dia-outlets">'+outOpts+'</datalist>'
       + '<label style="display:flex;align-items:center;gap:9px;margin-top:14px;font-size:12.5px;color:var(--ink-90)"><input id="dia-f-default" type="checkbox" style="width:18px;height:18px">Set as default recipient for future gifts.</label>'
@@ -18022,6 +18701,15 @@
       + '<div style="margin-top:10px;text-align:center"><span id="dia-f-remove" style="display:none;color:var(--rust);font-size:12px;font-weight:700;cursor:pointer">Remove recipient</span></div>';
     scroll.querySelector('#dia-f-save').onclick=saveRecipient;
     scroll.querySelector('#dia-f-remove').onclick=deleteRecipient;
+    /* Cascade sub-county options off the chosen district */
+    var distInp=scroll.querySelector('#dia-f-district'), subList=scroll.querySelector('#dia-subs');
+    function fillSubs(){
+      if(!subList) return;
+      var subs=DIA_SUBCOUNTIES[(distInp&&distInp.value||'').trim()]||DIA_SUBCOUNTIES['Other'];
+      subList.innerHTML=subs.map(function(sc){return '<option value="'+esc(sc)+'">';}).join('');
+    }
+    if(distInp){ distInp.addEventListener('input',fillSubs); distInp.addEventListener('change',fillSubs); }
+    fillSubs();
     /* app-bar Save text */
     var save2=s.querySelector('.app-bar .actions span'); if(save2){ save2.style.cursor='pointer'; save2.onclick=saveRecipient; }
   }
@@ -18044,6 +18732,8 @@
   }
   async function saveRecipient(){
     var s=scr('diaspora-3'); if(!s) return;
+    /* Guard against rapid double-taps creating duplicate rows. */
+    if(window.__diaSaving) return;
     var sb=sbc(), p=prof(); if(!sb||!p||!p.email){ toast('Please sign in again'); return; }
     function v(id){ var el=s.querySelector('#'+id); return el?el.value.trim():''; }
     var name=v('dia-f-name'), phone=v('dia-f-phone');
@@ -18053,7 +18743,15 @@
     var rec={ owner_email:p.email, name:name, relationship:v('dia-f-rel')||null, phone:phone,
       district:v('dia-f-district')||null, subcounty:v('dia-f-sub')||null, village:v('dia-f-village')||null,
       outlet:v('dia-f-outlet')||null, is_default:!!(dc&&dc.checked) };
+    window.__diaSaving=true;
+    var btn=s.querySelector('#dia-f-save'); var oldT=btn?btn.textContent:'';
+    if(btn){ btn.disabled=true; btn.textContent='Saving…'; }
     try{
+      if(!window.__diaEditId){
+        /* Dedupe: if an identical recipient already exists for this owner, don't add another. */
+        var dup=await sb.from('diaspora_recipients').select('id').eq('owner_email',p.email).eq('name',name).eq('phone',phone).limit(1);
+        if(dup.data && dup.data.length){ window.__diaEditId=dup.data[0].id; }
+      }
       if(rec.is_default){ await sb.from('diaspora_recipients').update({is_default:false}).eq('owner_email',p.email); }
       if(window.__diaEditId){ var u=await sb.from('diaspora_recipients').update(rec).eq('id',window.__diaEditId); if(u.error) throw u.error; }
       else { var ins=await sb.from('diaspora_recipients').insert(rec); if(ins.error) throw ins.error; }
@@ -18061,6 +18759,7 @@
       toast(window.__diaEditId?'Recipient updated':'Recipient saved');
       window.__diaEditId=null; location.hash='diaspora-2';
     }catch(e){ toast('Could not save: '+((e&&e.message)||'error')); }
+    finally{ window.__diaSaving=false; if(btn){ btn.disabled=false; btn.textContent=oldT; } }
   }
   async function deleteRecipient(){
     var sb=sbc(); if(!sb||!window.__diaEditId) return;
@@ -18088,10 +18787,26 @@
   }
   async function renderOrderDetail(){
     var s=scr('diaspora-8'); if(!s) return;
-    var sb=sbc(), id=window.__diaOrderId; if(!sb||!id) return;
-    var o;
-    try{ var r=await sb.from('diaspora_orders').select('*').eq('id',id).maybeSingle(); o=r.data; }catch(e){ return; }
-    if(!o) return;
+    var sb=sbc(); if(!sb) return;
+    var id=window.__diaOrderId;
+    var o=null;
+    try{
+      if(id){ var r=await sb.from('diaspora_orders').select('*').eq('id',id).maybeSingle(); o=r.data; }
+      else { var pr=prof(); if(pr&&pr.email){ var r2=await sb.from('diaspora_orders').select('*').eq('payer_email',pr.email).order('created_at',{ascending:false}).limit(1).maybeSingle(); o=r2.data; if(o) window.__diaOrderId=o.id; } }
+    }catch(e){}
+    if(!o){
+      /* No real order to show — clear the static mockup so we never display a
+         fake order (AM-D-…/“Collected by Sarah”/code 482917). */
+      var n0=s.querySelector('.od-hero .n'); if(n0) n0.textContent='No order selected';
+      var d0=s.querySelector('.od-hero .d'); if(d0) d0.textContent='Open a gift from your orders list to see its details.';
+      var st0=s.querySelector('.od-hero .status'); if(st0) st0.innerHTML='';
+      var tl0=s.querySelector('.timeline'); if(tl0) tl0.innerHTML='';
+      var rc0=s.querySelector('.rec-card');
+      if(rc0){ var av0=rc0.querySelector('.ava-rc'); if(av0) av0.textContent='—'; var nm0=rc0.querySelector('.rc-name'); if(nm0) nm0.textContent='—'; var rl0=rc0.querySelector('.rel'); if(rl0) rl0.textContent='—'; }
+      var comm0=s.querySelector('.comm-card'); if(comm0) comm0.innerHTML='<div class="comm-row"><span class="comm-k">No payment details</span><span class="comm-v">—</span></div>';
+      s.querySelectorAll('.od-section-title').forEach(function(h){ if((h.textContent||'').trim().toUpperCase()==='MESSAGE YOU SENT'){ h.style.display='none'; var nx=h.nextElementSibling; if(nx) nx.style.display='none'; } });
+      return;
+    }
     var n=s.querySelector('.od-hero .n'); if(n) n.textContent=o.order_number||'';
     var d=s.querySelector('.od-hero .d'); if(d){ d.textContent='Placed '+ (o.created_at?new Date(o.created_at).toLocaleDateString('en-UG',{day:'numeric',month:'short'}):'') + (o.collected_at?(' · collected '+new Date(o.collected_at).toLocaleDateString('en-UG',{day:'numeric',month:'short'})):''); }
     var st=s.querySelector('.od-hero .status');
@@ -18134,12 +18849,16 @@
       rb.textContent='Refund requested'+(o.refund_requested_at?(' · '+fmtDate(o.refund_requested_at)):'')+' — our team will be in touch.';
       var firstTitle=s.querySelector('.od-section-title'); if(firstTitle&&firstTitle.parentNode) firstTitle.parentNode.insertBefore(rb,firstTitle);
     }
-    var comm=s.querySelector('.comm-card');
-    if(comm){ comm.innerHTML=
-      '<div class="comm-row"><span class="comm-k">Subtotal</span><span class="comm-v">USD '+Number(o.total_usd||0).toFixed(2)+'</span></div>'
-      + (o.total_ugx?'<div class="comm-row"><span class="comm-k">Local value</span><span class="comm-v">UGX '+money(o.total_ugx)+'</span></div>':'')
-      + '<div class="comm-row"><span class="comm-k">Status</span><span class="comm-v">'+esc(statusLabel(o.status))+'</span></div>'
-      + '<div class="comm-row total"><span>Paid</span><span class="comm-v">USD '+Number(o.total_usd||0).toFixed(2)+'</span></div>'; }
+    /* Target the PAYMENT card specifically — the inserted ITEMS card above can be
+       the first .comm-card, so use the one right after the PAYMENT section title. */
+    var payTitle2=null; s.querySelectorAll('.od-section-title').forEach(function(h){ if((h.textContent||'').trim().toUpperCase()==='PAYMENT') payTitle2=h; });
+    var comm=(payTitle2 && payTitle2.nextElementSibling && payTitle2.nextElementSibling.classList && payTitle2.nextElementSibling.classList.contains('comm-card'))
+      ? payTitle2.nextElementSibling : s.querySelector('.comm-card');
+    if(comm){ var _sub=Number(o.total_usd||0); comm.innerHTML=
+      '<div class="comm-row"><span class="comm-k">Subtotal</span><span class="comm-v">USD '+_sub.toFixed(2)+'</span></div>'
+      + '<div class="comm-row"><span class="comm-k">Handling &amp; pickup</span><span class="comm-v">USD 0.00</span></div>'
+      + '<div class="comm-row"><span class="comm-k">Card</span><span class="comm-v">Visa ···4391</span></div>'
+      + '<div class="comm-row total"><span>Paid</span><span class="comm-v">USD '+_sub.toFixed(2)+'</span></div>'; }
 
     /* ---- action buttons ---- */
     /* "Talk" — message the recipient on WhatsApp (falls back to a phone call). */
@@ -18180,35 +18899,154 @@
   var _rate=null;
   async function getRate(){ if(_rate) return _rate; var sb=sbc(); _rate=3800; if(sb){ try{ var r=await sb.from('fx_rates').select('usd_to_ugx').order('updated_at',{ascending:false}).limit(1); if(r.data&&r.data[0]&&r.data[0].usd_to_ugx!=null) _rate=Number(r.data[0].usd_to_ugx); }catch(e){} } return _rate; }
   function prodUsd(p,rate){ return p.diaspora_price_usd!=null ? Number(p.diaspora_price_usd) : (p.price_ugx?Number(p.price_ugx)/rate:0); }
-  function diaImg(name){ var n=(name||'').toLowerCase();
-    if(n.indexOf('coffee')>=0) return 'https://images.unsplash.com/photo-1447933601403-0c6688de566e?auto=format&fit=crop&w=800&q=80';
-    if(n.indexOf('avocado')>=0) return 'https://images.unsplash.com/photo-1519162808019-7de1683fa2ad?auto=format&fit=crop&w=800&q=80';
-    if(n.indexOf('matooke')>=0||n.indexOf('matoke')>=0||n.indexOf('banana')>=0) return 'https://images.unsplash.com/photo-1502741338009-cac2772e18bc?auto=format&fit=crop&w=800&q=80';
-    if(n.indexOf('bean')>=0) return 'https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=800&q=80';
-    return 'https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=800&q=80'; }
+  /* Category images already loaded for the shop tiles (CMS overrides in
+     localStorage 'amCmsImagesV1', falling back to the same Unsplash photos the
+     shop category cards use). Insecticides/Herbicides/Fungicides map to the
+     Crop Protection image. */
+  var DIA_CAT_FALLBACK = {
+    'cat-seeds':           'https://images.unsplash.com/photo-1530836369250-ef72a3f5cda8?auto=format&fit=crop&w=800&q=80',
+    'cat-fertilizers':     'https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=800&q=80',
+    'cat-crop-protection': 'https://images.unsplash.com/photo-1519162808019-7de1683fa2ad?auto=format&fit=crop&w=800&q=80',
+    'cat-tools':           'https://images.unsplash.com/photo-1589928964692-cae7b5c7c14e?auto=format&fit=crop&w=800&q=80'
+  };
+  function diaCatSlug(cat){
+    var c=(cat||'').toLowerCase();
+    if(c==='fertilizers'||c==='ferterlizers') return 'cat-fertilizers';
+    if(c==='crop protection'||c==='insecticides'||c==='herbicides'||c==='fungicides') return 'cat-crop-protection';
+    if(c==='tools') return 'cat-tools';
+    return 'cat-seeds';
+  }
+  function diaImg(p){
+    var name=(typeof p==='string'?p:(p&&p.name)||'').toLowerCase();
+    var cat =(p&&typeof p==='object'?p.category:'')||'';
+    /* Produce gifts keep their specific photo */
+    if(name.indexOf('coffee')>=0) return 'https://images.unsplash.com/photo-1447933601403-0c6688de566e?auto=format&fit=crop&w=800&q=80';
+    if(name.indexOf('avocado')>=0) return 'https://images.unsplash.com/photo-1519162808019-7de1683fa2ad?auto=format&fit=crop&w=800&q=80';
+    if(name.indexOf('matooke')>=0||name.indexOf('matoke')>=0||name.indexOf('banana')>=0) return 'https://images.unsplash.com/photo-1502741338009-cac2772e18bc?auto=format&fit=crop&w=800&q=80';
+    /* Otherwise use the category image already loaded for the shop tiles */
+    var slug=diaCatSlug(cat);
+    try{ var cms=JSON.parse(localStorage.getItem('amCmsImagesV1')||'null'); if(cms&&cms.map&&cms.map[slug]) return cms.map[slug]; }catch(e){}
+    return DIA_CAT_FALLBACK[slug] || DIA_CAT_FALLBACK['cat-seeds'];
+  }
   async function activeRecipient(){ if(window.__diaActiveRecipient) return window.__diaActiveRecipient; var rs=await loadRecipients(); return rs.filter(function(r){return r.is_default;})[0]||rs[0]||null; }
 
-  /* ---------- SHOP PRODUCTS + TOGGLE + SWITCH (diaspora-4) ---------- */
-  async function renderShopProducts(tab){
+  /* Category-colored icon tile (Option A) — replaces the repeated stock photo
+     so every product/category reads as distinct and intentional. */
+  function diaCatVisual(cat){
+    var c=(cat||'').toLowerCase();
+    var I={
+      seed:'<path d="M12 20v-7"/><path d="M12 13C12 9 9 6 4 6c0 5 3 7 8 7z"/><path d="M12 12c0-3 3-6 8-6 0 4-3 6-8 6z"/>',
+      fert:'<path d="M7 9h10l-1 11H8L7 9z"/><path d="M9.5 9V7a2.5 2.5 0 015 0v2"/><path d="M10 14h4"/>',
+      spray:'<rect x="8" y="10" width="7" height="10" rx="1.4"/><path d="M9.5 10V7h4v3"/><path d="M15 5h2M15 8h3"/>',
+      leaf:'<path d="M5 20c0-7 5-12 14-13 1 9-4 15-14 13z"/><path d="M9 19c1-5 4-8 8-10"/>',
+      drop:'<path d="M12 4c4 5 6 8 6 11a6 6 0 11-12 0c0-3 2-6 6-11z"/>',
+      tool:'<path d="M21 4a4 4 0 01-5 5l-7 7-3-3 7-7a4 4 0 015-5l-3 3 1 2 2 1 3-3z"/>'
+    };
+    if(c==='fertilizers'||c==='ferterlizers') return {bg:'#FAEEDA',fg:'#854F0B',svg:I.fert};
+    if(c==='insecticides'||c==='crop protection') return {bg:'#FCEBEB',fg:'#A32D2D',svg:I.spray};
+    if(c==='herbicides') return {bg:'#E1F5EE',fg:'#0F6E56',svg:I.leaf};
+    if(c==='fungicides') return {bg:'#EEEDFE',fg:'#534AB7',svg:I.drop};
+    if(c==='tools') return {bg:'#E6F1FB',fg:'#185FA5',svg:I.tool};
+    if(c==='seeds') return {bg:'#EAF3DE',fg:'#3B6D11',svg:I.seed};
+    return {bg:'#FFF4E4',fg:'#B5651D',svg:I.leaf};
+  }
+  function diaThumb(catOrProduct, popular){
+    var cat=(catOrProduct&&typeof catOrProduct==='object')?catOrProduct.category:catOrProduct;
+    var v=diaCatVisual(cat);
+    return '<div style="position:relative;height:90px;background:'+v.bg+';display:flex;align-items:center;justify-content:center;color:'+v.fg+'">'
+      +'<svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">'+v.svg+'</svg>'
+      +(popular?'<span class="tag-pr">POPULAR</span>':'')+'</div>';
+  }
+
+  /* ---------- SHOP PRODUCTS + TOGGLE + SWITCH (diaspora-4) ----------
+     Gifts tab → produce gift products.
+     Inputs tab → a CATEGORY grid first; tapping a category opens that
+     category's own filtered product list (every category gets its own
+     list — previously all categories fell back to the same Seeds list). */
+  async function renderShopProducts(){
     var s=scr('diaspora-4'); if(!s) return; var grid=s.querySelector('.produce-grid'); if(!grid) return;
     var sb=sbc(); if(!sb) return; var rate=await getRate();
-    tab=tab||window.__diaShopTab||'gifts'; window.__diaShopTab=tab;
-    var q=sb.from('products').select('id,name,price_ugx,diaspora_price_usd').eq('status','active');
-    if(tab==='gifts') q=q.not('diaspora_price_usd','is',null);
-    var prods=[]; try{ var r=await q.order('created_at',{ascending:true}).limit(12); prods=(r.data)||[]; }catch(e){ return; }
-    if(!prods.length){ grid.innerHTML='<div style="grid-column:1/-1;padding:20px;text-align:center;color:var(--ink-60);font-size:12px">'+(tab==='gifts'?'No gift products available right now.':'No farm inputs available right now.')+'</div>'; return; }
-    grid.innerHTML=prods.map(function(p,i){ var usd=prodUsd(p,rate); var ugx=Math.round(usd*rate);
-      return '<div class="produce-card" data-product-id="'+p.id+'"><div class="produce-img"><img src="'+diaImg(p.name)+'" alt="'+esc(p.name)+'" crossorigin="anonymous" referrerpolicy="no-referrer" onerror="this.style.display=\'none\'">'+(i===0?'<span class="tag-pr">POPULAR</span>':'')+'</div><div class="produce-body"><div class="produce-name">'+esc(p.name)+'</div><div class="produce-price"><span class="p-usd">USD '+usd.toFixed(2)+'</span><span class="p-ugx">UGX '+ugx.toLocaleString()+'</span></div></div></div>';
-    }).join('');
-    grid.querySelectorAll('.produce-card').forEach(function(c){ c.onclick=function(){ window.__diaProductId=c.getAttribute('data-product-id'); window.__diaQty=1; location.hash='diaspora-5'; }; });
+    var heading=grid.previousElementSibling;
+    function applyCmsImages(){ try{ var cms=JSON.parse(localStorage.getItem('amCmsImagesV1')||'null'); if(cms&&cms.map){ grid.querySelectorAll('[data-cms-slot]').forEach(function(el){ var u=cms.map[el.getAttribute('data-cms-slot')]; if(u){ el.src=u; el.style.display=''; } }); } }catch(e){} }
+    function catFallback(cat){ var c=(cat||'').toLowerCase();
+      if(c.indexOf('fert')>=0) return 'https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=600&q=80';
+      if(c==='tools') return 'https://images.unsplash.com/photo-1589928964692-cae7b5c7c14e?auto=format&fit=crop&w=600&q=80';
+      if(c==='irrigation') return 'https://images.unsplash.com/photo-1502741338009-cac2772e18bc?auto=format&fit=crop&w=600&q=80';
+      if(c==='livestock') return 'https://images.unsplash.com/photo-1500595046743-cd271d694d30?auto=format&fit=crop&w=600&q=80';
+      if(c==='insecticides'||c==='herbicides'||c==='fungicides'||c.indexOf('protect')>=0) return 'https://images.unsplash.com/photo-1416879595882-3373a0480b5b?auto=format&fit=crop&w=600&q=80';
+      return 'https://images.unsplash.com/photo-1530836369250-ef72a3f5cda8?auto=format&fit=crop&w=600&q=80';
+    }
+    function setHeading(txt, backFn){
+      if(!heading) return;
+      heading.textContent=txt; heading.onclick=backFn||null;
+      var st=heading.style;
+      if(backFn){
+        /* Inside a category: pin the "‹ All categories" bar to the top while
+           the product list scrolls, so it's always available to go back. */
+        st.cursor='pointer'; st.position='sticky'; st.top='0'; st.zIndex='5';
+        st.background='var(--cream)'; st.margin='0 -14px 8px'; st.padding='10px 14px';
+        st.color='var(--teal)'; st.fontWeight='700'; st.fontSize='12.5px';
+        st.borderBottom='1px solid rgba(0,21,36,.08)';
+      } else {
+        st.cursor=''; st.position=''; st.top=''; st.zIndex='';
+        st.background=''; st.margin=''; st.padding='';
+        st.color=''; st.fontWeight=''; st.fontSize=''; st.borderBottom='';
+      }
+    }
+    function renderCards(prods, emptyMsg){
+      grid.style.gridTemplateColumns='1fr';   /* single-column rows, like the farmer shop */
+      if(!prods.length){ grid.innerHTML='<div style="padding:20px;text-align:center;color:var(--ink-60);font-size:12px">'+emptyMsg+'</div>'; return; }
+      grid.innerHTML=prods.map(function(p){ var usd=prodUsd(p,rate); var ugx=Math.round(usd*rate); var v=diaCatVisual(p.category);
+        return '<div class="product-row" data-product-id="'+p.id+'">'
+          +'<div class="thumb" style="background:'+v.bg+';color:'+v.fg+'"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">'+v.svg+'</svg></div>'
+          +'<div class="info"><div class="pn">'+esc(p.name)+'</div>'
+            +'<div class="pr"><span class="price">USD '+usd.toFixed(2)+' <span style="font-weight:500;color:var(--ink-60);font-size:10px">UGX '+ugx.toLocaleString()+'</span></span>'
+            +'<button class="add" data-add="'+p.id+'" data-usd="'+usd.toFixed(2)+'" data-name="'+esc(p.name)+'">+</button></div>'
+          +'</div></div>';
+      }).join('');
+      grid.querySelectorAll('.product-row').forEach(function(c){
+        c.onclick=function(e){ if(e.target.closest && e.target.closest('.add')) return; window.__diaProductId=c.getAttribute('data-product-id'); window.__diaQty=1; location.hash='diaspora-5'; };
+      });
+      grid.querySelectorAll('.add').forEach(function(b){
+        b.onclick=function(e){ e.stopPropagation();
+          if(typeof window.__amDiaAddProduct==='function'){ window.__amDiaAddProduct({ id:b.getAttribute('data-add'), name:b.getAttribute('data-name'), usd:parseFloat(b.getAttribute('data-usd'))||0 }); }
+        };
+      });
+    }
+
+    /* Category grid — the default view, all categories like the farmer shop */
+    if(!window.__diaInputCat){
+      setHeading('SHOP BY CATEGORY', null);
+      grid.style.gridTemplateColumns='1fr 1fr';
+      var counts={}; try{ var cr=await sb.from('products').select('category').eq('status','active').eq('show_on_shop',true); (cr.data||[]).forEach(function(x){ if(x.category) counts[x.category]=(counts[x.category]||0)+1; }); }catch(e){}
+      var names=[]; try{ var mc=await sb.from('settings').select('value').eq('key','product_categories').limit(1); if(mc.data&&mc.data[0]&&mc.data[0].value){ var parsed=JSON.parse(mc.data[0].value); if(Array.isArray(parsed)) names=parsed.map(function(x){return String(x).trim();}).filter(Boolean); } }catch(e){}
+      if(!names.length) names=Object.keys(counts).sort();
+      if(!names.length){ grid.innerHTML='<div style="grid-column:1/-1;padding:20px;text-align:center;color:var(--ink-60);font-size:12px">No products available right now.</div>'; return; }
+      grid.innerHTML=names.map(function(cat){ var n=counts[cat]||0;
+        var slug='cat-'+(cat||'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
+        return '<div class="cat-card" data-dia-cat="'+esc(cat)+'" style="cursor:pointer">'
+          +'<div class="cat-img"><img data-cms-slot="'+slug+'" src="'+catFallback(cat)+'" alt="'+esc(cat)+'" crossorigin="anonymous" referrerpolicy="no-referrer" onerror="this.style.display=\'none\'"></div>'
+          +'<div class="cat-body"><div class="cat-name">'+esc(cat)+'</div><div class="cat-count">'+n+' item'+(n!==1?'s':'')+'</div></div>'
+          +'</div>';
+      }).join('');
+      applyCmsImages();
+      grid.querySelectorAll('[data-dia-cat]').forEach(function(c){ c.onclick=function(){ window.__diaInputCat=c.getAttribute('data-dia-cat'); renderShopProducts(); }; });
+      return;
+    }
+
+    /* Products inside the chosen category (heading doubles as back) */
+    setHeading('‹ All categories · '+window.__diaInputCat, function(){ window.__diaInputCat=null; renderShopProducts(); });
+    var ip=[]; try{ var rr=await sb.from('products').select('id,name,category,price_ugx,diaspora_price_usd').eq('status','active').eq('show_on_shop',true).eq('category',window.__diaInputCat).order('created_at',{ascending:true}).limit(60); ip=(rr.data)||[]; }catch(e){ return; }
+    renderCards(ip,'No products in this category yet.');
   }
   function wireShopToggle(){
-    var s=scr('diaspora-4'); if(!s) return; var tg=s.querySelector('.shop-toggle'); if(!tg||tg.getAttribute('data-wired')) return; tg.setAttribute('data-wired','1');
+    var s=scr('diaspora-4'); if(!s) return;
+    var sw=s.querySelector('.switch-btn'); if(sw && !sw.__wired){ sw.__wired=true; sw.style.cursor='pointer'; sw.onclick=openRecipientPicker; }
+    var tg=s.querySelector('.shop-toggle'); if(!tg||tg.getAttribute('data-wired')) return; tg.setAttribute('data-wired','1');
     var stos=tg.querySelectorAll('.sto');
-    stos.forEach(function(el,idx){ el.style.cursor='pointer'; el.onclick=function(){ stos.forEach(function(x){x.classList.remove('on');}); el.classList.add('on'); renderShopProducts(idx===0?'inputs':'gifts'); }; });
-    var sw=s.querySelector('.switch-btn'); if(sw){ sw.style.cursor='pointer'; sw.onclick=openRecipientPicker; }
+    stos.forEach(function(el){ el.style.cursor='pointer'; el.onclick=function(){ stos.forEach(function(x){x.classList.remove('on');}); el.classList.add('on'); window.__diaInputCat=null; renderShopProducts(); }; });
   }
-  async function openRecipientPicker(){
+  async function openRecipientPicker(onPick){
     var rs=await loadRecipients();
     if(!rs.length){ toast('Add a recipient first'); location.hash='diaspora-2'; return; }
     var ov=document.createElement('div'); ov.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:100000;display:flex;align-items:flex-end;justify-content:center';
@@ -18216,7 +19054,7 @@
     sheet.innerHTML='<div style="font-weight:800;font-size:14px;margin:4px 0 10px">Send to…</div>';
     rs.forEach(function(r){ var row=document.createElement('div'); row.style.cssText='display:flex;align-items:center;gap:10px;padding:10px;border:1px solid var(--ink-10);border-radius:10px;margin-bottom:8px;cursor:pointer';
       row.innerHTML='<div style="width:34px;height:34px;border-radius:50%;background:var(--orange);color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800">'+esc(initials(r.name))+'</div><div><div style="font-weight:700;font-size:13px">'+esc(r.name)+(r.is_default?' · default':'')+'</div><div style="font-size:11px;color:var(--ink-60)">'+esc([r.outlet,r.district].filter(Boolean).join(' · ')||'Uganda')+'</div></div>';
-      row.onclick=function(){ window.__diaActiveRecipient=r; if(ov.parentNode) document.body.removeChild(ov); renderShopHeader(); toast('Sending to '+firstName(r.name)); };
+      row.onclick=function(){ window.__diaActiveRecipient=r; if(ov.parentNode) document.body.removeChild(ov); renderShopHeader(); toast('Sending to '+firstName(r.name)); if(typeof onPick==='function') onPick(r); };
       sheet.appendChild(row); });
     var cancel=document.createElement('button'); cancel.className='btn secondary'; cancel.textContent='Cancel'; cancel.style.marginTop='4px'; cancel.onclick=function(){ if(ov.parentNode) document.body.removeChild(ov); };
     sheet.appendChild(cancel); ov.appendChild(sheet); ov.onclick=function(e){ if(e.target===ov && ov.parentNode) document.body.removeChild(ov); };
@@ -18228,17 +19066,39 @@
     var s=scr('diaspora-5'); if(!s) return;
     var sb=sbc(), id=window.__diaProductId; if(!sb||!id) return;
     var rate=await getRate(); var p;
-    try{ var r=await sb.from('products').select('id,name,price_ugx,diaspora_price_usd,description').eq('id',id).maybeSingle(); p=r.data; }catch(e){}
+    try{ var r=await sb.from('products').select('id,name,category,price_ugx,diaspora_price_usd,description_en,description_lg').eq('id',id).maybeSingle(); p=r.data; }catch(e){}
     if(!p) return; window.__diaProduct=p; if(!window.__diaQty) window.__diaQty=1;
     var usd=prodUsd(p,rate);
-    var img=s.querySelector('.pdet-hero img'); if(img) img.src=diaImg(p.name);
+    var img=s.querySelector('.pdet-hero img'); if(img) img.src=diaImg(p);
     var h2=s.querySelector('.pdet-head h2'); if(h2) h2.textContent=p.name;
     var subEl=s.querySelector('.pdet-head > div:first-child > div'); if(subEl) subEl.textContent='Gift to Uganda';
     var price=s.querySelector('.pdet-head .price'); if(price) price.textContent='USD '+usd.toFixed(2);
     var unit=s.querySelector('.pdet-head .unit'); if(unit) unit.textContent='≈ UGX '+Math.round(usd*rate).toLocaleString();
-    var body=s.querySelector('.body-text'); if(body) body.innerHTML='<p>'+esc(p.description||'Quality produce sourced locally and delivered to your recipient’s nearest Agro & More outlet for pickup.')+'</p>';
+    var descHtml='<p>'+esc(p.description_en||p.description_lg||'Quality produce sourced locally and delivered to your recipient’s nearest Agro & More outlet for pickup.')+'</p>';
+    var body=s.querySelector('.body-text'); if(body) body.innerHTML=descHtml;
+    /* Tabs (Description / How to use / Reviews) — were inert. Relabel the
+       coffee-specific "How to grind" to "How to use", drop the fake review
+       count, and wire tab switching. */
+    var segs=s.querySelectorAll('.seg .so');
+    if(segs.length>=3){
+      var panes=[
+        descHtml,
+        (p.description_lg ? '<p>'+esc(p.description_lg)+'</p>'
+          : '<p>Store in a cool, dry place. Follow the product label for application rates and safety guidance — or ask AgroBot for crop-specific advice.</p>'),
+        '<p>No reviews yet — your recipient can rate this gift after they collect it.</p>'
+      ];
+      var labels=['Description','How to use','Reviews'];
+      segs.forEach(function(seg,idx){
+        if(labels[idx]!=null) seg.textContent=labels[idx];
+        seg.style.cursor='pointer';
+        seg.onclick=function(){ segs.forEach(function(x){x.classList.remove('on');}); seg.classList.add('on'); if(body) body.innerHTML=panes[idx]||''; };
+      });
+    }
     var rc=await activeRecipient();
-    var who=s.querySelector('.aoc-who'); if(who){ var av=who.querySelector('.ava-sm'); if(av) av.textContent=rc?initials(rc.name):'—'; var fn=who.querySelector('.fn'); if(fn) fn.textContent=rc?rc.name:'Choose a recipient'; }
+    var who=s.querySelector('.aoc-who');
+    function paintWho(r){ if(!who) return; var av=who.querySelector('.ava-sm'); if(av) av.textContent=r?initials(r.name):'—'; var fn=who.querySelector('.fn'); if(fn) fn.textContent=r?r.name:'Choose a recipient'; }
+    paintWho(rc);
+    if(who){ who.style.cursor='pointer'; who.onclick=function(){ openRecipientPicker(function(r){ paintWho(r); }); }; }
     /* personal message → real textarea */
     var mb=s.querySelector('.msg-box');
     if(mb && mb.tagName!=='TEXTAREA'){
@@ -18272,7 +19132,15 @@
       var nm=card.querySelector('.rc-name'); if(nm) nm.textContent=rc?rc.name:'—';
       var rel=card.querySelector('.rel'); if(rel) rel.textContent=rc?([rc.outlet,rc.district].filter(Boolean).join(' · ')||'Uganda'):'—';
       var chg=card.querySelector('span'); if(chg){ chg.style.cursor='pointer'; chg.onclick=function(){ openRecipientPicker().then(function(){ renderCheckout(); }); }; } }
-    var mb=s.querySelector('.msg-box'); if(mb) mb.textContent=window.__diaMessage||'No message added';
+    /* personal message → editable textarea (was a read-only div, so users couldn't type) */
+    var mb=s.querySelector('.msg-box');
+    if(mb && mb.tagName!=='TEXTAREA'){
+      var ta=document.createElement('textarea'); ta.className='msg-box'; ta.maxLength=160;
+      ta.style.cssText='width:100%;box-sizing:border-box;min-height:60px;border:1px solid var(--ink-10);border-radius:10px;padding:10px;font-family:inherit;font-size:12.5px;color:var(--ink);resize:vertical';
+      ta.placeholder='Add a personal note (optional)'; ta.value=window.__diaMessage||'';
+      ta.addEventListener('input',function(){ window.__diaMessage=ta.value; });
+      mb.parentNode.replaceChild(ta,mb);
+    } else if(mb){ mb.value=window.__diaMessage||''; }
     var qty=window.__diaQty||1; var usd=p?prodUsd(p,rate):0; var sub=usd*qty; var total=sub;
     var rows=s.querySelectorAll('.dual-price-row');
     if(rows[0]){ var k=rows[0].querySelector('.k'); if(k) k.textContent=(p?p.name:'Item')+(qty>1?(' × '+qty):''); var u=rows[0].querySelector('.usd'); if(u) u.textContent='USD '+sub.toFixed(2); var g=rows[0].querySelector('.ugx'); if(g) g.textContent='UGX '+Math.round(sub*rate).toLocaleString(); }
@@ -18307,7 +19175,33 @@
 
   /* ---------- CONFIRMATION (diaspora-7) ---------- */
   async function renderConfirmation(){
-    var s=scr('diaspora-7'); if(!s) return; var o=window.__diaLastOrder; if(!o) return;
+    var s=scr('diaspora-7'); if(!s) return;
+    var o=window.__diaLastOrder;
+    if(!o){
+      /* No in-memory order (reopened app / page reload / deep-linked) — load the
+         real order from the DB so we never fall back to the static mock values
+         (e.g. "Sarah" / pickup code 482917) baked into the screen markup. */
+      try{
+        var _sb=sbc(), _pr=prof();
+        if(_sb){
+          var _r=null;
+          if(window.__diaOrderId){
+            _r=await _sb.from('diaspora_orders').select('*').eq('id',window.__diaOrderId).maybeSingle();
+          } else if(_pr && _pr.email){
+            _r=await _sb.from('diaspora_orders').select('*').eq('payer_email',_pr.email).order('created_at',{ascending:false}).limit(1).maybeSingle();
+          }
+          if(_r && _r.data) o=_r.data;
+        }
+      }catch(e){}
+      window.__diaLastOrder=o;
+    }
+    if(!o){
+      /* Still nothing to show — blank the mock placeholders instead of fake data. */
+      var _c=s.querySelector('.code-big'); if(_c) _c.textContent='— — — — — —';
+      var _l=s.querySelector('.pickup-hero .lbl'); if(_l) _l.textContent='PICKUP CODE';
+      var _h0=s.querySelector('h2'); var _su=_h0?_h0.nextElementSibling:null; if(_su) _su.textContent='Your order details will appear here once placed.';
+      return;
+    }
     var h2=s.querySelector('h2'); if(h2) h2.textContent='Order placed';
     var subt=h2?h2.nextElementSibling:null; if(subt) subt.textContent='Share the pickup code below with '+firstName(o.recipient_name);
     var lbl=s.querySelector('.pickup-hero .lbl'); if(lbl) lbl.textContent='PICKUP CODE'+(o.recipient_district&&o.recipient_district!=='—'?(' · '+String(o.recipient_district).toUpperCase()):'');
@@ -18384,15 +19278,27 @@
   function emptyEl(msg){ var d=document.createElement('div'); d.className='fo-empty'; d.style.cssText='text-align:center;color:var(--ink-60);font-size:12px;font-weight:500;padding:20px 14px;line-height:1.5'; d.textContent=msg; return d; }
   function starStr(n){ n=Math.max(0,Math.min(5,n|0)); return '★★★★★'.slice(0,n)+'☆☆☆☆☆'.slice(0,5-n); }
 
+  function fmtWhen(d){ return d?new Date(d).toLocaleDateString('en-UG',{day:'numeric',month:'short'}):''; }
   async function loadFORatings(){
     var sb=sbc(), p=prof(); if(!sb||!p||!p.id) return [];
+    var out=[];
+    // Farm-visit ratings (anchored to a logged visit)
     try{
       var r=await sb.from('visit_ratings').select('stars,comment,created_at,visit_id').eq('fo_id',p.id).order('created_at',{ascending:false});
-      var rows=(r.data)||[]; if(!rows.length) return [];
-      var ids=rows.map(function(x){return x.visit_id;}); var vmap={};
-      try{ var vr=await sb.from('farm_visits').select('id,farmer_name,crop,created_at').in('id',ids); (vr.data||[]).forEach(function(v){vmap[v.id]=v;}); }catch(e){}
-      return rows.map(function(x){ var v=vmap[x.visit_id]||{}; return { stars:x.stars, comment:x.comment, farmer_name:v.farmer_name, crop:v.crop, when:x.created_at?new Date(x.created_at).toLocaleDateString('en-UG',{day:'numeric',month:'short'}):'' }; });
-    }catch(e){ return []; }
+      var rows=(r.data)||[];
+      if(rows.length){
+        var ids=rows.map(function(x){return x.visit_id;}); var vmap={};
+        try{ var vr=await sb.from('farm_visits').select('id,farmer_name,crop,created_at').in('id',ids); (vr.data||[]).forEach(function(v){vmap[v.id]=v;}); }catch(e){}
+        rows.forEach(function(x){ var v=vmap[x.visit_id]||{}; out.push({ stars:x.stars, comment:x.comment, farmer_name:v.farmer_name, crop:v.crop, when:fmtWhen(x.created_at), _ts:x.created_at }); });
+      }
+    }catch(e){}
+    // Direct talk ratings (no visit — farmer rated after talking to the officer)
+    try{
+      var orr=await sb.from('officer_ratings').select('stars,comment,created_at,farmer_phone').eq('fo_id',p.id).order('created_at',{ascending:false});
+      (orr.data||[]).forEach(function(x){ out.push({ stars:x.stars, comment:x.comment, farmer_name:'Farmer', crop:'Direct talk', when:fmtWhen(x.created_at), _ts:x.created_at }); });
+    }catch(e){}
+    out.sort(function(a,b){ return (b._ts||'').localeCompare(a._ts||''); });
+    return out;
   }
   function avgOf(rows){ return rows.length ? (rows.reduce(function(a,r){return a+r.stars;},0)/rows.length) : 0; }
 
@@ -18487,5 +19393,594 @@
 })();
 </script>
 
+
+<!-- =================== POST-TALK OFFICER RATING (advisory-5) ===================
+     A farmer reviews a Field Officer they TALKED TO (Talk to an Expert flow),
+     independent of any logged farm visit. Writes to officer_ratings
+     (db/2026-06-06_officer_direct_ratings.sql). Self-contained. -->
+<script>
+(function(){
+  'use strict';
+  function sbc(){ return window.__sb||null; }
+  function prof(){ return window.__amProfile||null; }
+  function scr(id){ return document.querySelector('[data-proto-id="'+id+'"]'); }
+  function isFarmer(){ var p=prof(); return !!(p&&p.role==='farmer'); }
+  function initials(n){ n=String(n||'').trim(); if(!n) return '—'; var p=n.split(/\s+/); return ((p[0]||'')[0]||'').toUpperCase()+((p[1]||'')[0]||'').toUpperCase(); }
+  function toast(m){ if(window.toast){ try{ window.toast(m); return; }catch(_){ } } var t=document.createElement('div'); t.style.cssText='position:fixed;bottom:84px;left:50%;transform:translateX(-50%);background:#001524;color:#fff;padding:10px 18px;border-radius:20px;font-size:12.5px;font-weight:600;z-index:99999;max-width:86vw;text-align:center'; t.textContent=m; document.body.appendChild(t); setTimeout(function(){t.remove();},2600); }
+
+  function paint(stars, n){ Array.prototype.forEach.call(stars.children, function(s,i){ if(i<n) s.classList.add('on'); else s.classList.remove('on'); }); stars.dataset.sel=n; }
+
+  function wireOnce(){
+    var c=scr('advisory-5'); if(!c||c.dataset.amTalkWired) return; var modal=c.querySelector('.modal'); if(!modal) return;
+    c.dataset.amTalkWired='1';
+    var stars=modal.querySelector('.stars');
+    if(stars){ Array.prototype.forEach.call(stars.children, function(s,i){ s.style.cursor='pointer'; s.addEventListener('click', function(){ paint(stars, i+1); }); }); }
+    // Real comment box inside the placeholder .tx
+    var tx=modal.querySelector('.tx');
+    if(tx && !tx.querySelector('textarea')){
+      var ta=document.createElement('textarea');
+      ta.className='am-talk-comment';
+      ta.placeholder='Add a comment (optional · Luganda welcome)';
+      ta.style.cssText='width:100%;box-sizing:border-box;min-height:54px;border:1px solid var(--ink-10);border-radius:10px;padding:9px;font-family:inherit;font-size:12.5px;margin-top:4px';
+      tx.appendChild(ta);
+    }
+    var submit=modal.querySelector('.btn.primary');
+    if(submit){ submit.addEventListener('click', function(){
+      if(!isFarmer()) return;                       // nav still proceeds home
+      var fo=window.__amSelectedOfficer; var p=prof(); var sb=sbc();
+      if(!fo||!fo.id||!sb||!p||!p.phone){ return; }
+      var sel=parseInt((stars&&stars.dataset.sel)||'5',10)||5;
+      var cmt=(modal.querySelector('.am-talk-comment')||{}).value; cmt=cmt?cmt.trim():'';
+      sb.from('officer_ratings').upsert({ fo_id:fo.id, farmer_phone:p.phone, stars:sel, comment:(cmt||null), updated_at:new Date().toISOString() }, { onConflict:'fo_id,farmer_phone' })
+        .then(function(r){ if(r&&r.error) toast('Could not save rating: '+(r.error.message||'error')); else toast('Thanks for rating '+(fo.full_name||'the officer')+'!'); })
+        .catch(function(){ toast('Could not save rating.'); });
+    }); }
+  }
+
+  function populate(){
+    var c=scr('advisory-5'); if(!c) return; var modal=c.querySelector('.modal'); if(!modal) return;
+    var fo=window.__amSelectedOfficer;
+    var ava=modal.querySelector('.ava-md'); if(ava) ava.textContent=initials(fo&&fo.full_name);
+    var h3=modal.querySelector('h3'); if(h3) h3.textContent='How was your talk with '+((fo&&fo.full_name)||'the officer')+'?';
+    var stars=modal.querySelector('.stars'); if(stars) paint(stars, 5);   // default 5, farmer can change
+    var ta=modal.querySelector('.am-talk-comment'); if(ta) ta.value='';
+  }
+
+  function onScreen(id){ if(id==='advisory-5'){ wireOnce(); populate(); } }
+  function activeId(){ var el=document.querySelector('[data-proto-id].proto-active'); return el?el.getAttribute('data-proto-id'):null; }
+  function start(){
+    onScreen(activeId());
+    if(window.MutationObserver){ new MutationObserver(function(muts){ for(var i=0;i<muts.length;i++){ var t=muts[i].target; if(t.nodeType===1&&t.hasAttribute&&t.hasAttribute('data-proto-id')&&t.classList&&t.classList.contains('proto-active')){ setTimeout(function(id){return function(){onScreen(id);};}(t.getAttribute('data-proto-id')),120); } } }).observe(document.body,{attributes:true,attributeFilter:['class'],subtree:true}); }
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',start); else start();
+})();
+</script>
+
+
+<script>
+/* ── Standalone Edit Profile (profile-2) prefill + save ──────────────────
+   Robust fallback that runs independently of the main profile script, so the
+   Edit Profile form always pre-fills with the signed-in user's data and saves
+   updates — regardless of how the screen was navigated to. */
+(function(){
+  'use strict';
+  function pc(){ return document.querySelector('[data-proto-id="profile-2"]') || document.getElementById('profile-2'); }
+  function active(el){ return !!(el && el.classList && el.classList.contains('proto-active')); }
+  function lbl(f){ var l=f.querySelector('.label'); return l ? l.textContent : ''; }
+
+  async function resolveProfile(){
+    var sb=window.__sb, p=window.__amProfile;
+    if(p && p.full_name && p.id) return p;
+    if(!sb) return p||null;
+    try{
+      var s=await sb.auth.getSession();
+      var uid=s && s.data && s.data.session && s.data.session.user && s.data.session.user.id;
+      if(!uid) return p||null;
+      var r=await sb.from('app_users').select('*').eq('auth_user_id', uid);
+      var rows=(r && r.data)||[];
+      if(!rows.length) return p||null;
+      var role=(p && p.role) || (rows[0] && rows[0].role);
+      var picked=rows.filter(function(x){ return x.role===role; })[0] || rows[0];
+      if(picked){ window.__amProfile=picked; return picked; }
+    }catch(e){}
+    return p||null;
+  }
+
+  function ensureInput(box, opts){
+    opts=opts||{};
+    var inp=box.querySelector('input');
+    if(!inp){
+      inp=document.createElement('input');
+      inp.type='text';
+      inp.style.cssText='flex:1;width:100%;border:none;outline:none;background:transparent;font:inherit;font-size:13px;color:var(--ink);padding:0;min-width:0';
+      box.innerHTML='';
+      box.appendChild(inp);
+    }
+    if(opts.readOnly){ inp.readOnly=true; }
+    return inp;
+  }
+
+  var LOCK=false;
+  async function fill(){
+    var c=pc(); if(!c || !active(c)) return;
+    if(LOCK) return; LOCK=true;
+    try{
+      var p=await resolveProfile()||{};
+      c.querySelectorAll('.field').forEach(function(f){
+        var t=lbl(f).toLowerCase();
+        var box=f.querySelector('.input'); if(!box) return;
+        if(t.indexOf('full name')>=0){ ensureInput(box).value=p.full_name||''; }
+        else if(t.indexOf('phone')>=0){ ensureInput(box,{readOnly:true}).value=p.phone||''; }
+        else if(t.indexOf('email')>=0){ ensureInput(box).value=p.email||''; }
+        else if(t.indexOf('village')>=0){ ensureInput(box).value=p.village||''; }
+      });
+      var rowBoxes=c.querySelectorAll('.field.row .input');
+      if(rowBoxes[0]) ensureInput(rowBoxes[0]).value=p.district||'';
+      if(rowBoxes[1]) ensureInput(rowBoxes[1]).value=p.sub_county||'';
+      var pic=c.querySelector('.ava-edit .pic');
+      if(pic && p.full_name){ var w=p.full_name.trim().split(/\s+/); pic.textContent=(((w[0]||'')[0]||'')+((w[1]||'')[0]||'')).toUpperCase(); }
+      wireSave(c);
+    }catch(e){}
+    LOCK=false;
+  }
+
+  function val(c, re){
+    var fs=c.querySelectorAll('.field');
+    for(var i=0;i<fs.length;i++){ if(re.test(lbl(fs[i]))){ var inp=fs[i].querySelector('.input input'); return inp ? inp.value.trim() : ''; } }
+    return '';
+  }
+
+  async function save(){
+    var c=pc(); if(!c) return;
+    var sb=window.__sb, p=window.__amProfile;
+    if(!sb || !p || !p.id){ alert('Please sign in again.'); return; }
+    var name=val(c,/full name/i), email=val(c,/email/i);
+    var rowInputs=c.querySelectorAll('.field.row .input input');
+    var district=rowInputs[0] ? rowInputs[0].value.trim() : '';
+    var sub=rowInputs[1] ? rowInputs[1].value.trim() : '';
+    if(!name){ alert('Full name cannot be empty.'); return; }
+    var upd={ full_name:name, updated_at:new Date().toISOString() };
+    if(email) upd.email=email;
+    if(district) upd.district=district;
+    if(sub) upd.sub_county=sub;
+    try{
+      var r=await sb.from('app_users').update(upd).eq('id', p.id);
+      if(r.error) throw r.error;
+      p.full_name=name; if(email) p.email=email; if(district) p.district=district; if(sub) p.sub_county=sub;
+      window.__amProfile=p;
+      alert('Profile saved.');
+    }catch(e){ alert('Could not save: ' + ((e && e.message) || 'please try again')); }
+  }
+
+  function wireSave(c){
+    var nodes=[];
+    c.querySelectorAll('button, .actions span').forEach(function(b){
+      var tx=(b.textContent||'').trim().toLowerCase();
+      if(tx==='save' || tx==='save changes') nodes.push(b);
+    });
+    nodes.forEach(function(b){ if(b.__pfWired) return; b.__pfWired=true; b.style.cursor='pointer'; b.addEventListener('click', function(e){ e.preventDefault(); save(); }); });
+  }
+
+  function maybeFill(){ var c=pc(); if(active(c)) fill(); }
+  window.addEventListener('hashchange', function(){ if((location.hash||'').indexOf('profile-2')>=0) setTimeout(fill,60); });
+  if(window.MutationObserver){
+    new MutationObserver(function(m){
+      for(var i=0;i<m.length;i++){ var t=m[i].target;
+        if(t.nodeType===1 && t.getAttribute && (t.getAttribute('data-proto-id')==='profile-2'||t.id==='profile-2') && t.classList && t.classList.contains('proto-active')) setTimeout(fill,60);
+      }
+    }).observe(document.body,{attributes:true,attributeFilter:['class'],subtree:true});
+  }
+  var n=0; var iv=setInterval(function(){ n++; maybeFill(); if(n>=50) clearInterval(iv); }, 300);
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', maybeFill); else maybeFill();
+})();
+</script>
+
+
+<script>
+/* ── Standalone Language picker (profile-5) ───────────────────────────────
+   Persists the chosen language to localStorage and reflects it on every
+   visit. The static markup had no wiring, so selections never saved. */
+(function(){
+  'use strict';
+  var KEY='amLang';
+  function pc(){ return document.querySelector('[data-proto-id="profile-5"]') || document.getElementById('profile-5'); }
+  function rows(c){ return c ? [].slice.call(c.querySelectorAll('.radio-row')).filter(function(r){ return !r.classList.contains('disabled'); }) : []; }
+  function nameOf(r){ var t=r.querySelector('.t'); return t ? t.textContent.trim() : ''; }
+
+  function apply(){
+    var c=pc(); if(!c) return;
+    var saved=null; try{ saved=localStorage.getItem(KEY); }catch(e){}
+    var rs=rows(c);
+    rs.forEach(function(r){
+      if(!r.__langWired){
+        r.__langWired=true; r.style.cursor='pointer';
+        r.addEventListener('click', function(){
+          rs.forEach(function(x){ x.classList.remove('on'); });
+          r.classList.add('on');
+          try{ localStorage.setItem(KEY, nameOf(r)); }catch(e){}
+        });
+      }
+      if(saved && nameOf(r)===saved){ rs.forEach(function(x){ x.classList.remove('on'); }); r.classList.add('on'); }
+    });
+  }
+
+  window.addEventListener('hashchange', function(){ if((location.hash||'').indexOf('profile-5')>=0) setTimeout(apply,60); });
+  if(window.MutationObserver){
+    new MutationObserver(function(m){
+      for(var i=0;i<m.length;i++){ var t=m[i].target;
+        if(t.nodeType===1 && t.getAttribute && (t.getAttribute('data-proto-id')==='profile-5'||t.id==='profile-5') && t.classList && t.classList.contains('proto-active')) setTimeout(apply,60);
+      }
+    }).observe(document.body,{attributes:true,attributeFilter:['class'],subtree:true});
+  }
+  var n=0; var iv=setInterval(function(){ n++; apply(); if(n>=30) clearInterval(iv); }, 300);
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', apply); else apply();
+})();
+</script>
+
+
+<script>
+/* ── Standalone Diaspora order history ────────────────────────────────────
+   Lists ALL of the signed-in diaspora user's gift orders in a full-screen
+   overlay. Opens from the home "See all" link and the bottom-nav Orders tab.
+   Each row opens the existing order detail (diaspora-8). */
+(function(){
+  'use strict';
+  function sb(){ return window.__sb; }
+  function payerEmail(){ var p=window.__amProfile; return p && p.email; }
+  function esc(s){ return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];}); }
+  function chip(st){
+    st=(st||'').toLowerCase(); var bg='rgba(21,97,109,.12)', fg='#0F6E56';
+    if(st.indexOf('await')>=0){ bg='#FFF4E4'; fg='#B05A00'; }
+    else if(st.indexOf('confirm')>=0||st.indexOf('ready')>=0){ bg='#FFEFD9'; fg='#C25E00'; }
+    return '<span style="font-size:9.5px;font-weight:800;padding:2px 8px;border-radius:20px;background:'+bg+';color:'+fg+'">'+esc(st||'order')+'</span>';
+  }
+
+  var OPEN=false;
+  async function openOverlay(){
+    if(OPEN) return; OPEN=true;
+    var s=sb();
+    var ov=document.createElement('div');
+    ov.style.cssText='position:fixed;inset:0;background:#FFECD1;z-index:100000;display:flex;flex-direction:column;max-width:480px;margin:0 auto;font-family:inherit';
+    ov.innerHTML='<div style="background:#001524;color:#fff;display:flex;align-items:center;gap:10px;padding:14px 16px;font-weight:800;font-size:15px"><span id="dohx" style="cursor:pointer;font-size:22px;line-height:1">‹</span> My Orders</div><div id="dohlist" style="flex:1;overflow:auto;padding:12px"><div style="padding:24px;text-align:center;color:#7a6f60;font-size:12.5px">Loading…</div></div>';
+    document.body.appendChild(ov);
+    function close(){ if(ov.parentNode) document.body.removeChild(ov); OPEN=false; }
+    ov.querySelector('#dohx').onclick=close;
+    var list=ov.querySelector('#dohlist');
+    var rows=[];
+    try{
+      var q=s.from('diaspora_orders').select('id,order_number,created_at,total_usd,status,recipient_name,pickup_code').order('created_at',{ascending:false}).limit(100);
+      var em=payerEmail(); if(em) q=q.eq('payer_email', em);
+      var r=await q; rows=(r.data)||[];
+    }catch(e){}
+    if(!rows.length){ list.innerHTML='<div style="padding:30px;text-align:center;color:#7a6f60;font-size:12.5px">No orders yet. Your gift orders will appear here.</div>'; return; }
+    list.innerHTML=rows.map(function(o){
+      var d=o.created_at?new Date(o.created_at).toLocaleDateString('en-UG',{day:'numeric',month:'short',year:'numeric'}):'';
+      return '<div data-oid="'+esc(o.id)+'" style="background:#fff;border:1px solid rgba(0,21,36,.08);border-radius:12px;padding:12px 14px;margin-bottom:8px;cursor:pointer;display:flex;justify-content:space-between;align-items:flex-start;gap:10px">'
+        +'<div><div style="font-weight:800;font-size:13.5px;color:#001524">'+esc(o.recipient_name||'Gift')+'</div>'
+        +'<div style="font-size:10.5px;color:#7a6f60;margin-top:2px">'+esc(d)+(o.order_number?(' · '+esc(o.order_number)):'')+'</div>'
+        +(o.pickup_code?('<div style="font-size:10.5px;color:#15616D;margin-top:2px;font-weight:700">Code '+esc(o.pickup_code)+'</div>'):'')+'</div>'
+        +'<div style="text-align:right;white-space:nowrap"><div style="font-weight:800;color:#FF7D00;font-size:13.5px">USD '+Number(o.total_usd||0).toFixed(2)+'</div><div style="margin-top:4px">'+chip(o.status)+'</div></div>'
+        +'</div>';
+    }).join('');
+    list.querySelectorAll('[data-oid]').forEach(function(el){
+      el.onclick=function(){ window.__diaOrderId=el.getAttribute('data-oid'); close(); location.hash='diaspora-8'; };
+    });
+  }
+
+  document.addEventListener('click', function(e){
+    /* Bottom-nav "Orders" (diaspora) — index 3. Preempt the default tab switch. */
+    var it=e.target.closest && e.target.closest('.bnav .item');
+    if(it){
+      var nav=it.parentElement;
+      if(nav && nav.getAttribute && nav.getAttribute('data-role')==='diaspora'){
+        var idx=Array.prototype.indexOf.call(nav.children, it);
+        if(idx===3){ e.preventDefault(); e.stopPropagation(); openOverlay(); return; }
+      }
+    }
+    /* "See all" on the diaspora home recent-orders header. */
+    var t=e.target.closest && e.target.closest('span,a,button,div');
+    if(t && /^see all$/i.test((t.textContent||'').trim()) && (location.hash||'').indexOf('diaspora')>=0){
+      e.preventDefault(); e.stopPropagation(); openOverlay();
+    }
+  }, true);
+})();
+</script>
+
+
+<script>
+/* ── Standalone Diaspora cart ─────────────────────────────────────────────
+   "Add to Cart" adds the product and returns to the shop; a floating cart
+   button (with count) opens the cart; checkout places ONE order containing
+   all items. Self-contained — reuses window.__sb / window.__amProfile and the
+   existing confirmation screen (diaspora-7). */
+(function(){
+  'use strict';
+  var KEY='amDiaCart';
+  function sb(){ return window.__sb; }
+  function esc(s){ return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
+  function getCart(){ try{ return JSON.parse(localStorage.getItem(KEY)||'[]')||[]; }catch(e){ return []; } }
+  function setCart(c){ try{ localStorage.setItem(KEY, JSON.stringify(c)); }catch(e){} renderFab(); }
+  function count(){ return getCart().reduce(function(n,i){ return n+(i.qty||1); },0); }
+  function totalUsd(){ return getCart().reduce(function(s,i){ return s+(Number(i.usd)||0)*(i.qty||1); },0); }
+  function usdOf(p,rate){ return p && p.diaspora_price_usd!=null ? Number(p.diaspora_price_usd) : (p && p.price_ugx ? Number(p.price_ugx)/rate : 0); }
+
+  var _rate=null;
+  async function rate(){ if(_rate) return _rate; _rate=3800; var s=sb(); if(s){ try{ var r=await s.from('fx_rates').select('usd_to_ugx').order('updated_at',{ascending:false}).limit(1); if(r.data&&r.data[0]&&r.data[0].usd_to_ugx!=null) _rate=Number(r.data[0].usd_to_ugx); }catch(e){} } return _rate; }
+
+  function toast(msg){
+    var t=document.createElement('div');
+    t.textContent=msg;
+    t.style.cssText='position:fixed;left:50%;bottom:88px;transform:translateX(-50%);background:#001524;color:#fff;padding:10px 16px;border-radius:24px;font-size:12.5px;font-weight:600;z-index:100002;max-width:90%;text-align:center';
+    document.body.appendChild(t);
+    setTimeout(function(){ if(t.parentNode) t.parentNode.removeChild(t); }, 1900);
+  }
+
+  async function addCurrent(){
+    var p=window.__diaProduct; if(!p){ toast('Pick a product first'); return; }
+    var qty=window.__diaQty||1;
+    var r=await rate();
+    var cart=getCart();
+    var ex=cart.filter(function(i){ return i.id===p.id; })[0];
+    if(ex){ ex.qty=(ex.qty||1)+qty; }
+    else { cart.push({ id:p.id, name:p.name, usd:usdOf(p,r), qty:qty }); }
+    setCart(cart);
+    toast('Added to cart · '+count()+' item'+(count()!==1?'s':''));
+    window.__diaQty=1;
+    location.hash='diaspora-4';
+  }
+
+  /* Add a specific product to the cart (used by the shop product-row "+"). */
+  window.__amDiaAddProduct = function(item){
+    if(!item || !item.id) return;
+    var cart=getCart(); var ex=cart.filter(function(i){ return i.id===item.id; })[0];
+    if(ex){ ex.qty=(ex.qty||1)+1; } else { cart.push({ id:item.id, name:item.name, usd:Number(item.usd)||0, qty:1 }); }
+    setCart(cart); toast('Added to cart · '+count()+' item'+(count()!==1?'s':''));
+  };
+
+  function onDiaspora(){ return (location.hash||'').indexOf('diaspora')>=0; }
+  function onShopOrProduct(){ var h=location.hash||''; return h.indexOf('diaspora-4')>=0 || h.indexOf('diaspora-5')>=0; }
+
+  var fab=null;
+  function renderFab(){
+    if(!fab){
+      fab=document.createElement('div');
+      fab.style.cssText='position:fixed;right:16px;bottom:84px;z-index:99998;background:#FF7D00;color:#fff;width:54px;height:54px;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 8px 18px -6px rgba(255,125,0,.6);cursor:pointer';
+      fab.innerHTML='<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="20" r="1"/><circle cx="18" cy="20" r="1"/><path d="M2 3h3l2.4 12.3a1 1 0 0 0 1 .7h9.2a1 1 0 0 0 1-.8L21 7H6"/></svg><span id="diacartbadge" style="position:absolute;top:-4px;right:-4px;background:#001524;color:#fff;font-size:11px;font-weight:800;min-width:20px;height:20px;border-radius:10px;display:flex;align-items:center;justify-content:center;padding:0 5px"></span>';
+      fab.onclick=openCart;
+      document.body.appendChild(fab);
+    }
+    var n=count();
+    var show = n>0 && onShopOrProduct();
+    fab.style.display = show ? 'flex' : 'none';
+    var badge=fab.querySelector('#diacartbadge'); if(badge) badge.textContent=n;
+  }
+
+  async function defaultRecipient(){
+    if(window.__diaActiveRecipient) return window.__diaActiveRecipient;
+    var s=sb(); var p=window.__amProfile; if(!s||!p||!p.email) return null;
+    try{ var r=await s.from('diaspora_recipients').select('*').eq('owner_email',p.email).order('is_default',{ascending:false}).limit(1); return (r.data&&r.data[0])||null; }catch(e){ return null; }
+  }
+
+  async function openCart(){
+    var ov=document.createElement('div');
+    ov.style.cssText='position:fixed;inset:0;background:#FFECD1;z-index:100001;display:flex;flex-direction:column;max-width:480px;margin:0 auto;font-family:inherit';
+    ov.innerHTML='<div style="background:#001524;color:#fff;display:flex;align-items:center;gap:10px;padding:14px 16px;font-weight:800;font-size:15px"><span id="cx" style="cursor:pointer;font-size:22px;line-height:1">‹</span> Your cart</div><div id="clist" style="flex:1;overflow:auto;padding:12px"></div><div id="cfoot" style="border-top:1px solid rgba(0,21,36,.1);padding:12px 14px;background:#fff"></div>';
+    document.body.appendChild(ov);
+    function close(){ if(ov.parentNode) document.body.removeChild(ov); }
+    ov.querySelector('#cx').onclick=close;
+    var list=ov.querySelector('#clist'), foot=ov.querySelector('#cfoot');
+    function draw(){
+      var cart=getCart();
+      if(!cart.length){ list.innerHTML='<div style="padding:30px;text-align:center;color:#7a6f60;font-size:12.5px">Your cart is empty.</div>'; foot.innerHTML=''; return; }
+      list.innerHTML=cart.map(function(i,idx){
+        return '<div style="background:#fff;border:1px solid rgba(0,21,36,.08);border-radius:12px;padding:10px 12px;margin-bottom:8px;display:flex;align-items:center;gap:10px">'
+          +'<div style="flex:1"><div style="font-weight:800;font-size:13px;color:#001524">'+esc(i.name)+'</div><div style="font-size:11px;color:#FF7D00;font-weight:800;margin-top:2px">USD '+(Number(i.usd)||0).toFixed(2)+'</div></div>'
+          +'<div style="display:flex;align-items:center;gap:8px"><button data-dec="'+idx+'" style="width:26px;height:26px;border:1px solid rgba(0,21,36,.15);background:#fff;border-radius:7px;font-size:15px;cursor:pointer">−</button><span style="min-width:18px;text-align:center;font-weight:700">'+(i.qty||1)+'</span><button data-inc="'+idx+'" style="width:26px;height:26px;border:1px solid rgba(0,21,36,.15);background:#fff;border-radius:7px;font-size:15px;cursor:pointer">+</button></div>'
+          +'<button data-rm="'+idx+'" style="background:none;border:none;color:#A32D2D;font-size:12px;cursor:pointer;font-weight:700">Remove</button>'
+          +'</div>';
+      }).join('');
+      foot.innerHTML='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px"><span style="font-weight:700;font-size:13px">Total</span><span style="font-weight:800;font-size:16px;color:#FF7D00">USD '+totalUsd().toFixed(2)+'</span></div><button id="cco" style="width:100%;background:#FF7D00;color:#fff;border:none;border-radius:12px;padding:13px;font-weight:800;font-size:14px;cursor:pointer">Checkout &amp; Pay</button>';
+      list.querySelectorAll('[data-inc]').forEach(function(b){ b.onclick=function(){ var c=getCart(); var k=+b.getAttribute('data-inc'); c[k].qty=(c[k].qty||1)+1; setCart(c); draw(); }; });
+      list.querySelectorAll('[data-dec]').forEach(function(b){ b.onclick=function(){ var c=getCart(); var k=+b.getAttribute('data-dec'); c[k].qty=Math.max(1,(c[k].qty||1)-1); setCart(c); draw(); }; });
+      list.querySelectorAll('[data-rm]').forEach(function(b){ b.onclick=function(){ var c=getCart(); c.splice(+b.getAttribute('data-rm'),1); setCart(c); draw(); }; });
+      var co=foot.querySelector('#cco'); if(co) co.onclick=function(){ checkout(close); };
+    }
+    draw();
+  }
+
+  async function checkout(close){
+    var s=sb(); var p=window.__amProfile;
+    if(!s||!p||!p.email){ toast('Please sign in again'); return; }
+    var cart=getCart(); if(!cart.length){ toast('Your cart is empty'); return; }
+    var rc=await defaultRecipient();
+    if(!rc){ toast('Add a recipient first'); location.hash='diaspora-2'; if(close) close(); return; }
+    /* Route through Pesapal card payment when available. */
+    if(typeof window.__amPesapalPayItems==='function'){ if(close) close(); window.__amPesapalPayItems(cart, { recipient: rc }); return; }
+    var r=await rate();
+    var total=totalUsd(); var ugx=Math.round(total*r);
+    var dt=new Date(); var ym=dt.getFullYear()+'-'+String(dt.getMonth()+1).padStart(2,'0');
+    var orderNo='AM-D-'+ym+'-'+String(Math.floor(10000+Math.random()*90000));
+    var pickup=String(Math.floor(100000+Math.random()*900000));
+    var payload={ order_number:orderNo, payer_name:(p.full_name||p.email), payer_email:p.email,
+      payer_country:(p.country||p.diaspora_country||'Unknown'), recipient_name:rc.name, recipient_phone:rc.phone||'—',
+      recipient_district:rc.district||'—', status:'confirmed', total_usd:total, total_ugx:ugx, pickup_code:pickup };
+    try{
+      var ins=await s.from('diaspora_orders').insert(payload).select().maybeSingle();
+      if(ins.error) throw ins.error; var order=ins.data;
+      try{
+        var items=cart.map(function(i){ return { diaspora_order_id:order.id, product_id:i.id, product_name:i.name, quantity:i.qty||1, unit_price_usd:Number(i.usd)||0, total_usd:(Number(i.usd)||0)*(i.qty||1) }; });
+        await s.from('diaspora_order_items').insert(items);
+      }catch(e){}
+      window.__diaLastOrder=order; window.__diaOrderId=order.id;
+      setCart([]);
+      if(close) close();
+      toast('Order placed');
+      location.hash='diaspora-7';
+    }catch(e){ toast('Could not place order: '+((e&&e.message)||'error')); }
+  }
+
+  /* Intercept "Add to Cart" on diaspora-5 (capture phase, before existing handler). */
+  document.addEventListener('click', function(e){
+    var b=e.target.closest && e.target.closest('.sticky-foot .btn');
+    if(!b) return;
+    var s5=document.querySelector('[data-proto-id="diaspora-5"]');
+    if(!s5 || !s5.contains(b)) return;
+    if((b.textContent||'').toLowerCase().indexOf('add to cart')>=0){
+      e.preventDefault(); e.stopPropagation(); addCurrent();
+    }
+  }, true);
+
+  window.addEventListener('hashchange', renderFab);
+  var n=0; var iv=setInterval(function(){ n++; renderFab(); if(n>=40) clearInterval(iv); }, 400);
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', renderFab); else renderFab();
+})();
+</script>
+
+
+<script>
+/* ── Diaspora Pesapal card payment ────────────────────────────────────────
+   Creates the order as 'pending_payment', redirects to Pesapal's hosted card
+   page, and on return confirms via the status function — issuing the pickup
+   code (confirmation screen) only once payment is completed. Self-contained. */
+(function(){
+  'use strict';
+  function sb(){ return window.__sb; }
+  function toast(msg){
+    var t=document.createElement('div');
+    t.textContent=msg;
+    t.style.cssText='position:fixed;left:50%;bottom:88px;transform:translateX(-50%);background:#001524;color:#fff;padding:10px 16px;border-radius:24px;font-size:12.5px;font-weight:600;z-index:100060;max-width:90%;text-align:center';
+    document.body.appendChild(t); setTimeout(function(){ if(t.parentNode) t.parentNode.removeChild(t); },2200);
+  }
+  var _rate=null;
+  async function rate(){ if(_rate) return _rate; _rate=3800; var s=sb(); if(s){ try{ var r=await s.from('fx_rates').select('usd_to_ugx').order('updated_at',{ascending:false}).limit(1); if(r.data&&r.data[0]&&r.data[0].usd_to_ugx!=null) _rate=Number(r.data[0].usd_to_ugx); }catch(e){} } return _rate; }
+  function usdOf(p,r){ return p && p.diaspora_price_usd!=null ? Number(p.diaspora_price_usd) : (p && p.price_ugx ? Number(p.price_ugx)/r : 0); }
+  async function defaultRecipient(){
+    if(window.__diaActiveRecipient) return window.__diaActiveRecipient;
+    var s=sb(), p=window.__amProfile; if(!s||!p||!p.email) return null;
+    try{ var r=await s.from('diaspora_recipients').select('*').eq('owner_email',p.email).order('is_default',{ascending:false}).limit(1); return (r.data&&r.data[0])||null; }catch(e){ return null; }
+  }
+
+  /* items = [{id,name,usd,qty}]; opts = {recipient, message} */
+  async function payItems(items, opts){
+    opts=opts||{};
+    var s=sb(), p=window.__amProfile;
+    if(!s||!p||!p.email){ toast('Please sign in again'); return; }
+    if(!items||!items.length){ toast('Nothing to pay for'); return; }
+    var rc=opts.recipient || await defaultRecipient();
+    if(!rc){ toast('Choose a recipient first'); location.hash='diaspora-2'; return; }
+    var r=await rate();
+    var total=items.reduce(function(a,i){ return a+(Number(i.usd)||0)*(i.qty||1); },0);
+    if(!(total>0)){ toast('Order total is zero'); return; }
+    var ugx=Math.round(total*r);
+    var dt=new Date(), ym=dt.getFullYear()+'-'+String(dt.getMonth()+1).padStart(2,'0');
+    var orderNo='AM-D-'+ym+'-'+String(Math.floor(10000+Math.random()*90000));
+    var pickup=String(Math.floor(100000+Math.random()*900000));
+    var payload={ order_number:orderNo, payer_name:(p.full_name||p.email), payer_email:p.email,
+      payer_country:(p.country||p.diaspora_country||'Unknown'), recipient_name:rc.name, recipient_phone:rc.phone||'—',
+      recipient_district:rc.district||'—', status:'awaiting_payment', total_usd:total, total_ugx:ugx, pickup_code:pickup, message:(opts.message||null) };
+    var order;
+    try{
+      var ins=await s.from('diaspora_orders').insert(payload).select().maybeSingle();
+      if(ins.error) throw ins.error; order=ins.data;
+      try{ var its=items.map(function(i){ return { diaspora_order_id:order.id, product_id:i.id, product_name:i.name, quantity:i.qty||1, unit_price_usd:Number(i.usd)||0, total_usd:(Number(i.usd)||0)*(i.qty||1) }; }); await s.from('diaspora_order_items').insert(its); }catch(e){}
+    }catch(e){ toast('Could not start order: '+((e&&e.message)||'error')); return; }
+    try{ localStorage.setItem('amPesapalPending', JSON.stringify({ order_number:orderNo, id:order.id })); }catch(e){}
+    var nm=(p.full_name||'').trim().split(/\s+/);
+    var res=null;
+    try{
+      var fr=await fetch('/.netlify/functions/pesapal-pay', { method:'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({ order_number:orderNo, amount:Number(total.toFixed(2)), currency:'USD', email:p.email, first_name:(nm[0]||'Customer'), last_name:nm.slice(1).join(' '), phone:(rc.phone||''), description:('Agro & More gift to '+(rc.name||'Uganda')) }) });
+      res=await fr.json();
+    }catch(e){ toast('Payment service unavailable. Try again.'); return; }
+    if(res && res.redirect_url){ window.location.href=res.redirect_url; }
+    else { toast('Payment could not start: '+((res&&res.error)||'please try again')); }
+  }
+  window.__amPesapalPayItems = payItems;
+
+  /* Intercept diaspora-6 "Pay with Visa" → single-item Pesapal pay. */
+  document.addEventListener('click', function(e){
+    var b=e.target.closest && e.target.closest('.sticky-foot .btn');
+    if(!b) return;
+    var s6=document.querySelector('[data-proto-id="diaspora-6"]');
+    if(!s6 || !s6.contains(b)) return;
+    if((b.textContent||'').toLowerCase().indexOf('pay')<0) return;
+    e.preventDefault(); e.stopPropagation();
+    var p=window.__diaProduct;
+    if(!p){ toast('Pick a product first'); location.hash='diaspora-4'; return; }
+    rate().then(function(r){ payItems([{ id:p.id, name:p.name, usd:usdOf(p,r), qty:(window.__diaQty||1) }], { message: window.__diaMessage||null }); });
+  }, true);
+
+  /* Green "payment received" banner on the confirmation screen (diaspora-7). */
+  function showPaidBanner(ref){
+    var s=document.querySelector('[data-proto-id="diaspora-7"]'); if(!s) return;
+    if(s.querySelector('.am-paid-banner')) return;
+    var ban=document.createElement('div'); ban.className='am-paid-banner';
+    ban.style.cssText='display:flex;align-items:flex-start;gap:8px;background:#E1F5EE;border:1px solid #0F6E56;color:#0F6E56;border-radius:12px;padding:10px 14px;margin:0 0 12px;font-size:12.5px;font-weight:700;line-height:1.4';
+    ban.innerHTML='<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0F6E56" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;margin-top:1px"><path d="M20 6L9 17l-5-5"/></svg><span>Payment received — Agro &amp; More has your funds.'+(ref?(' <span style="font-weight:600;color:#0F6E56;opacity:.8">Ref '+ref+'</span>'):'')+'</span>';
+    var hero=s.querySelector('.pickup-hero');
+    if(hero && hero.parentNode){ hero.parentNode.insertBefore(ban, hero); }
+    else { var sc=s.querySelector('.scroll')||s; sc.insertBefore(ban, sc.firstChild); }
+  }
+
+  /* Green "payment received" banner on the FARMER confirmation screen (shop-6). */
+  function showFarmerPaidBanner(ref){
+    var s=document.querySelector('[data-proto-id="shop-6"]'); if(!s) return;
+    if(s.querySelector('.am-paid-banner')) return;
+    var ban=document.createElement('div'); ban.className='am-paid-banner';
+    ban.style.cssText='display:flex;align-items:flex-start;gap:8px;background:#E1F5EE;border:1px solid #0F6E56;color:#0F6E56;border-radius:12px;padding:10px 14px;margin:0 0 12px;font-size:12.5px;font-weight:700;line-height:1.4';
+    ban.innerHTML='<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0F6E56" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;margin-top:1px"><path d="M20 6L9 17l-5-5"/></svg><span>Payment received — Agro &amp; More has your funds.'+(ref?(' <span style="font-weight:600;color:#0F6E56;opacity:.8">Ref '+ref+'</span>'):'')+'</span>';
+    var conf=s.querySelector('.confirm');
+    if(conf){ conf.insertBefore(ban, conf.firstChild); }
+    else { var sc=s.querySelector('.scroll')||s; sc.insertBefore(ban, sc.firstChild); }
+  }
+
+  /* Return from Pesapal: /?pesapal=callback&OrderTrackingId=...&OrderMerchantReference=... */
+  async function handleCallback(){
+    var q; try{ q=new URLSearchParams(location.search||''); }catch(e){ return; }
+    if(!q || q.get('pesapal')!=='callback') return;
+    var tracking=q.get('OrderTrackingId')||q.get('orderTrackingId')||'';
+    var ref=q.get('OrderMerchantReference')||q.get('orderMerchantReference')||'';
+    var pend={}; try{ pend=JSON.parse(localStorage.getItem('amPesapalPending')||'{}')||{}; }catch(e){}
+    if(!ref){ ref=pend.order_number||''; }
+    try{ history.replaceState(null,'',location.pathname+location.hash); }catch(e){}
+    var ov=document.createElement('div'); ov.style.cssText='position:fixed;inset:0;background:rgba(0,21,36,.65);z-index:100070;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:14px'; ov.textContent='Confirming your payment…'; document.body.appendChild(ov);
+    var paid=false, ordNo=ref;
+    try{
+      var fr=await fetch('/.netlify/functions/pesapal-status?OrderTrackingId='+encodeURIComponent(tracking)+'&ref='+encodeURIComponent(ref));
+      var st=await fr.json(); paid=!!(st&&st.paid); ordNo=(st&&st.order_number)||ref;
+    }catch(e){}
+    if(ov.parentNode) document.body.removeChild(ov);
+    try{ localStorage.removeItem('amPesapalPending'); }catch(e){}
+    if(paid && ordNo){
+      if(pend.flow==='farmer'){
+        /* Farmer/agent shop order — paint shop-6 confirmation + green banner. */
+        var _tot=Number(pend.total)||0;
+        try{ if(typeof window.__amShowFarmerConfirmation==='function') window.__amShowFarmerConfirmation(ordNo,_tot); }catch(e){}
+        if(window.protoShow){ window.protoShow('shop-6'); } else { location.hash='shop-6'; }
+        var _fref=ordNo;
+        setTimeout(function(){ try{ if(typeof window.__amShowFarmerConfirmation==='function') window.__amShowFarmerConfirmation(_fref,_tot); }catch(e){} showFarmerPaidBanner(_fref); }, 500);
+        setTimeout(function(){ showFarmerPaidBanner(_fref); }, 1500);
+      } else {
+        try{ var s=sb(); var r=await s.from('diaspora_orders').select('*').eq('order_number',ordNo).maybeSingle(); if(r.data){ window.__diaLastOrder=r.data; window.__diaOrderId=r.data.id; } }catch(e){}
+        try{ localStorage.setItem('amDiaCart','[]'); }catch(e){}
+        location.hash='diaspora-7';
+        var _ref=ordNo; setTimeout(function(){ showPaidBanner(_ref); }, 500); setTimeout(function(){ showPaidBanner(_ref); }, 1500);
+      }
+    } else {
+      if(pend.flow==='farmer'){
+        alert('Payment was not completed. Your order is saved as awaiting payment — you can try again from My Orders.');
+        if(window.protoShow){ window.protoShow('shop-7'); } else { location.hash='shop-7'; }
+      } else {
+        alert('Payment was not completed. You can try again from your cart or the product page.');
+        location.hash='diaspora-1';
+      }
+    }
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', handleCallback); else handleCallback();
+})();
+</script>
+
 </body>
 </html>
+
+<!-- deploy-sync-marker 7f3a2c -->

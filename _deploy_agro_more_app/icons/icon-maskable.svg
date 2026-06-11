@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <!-- Full-bleed orange background (Android masks this into circle/squircle) -->
+  <rect width="512" height="512" fill="#FF7D00"/>
+
+  <!-- Content kept inside the safe zone (~80% center) -->
+  <g transform="translate(256 256)">
+    <!-- Stylised twin-leaf mark, centered -->
+    <g transform="translate(0 -20)">
+      <path d="M -78 22 Q -130 -18, -104 -68 Q -50 -104, -8 -68 Q 12 -28, -8 8 Q -38 32, -78 22 Z" fill="#FFECD1"/>
+      <path d="M -32 -26 Q -56 -78, -14 -104 Q 32 -114, 52 -76 Q 54 -32, 32 -8 Q 0 0, -32 -26 Z" fill="#FFFFFF"/>
+      <path d="M -44 24 Q -58 -8, -28 -50" stroke="#FFFFFF" stroke-width="7" fill="none" stroke-linecap="round"/>
+    </g>
+    <!-- Wordmark -->
+    <text x="0" y="92" text-anchor="middle"
+          font-family="Fredoka, Poppins, Inter, sans-serif"
+          font-weight="700" font-size="64" font-style="italic"
+          fill="#FFFFFF" letter-spacing="-2">agmore</text>
+  </g>
+</svg>

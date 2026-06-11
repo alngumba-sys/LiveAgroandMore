@@ -1,0 +1,22 @@
+{
+  "name": "agro-and-more-tests",
+  "version": "1.0.0",
+  "private": true,
+  "description": "QA test suite for Agro and More PWA + critical admin paths.",
+  "scripts": {
+    "test": "playwright test",
+    "test:mobile": "playwright test mobile/",
+    "test:admin": "playwright test admin/",
+    "test:headed": "playwright test --headed",
+    "test:debug": "playwright test --debug",
+    "test:ui": "playwright test --ui",
+    "report": "playwright show-report",
+    "cleanup": "node helpers/cleanup-cli.js"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.45.0",
+    "@supabase/supabase-js": "^2.45.0",
+    "dotenv": "^16.4.5",
+    "speakeasy": "^2.0.0"
+  }
+}

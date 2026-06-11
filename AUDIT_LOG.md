@@ -55,20 +55,21 @@
 |---|------|-----|-----|--------|
 | 20 | service-worker.js:102 | Non-HTML assets (API calls, images) fall back to `index.html` on network failure | Return `504 Offline` response instead | API calls received HTML responses, causing silent data corruption |
 
-## Module 7: Database Migrations (no code changes)
+## Module 7: Database Migrations
 
-| # | File | Issue | Recommendation | Severity |
-|---|------|-------|----------------|----------|
-| - | schema.sql | Missing indexes on 10+ FK columns | Add `CREATE INDEX` for all FK columns | High (perf) |
-| - | schema.sql:451 | Settings table exposes API keys to all staff via RLS | Restrict sensitive keys to service role | Medium |
-| - | admin_fixes_PART4.sql | app_sessions & hire_bookings missing UPDATE/DELETE RLS policies | Add policies | Medium |
+| # | File | Issue | Fix | Severity |
+|---|------|-------|-----|----------|
+| 21 | db/2026-05-29_fk_indexes.sql | Missing indexes on FK columns across 15+ tables | Dynamic DO block creates indexes for all FK columns missing them | High (perf) |
+| 22 | db/2026-05-29_rls_fixes.sql | Settings table writable by any authenticated staff (payment codes, API keys exposed) | Dropped blanket `staff_write`; new `admin_write_settings` policy restricts writes to `md` + `it_admin` only | Medium |
+| 23 | db/2026-05-29_rls_fixes.sql | app_sessions missing DELETE policy — stale sessions could never be pruned | Added `staff_delete_sessions` policy FOR DELETE | Medium |
 
 ---
 
 ## Summary
 
-- **Total bugs fixed:** 20
+- **Total issues resolved:** 23
 - **Critical (XSS/injection):** 8
-- **High (crashes, security bypass):** 6
-- **Medium (info disclosure, weak crypto):** 6
-- **Commits:** 5 (across main repo + USSD sub-repo)
+- **High (crashes, security bypass, missing indexes):** 7
+- **Medium (info disclosure, weak crypto, RLS gaps):** 8
+- **Code commits:** 6 (main repo) + 1 (USSD sub-repo)
+- **DB migrations applied:** 2 (2026-05-29)

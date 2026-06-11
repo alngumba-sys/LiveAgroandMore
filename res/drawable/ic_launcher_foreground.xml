@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Foreground: agmore twin-leaf + fruit mark, centered in the adaptive safe zone -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="512"
+    android:viewportHeight="512">
+
+    <group
+        android:translateX="253"
+        android:translateY="325"
+        android:scaleX="1.5"
+        android:scaleY="1.5">
+
+        <!-- Outer (lighter green) leaf -->
+        <path
+            android:fillColor="#7CC04A"
+            android:pathData="M -90 24 Q -150 -22, -120 -78 Q -56 -120, -8 -78 Q 14 -32, -8 8 Q -42 38, -90 24 Z" />
+
+        <!-- Inner (deeper green) leaf -->
+        <path
+            android:fillColor="#1F8A3A"
+            android:pathData="M -36 -30 Q -64 -88, -16 -120 Q 38 -130, 60 -86 Q 64 -38, 36 -10 Q 0 -2, -36 -30 Z" />
+
+        <!-- Stem -->
+        <path
+            android:strokeColor="#1F8A3A"
+            android:strokeWidth="8"
+            android:strokeLineCap="round"
+            android:pathData="M -50 28 Q -68 -8, -32 -56" />
+
+        <!-- Orange fruit dot -->
+        <path
+            android:fillColor="#FF7D00"
+            android:pathData="M 92 -12 m -32 0 a 32 32 0 1 0 64 0 a 32 32 0 1 0 -64 0 Z" />
+
+        <!-- Leaf on fruit -->
+        <path
+            android:fillColor="#1F8A3A"
+            android:pathData="M 82 -22 Q 78 -12, 84 -2 Q 96 -4, 100 -14 Q 98 -22, 84 -22 Z" />
+
+    </group>
+</vector>
