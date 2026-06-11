@@ -11415,7 +11415,14 @@
     };
   }
 
-  function boot(){ wrapForAdvisory(); }
+  function boot(){
+    wrapForAdvisory();
+    /* Also run immediately for the initial screen — advisory-1 may be
+       visible on load without a protoShow call (gallery/preview mode,
+       or hash entry). The retry-on-null-sb inside wireAdvisoryLanding
+       handles the case where __sb isn't ready yet. */
+    wireAdvisoryLanding();
+  }
   if(document.readyState==='loading'){
     document.addEventListener('DOMContentLoaded', boot);
   } else { boot(); }
