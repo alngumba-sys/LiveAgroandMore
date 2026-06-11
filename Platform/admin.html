@@ -13674,6 +13674,18 @@ window.openFarmerDetail = async function(id) {
   };
   renderBody();
 
+  /* Footer — Block / Unblock / Delete */
+  const _nameEsc = (f.full_name||'Farmer').replace(/'/g, "\\'");
+  const _st = f.status || 'active';
+  document.getElementById('ud-footer').innerHTML = `
+    <button class="btn btn-ghost" onclick="closeUserDrawer()">Close</button>
+    <div style="margin-left:auto;display:flex;gap:8px">
+      ${_st==='blocked'
+        ? `<button class="btn btn-secondary" onclick="blockFarmer('${f.id}','${_nameEsc}',true)">Unblock</button>`
+        : `<button class="btn btn-danger" onclick="blockFarmer('${f.id}','${_nameEsc}',false)">Block</button>`}
+      <button class="btn btn-danger" style="background:var(--rust,#b91c1c)" onclick="closeUserDrawer();deleteFarmer('${f.id}','${_nameEsc}')">Delete</button>
+    </div>`;
+
   /* Fetch activity + referring agent in parallel, then re-render. */
   try {
     const phoneClean = (f.phone && !String(f.phone).startsWith('ph-')) ? f.phone : null;
@@ -13731,6 +13743,30 @@ window.exportFarmersCSV = function() {
   a.click();
   toast(`Exported ${rows.length} farmers.`, 'success');
   logAudit('Exported farmers CSV', { notes:`${rows.length} rows` });
+};
+
+window.blockFarmer = async function(id, name, isBlocked) {
+  const newStatus = isBlocked ? 'active' : 'blocked';
+  const action    = isBlocked ? 'Unblock' : 'Block';
+  if (!confirm(`${action} ${name}?\n${isBlocked ? 'This will restore their access to the app.' : 'They will not be able to log in until unblocked.'}`)) return;
+  const { error } = await sb.from('app_users').update({ status: newStatus }).eq('id', id);
+  if (error) { toast('Error: ' + error.message, 'error'); return; }
+  toast(`${name} ${isBlocked ? 'unblocked' : 'blocked'}.`, isBlocked ? 'success' : 'info');
+  logAudit(`${action}ed farmer`, { targetType:'app_users', targetId:id });
+  closeUserDrawer();
+  loadFarmers();
+};
+
+window.deleteFarmer = async function(id, name) {
+  if (!confirm(`Permanently delete ${name}?\n\nThis removes their account and cannot be undone.`)) return;
+  /* Nullify FK references before deleting the row */
+  await sb.from('orders').update({ customer_id: null }).eq('customer_id', id);
+  await sb.from('farm_visits').update({ farmer_id: null }).eq('farmer_id', id);
+  const { error } = await sb.from('app_users').delete().eq('id', id);
+  if (error) { toast('Could not delete: ' + error.message, 'error'); return; }
+  toast(`${name} deleted.`, 'success');
+  logAudit('Deleted farmer account', { targetType:'app_users', targetId:id, notes:name });
+  loadFarmers();
 };
 
 /* ══════════════════════════════════════════════════════
@@ -13826,7 +13862,7 @@ function renderDiasporaClientsContent(byEmail) {
         </div>
       </div>
       <table class="dt">
-        <thead><tr><th>CLIENT</th><th>EMAIL</th><th>COUNTRY</th><th>ORDERS</th><th>TOTAL USD</th><th>REGISTERED</th></tr></thead>
+        <thead><tr><th>CLIENT</th><th>EMAIL</th><th>COUNTRY</th><th>ORDERS</th><th>TOTAL USD</th><th>REGISTERED</th><th></th></tr></thead>
         <tbody>
         ${banner}
         ${list.map(d => {
@@ -13838,6 +13874,7 @@ function renderDiasporaClientsContent(byEmail) {
             <td style="font-size:12.5px;font-weight:600">${stat.count}</td>
             <td style="font-size:12.5px;font-weight:600">${stat.totalUsd>0?'$'+stat.totalUsd.toLocaleString('en-US',{minimumFractionDigits:0}):'—'}</td>
             <td style="font-size:11.5px;color:var(--ink-60)">${d.created_at ? new Date(d.created_at).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}) : '—'}</td>
+            <td><button class="btn btn-secondary btn-sm" onclick="openDiasporaClientDetail('${d.id}')">View</button></td>
           </tr>`;
         }).join('')}
         </tbody>
@@ -13861,6 +13898,91 @@ window.exportDiasporaClientsCSV = function() {
   a.click();
   toast(`Exported ${rows.length} diaspora clients.`, 'success');
   logAudit('Exported diaspora clients CSV', { notes:`${rows.length} rows` });
+};
+
+window.openDiasporaClientDetail = async function(id) {
+  const d = (DCL.all || []).find(x => x.id === id);
+  if (!d) { toast('Client not found.', 'error'); return; }
+
+  document.getElementById('user-drawer-overlay').classList.add('open');
+  document.getElementById('user-drawer').classList.add('open');
+  document.getElementById('ud-name').textContent = d.full_name || 'Diaspora Client';
+  document.getElementById('ud-sub').textContent  = `Diaspora · ${d.country_of_residence||'—'} · ${d.email||d.id}`;
+
+  const initials = (d.full_name||'?').split(' ').slice(0,2).map(w=>(w||'')[0]||'').join('').toUpperCase();
+  const cell = (l, v) => `<div>
+    <div style="font-size:9.5px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-60);margin-bottom:3px">${l}</div>
+    <div style="font-size:13px;font-weight:600;word-break:break-word">${v==null||v===''?'—':v}</div>
+  </div>`;
+
+  const body = document.getElementById('ud-body');
+  body.innerHTML = `
+    <div style="display:flex;align-items:center;gap:14px;padding:4px 0 20px;border-bottom:1px solid var(--ink-05);margin-bottom:18px">
+      <div style="width:52px;height:52px;border-radius:50%;background:var(--orange);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:18px;font-family:'Poppins';flex-shrink:0">${initials||'?'}</div>
+      <div style="flex:1">
+        <div style="font-weight:800;font-size:15px">${d.full_name||'Diaspora Client'}</div>
+        <div style="margin-top:4px"><span class="chip" style="background:rgba(255,125,0,.12);color:var(--orange)">Diaspora</span></div>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px">
+      ${cell('Email', d.email)}
+      ${cell('Phone', d.phone||'—')}
+      ${cell('Country', d.country_of_residence)}
+      ${cell('Member since', d.created_at ? fmtDate(d.created_at) : '—')}
+    </div>
+    <div id="dcl-orders-section"><div style="font-size:12.5px;color:var(--ink-40)">Loading orders…</div></div>`;
+
+  /* Footer */
+  const _nameEsc = (d.full_name||'Diaspora Client').replace(/'/g, "\\'");
+  document.getElementById('ud-footer').innerHTML = `
+    <button class="btn btn-ghost" onclick="closeUserDrawer()">Close</button>
+    <div style="margin-left:auto">
+      <button class="btn btn-danger" style="background:var(--rust,#b91c1c)" onclick="closeUserDrawer();deleteDiasporaClient('${d.id}','${_nameEsc}')">Delete</button>
+    </div>`;
+
+  /* Load their diaspora orders */
+  try {
+    const { data: orders } = await sb.from('diaspora_orders')
+      .select('order_number,total_usd,dia_status,created_at,recipient_name')
+      .eq('payer_email', (d.email||'').toLowerCase())
+      .order('created_at', { ascending:false })
+      .limit(10);
+    const os = orders || [];
+    const totalUsd = os.reduce((s,o)=>s+Number(o.total_usd||0),0);
+    const colorFor = s => ({ paid:'#3A7D44', awaiting_pickup:'var(--orange)', collected:'#3A7D44', cancelled:'var(--rust)', refunded:'var(--rust)' }[s]||'var(--ink-60)');
+    document.getElementById('dcl-orders-section').innerHTML = `
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px">
+        <div style="background:var(--ink-05);border-radius:var(--radius);padding:12px;text-align:center">
+          <div style="font-size:9.5px;font-weight:700;text-transform:uppercase;color:var(--ink-60);margin-bottom:4px">ORDERS</div>
+          <div style="font-weight:800;font-size:15px">${os.length}</div>
+        </div>
+        <div style="background:var(--ink-05);border-radius:var(--radius);padding:12px;text-align:center">
+          <div style="font-size:9.5px;font-weight:700;text-transform:uppercase;color:var(--ink-60);margin-bottom:4px">TOTAL USD</div>
+          <div style="font-weight:800;font-size:15px;color:var(--orange)">${totalUsd>0?'$'+totalUsd.toLocaleString('en-US',{minimumFractionDigits:0}):'—'}</div>
+        </div>
+      </div>
+      <div style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-60);margin-bottom:8px">Recent orders</div>
+      ${os.length
+        ? os.map(o=>`<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--ink-05)">
+            <div>
+              <div style="font-size:12.5px;font-weight:700">${o.order_number||'—'}</div>
+              <div style="font-size:10.5px;color:var(--ink-60)">${o.created_at?fmtDate(o.created_at):''} · <span style="color:${colorFor(o.dia_status)};font-weight:600">${(o.dia_status||'').replace(/_/g,' ')}</span>${o.recipient_name?' · for '+o.recipient_name:''}</div>
+            </div>
+            <div style="font-size:12.5px;font-weight:700">$${Number(o.total_usd||0).toLocaleString('en-US',{minimumFractionDigits:0})}</div>
+          </div>`).join('')
+        : '<div style="font-size:12.5px;color:var(--ink-40)">No orders yet.</div>'}`;
+  } catch(e) {
+    document.getElementById('dcl-orders-section').innerHTML = '<div style="font-size:12.5px;color:var(--rust)">Could not load orders.</div>';
+  }
+};
+
+window.deleteDiasporaClient = async function(id, name) {
+  if (!confirm(`Permanently delete ${name}?\n\nThis removes their account and cannot be undone. Their order history will be preserved.`)) return;
+  const { error } = await sb.from('app_users').delete().eq('id', id);
+  if (error) { toast('Could not delete: ' + error.message, 'error'); return; }
+  toast(`${name} deleted.`, 'success');
+  logAudit('Deleted diaspora client account', { targetType:'app_users', targetId:id, notes:name });
+  loadDiasporaClients();
 };
 
 /* ══════════════════════════════════════════════════════
