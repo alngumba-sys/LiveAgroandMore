@@ -13677,9 +13677,10 @@ window.openFarmerDetail = async function(id) {
   /* Footer — Block / Unblock / Delete */
   const _nameEsc = (f.full_name||'Farmer').replace(/'/g, "\\'");
   const _st = f.status || 'active';
+  document.getElementById('ud-footer').setAttribute('style','padding:14px 20px;border-top:1px solid var(--ink-08);display:flex;gap:8px;justify-content:space-between;background:#FAFAFA');
   document.getElementById('ud-footer').innerHTML = `
     <button class="btn btn-ghost" onclick="closeUserDrawer()">Close</button>
-    <div style="margin-left:auto;display:flex;gap:8px">
+    <div style="display:flex;gap:8px">
       ${_st==='blocked'
         ? `<button class="btn btn-secondary" onclick="blockFarmer('${f.id}','${_nameEsc}',true)">Unblock</button>`
         : `<button class="btn btn-danger" onclick="blockFarmer('${f.id}','${_nameEsc}',false)">Block</button>`}
@@ -13934,11 +13935,10 @@ window.openDiasporaClientDetail = async function(id) {
 
   /* Footer */
   const _nameEsc = (d.full_name||'Diaspora Client').replace(/'/g, "\\'");
+  document.getElementById('ud-footer').setAttribute('style','padding:14px 20px;border-top:1px solid var(--ink-08);display:flex;gap:8px;justify-content:space-between;background:#FAFAFA');
   document.getElementById('ud-footer').innerHTML = `
     <button class="btn btn-ghost" onclick="closeUserDrawer()">Close</button>
-    <div style="margin-left:auto">
-      <button class="btn btn-danger" style="background:var(--rust,#b91c1c)" onclick="closeUserDrawer();deleteDiasporaClient('${d.id}','${_nameEsc}')">Delete</button>
-    </div>`;
+    <button class="btn btn-danger" style="background:var(--rust,#b91c1c)" onclick="closeUserDrawer();deleteDiasporaClient('${d.id}','${_nameEsc}')">Delete</button>`;
 
   /* Load their diaspora orders */
   try {
