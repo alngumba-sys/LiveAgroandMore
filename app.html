@@ -14598,44 +14598,59 @@
     var phoneInp = injectInput(findField(container, 'Phone'),     '772 XXX XXX',     'tel');
     var emailInp = injectInput(findField(container, 'Email'),     'your@email.com',  'email');
 
-    /* ── Common dropdowns (District / Sub-county) ─────── */
-    var distField  = findField(container, 'District');
-    var subField   = findField(container, 'Sub-county');
-    /* District/Sub-county sit inside a .field.row wrapper. The wrapper
-       contains two <div> children — wire each child individually. */
-    var distChild = null, subChild = null;
+    /* ── Location: grouped single select (farmer) or two-step cascade (other roles) ── */
     var rowWrappers = Array.from(container.querySelectorAll('.field.row'));
-    rowWrappers.forEach(function(row) {
-      Array.from(row.children).forEach(function(child) {
-        var lbl = child.querySelector('.label');
-        if (!lbl) return;
-        var t = lbl.textContent.trim().toLowerCase();
-        if (t.indexOf('district') === 0)  distChild = child;
-        if (t.indexOf('sub-county') === 0) subChild = child;
-      });
-    });
-    var distSel = distChild ? injectSelect(distChild, UG_DISTRICTS) : null;
-    var subSel  = subChild  ? injectSelect(subChild,  UG_SUBCOUNTIES_DEFAULT) : null;
+    var locSel = null;   /* grouped select — farmer only */
+    var distSel = null;  /* separate district select — other roles */
+    var subSel  = null;  /* separate sub-county select — other roles */
 
-    /* ── Repopulate sub-counties when district changes ────── */
-    function repopulateSubcounties(distVal) {
-      if (!subSel) return;
-      var subs = UG_DISTRICT_SUBCOUNTIES[distVal] || UG_DISTRICT_SUBCOUNTIES['Other'];
-      var prev = subSel.value;
-      subSel.innerHTML = '';
-      subs.forEach(function(s) {
-        var o = document.createElement('option');
-        o.value = s; o.textContent = s;
-        if (s === prev) o.selected = true;
-        subSel.appendChild(o);
+    var locField = container.querySelector('[data-loc-field]');
+    if (locField) {
+      /* Farmer grouped select: build optgroups from FARMER_LOCATIONS */
+      var sel = locField.querySelector('[data-loc-select]');
+      if (sel) {
+        var html = '<option value="">Select sub-county…</option>';
+        Object.keys(FARMER_LOCATIONS).forEach(function(dist) {
+          html += '<optgroup label="' + dist + '">';
+          FARMER_LOCATIONS[dist].forEach(function(sub) {
+            html += '<option value="' + dist + '::' + sub + '">' + sub + '</option>';
+          });
+          html += '</optgroup>';
+        });
+        sel.innerHTML = html;
+        locSel = sel;
+      }
+    } else {
+      /* All other roles: two separate cascading selects */
+      var distChild = null, subChild = null;
+      rowWrappers.forEach(function(row) {
+        Array.from(row.children).forEach(function(child) {
+          var lbl = child.querySelector('.label');
+          if (!lbl) return;
+          var t = lbl.textContent.trim().toLowerCase();
+          if (t.indexOf('district') === 0)   distChild = child;
+          if (t.indexOf('sub-county') === 0) subChild  = child;
+        });
       });
-    }
-    if (distSel) {
-      /* Populate immediately to match the default district */
-      repopulateSubcounties(distSel.value);
-      distSel.addEventListener('change', function() {
-        repopulateSubcounties(this.value);
-      });
+      distSel = distChild ? injectSelect(distChild, UG_DISTRICTS) : null;
+      subSel  = subChild  ? injectSelect(subChild,  UG_SUBCOUNTIES_DEFAULT) : null;
+
+      function repopulateSubcounties(distVal) {
+        if (!subSel) return;
+        var subs = UG_DISTRICT_SUBCOUNTIES[distVal] || UG_DISTRICT_SUBCOUNTIES['Other'];
+        var prev = subSel.value;
+        subSel.innerHTML = '';
+        subs.forEach(function(s) {
+          var o = document.createElement('option');
+          o.value = s; o.textContent = s;
+          if (s === prev) o.selected = true;
+          subSel.appendChild(o);
+        });
+      }
+      if (distSel) {
+        repopulateSubcounties(distSel.value);
+        distSel.addEventListener('change', function() { repopulateSubcounties(this.value); });
+      }
     }
 
     /* ── Farmer-only fields ────────────────────────────── */
@@ -15121,8 +15136,10 @@
           role:      role,
           phone:     pendingPhone,
           /* district / sub_county only meaningful for non-diaspora roles */
-          district:   (role !== 'diaspora' && distSel) ? distSel.value : '',
-          sub_county: (role !== 'diaspora' && subSel)  ? subSel.value  : ''
+          district:   (role !== 'diaspora' && locSel) ? locSel.value.split('::')[0] :
+                      (role !== 'diaspora' && distSel) ? distSel.value : '',
+          sub_county: (role !== 'diaspora' && locSel) ? (locSel.value.split('::')[1] || '') :
+                      (role !== 'diaspora' && subSel)  ? subSel.value  : ''
         };
         if (role === 'farmer') {
           extras.age_range = ageGetter();
