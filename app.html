@@ -12199,7 +12199,8 @@
     var nameEl = container.querySelector('[data-boda-area-name]');
     if (nameEl) nameEl.textContent = areaName;
     var subEl  = container.querySelector('[data-boda-subzone]');
-    if (subEl)  subEl.textContent  = 'Mpigi · ' + area.subZone;
+    var _profDistrict = (window.__amProfile && window.__amProfile.district) || 'Mpigi';
+    if (subEl)  subEl.textContent  = _profDistrict + ' · ' + area.subZone;
     var stEl   = container.querySelector('[data-boda-street]');
     if (stEl && !stEl.isContentEditable) stEl.textContent = street;
 
@@ -12280,21 +12281,18 @@
     }
     container.dataset.bodaWired = '1';
 
-    /* ── Auto-detect area from profile on very first open ── */
-    if (!window.__amBodaAreaDetected) {
-      window.__amBodaAreaDetected = true;
-      var prof = window.__amProfile || {};
-      var haystack = [prof.village, prof.parish, prof.sub_county]
-        .filter(Boolean).join(' ').toLowerCase();
-      if (haystack) {
-        var matched = Object.keys(BODA_AREAS).find(function(k){
-          return haystack.indexOf(k.toLowerCase()) !== -1 ||
-                 k.toLowerCase().split(' ').some(function(w){ return w.length > 3 && haystack.indexOf(w) !== -1; });
-        });
-        if (matched) {
-          window.__amBodaArea  = matched;
-          window.__amBodaStreet = BODA_AREAS[matched].streetHint;
-        }
+    /* ── Auto-detect area from profile (runs each time screen is first wired) ── */
+    var _prof = window.__amProfile || {};
+    var _haystack = [_prof.village, _prof.parish, _prof.sub_county, _prof.district]
+      .filter(Boolean).join(' ').toLowerCase();
+    if (_haystack) {
+      var _matched = Object.keys(BODA_AREAS).find(function(k){
+        return _haystack.indexOf(k.toLowerCase()) !== -1 ||
+               k.toLowerCase().split(' ').some(function(w){ return w.length > 3 && _haystack.indexOf(w) !== -1; });
+      });
+      if (_matched) {
+        window.__amBodaArea   = _matched;
+        window.__amBodaStreet = BODA_AREAS[_matched].streetHint;
       }
     }
 

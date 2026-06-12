@@ -2682,6 +2682,10 @@ table.dt .cell-bold { color: var(--ink); font-weight: 700; }
         <div id="ar-outlet-lbl" style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-40);margin-bottom:3px">Outlet / Area</div>
         <div id="ar-outlet" style="font-size:13px;font-weight:600"></div>
       </div>
+      <div id="ar-subcounty-row" style="display:none">
+        <div style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-40);margin-bottom:3px">Sub-county</div>
+        <div id="ar-subcounty" style="font-size:13px;font-weight:600"></div>
+      </div>
     </div>
 
     <!-- ID photo -->
@@ -12400,12 +12404,20 @@ window.openAgentReview = function(id) {
     setCell('ar-district-lbl','ar-district','Districts covered', dcov);
     setCell('ar-nin-lbl',     'ar-nin',     'University',        row.fo_university);
     setCell('ar-outlet-lbl',  'ar-outlet',  'Specialities',     joinList(row.fo_specialities));
+    const subCRow = document.getElementById('ar-subcounty-row');
+    const subCEl  = document.getElementById('ar-subcounty');
+    if (subCRow && row.sub_county) { subCEl.textContent = row.sub_county; subCRow.style.display = ''; }
+    else if (subCRow) subCRow.style.display = 'none';
     const al = document.getElementById('ar-approve-label'); if (al) al.textContent = '✓ Approve as Field Officer';
   } else {
     document.getElementById('ar-meta').textContent = `${row.district||'District unknown'} · Applied ${applied}${daysWaiting!=null?' ('+daysWaiting+'d ago)':''}`;
     setCell('ar-district-lbl','ar-district','District',          row.district);
     setCell('ar-nin-lbl',     'ar-nin',     'National ID (NIN)', row.nin || row.national_id);
     setCell('ar-outlet-lbl',  'ar-outlet',  'Outlet / Area',     row.home_outlet || row.outlet || row.area);
+    const subCRowA = document.getElementById('ar-subcounty-row');
+    const subCElA  = document.getElementById('ar-subcounty');
+    if (subCRowA && row.sub_county) { subCElA.textContent = row.sub_county; subCRowA.style.display = ''; }
+    else if (subCRowA) subCRowA.style.display = 'none';
     const al = document.getElementById('ar-approve-label'); if (al) al.textContent = '✓ Approve as Agent';
   }
 
@@ -13681,6 +13693,7 @@ window.openFarmerDetail = async function(id) {
   document.getElementById('ud-footer').innerHTML = `
     <button class="btn btn-ghost" onclick="closeUserDrawer()">Close</button>
     <div style="display:flex;gap:8px">
+      <button class="btn btn-secondary" onclick="openFarmerEdit('${f.id}')">Edit Profile</button>
       ${_st==='blocked'
         ? `<button class="btn btn-secondary" onclick="blockFarmer('${f.id}','${_nameEsc}',true)">Unblock</button>`
         : `<button class="btn btn-danger" onclick="blockFarmer('${f.id}','${_nameEsc}',false)">Block</button>`}
@@ -13769,6 +13782,69 @@ window.deleteFarmer = async function(id, name) {
   toast(`${name} deleted.`, 'success');
   logAudit('Deleted farmer account', { targetType:'app_users', targetId:id, notes:name });
   loadFarmers();
+};
+
+/* ── Farmer profile editor ──────────────────────────────────────────
+   Opens an inline edit form in the user drawer for crops + farm size.
+   Admins can also update district and sub-county from here.        */
+window.openFarmerEdit = function(id) {
+  const f = (FRM.all || []).find(x => x.id === id);
+  if (!f) return;
+
+  const body   = document.getElementById('ud-body');
+  const footer = document.getElementById('ud-footer');
+
+  const inp = (id, label, val, type='text', hint='') =>
+    `<div>
+      <div style="font-size:9.5px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-60);margin-bottom:4px">${label}</div>
+      <input id="${id}" type="${type}" value="${(val||'').toString().replace(/"/g,'&quot;')}"
+        placeholder="${hint}"
+        style="width:100%;padding:8px 10px;border:1.5px solid var(--ink-10);border-radius:var(--radius);font-size:13px;box-sizing:border-box">
+    </div>`;
+
+  body.innerHTML = `
+    <div style="margin-bottom:16px">
+      <div style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-60);margin-bottom:12px">Edit Farmer Profile</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+        ${inp('fe-crops',      'Crops Grown',  f.crops_grown,  'text',   'e.g. Maize, Coffee')}
+        ${inp('fe-farmsize',   'Farm Size',    f.farm_size,    'text',   'e.g. 2 acres')}
+        ${inp('fe-district',   'District',     f.district,     'text',   'District')}
+        ${inp('fe-subcounty',  'Sub-county',   f.sub_county,   'text',   'Sub-county')}
+        ${inp('fe-name',       'Full Name',    f.full_name,    'text',   'Full name')}
+        ${inp('fe-phone',      'Phone',        f.phone && !String(f.phone).startsWith('ph-') ? f.phone : '', 'tel', '+256…')}
+      </div>
+    </div>`;
+
+  footer.setAttribute('style','padding:14px 20px;border-top:1px solid var(--ink-08);display:flex;gap:8px;justify-content:space-between;background:#FAFAFA');
+  footer.innerHTML = `
+    <button class="btn btn-ghost" onclick="openFarmerDetail('${id}')">Cancel</button>
+    <button class="btn btn-primary" onclick="saveFarmerEdit('${id}')">Save Changes</button>`;
+};
+
+window.saveFarmerEdit = async function(id) {
+  const g = elId => (document.getElementById(elId)||{}).value;
+  const updates = {
+    full_name:   g('fe-name').trim()      || undefined,
+    phone:       g('fe-phone').trim()     || undefined,
+    district:    g('fe-district').trim()  || undefined,
+    sub_county:  g('fe-subcounty').trim() || undefined,
+    crops_grown: g('fe-crops').trim()     || undefined,
+    farm_size:   g('fe-farmsize').trim()  || undefined,
+    updated_at:  new Date().toISOString(),
+  };
+  /* Remove keys that were empty (don't overwrite with blank) */
+  Object.keys(updates).forEach(k => { if (updates[k] === undefined) delete updates[k]; });
+
+  const { error } = await sb.from('app_users').update(updates).eq('id', id);
+  if (error) { toast('Save failed: ' + error.message, 'error'); return; }
+
+  /* Update local cache so drawer re-renders with new values */
+  const cached = (FRM.all || []).find(x => x.id === id);
+  if (cached) Object.assign(cached, updates);
+
+  toast('Profile updated.', 'success');
+  logAudit('Edited farmer profile', { targetType:'app_users', targetId:id });
+  openFarmerDetail(id);
 };
 
 /* ══════════════════════════════════════════════════════
@@ -13930,6 +14006,8 @@ window.openDiasporaClientDetail = async function(id) {
       ${cell('Email', d.email)}
       ${cell('Phone', d.phone||'—')}
       ${cell('Country', d.country_of_residence)}
+      ${cell('District', d.district||'—')}
+      ${cell('Sub-county', d.sub_county||'—')}
       ${cell('Member since', d.created_at ? fmtDate(d.created_at) : '—')}
     </div>
     <div id="dcl-orders-section"><div style="font-size:12.5px;color:var(--ink-40)">Loading orders…</div></div>`;
