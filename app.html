@@ -10441,9 +10441,14 @@
       var bodyEl = card.querySelector('.tip-body');
       if(bodyEl){
         bodyEl.innerHTML =
-          '<h4 style="margin:0 0 4px">' + (tip.title  || '') + '</h4>' +
-          '<p style="margin:0 0 6px;font-size:12.5px;color:var(--ink-60);line-height:1.5">' + (tip.description || '') + '</p>' +
-          '<a style="color:var(--teal);font-size:11px;font-weight:700;text-decoration:none">Read the tip ›</a>';
+          '<h4 style="margin:0 0 4px">' + (tip.title || '') + '</h4>' +
+          '<p style="margin:0 0 8px;font-size:12.5px;color:var(--ink-60);line-height:1.5">' + (tip.description || '') + '</p>' +
+          '<div style="display:flex;gap:12px;flex-wrap:wrap;align-items:center">' +
+            '<a style="color:var(--teal);font-size:11px;font-weight:700;text-decoration:none;cursor:pointer" ' +
+              'onclick="event.stopPropagation();window.protoShow(\'home-4\')">Read the tip ›</a>' +
+            '<a style="color:var(--orange);font-size:11px;font-weight:700;text-decoration:none;cursor:pointer;border-left:1px solid var(--ink-10);padding-left:12px" ' +
+              'onclick="event.stopPropagation();window.protoShow(\'advisory-2\')">Talk to a Field Officer ›</a>' +
+          '</div>';
       }
     }catch(e){ /* silent */ }
   }
