@@ -13684,7 +13684,7 @@ window.openFarmerDetail = async function(id) {
       ${_st==='blocked'
         ? `<button class="btn btn-secondary" onclick="blockFarmer('${f.id}','${_nameEsc}',true)">Unblock</button>`
         : `<button class="btn btn-danger" onclick="blockFarmer('${f.id}','${_nameEsc}',false)">Block</button>`}
-      <button class="btn btn-danger" style="background:var(--rust,#b91c1c)" onclick="closeUserDrawer();deleteFarmer('${f.id}','${_nameEsc}')">Delete</button>
+      <button class="btn btn-danger" style="background:#b91c1c;color:#fff;font-weight:700" onclick="deleteFarmer('${f.id}','${_nameEsc}')">Delete</button>
     </div>`;
 
   /* Fetch activity + referring agent in parallel, then re-render. */
@@ -13759,7 +13759,8 @@ window.blockFarmer = async function(id, name, isBlocked) {
 };
 
 window.deleteFarmer = async function(id, name) {
-  if (!confirm(`Permanently delete ${name}?\n\nThis removes their account and cannot be undone.`)) return;
+  if (!confirm(`Delete ${name}?\n\nThis permanently removes their account and cannot be undone.`)) return;
+  closeUserDrawer();
   /* Nullify FK references before deleting the row */
   await sb.from('orders').update({ customer_id: null }).eq('customer_id', id);
   await sb.from('farm_visits').update({ farmer_id: null }).eq('farmer_id', id);
@@ -13938,7 +13939,7 @@ window.openDiasporaClientDetail = async function(id) {
   document.getElementById('ud-footer').setAttribute('style','padding:14px 20px;border-top:1px solid var(--ink-08);display:flex;gap:8px;justify-content:space-between;background:#FAFAFA');
   document.getElementById('ud-footer').innerHTML = `
     <button class="btn btn-ghost" onclick="closeUserDrawer()">Close</button>
-    <button class="btn btn-danger" style="background:var(--rust,#b91c1c)" onclick="closeUserDrawer();deleteDiasporaClient('${d.id}','${_nameEsc}')">Delete</button>`;
+    <button class="btn btn-danger" style="background:#b91c1c;color:#fff;font-weight:700" onclick="deleteDiasporaClient('${d.id}','${_nameEsc}')">Delete</button>`;
 
   /* Load their diaspora orders */
   try {
@@ -13977,7 +13978,8 @@ window.openDiasporaClientDetail = async function(id) {
 };
 
 window.deleteDiasporaClient = async function(id, name) {
-  if (!confirm(`Permanently delete ${name}?\n\nThis removes their account and cannot be undone. Their order history will be preserved.`)) return;
+  if (!confirm(`Delete ${name}?\n\nThis permanently removes their account. Their order history will be preserved.`)) return;
+  closeUserDrawer();
   const { error } = await sb.from('app_users').delete().eq('id', id);
   if (error) { toast('Could not delete: ' + error.message, 'error'); return; }
   toast(`${name} deleted.`, 'success');
