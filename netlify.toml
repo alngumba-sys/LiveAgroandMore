@@ -26,3 +26,9 @@
 [functions]
   directory = "netlify/functions"
   node_bundler = "esbuild"
+
+# ── Secrets scanning ──────────────────────────────────────────────
+# SUPABASE_URL is the public project URL intentionally embedded in
+# frontend HTML (used with the anon key — safe to expose).
+[build.environment]
+  SECRETS_SCAN_OMIT_KEYS = "SUPABASE_URL"
