@@ -10397,42 +10397,28 @@
   async function wireAdvisoryLanding(){
     var container = scr('advisory-1'); if(!container) return;
     personaliseAvatar(container);
-    // Retry once if Supabase client not ready yet
     var sb = window.__sb;
     if(!sb){ setTimeout(wireAdvisoryLanding, 800); return; }
     try{
-      var res = await sb.from('advisory_content')
-        .select('title,description,thumbnail_url,district')
-        .eq('type','seasonal_tip').eq('visibility','public')
-        .order('published_at',{ascending:false}).limit(1);
-      /* Fallback 1: any seasonal_tip regardless of visibility */
-      if((!res.data || !res.data.length) && !res.error){
-        res = await sb.from('advisory_content')
-          .select('title,description,thumbnail_url,district')
-          .eq('type','seasonal_tip')
-          .order('created_at',{ascending:false}).limit(1);
+      /* Try narrowest filter first, fall back progressively */
+      var tip = null;
+      var queries = [
+        sb.from('advisory_content').select('title,description,thumbnail_url,district').eq('type','seasonal_tip').eq('visibility','public').order('published_at',{ascending:false}).limit(1),
+        sb.from('advisory_content').select('title,description,thumbnail_url,district').eq('type','seasonal_tip').order('created_at',{ascending:false}).limit(1),
+        sb.from('advisory_content').select('title,description,thumbnail_url,district').order('created_at',{ascending:false}).limit(1),
+      ];
+      for(var qi=0; qi<queries.length; qi++){
+        var r = await queries[qi];
+        if(r.data && r.data.length){ tip = r.data[0]; break; }
       }
-      /* Fallback 2: most recent advisory record of any type
-         (catches wrong type saved from admin) */
-      if((!res.data || !res.data.length) && !res.error){
-        res = await sb.from('advisory_content')
-          .select('title,description,thumbnail_url,district')
-          .order('created_at',{ascending:false}).limit(1);
-      }
-      if(!res.data||!res.data.length) return;
-      var tip = res.data[0];
+      if(!tip) return;
+
+      /* Re-fetch the container — user may have navigated while we were loading */
+      container = scr('advisory-1'); if(!container) return;
       var card = container.querySelector('.tip-card');
       if(!card) return;
-      var h4 = card.querySelector('h4');
-      if(h4 && tip.title)       h4.textContent = tip.title;
-      var p  = card.querySelector('p');
-      if(p)                     p.textContent  = tip.description || '';
-      /* Tag: "FROM {district} · SENIOR AGRONOMIST" or fallback "FEATURED THIS WEEK" */
-      var tagEl = card.querySelector('.tip-img .tag');
-      if(tagEl) tagEl.textContent = tip.district
-        ? 'FROM ' + tip.district.toUpperCase() + ' · SENIOR AGRONOMIST'
-        : 'FEATURED THIS WEEK';
-      /* Hero image */
+
+      /* Update image */
       if(tip.thumbnail_url){
         var imgEl = card.querySelector('.tip-img img');
         if(!imgEl){
@@ -10443,7 +10429,22 @@
         }
         imgEl.src = tip.thumbnail_url;
       }
-    }catch(e){}
+
+      /* Update tag */
+      var tagEl = card.querySelector('.tip-img .tag');
+      if(tagEl) tagEl.textContent = tip.district
+        ? 'FROM ' + tip.district.toUpperCase() + ' · SENIOR AGRONOMIST'
+        : 'FEATURED THIS WEEK';
+
+      /* Rewrite tip-body entirely so stale —/— placeholders can't survive */
+      var bodyEl = card.querySelector('.tip-body');
+      if(bodyEl){
+        bodyEl.innerHTML =
+          '<h4 style="margin:0 0 4px">' + (tip.title  || '') + '</h4>' +
+          '<p style="margin:0 0 6px;font-size:12.5px;color:var(--ink-60);line-height:1.5">' + (tip.description || '') + '</p>' +
+          '<a style="color:var(--teal);font-size:11px;font-weight:700;text-decoration:none">Read the tip ›</a>';
+      }
+    }catch(e){ /* silent */ }
   }
 
   /* ---- advisory-2 speciality/language filter chip wiring ---- */
