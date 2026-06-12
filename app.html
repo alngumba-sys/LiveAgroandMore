@@ -2142,9 +2142,13 @@
             <div class="field"><span class="label">Full Name</span><div class="input"><input type="text" placeholder="Your full name" autocomplete="off" style="flex:1;border:none;outline:none;background:transparent;font-family:inherit;font-size:13.5px;color:var(--ink);min-width:0;width:100%;padding:0"></div></div>
             <div class="field"><span class="label">Phone Number</span><div class="input"><span class="prefix">+256</span><span>—</span></div></div>
             <div class="field"><span class="label">Email Address <span style="color:var(--teal);font-weight:500">(optional)</span></span><div class="input"><span class="ph">nakato@email.ug</span></div></div>
-            <div class="field row">
-              <div><span class="label">District</span><div class="input"><span>Mpigi</span><span style="margin-left:auto">▾</span></div></div>
-              <div><span class="label">Sub-county</span><div class="input"><span>Nkozi</span><span style="margin-left:auto">▾</span></div></div>
+            <div class="field" data-loc-field>
+              <span class="label">Location <span style="color:var(--teal);font-weight:500;font-size:10px">· district &amp; sub-county</span></span>
+              <div class="input" style="padding:0 4px 0 0">
+                <select data-loc-select style="flex:1;border:none;outline:none;background:transparent;font-family:inherit;font-size:13px;color:var(--ink);width:100%;padding:10px 0;cursor:pointer">
+                  <option value="">Select sub-county…</option>
+                </select>
+              </div>
             </div>
             <div class="field"><span class="label">Age Range</span><div class="pills"><div class="pill on">18 – 35</div><div class="pill">36 – 60</div></div></div>
             <div class="field">
@@ -9233,25 +9237,14 @@
     fillField('Village',   profile.sub_county);
 
     /* District */
-    var districtInputs = container.querySelectorAll('.field.row .input');
-    if (districtInputs[0] && !districtInputs[0].querySelector('input')) {
-      var inp = document.createElement('input');
-      inp.type = 'text'; inp.value = profile.district || '';
-      inp.style.cssText = 'width:100%;border:none;background:transparent;font:inherit;font-size:12px;color:var(--ink);outline:none';
-      inp.placeholder = 'District';
-      districtInputs[0].innerHTML = ''; districtInputs[0].appendChild(inp);
-    } else if (districtInputs[0]) {
-      districtInputs[0].querySelector('input').value = profile.district || '';
-    }
-
-    if (districtInputs[1] && !districtInputs[1].querySelector('input')) {
-      var inp2 = document.createElement('input');
-      inp2.type = 'text'; inp2.value = profile.sub_county || '';
-      inp2.style.cssText = 'width:100%;border:none;background:transparent;font:inherit;font-size:12px;color:var(--ink);outline:none';
-      inp2.placeholder = 'Sub-county';
-      districtInputs[1].innerHTML = ''; districtInputs[1].appendChild(inp2);
-    } else if (districtInputs[1]) {
-      districtInputs[1].querySelector('input').value = profile.sub_county || '';
+    var /* Location grouped select — pre-select based on saved profile */
+    var locSelEl = container.querySelector('[data-loc-select]');
+    if (locSelEl && profile.district) {
+      var targetVal = profile.district + '::' + (profile.sub_county || '');
+      /* Try exact match first, then district-only match */
+      var matched = Array.from(locSelEl.options).find(function(o){ return o.value === targetVal; })
+                 || Array.from(locSelEl.options).find(function(o){ return o.value.startsWith(profile.district + '::'); });
+      if (matched) locSelEl.value = matched.value;
     }
 
     /* ── Farmer-only fields: Age Range, Crops, Farm size ── */
@@ -9373,9 +9366,12 @@
           if (t.includes('email'))   newEmail    = val;
           if (t.includes('village')) newVillage  = val;
         });
-        var rowInputs = container.querySelectorAll('.field.row input');
-        if (rowInputs[0]) newDistrict = rowInputs[0].value.trim();
-        if (rowInputs[1]) newSubCo    = rowInputs[1].value.trim();
+        var _locSelEl = container.querySelector('[data-loc-select]');
+        if (_locSelEl && _locSelEl.value) {
+          var _lp = _locSelEl.value.split('::');
+          newDistrict = (_lp[0] || '').trim();
+          newSubCo    = (_lp[1] || '').trim();
+        }
 
         if (!newName) { alert('Full name cannot be empty.'); return; }
 
@@ -18041,7 +18037,47 @@
     box.appendChild(inp);
     return inp;
   }
-  var regInputs=null;
+  var   /* Sub-counties grouped by district for the farmer signup location picker */
+  var FARMER_LOCATIONS = {
+    'Kampala':   ['Central Division','Kawempe Division','Makindye Division','Nakawa Division','Rubaga Division'],
+    'Wakiso':    ['Nansana','Kira','Makindye-Ssabagabo','Entebbe','Wakiso Town','Busiro','Kajjansi','Gayaza','Nabweru','Kyengera'],
+    'Mukono':    ['Mukono Town','Seeta-Namuganga','Nakisunga','Goma','Koome','Ntenjeru'],
+    'Mpigi':     ['Nkozi','Buwama','Muduuma','Mpigi Town','Kiringente','Kammengo'],
+    'Gomba':     ['Kabulasoke','Maddu','Mpenje','Kyegonza'],
+    'Butambala': ['Gombe','Bulo','Kalamba','Najjembe'],
+    'Masaka':    ['Masaka Town','Nyendo-Senyange','Bukakata','Buwunga','Kimanya-Kyabakuza'],
+    'Kalungu':   ['Bukulula','Kalungu Town','Lwabenge','Muduuma'],
+    'Rakai':     ['Rakai Town','Kakuuto','Kooki','Kyotera','Lwengo'],
+    'Lyantonde': ['Lyantonde Town','Kabula','Kaliiro'],
+    'Jinja':     ['Jinja Town','Bugembe','Kakira','Mafubira','Budondo','Butagaya'],
+    'Iganga':    ['Iganga Town','Bulamogi','Buyanga','Nakigo'],
+    'Kamuli':    ['Kamuli Town','Bugulumbya','Butansi','Nawanyago'],
+    'Kayunga':   ['Kayunga Town','Bbaale','Busaana','Galiraya','Kakoge'],
+    'Luwero':    ['Luwero Town','Bamunanika','Bombo','Butuntumula','Makulubita'],
+    'Nakaseke':  ['Nakaseke Town','Butalangu','Kiwoko','Semuto'],
+    'Mityana':   ['Mityana Town','Busimbi','Malangala','Muwanga'],
+    'Mubende':   ['Mubende Town','Bagezza','Butoloogo','Kassanda','Kiganda'],
+    'Kiboga':    ['Kiboga Town','Bukomero','Dwaniro','Kapeke'],
+    'Mbarara':   ['Mbarara Town','Kakiika','Nyamitanga','Biharwe','Rubaya','Rubindi'],
+    'Bushenyi':  ['Bushenyi Town','Igara','Mitooma','Rubirizi'],
+    'Ntungamo':  ['Ntungamo Town','Ruhaama','Rukoni East','Rukoni West'],
+    'Kabale':    ['Kabale Town','Bufundi','Bubare','Ikumba','Kamwezi','Kaharo'],
+    'Kisoro':    ['Kisoro Town','Bufumbira North','Bufumbira South','Mutolere'],
+    'Rukungiri': ['Rukungiri Town','Buyanja','Kebisoni','Nyakishenyi'],
+    'Kanungu':   ['Kanungu Town','Kambuga','Kirima','Rutenga'],
+    'Gulu':      ['Gulu Town','Laroo','Pece','Koro','Awach','Patiko'],
+    'Lira':      ['Lira Town','Adyel','Central','Ojwina','Agali','Barr'],
+    'Soroti':    ['Soroti Town','Arapai','Gweri','Kamuda','Asuret'],
+    'Mbale':     ['Mbale Town','Wanale','Bungokho','Bufumbo','Bumbobi'],
+    'Tororo':    ['Tororo Town','Mukujju','Kisoko','Rubongi','Osukuru'],
+    'Hoima':     ['Hoima Town','Busiisi','Kahoora','Kigorobya','Kitoba'],
+    'Arua':      ['Arua Town','Ayivu','Dadamu','Oluko','Logiri','Vurra'],
+    'Fort Portal':['Fort Portal Town','Burahya','Busoro','Bunyangabu'],
+    'Kasese':    ['Kasese Town','Bukonjo','Busongora','Ihandiro','Maliba'],
+    'Other':     ['Other']
+  };
+
+regInputs=null;
   function wireRegisterForm(){
     var s=scr('agent-flows-2'); if(!s) return;
     if(s.dataset.regWired){ return; }
@@ -18051,23 +18087,26 @@
     var phoneInp=injectInput(fieldByLabel(s,'Phone'),{type:'tel',inputmode:'numeric',placeholder:'772 000 000'});
     var villInp =injectInput(fieldByLabel(s,'Village'),{placeholder:'Village / Parish'});
 
-    /* District + Sub-county share a .field.row — inject into each child */
-    var distInp=null, subInp=null;
-    var row=s.querySelector('.field.row');
-    if(row){
-      Array.from(row.children).forEach(function(child){
-        var l=child.querySelector('.label'); var box=child.querySelector('.input');
-        if(!l||!box) return;
-        var t=l.textContent.toLowerCase();
-        var inp=document.createElement('input'); inp.type='text';
-        inp.style.cssText='flex:1;border:none;outline:none;background:transparent;font-family:inherit;font-size:13px;color:var(--ink);min-width:0;width:100%;padding:0';
-        box.innerHTML=''; box.appendChild(inp);
-        if(t.indexOf('district')>=0){ inp.placeholder='District'; distInp=inp; }
-        else if(t.indexOf('sub')>=0){ inp.placeholder='Sub-county'; subInp=inp; }
-      });
+    /* Single grouped location select */
+    var locSel=null;
+    var locField=s.querySelector('[data-loc-field]');
+    if(locField){
+      var sel=locField.querySelector('[data-loc-select]');
+      if(sel){
+        var html='<option value="">Select sub-county…</option>';
+        Object.keys(FARMER_LOCATIONS).forEach(function(dist){
+          html+='<optgroup label="'+dist+'">';
+          FARMER_LOCATIONS[dist].forEach(function(sub){
+            html+='<option value="'+dist+'::'+sub+'">'+sub+'</option>';
+          });
+          html+='</optgroup>';
+        });
+        sel.innerHTML=html;
+        locSel=sel;
+      }
     }
 
-    /* Age pills + crop chips are cosmetic (no app_users columns) — just toggle */
+    /* Age pills + crop chips are cosmetic — just toggle */
     s.querySelectorAll('.pills .pill').forEach(function(p){
       p.style.cursor='pointer';
       p.addEventListener('click',function(){
@@ -18080,7 +18119,7 @@
       c.addEventListener('click',function(){ c.classList.toggle('on'); });
     });
 
-    regInputs={name:nameInp,phone:phoneInp,district:distInp,sub:subInp,village:villInp};
+    regInputs={name:nameInp,phone:phoneInp,locSel:locSel,village:villInp};
 
     var submit=s.querySelector('.sticky-btn .btn.primary')||s.querySelector('.btn.primary');
     if(submit){
@@ -18093,8 +18132,10 @@
         var phone=normPhone(regInputs.phone&&regInputs.phone.value);
         if(!name){ toast("Enter the farmer's name"); regInputs.name&&regInputs.name.focus(); return; }
         if(!phone||phone.length<12){ toast('Enter a valid phone number'); regInputs.phone&&regInputs.phone.focus(); return; }
-        var district=((regInputs.district&&regInputs.district.value)||'').trim();
-        var sub=((regInputs.sub&&regInputs.sub.value)||'').trim();
+        var _locVal=(regInputs.locSel&&regInputs.locSel.value)||'';
+        var _locParts=_locVal.split('::');
+        var district=(_locParts[0]||'').trim();
+        var sub=(_locParts[1]||'').trim();
         var village=((regInputs.village&&regInputs.village.value)||'').trim();
         var orig=submit.textContent; submit.disabled=true; submit.textContent='Registering…';
         try{
