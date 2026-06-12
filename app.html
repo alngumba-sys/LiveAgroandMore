@@ -13740,7 +13740,7 @@
     if (sb) {
       try {
         var res = await sb.from('advisory_content')
-          .select('title,description,thumbnail_url,district,published_at')
+          .select('title,description,thumbnail_url,target_districts,published_at')
           .eq('type','seasonal_tip').eq('visibility','public')
           .order('published_at',{ascending:false}).limit(1);
         if (res.data && res.data.length) tip = res.data[0];
@@ -13773,11 +13773,12 @@
       });
     }
     /* District chip */
-    if (tip.district) {
+    var tipDistrict = Array.isArray(tip.target_districts) ? tip.target_districts[0] : tip.target_districts;
+    if (tipDistrict) {
       var chipRow = container.querySelector('.chip.teal');
       if (chipRow && chipRow.parentElement) {
         Array.from(chipRow.parentElement.querySelectorAll('.chip:not(.teal)')).forEach(function(c){ c.remove(); });
-        var dc = document.createElement('span'); dc.className = 'chip'; dc.textContent = tip.district;
+        var dc = document.createElement('span'); dc.className = 'chip'; dc.textContent = tipDistrict;
         chipRow.parentElement.appendChild(dc);
       }
     }
@@ -13809,7 +13810,7 @@
           if (typeof toast === 'function') toast('Already saved.');
           return;
         }
-        list.unshift({ title: tip.title, description: tip.description, district: tip.district, saved_at: new Date().toISOString() });
+        list.unshift({ title: tip.title, description: tip.description, district: tipDistrict, saved_at: new Date().toISOString() });
         try { localStorage.setItem('amSavedTips', JSON.stringify(list.slice(0, 20))); } catch(_) {}
         saveBtn.textContent = 'Saved ✓';
         if (typeof toast === 'function') toast('Tip saved!');
