@@ -13101,7 +13101,7 @@
     if(sb){
       try{
         var tipRes = await sb.from('advisory_content')
-          .select('title,description,thumbnail_url,district')
+          .select('title,description,thumbnail_url,target_districts')
           .eq('type','seasonal_tip').eq('visibility','public')
           .order('published_at',{ascending:false}).limit(1);
         if(tipRes.data && tipRes.data.length){
@@ -13111,7 +13111,8 @@
             var h4 = card.querySelector('h4'); if(h4) h4.textContent = tip.title;
             var p  = card.querySelector('p');  if(p)  p.textContent  = tip.description||'';
             var tag = card.querySelector('.tip-img .tag');
-            if(tag && tip.district) tag.textContent = 'SEASONAL TIP · '+tip.district.toUpperCase();
+            var tipDistrict0 = Array.isArray(tip.target_districts) ? tip.target_districts[0] : tip.target_districts;
+            if(tag && tipDistrict0) tag.textContent = 'SEASONAL TIP · '+tipDistrict0.toUpperCase();
             /* Image precedence: a "home-seasonal-tip" CMS slot (Settings →
                Images) is the authoritative source. Only fall back to the
                advisory thumbnail when that slot has not been set. */
