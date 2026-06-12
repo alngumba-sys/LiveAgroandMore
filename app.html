@@ -10403,9 +10403,9 @@
       /* Try narrowest filter first, fall back progressively */
       var tip = null;
       var queries = [
-        sb.from('advisory_content').select('title,description,thumbnail_url,district').eq('type','seasonal_tip').eq('visibility','public').order('published_at',{ascending:false}).limit(1),
-        sb.from('advisory_content').select('title,description,thumbnail_url,district').eq('type','seasonal_tip').order('created_at',{ascending:false}).limit(1),
-        sb.from('advisory_content').select('title,description,thumbnail_url,district').order('created_at',{ascending:false}).limit(1),
+        sb.from('advisory_content').select('title,description,thumbnail_url,target_districts').eq('type','seasonal_tip').eq('visibility','public').order('published_at',{ascending:false}).limit(1),
+        sb.from('advisory_content').select('title,description,thumbnail_url,target_districts').eq('type','seasonal_tip').order('created_at',{ascending:false}).limit(1),
+        sb.from('advisory_content').select('title,description,thumbnail_url,target_districts').order('created_at',{ascending:false}).limit(1),
       ];
       for(var qi=0; qi<queries.length; qi++){
         var r = await queries[qi];
@@ -10431,9 +10431,10 @@
       }
 
       /* Update tag */
+      var district = Array.isArray(tip.target_districts) ? tip.target_districts[0] : tip.target_districts;
       var tagEl = card.querySelector('.tip-img .tag');
-      if(tagEl) tagEl.textContent = tip.district
-        ? 'FROM ' + tip.district.toUpperCase() + ' · SENIOR AGRONOMIST'
+      if(tagEl) tagEl.textContent = district
+        ? 'FROM ' + String(district).toUpperCase() + ' · SENIOR AGRONOMIST'
         : 'FEATURED THIS WEEK';
 
       /* Rewrite tip-body entirely so stale —/— placeholders can't survive */
