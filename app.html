@@ -2856,8 +2856,12 @@
             <div style="width:34px;height:34px;border-radius:10px;background:var(--cream);color:var(--teal);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:18px">🏪</div>
             <div style="flex:1;min-width:0">
               <div style="font-size:12.5px;font-weight:700;color:var(--ink)">In-store pickup</div>
-              <div style="font-size:10.5px;color:var(--ink-60);margin-top:2px;line-height:1.35">Walk in any time during opening hours · Mpigi Town outlet · 7am – 7pm</div>
-              <div style="font-size:11px;color:var(--teal);font-weight:700;margin-top:4px">Free</div>
+              <div style="font-size:10.5px;color:var(--ink-60);margin-top:2px;line-height:1.35">Walk in any time during opening hours · 7am – 7pm · pick your outlet:</div>
+              <div style="position:relative;margin-top:6px">
+                <select data-pickup-outlet-select style="width:100%;height:36px;border:1px solid var(--ink-10);border-bottom:1.5px solid var(--teal);border-radius:8px;padding:0 30px 0 10px;font-size:12px;font-family:inherit;color:var(--ink);background:#fff;cursor:pointer;outline:none;appearance:none;-webkit-appearance:none;-moz-appearance:none;box-sizing:border-box"></select>
+                <span style="position:absolute;right:10px;top:50%;transform:translateY(-50%);pointer-events:none;color:var(--ink-60);font-size:10px">▾</span>
+              </div>
+              <div data-instore-fee style="font-size:11px;color:var(--teal);font-weight:700;margin-top:4px">Free</div>
             </div>
           </label>
 
@@ -2998,11 +3002,10 @@
           <div class="card" style="margin-bottom:10px;border-left:3px solid var(--orange);background:#FFF4E4">
             <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px">
               <div>
-                <div style="font-size:10.5px;color:var(--orange);font-weight:800;text-transform:uppercase;letter-spacing:.04em;display:flex;align-items:center;gap:4px">🛵 Drive-through pickup</div>
-                <div style="font-size:12.5px;font-weight:700;margin-top:3px"><strong>Mpigi Town outlet</strong></div>
-                <div style="font-size:10.5px;color:var(--ink-60);margin-top:2px">Plot 14, Mpigi main road · Ready ~15 min after payment verified</div>
+                <div data-co-delivery-method style="font-size:10.5px;color:var(--orange);font-weight:800;text-transform:uppercase;letter-spacing:.04em;display:flex;align-items:center;gap:4px">🛵 Drive-through pickup</div>
+                <div style="font-size:12.5px;font-weight:700;margin-top:3px"><strong data-co-delivery-outlet>Mpigi Town outlet</strong></div>
+                <div data-co-delivery-note style="font-size:10.5px;color:var(--ink-60);margin-top:2px">Plot 14, Mpigi main road · Ready ~15 min after payment verified</div>
               </div>
-              <span style="color:var(--teal);font-size:11px;font-weight:700">Change</span>
             </div>
           </div>
 
@@ -3219,6 +3222,21 @@
               <h4>—</h4>
               <p>—</p>
               <a style="color:var(--teal);font-size:11px;font-weight:700;text-decoration:none">Read the tip ›</a>
+            </div>
+          </div>
+
+          <!-- Social media links — populated by wireAdvisoryLanding -->
+          <div id="adv-social-row" style="display:none;margin-top:14px;padding-top:14px;border-top:1px solid var(--ink-08)">
+            <div style="font-size:11px;font-weight:700;color:var(--ink-40);letter-spacing:.06em;text-transform:uppercase;margin-bottom:8px">Follow Us</div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap">
+              <a id="adv-social-linkedin" href="#" target="_blank" rel="noopener noreferrer" style="display:none;align-items:center;gap:6px;background:#E8F1FB;color:#0A66C2;border-radius:10px;padding:8px 14px;font-size:12px;font-weight:700;text-decoration:none">
+                <svg viewBox="0 0 24 24" fill="#0A66C2" style="width:14px;height:14px;flex-shrink:0"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+                LinkedIn
+              </a>
+              <a id="adv-social-facebook" href="#" target="_blank" rel="noopener noreferrer" style="display:none;align-items:center;gap:6px;background:#E7F0FD;color:#1877F2;border-radius:10px;padding:8px 14px;font-size:12px;font-weight:700;text-decoration:none">
+                <svg viewBox="0 0 24 24" fill="#1877F2" style="width:14px;height:14px;flex-shrink:0"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+                Facebook
+              </a>
             </div>
           </div>
         </div></div>
@@ -9238,7 +9256,7 @@
     fillField('Village',   profile.sub_county);
 
     /* District */
-    var /* Location grouped select — pre-select based on saved profile */
+    /* Location grouped select — pre-select based on saved profile */
     var locSelEl = container.querySelector('[data-loc-select]');
     if (locSelEl && profile.district) {
       var targetVal = profile.district + '::' + (profile.sub_county || '');
@@ -9285,7 +9303,7 @@
         /* Strip emoji and tick so we match on the text name only */
         var chipText = chip.textContent.replace(/✓/g, '').trim();
         /* Remove leading emoji (any non-ASCII char sequence before the first space) */
-        var chipName = chipText.replace(/^[^ -]+\s*/, '').trim().toLowerCase();
+        var chipName = chipText.replace(/^[^\x00-\x7f]+\s*/, '').trim().toLowerCase();
         var isSelected = savedLower.some(function(c) {
           return c === chipName || c.includes(chipName) || chipName.includes(c);
         });
@@ -9383,7 +9401,7 @@
 
         var newCrops = [];
         container.querySelectorAll('.crop-chip.on').forEach(function(chip) {
-          var name = chip.textContent.replace(/✓/g, '').replace(/^[^ -]+\s*/, '').trim();
+          var name = chip.textContent.replace(/✓/g, '').replace(/^[^\x00-\x7f]+\s*/, '').trim();
           if (name) newCrops.push(name);
         });
 
@@ -10447,6 +10465,29 @@
               'onclick="event.stopPropagation();window.protoShow(\'advisory-2\')">Talk to a Field Officer ›</a>' +
           '</div>';
       }
+      /* ── Social media links ────────────────────────── */
+      try {
+        var socRes = await sb.from('settings').select('key,value')
+          .in('key', ['social_linkedin', 'social_facebook']);
+        if (socRes.data && socRes.data.length) {
+          var socMap = {};
+          socRes.data.forEach(function(r){ socMap[r.key] = r.value; });
+          var liEl = document.getElementById('adv-social-linkedin');
+          var fbEl = document.getElementById('adv-social-facebook');
+          var rowEl = document.getElementById('adv-social-row');
+          if (liEl && socMap.social_linkedin) {
+            liEl.href = socMap.social_linkedin;
+            liEl.style.display = 'flex';
+          }
+          if (fbEl && socMap.social_facebook) {
+            fbEl.href = socMap.social_facebook;
+            fbEl.style.display = 'flex';
+          }
+          if (rowEl && (socMap.social_linkedin || socMap.social_facebook)) {
+            rowEl.style.display = '';
+          }
+        }
+      } catch(e){ /* silent */ }
     }catch(e){ /* silent */ }
   }
 
@@ -11956,6 +11997,75 @@
   /* Default to drive-through to match the visual default in the mockup. */
   window.__amDelivery = window.__amDelivery || DELIVERY_METHODS.drive;
 
+  /* ---- In-store pickup outlets --------------------------------------
+     Stock-transfer fee per outlet (Mpigi Town is the main store → free).
+     Admin override: settings key 'pickup_outlet_fees' = JSON object
+     { "Outlet name": fee, ... } — fetched in boot(), merged over these
+     defaults so Platform admins can re-price without an app deploy. */
+  var PICKUP_OUTLETS = {
+    'Mpigi Town':    0,
+    'Gomba':         2000,
+    'Butambala':     2000,
+    'Isingiro':      5000,
+    'Soroti':        8000,
+    'Nakapiripirit': 10000,
+    'Moroto':        10000
+  };
+  window.__amPickupOutlet = window.__amPickupOutlet || 'Mpigi Town';
+
+  function pickupOutletFee(name){
+    return PICKUP_OUTLETS.hasOwnProperty(name) ? (PICKUP_OUTLETS[name] || 0) : 0;
+  }
+
+  /* Set the chosen outlet → patch the instore method, repaint cart bits. */
+  function applyPickupOutlet(container, outletName){
+    if (!PICKUP_OUTLETS.hasOwnProperty(outletName)) outletName = 'Mpigi Town';
+    window.__amPickupOutlet = outletName;
+    var fee = pickupOutletFee(outletName);
+    DELIVERY_METHODS.instore.label   = 'In-store pickup · ' + outletName;
+    DELIVERY_METHODS.instore.baseFee = fee;
+    if (window.__amDelivery && window.__amDelivery.key === 'instore') {
+      window.__amDelivery = DELIVERY_METHODS.instore;
+    }
+    if (container) {
+      var feeEl = container.querySelector('[data-instore-fee]');
+      if (feeEl) {
+        feeEl.textContent = fee === 0 ? 'Free' : '+ ' + fmt(fee) + ' transfer fee';
+        feeEl.style.color = fee === 0 ? 'var(--teal)' : 'var(--ink)';
+      }
+      refreshCartSummary(container);
+    }
+  }
+
+  /* Fill the outlet <select> on the cart's in-store card + wire changes. */
+  function wirePickupOutletSelect(container){
+    if (!container) return;
+    var sel = container.querySelector('[data-pickup-outlet-select]');
+    if (!sel) return;
+    /* (Re)build options every entry so admin fee overrides land. */
+    var current = window.__amPickupOutlet || 'Mpigi Town';
+    sel.innerHTML = Object.keys(PICKUP_OUTLETS).map(function(name){
+      var fee = pickupOutletFee(name);
+      return '<option value="' + escHtml(name) + '"' + (name === current ? ' selected' : '') + '>'
+        + escHtml(name) + ' outlet · ' + (fee === 0 ? 'Free' : '+ ' + fmt(fee)) + '</option>';
+    }).join('');
+    if (sel.dataset.amWired !== '1') {
+      sel.dataset.amWired = '1';
+      sel.addEventListener('change', function(){
+        /* Choosing an outlet implies in-store pickup — select that method. */
+        var radio = container.querySelector('input.delivery-radio[value="instore"]');
+        if (radio && !radio.checked) { radio.checked = true; }
+        window.__amDelivery = DELIVERY_METHODS.instore;
+        applyPickupOutlet(container, sel.value);
+        paintDeliverySelection(container);
+      });
+      /* Don't let taps on the select bubble oddly inside the <label>. */
+      sel.addEventListener('click', function(e){ e.stopPropagation(); });
+    }
+    /* Sync fee line + method label with current outlet on entry. */
+    applyPickupOutlet(container, current);
+  }
+
   /* ---- Render cart on shop-3 ---- */
   function populateCart(){
     var container=scr('shop-3'); if(!container) return;
@@ -11980,6 +12090,8 @@
 
     /* Wire the delivery-method cards so taps actually change selection. */
     wireDeliveryCards(container);
+    /* Outlet picker on the in-store card (fees may have been admin-patched). */
+    wirePickupOutletSelect(container);
     /* Refresh summary + Proceed-to-Pay button per current delivery. */
     refreshCartSummary(container);
 
@@ -12098,6 +12210,28 @@
     if (!container) return;
     var method = window.__amDelivery || DELIVERY_METHODS.drive;
     var subtotal = cartTotal();
+
+    /* ── DELIVERY card: reflect the method/outlet chosen in the cart ── */
+    (function(){
+      var mEl = container.querySelector('[data-co-delivery-method]');
+      var oEl = container.querySelector('[data-co-delivery-outlet]');
+      var nEl = container.querySelector('[data-co-delivery-note]');
+      if (!mEl || !oEl || !nEl) return;
+      if (method.key === 'instore') {
+        var outlet = window.__amPickupOutlet || 'Mpigi Town';
+        mEl.textContent = '🏪 In-store pickup';
+        oEl.textContent = outlet + ' outlet';
+        nEl.textContent = 'Walk in any time · 7am – 7pm · show your order code at the counter';
+      } else if (method.key === 'boda') {
+        mEl.textContent = '🚚 Boda delivery';
+        oEl.textContent = window.__amBodaArea || DEFAULT_BODA_AREA;
+        nEl.textContent = (window.__amBodaStreet || '') + ' · Same-day if you pay before 2pm';
+      } else {
+        mEl.textContent = '🛵 Drive-through pickup';
+        oEl.textContent = 'Mpigi Town outlet';
+        nEl.textContent = 'Plot 14, Mpigi main road · Ready ~15 min after payment verified';
+      }
+    })();
     var fee = method.key === 'boda'
       ? resolveDeliveryFee(window.__amBodaArea || DEFAULT_BODA_AREA, subtotal)
       : (method.baseFee || 0);
@@ -12803,6 +12937,7 @@
        direct URL hash (page reload), which bypasses the protoShow wrap
        that would otherwise have called populateCart → wireDeliveryCards. */
     wireDeliveryCards(scr('shop-3'));
+    wirePickupOutletSelect(scr('shop-3'));
     // If app opens on shop-1, load counts
     setTimeout(loadCategoryCounts, 1200);
     /* Fetch delivery pricing config from admin settings */
@@ -12818,6 +12953,26 @@
             if (parsed && typeof parsed === 'object') {
               window.__deliveryPricing = parsed;
               applyDeliveryPricingConfig();
+            }
+          } catch(_) {}
+        }
+      }).catch(function(){});
+      /* Admin override for in-store pickup outlet fees:
+         settings key 'pickup_outlet_fees' = {"Mpigi Town":0,"Gomba":2000,...}
+         Merged over PICKUP_OUTLETS defaults; unknown outlets are added. */
+      sbInst.from('settings').select('value').eq('key','pickup_outlet_fees').limit(1).then(function(res) {
+        if (res.data && res.data[0] && res.data[0].value) {
+          try {
+            var cfg = typeof res.data[0].value === 'string'
+              ? JSON.parse(res.data[0].value)
+              : res.data[0].value;
+            if (cfg && typeof cfg === 'object') {
+              Object.keys(cfg).forEach(function(name){
+                var f = parseInt(cfg[name], 10);
+                if (!isNaN(f) && f >= 0) PICKUP_OUTLETS[name] = f;
+              });
+              /* Re-sync select options + current fee with new numbers. */
+              wirePickupOutletSelect(scr('shop-3'));
             }
           } catch(_) {}
         }
@@ -14606,14 +14761,16 @@
 
     var locField = container.querySelector('[data-loc-field]');
     if (locField) {
-      /* Farmer grouped select: build optgroups from FARMER_LOCATIONS */
+      /* Farmer grouped select: build optgroups from FARMER_LOCATIONS
+         (defined in the agent-flows IIFE, exported on window) */
+      var FL = window.FARMER_LOCATIONS || {};
       var sel = locField.querySelector('[data-loc-select]');
       if (sel) {
         var html = '<option value="">Select sub-county…</option>';
-        Object.keys(FARMER_LOCATIONS).forEach(function(dist) {
+        Object.keys(FL).forEach(function(dist) {
           html += '<optgroup label="' + dist + '">';
-          FARMER_LOCATIONS[dist].forEach(function(sub) {
-            html += '<option value="' + dist + '::' + sub + '">' + sub + '</option>';
+          FL[dist].forEach(function(sub) {
+            html += '<option value="' + dist + '::' + sub + '">' + dist + ' – ' + sub + '</option>';
           });
           html += '</optgroup>';
         });
@@ -18055,7 +18212,7 @@
     box.appendChild(inp);
     return inp;
   }
-  var   /* Sub-counties grouped by district for the farmer signup location picker */
+  /* Sub-counties grouped by district for the farmer signup location picker */
   var FARMER_LOCATIONS = {
     'Kampala':   ['Central Division','Kawempe Division','Makindye Division','Nakawa Division','Rubaga Division'],
     'Wakiso':    ['Nansana','Kira','Makindye-Ssabagabo','Entebbe','Wakiso Town','Busiro','Kajjansi','Gayaza','Nabweru','Kyengera'],
@@ -18094,8 +18251,10 @@
     'Kasese':    ['Kasese Town','Bukonjo','Busongora','Ihandiro','Maliba'],
     'Other':     ['Other']
   };
+  /* Expose for the signup wiring in the auth IIFE (separate script block) */
+  window.FARMER_LOCATIONS = FARMER_LOCATIONS;
 
-regInputs=null;
+  var regInputs=null;
   function wireRegisterForm(){
     var s=scr('agent-flows-2'); if(!s) return;
     if(s.dataset.regWired){ return; }
@@ -18115,7 +18274,7 @@ regInputs=null;
         Object.keys(FARMER_LOCATIONS).forEach(function(dist){
           html+='<optgroup label="'+dist+'">';
           FARMER_LOCATIONS[dist].forEach(function(sub){
-            html+='<option value="'+dist+'::'+sub+'">'+sub+'</option>';
+            html+='<option value="'+dist+'::'+sub+'">'+dist+' – '+sub+'</option>';
           });
           html+='</optgroup>';
         });
