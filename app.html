@@ -2521,10 +2521,23 @@
             <button class="btn primary">Share on WhatsApp</button>
             <button class="btn secondary" style="width:auto;padding:0 14px">Save</button>
           </div>
+          <!-- Social links — shown when MD has configured them in Settings -->
+          <div id="tip-social-links" style="display:none;margin-top:10px;gap:8px">
+            <a id="tip-social-facebook" href="#" target="_blank" rel="noopener noreferrer"
+               style="display:none;flex:1;align-items:center;justify-content:center;gap:6px;background:#E7F0FD;color:#1877F2;border-radius:12px;padding:11px 10px;font-size:12px;font-weight:700;text-decoration:none;border:1px solid rgba(24,119,242,.2);text-align:center">
+              <svg viewBox="0 0 24 24" fill="#1877F2" style="width:15px;height:15px;flex-shrink:0"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+              Facebook
+            </a>
+            <a id="tip-social-linkedin" href="#" target="_blank" rel="noopener noreferrer"
+               style="display:none;flex:1;align-items:center;justify-content:center;gap:6px;background:#E8F1FB;color:#0A66C2;border-radius:12px;padding:11px 10px;font-size:12px;font-weight:700;text-decoration:none;border:1px solid rgba(10,102,194,.2);text-align:center">
+              <svg viewBox="0 0 24 24" fill="#0A66C2" style="width:15px;height:15px;flex-shrink:0"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+              LinkedIn
+            </a>
+          </div>
         </div></div>
         %%BNAV_HOME%%
       </div></div>
-      <div class="screen-caption">Author attributed · share to WhatsApp · save for later.</div>
+      <div class="screen-caption">Author attributed · share to WhatsApp · save for later · social links from admin settings.</div>
     </div>
 
     <!-- For Hire Categories -->
@@ -13995,6 +14008,33 @@
         saveBtn.textContent = 'Saved ✓';
         if (typeof toast === 'function') toast('Tip saved!');
       };
+    }
+
+    /* Social links from admin settings */
+    if (sb) {
+      try {
+        var socRes = await sb.from('settings').select('key,value')
+          .in('key', ['social_facebook', 'social_linkedin']);
+        if (socRes.data && socRes.data.length) {
+          var socMap = {};
+          socRes.data.forEach(function(r){ socMap[r.key] = r.value; });
+          var fbEl  = container.querySelector('#tip-social-facebook');
+          var liEl  = container.querySelector('#tip-social-linkedin');
+          var rowEl = container.querySelector('#tip-social-links');
+          var anyShown = false;
+          if (fbEl && socMap.social_facebook) {
+            fbEl.href = socMap.social_facebook;
+            fbEl.style.display = 'flex';
+            anyShown = true;
+          }
+          if (liEl && socMap.social_linkedin) {
+            liEl.href = socMap.social_linkedin;
+            liEl.style.display = 'flex';
+            anyShown = true;
+          }
+          if (rowEl && anyShown) { rowEl.style.display = 'flex'; rowEl.style.flexDirection = 'row'; }
+        }
+      } catch(e) { /* silent */ }
     }
   }
 
