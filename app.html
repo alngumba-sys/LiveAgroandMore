@@ -9969,38 +9969,40 @@
 
     /* ── Photo cells — tap to pick from camera or gallery ── */
     var photoFiles = [null, null, null, null];
+    var INP_STYLE = 'position:absolute;inset:0;opacity:0;width:100%;height:100%;cursor:pointer;z-index:2';
+    var SVG_PLUS  = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>';
     container.querySelectorAll('.photo-cell').forEach(function(cell, idx) {
       /* Reset any static mockup styling */
       cell.classList.remove('filled');
       cell.style.backgroundImage = '';
-      cell.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>';
+      cell.style.position = 'relative';
+      cell.style.overflow  = 'hidden';
+
+      /* Build cell: SVG icon + full-cell transparent input overlay.
+         Using a visible-but-transparent input (not display:none) so iOS Safari
+         reliably fires the change event after camera / gallery selection. */
+      cell.innerHTML = SVG_PLUS;
 
       var inp = document.createElement('input');
-      inp.type = 'file';
+      inp.type   = 'file';
       inp.accept = 'image/*';
-      inp.capture = 'environment';   // opens rear camera directly on mobile
-      inp.style.display = 'none';
+      /* No capture="environment" — lets user choose Camera or Gallery */
+      inp.style.cssText = INP_STYLE;
       cell.appendChild(inp);
-      cell.style.cursor = 'pointer';
-
-      cell.addEventListener('click', function(e) {
-        if (e.target.dataset.removePhoto) return;
-        inp.click();
-      });
 
       inp.addEventListener('change', function() {
         var file = inp.files && inp.files[0];
         if (!file) return;
         photoFiles[idx] = file;
         var reader = new FileReader();
-        reader.onload = function(e) {
-          cell.style.backgroundImage  = 'url(' + e.target.result + ')';
+        reader.onload = function(ev) {
+          cell.style.backgroundImage   = 'url(' + ev.target.result + ')';
           cell.style.backgroundSize    = 'cover';
           cell.style.backgroundPosition = 'center';
           cell.classList.add('filled');
-          /* Clear inner content but keep the file input */
+          /* Clear SVG icon, keep the transparent input overlay */
           Array.from(cell.childNodes).forEach(function(n){ if (n !== inp) n.remove(); });
-          /* Remove button */
+          /* × remove button (above the input overlay) */
           var rm = document.createElement('div');
           rm.dataset.removePhoto = '1';
           rm.textContent = '×';
@@ -10012,8 +10014,8 @@
             inp.value = '';
             cell.style.backgroundImage = '';
             cell.classList.remove('filled');
-            Array.from(cell.childNodes).forEach(function(n){ if (n !== inp) n.remove(); });
-            cell.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>';
+            cell.innerHTML = SVG_PLUS;
+            inp.style.cssText = INP_STYLE;
             cell.appendChild(inp);
           });
         };
@@ -10121,8 +10123,8 @@
           var inp = cell.querySelector('input[type="file"]');
           cell.style.backgroundImage = '';
           cell.classList.remove('filled');
-          cell.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>';
-          if (inp) { inp.value = ''; cell.appendChild(inp); }
+          cell.innerHTML = SVG_PLUS;
+          if (inp) { inp.value = ''; inp.style.cssText = INP_STYLE; cell.appendChild(inp); }
         });
 
         /* Navigate back and refresh list */
