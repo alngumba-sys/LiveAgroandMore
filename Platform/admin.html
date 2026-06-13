@@ -9058,7 +9058,7 @@ window.openAdvisoryModal = function(id) {
   document.getElementById('ad-type').value       = row?.type || 'video';
   document.getElementById('ad-title').value      = row?.title || '';
   document.getElementById('ad-desc').value       = row?.description || '';
-  document.getElementById('ad-district').value   = row?.district || '';
+  document.getElementById('ad-district').value   = (Array.isArray(row?.target_districts) ? row.target_districts[0] : row?.target_districts) || '';
   document.getElementById('ad-language').value   = row?.language || 'english';
   document.getElementById('ad-url').value        = row?.source_url || '';
   document.getElementById('ad-duration').value   = row?.duration_seconds || '';
@@ -9171,7 +9171,7 @@ window.saveAdvisory = async function() {
     type:             document.getElementById('ad-type').value,
     title,
     description:      document.getElementById('ad-desc').value     || null,
-    district:         document.getElementById('ad-district').value.trim() || null,
+    target_districts: document.getElementById('ad-district').value.trim() ? [document.getElementById('ad-district').value.trim()] : null,
     language:         document.getElementById('ad-language').value,
     source_url:       document.getElementById('ad-url').value      || null,
     thumbnail_url:    thumbnailUrl,
