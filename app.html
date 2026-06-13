@@ -597,7 +597,7 @@
   .advice-card.teal{background:#E4F3F5;border-color:var(--teal)}
 
   /* ========================= TIP DETAIL ========================= */
-  .tip-hero{width:100%;background:#1a1a1a;margin:-14px -14px 14px;position:relative;overflow:hidden;min-height:80px}
+  .tip-hero{background:#1a1a1a;margin:-14px -14px 14px;position:relative;overflow:hidden;min-height:80px}
   .tip-hero img{width:100%;height:auto;display:block}
   .tip-hero::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 40%,rgba(0,21,36,.75) 100%)}
   .tip-hero .cap{position:absolute;bottom:10px;left:14px;color:var(--cream);z-index:2}
@@ -2142,13 +2142,24 @@
             <div class="field"><span class="label">Full Name</span><div class="input"><input type="text" placeholder="Your full name" autocomplete="off" style="flex:1;border:none;outline:none;background:transparent;font-family:inherit;font-size:13.5px;color:var(--ink);min-width:0;width:100%;padding:0"></div></div>
             <div class="field"><span class="label">Phone Number</span><div class="input"><span class="prefix">+256</span><span>—</span></div></div>
             <div class="field"><span class="label">Email Address <span style="color:var(--teal);font-weight:500">(optional)</span></span><div class="input"><span class="ph">nakato@email.ug</span></div></div>
-            <div class="field" data-loc-field>
-              <span class="label">Location <span style="color:var(--teal);font-weight:500;font-size:10px">· district &amp; sub-county</span></span>
-              <div style="position:relative">
-                <select data-loc-select style="width:100%;height:44px;border:1px solid var(--ink-10);border-bottom:1.5px solid var(--teal);border-radius:10px;padding:0 36px 0 12px;font-size:13px;font-family:inherit;color:var(--ink);background:#fff;cursor:pointer;outline:none;appearance:none;-webkit-appearance:none;-moz-appearance:none;box-sizing:border-box">
-                  <option value="">Select sub-county…</option>
-                </select>
-                <span style="position:absolute;right:12px;top:50%;transform:translateY(-50%);pointer-events:none;color:var(--ink-60);font-size:11px">▾</span>
+            <div class="field row" data-loc-field style="gap:8px">
+              <div style="flex:1;min-width:0">
+                <span class="label">District <span class="req">*</span></span>
+                <div class="input" style="display:flex;align-items:center">
+                  <select data-dist-select style="flex:1;border:none;background:transparent;font:inherit;font-size:12px;color:var(--ink);outline:none;-webkit-appearance:none;appearance:none;cursor:pointer;min-width:0">
+                    <option value="">District…</option>
+                  </select>
+                  <span style="pointer-events:none;color:var(--ink-60);flex-shrink:0">▾</span>
+                </div>
+              </div>
+              <div style="flex:1;min-width:0">
+                <span class="label">Sub-county</span>
+                <div class="input" style="display:flex;align-items:center">
+                  <select data-sub-select style="flex:1;border:none;background:transparent;font:inherit;font-size:12px;color:var(--ink);outline:none;-webkit-appearance:none;appearance:none;cursor:pointer;min-width:0">
+                    <option value="">Sub-county…</option>
+                  </select>
+                  <span style="pointer-events:none;color:var(--ink-60);flex-shrink:0">▾</span>
+                </div>
               </div>
             </div>
             <div class="field"><span class="label">Age Range</span><div class="pills"><div class="pill on">18 – 35</div><div class="pill">36 – 60</div></div></div>
@@ -8712,8 +8723,7 @@
   // 4 entry tiles: Talk to Expert | Ask AgroBot | Must-Watch Videos | Radio Recordings
   tag('advisory-1', '.adv-tile', 'advisory-2', 0);   // Talk to an Expert
   tag('advisory-1', '.adv-tile', 'advisory-7', 1);   // Ask AgroBot
-  tag('advisory-1', '.adv-tile', 'advisory-6', 2);   // Must-Watch Videos
-  tag('advisory-1', '.adv-tile', 'advisory-6', 3);   // Radio Recordings (same page as videos)
+  // Tiles 2 & 3 (Videos / Radio) are wired with mode in wireAdvisoryLanding()
   tag('advisory-1', '.tip-card',                  'advisory-2');   // Featured tip → expert directory
   tag('advisory-1', '.bell',                      'home-2');
   tag('advisory-1', '.avatar',                    'profile-1');
@@ -9297,15 +9307,22 @@
     fillField('Email',     profile.email);
     fillField('Village',   profile.sub_county);
 
-    /* District */
-    /* Location grouped select — pre-select based on saved profile */
-    var locSelEl = container.querySelector('[data-loc-select]');
-    if (locSelEl && profile.district) {
-      var targetVal = profile.district + '::' + (profile.sub_county || '');
-      /* Try exact match first, then district-only match */
-      var matched = Array.from(locSelEl.options).find(function(o){ return o.value === targetVal; })
-                 || Array.from(locSelEl.options).find(function(o){ return o.value.startsWith(profile.district + '::'); });
-      if (matched) locSelEl.value = matched.value;
+    /* District / Sub-county — pre-fill the two cascading selects */
+    var _preDistSel = container.querySelector('[data-dist-select]');
+    var _preSubSel  = container.querySelector('[data-sub-select]');
+    if (_preDistSel && profile.district) {
+      _preDistSel.value = profile.district;
+      /* Populate sub-county options for this district, then pre-select */
+      if (_preSubSel) {
+        var _FL = window.FARMER_LOCATIONS || {};
+        var _subs = _FL[profile.district] || [];
+        _preSubSel.innerHTML = '<option value="">Sub-county…</option>';
+        _subs.forEach(function(sc) {
+          var o = document.createElement('option'); o.value = sc; o.textContent = sc;
+          _preSubSel.appendChild(o);
+        });
+        if (profile.sub_county) _preSubSel.value = profile.sub_county;
+      }
     }
 
     /* ── Farmer-only fields: Age Range, Crops, Farm size ── */
@@ -10541,6 +10558,27 @@
         }
       } catch(e){ /* silent */ }
     }catch(e){ /* silent */ }
+
+    /* ── Wire tiles 2 & 3 to open advisory-6 in the right mode ── */
+    var tiles = container.querySelectorAll('.adv-tile');
+    var videoTile = tiles[2];
+    var radioTile = tiles[3];
+    function openMedia(mode) {
+      window.__advMediaMode = mode;
+      if(window.protoShow) window.protoShow('advisory-6');
+    }
+    if(videoTile && !videoTile.dataset.mediaWired){
+      videoTile.dataset.mediaWired = '1';
+      videoTile.removeAttribute('data-proto-go');
+      videoTile.style.cursor = 'pointer';
+      videoTile.addEventListener('click', function(e){ e.stopPropagation(); openMedia('video'); });
+    }
+    if(radioTile && !radioTile.dataset.mediaWired){
+      radioTile.dataset.mediaWired = '1';
+      radioTile.removeAttribute('data-proto-go');
+      radioTile.style.cursor = 'pointer';
+      radioTile.addEventListener('click', function(e){ e.stopPropagation(); openMedia('radio'); });
+    }
   }
 
   /* ---- advisory-2 speciality/language filter chip wiring ---- */
@@ -10709,17 +10747,34 @@
   async function loadAdvisoryContent(){
     var container = scr('advisory-6'); if(!container) return;
     var sb = window.__sb; if(!sb) return;
+
+    /* Set title based on mode */
+    var mode = window.__advMediaMode || 'video';
+    var titleEl = container.querySelector('.app-bar');
+    if(titleEl){
+      var titleNode = Array.from(titleEl.childNodes).find(function(n){ return n.nodeType===3 && n.textContent.trim(); });
+      if(titleNode) titleNode.textContent = ' ' + (mode==='radio' ? 'Radio Recordings' : 'Must-Watch Videos') + ' ';
+    }
+
     try{
+      var typeFilter = mode === 'radio' ? 'radio' : 'video';
       var res = await sb.from('advisory_content')
         .select('type,title,description,language,source_url,thumbnail_url,duration_seconds,published_at')
-        .eq('visibility','public').order('published_at',{ascending:false}).limit(24);
-      if(!res.data||!res.data.length) return;
+        .eq('type', typeFilter).eq('visibility','public').order('published_at',{ascending:false}).limit(24);
 
       var scroll = container.querySelector('.scroll'); if(!scroll) return;
       Array.from(scroll.querySelectorAll('.media-card,.media-hdr')).forEach(function(e){ e.remove(); });
 
-      var videos = res.data.filter(function(c){ return c.type==='video'; });
-      var radio  = res.data.filter(function(c){ return c.type==='radio'; });
+      if(!res.data||!res.data.length){
+        var empty = document.createElement('p');
+        empty.style.cssText='font-size:12px;color:var(--ink-60);padding:20px 0;text-align:center';
+        empty.textContent = mode==='radio' ? 'No radio recordings yet.' : 'No videos yet.';
+        scroll.appendChild(empty);
+        return;
+      }
+
+      var videos = mode==='radio' ? [] : res.data;
+      var radio  = mode==='radio' ? res.data : [];
 
       function dur(secs){
         if(!secs) return '';
@@ -14840,21 +14895,28 @@
 
     var locField = container.querySelector('[data-loc-field]');
     if (locField) {
-      /* Farmer grouped select: build optgroups from FARMER_LOCATIONS
-         (defined in the agent-flows IIFE, exported on window) */
+      /* Two cascading selects: District → Sub-county */
       var FL = window.FARMER_LOCATIONS || {};
-      var sel = locField.querySelector('[data-loc-select]');
-      if (sel) {
-        var html = '<option value="">Select sub-county…</option>';
-        Object.keys(FL).forEach(function(dist) {
-          html += '<optgroup label="' + dist + '">';
-          FL[dist].forEach(function(sub) {
-            html += '<option value="' + dist + '::' + sub + '">' + dist + ' – ' + sub + '</option>';
-          });
-          html += '</optgroup>';
+      var _dSel = locField.querySelector('[data-dist-select]');
+      var _sSel = locField.querySelector('[data-sub-select]');
+      if (_dSel) {
+        Object.keys(FL).sort().forEach(function(dist) {
+          var o = document.createElement('option'); o.value = dist; o.textContent = dist;
+          _dSel.appendChild(o);
         });
-        sel.innerHTML = html;
-        locSel = sel;
+        if (_sSel) {
+          _dSel.addEventListener('change', function() {
+            var subs = FL[_dSel.value] || [];
+            _sSel.innerHTML = '<option value="">Sub-county…</option>';
+            subs.forEach(function(sc) {
+              var o = document.createElement('option'); o.value = sc; o.textContent = sc;
+              _sSel.appendChild(o);
+            });
+          });
+        }
+        /* Synthetic locSel — value format "district::subcounty" used by submit handler */
+        locSel = { get value() { return _dSel.value ? (_dSel.value + '::' + ((_sSel && _sSel.value) || '')) : ''; } };
+        distSel = _dSel; subSel = _sSel;
       }
     } else {
       /* All other roles: two separate cascading selects */
@@ -18377,22 +18439,75 @@ window.foVisitPhotoChosen = function(input){
     var phoneInp=injectInput(fieldByLabel(s,'Phone'),{type:'tel',inputmode:'numeric',placeholder:'772 000 000'});
     var villInp =injectInput(fieldByLabel(s,'Village'),{placeholder:'Village / Parish'});
 
-    /* Single grouped location select */
-    var locSel=null;
-    var locField=s.querySelector('[data-loc-field]');
-    if(locField){
-      var sel=locField.querySelector('[data-loc-select]');
-      if(sel){
-        var html='<option value="">Select sub-county…</option>';
-        Object.keys(FARMER_LOCATIONS).forEach(function(dist){
-          html+='<optgroup label="'+dist+'">';
-          FARMER_LOCATIONS[dist].forEach(function(sub){
-            html+='<option value="'+dist+'::'+sub+'">'+dist+' – '+sub+'</option>';
-          });
-          html+='</optgroup>';
+    /* District + Sub-county: two cascading selects in the side-by-side .field.row */
+    var locSel = null;
+    var _distSel = null, _subSel = null;
+    var _rowField = null;
+    s.querySelectorAll('.field.row').forEach(function(f){
+      if(f.textContent.indexOf('District') >= 0) _rowField = f;
+    });
+    if(_rowField){
+      var _cols = _rowField.querySelectorAll(':scope > div');
+      var _distCol = _cols[0], _subCol = _cols[1];
+
+      function _makeSelect(col, placeholder, styleCss){
+        var box = col && col.querySelector('.input'); if(!box) return null;
+        var sel = document.createElement('select');
+        sel.style.cssText = styleCss || 'flex:1;border:none;background:transparent;font:inherit;font-size:12px;color:var(--ink);outline:none;-webkit-appearance:none;appearance:none;cursor:pointer;min-width:0;width:100%';
+        sel.innerHTML = '<option value="">' + placeholder + '</option>';
+        box.innerHTML = '';
+        box.style.cssText = (box.getAttribute('style')||'') + ';display:flex;align-items:center';
+        box.appendChild(sel);
+        var caret = document.createElement('span');
+        caret.textContent = '▾'; caret.style.cssText = 'pointer-events:none;color:var(--ink-60);flex-shrink:0';
+        box.appendChild(caret);
+        return sel;
+      }
+
+      /* Populate district select */
+      _distSel = _makeSelect(_distCol, 'District…');
+      if(_distSel){
+        Object.keys(FARMER_LOCATIONS).sort().forEach(function(d){
+          var o = document.createElement('option'); o.value = d; o.textContent = d;
+          _distSel.appendChild(o);
         });
-        sel.innerHTML=html;
-        locSel=sel;
+      }
+
+      /* Populate sub-county select (empty until district chosen) */
+      _subSel = _makeSelect(_subCol, 'Sub-county…');
+
+      if(_distSel && _subSel){
+        _distSel.addEventListener('change', function(){
+          var subs = FARMER_LOCATIONS[_distSel.value] || [];
+          _subSel.innerHTML = '<option value="">Sub-county…</option>';
+          subs.forEach(function(sc){
+            var o = document.createElement('option'); o.value = sc; o.textContent = sc;
+            _subSel.appendChild(o);
+          });
+        });
+
+        /* Synthetic locSel compatible with submit handler */
+        locSel = { get value(){ return _distSel.value ? (_distSel.value + '::' + (_subSel.value||'')) : ''; } };
+      }
+    }
+
+    /* Fallback: old grouped select (other screen variants) */
+    if(!locSel){
+      var locField=s.querySelector('[data-loc-field]');
+      if(locField){
+        var sel=locField.querySelector('[data-loc-select]');
+        if(sel){
+          var html='<option value="">Select sub-county…</option>';
+          Object.keys(FARMER_LOCATIONS).forEach(function(dist){
+            html+='<optgroup label="'+dist+'">';
+            FARMER_LOCATIONS[dist].forEach(function(sub){
+              html+='<option value="'+dist+'::'+sub+'">'+dist+' – '+sub+'</option>';
+            });
+            html+='</optgroup>';
+          });
+          sel.innerHTML=html;
+          locSel=sel;
+        }
       }
     }
 
