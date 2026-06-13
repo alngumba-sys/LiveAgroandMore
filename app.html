@@ -5138,8 +5138,18 @@
         <div class="progress"><span class="step">Step 1 of 3</span><div class="bar"><div class="fill" style="width:33%"></div></div></div>
         <div class="signup">
           <div class="body">
-            <h2>Tell us about the farmer</h2>
+            <h2>Tell us about the customer</h2>
             <p class="sub">You'll earn 5% commission on every order they place for the next 12 months.</p>
+
+            <div class="field">
+              <span class="label">Customer type <span class="req">*</span></span>
+              <div class="ctype-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:4px">
+                <div class="ctype-chip on" data-ctype="farmer" style="border:1.5px solid var(--teal);border-radius:10px;padding:8px 10px;font-size:11.5px;font-weight:600;color:var(--teal);background:var(--teal-bg,#E4F3F5);cursor:pointer;display:flex;align-items:center;gap:6px"><span>👨‍🌾</span> Farmer</div>
+                <div class="ctype-chip" data-ctype="agro_dealer" style="border:1.5px solid var(--ink-10);border-radius:10px;padding:8px 10px;font-size:11.5px;font-weight:600;color:var(--ink-60);background:#fff;cursor:pointer;display:flex;align-items:center;gap:6px"><span>🏪</span> Agro Dealer</div>
+                <div class="ctype-chip" data-ctype="farmer_group" style="border:1.5px solid var(--ink-10);border-radius:10px;padding:8px 10px;font-size:11.5px;font-weight:600;color:var(--ink-60);background:#fff;cursor:pointer;display:flex;align-items:center;gap:6px"><span>👥</span> Farmer Group</div>
+                <div class="ctype-chip" data-ctype="cooperative" style="border:1.5px solid var(--ink-10);border-radius:10px;padding:8px 10px;font-size:11.5px;font-weight:600;color:var(--ink-60);background:#fff;cursor:pointer;display:flex;align-items:center;gap:6px"><span>🤝</span> Cooperative</div>
+              </div>
+            </div>
 
             <div class="field"><span class="label">Full Name <span class="req">*</span></span><div class="input"><span>—</span></div></div>
             <div class="field"><span class="label">Phone Number <span class="req">*</span></span><div class="input"><span class="prefix">+256</span><span>—</span></div></div>
@@ -5961,20 +5971,25 @@
           </div>
 
           <div class="field">
-            <span class="label">Photos <span style="color:var(--teal);font-weight:500;font-size:10px">· up to 4 · visible to admin</span></span>
-            <div class="photo-grid">
-              <div class="photo-cell filled">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" style="position:relative;z-index:2"><rect x="3" y="5" width="18" height="14" rx="2" stroke="#fff" stroke-width="1.8"/><circle cx="12" cy="12" r="3" stroke="#fff" stroke-width="1.8"/></svg>
-              </div>
-              <div class="photo-cell filled">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" style="position:relative;z-index:2"><rect x="3" y="5" width="18" height="14" rx="2" stroke="#fff" stroke-width="1.8"/><circle cx="12" cy="12" r="3" stroke="#fff" stroke-width="1.8"/></svg>
-              </div>
-              <div class="photo-cell">
+            <span class="label">Photos <span style="color:var(--teal);font-weight:500;font-size:10px">· up to 4 · tap to take or upload</span></span>
+            <div class="photo-grid" id="fo-visit-photo-grid">
+              <!-- Photo slots injected by wireFarmVisitPhotos() -->
+              <label class="photo-cell" style="cursor:pointer;overflow:hidden;position:relative">
+                <input type="file" accept="image/*" style="position:absolute;inset:0;opacity:0;width:100%;height:100%;cursor:pointer" onchange="foVisitPhotoChosen(this)">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
-              </div>
-              <div class="photo-cell">
+              </label>
+              <label class="photo-cell" style="cursor:pointer;overflow:hidden;position:relative">
+                <input type="file" accept="image/*" style="position:absolute;inset:0;opacity:0;width:100%;height:100%;cursor:pointer" onchange="foVisitPhotoChosen(this)">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
-              </div>
+              </label>
+              <label class="photo-cell" style="cursor:pointer;overflow:hidden;position:relative">
+                <input type="file" accept="image/*" style="position:absolute;inset:0;opacity:0;width:100%;height:100%;cursor:pointer" onchange="foVisitPhotoChosen(this)">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+              </label>
+              <label class="photo-cell" style="cursor:pointer;overflow:hidden;position:relative">
+                <input type="file" accept="image/*" style="position:absolute;inset:0;opacity:0;width:100%;height:100%;cursor:pointer" onchange="foVisitPhotoChosen(this)">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+              </label>
             </div>
           </div>
 
@@ -7634,7 +7649,21 @@
             <span class="ph">Coffee, Hass avocado, matooke…</span>
           </div>
 
-          <div style="font-size:11px;font-weight:700;color:var(--ink);text-transform:uppercase;letter-spacing:.05em;margin:8px 0 8px">POPULAR GIFTS</div>
+          <div class="shop-toggle">
+            <div class="sto on">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+              Inputs for my farmer
+            </div>
+            <div class="sto">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12V22H4V12"/><path d="M22 7H2v5h20V7z"/><path d="M12 22V7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg>
+              Produce gifts
+            </div>
+          </div>
+
+          <!-- back bar shown when inside a category -->
+          <div class="dia-shop-back" style="display:none;cursor:pointer;font-size:12.5px;font-weight:700;color:var(--teal);padding:10px 0 8px;border-bottom:1px solid var(--ink-08);margin-bottom:8px"></div>
+
+          <div class="dia-shop-label" style="font-size:11px;font-weight:700;color:var(--ink);text-transform:uppercase;letter-spacing:.05em;margin:0 0 8px">SHOP BY CATEGORY</div>
 
           <div class="produce-grid">
             <div class="produce-card">
@@ -16828,6 +16857,30 @@
 })();
 </script>
 
+<!-- =================== FO VISIT PHOTO HELPER =================== -->
+<script>
+/* foVisitPhotoChosen(input) — called when a photo-cell file input changes.
+   Shows a preview in the cell and marks it "filled". On mobile, accept="image/*"
+   presents a native system chooser with both Camera and Gallery options. */
+window.foVisitPhotoChosen = function(input){
+  if(!input || !input.files || !input.files[0]) return;
+  var file = input.files[0];
+  var cell = input.closest('.photo-cell');
+  if(!cell) return;
+  var url = URL.createObjectURL(file);
+  cell.style.backgroundImage = 'url(' + url + ')';
+  cell.style.backgroundSize = 'cover';
+  cell.style.backgroundPosition = 'center';
+  cell.classList.add('filled');
+  /* Hide the "+" icon once a photo is chosen */
+  var icon = cell.querySelector('svg');
+  if(icon) icon.style.display = 'none';
+  /* Store for upload on submit */
+  if(!window.__foVisitPhotos) window.__foVisitPhotos = [];
+  window.__foVisitPhotos.push(file);
+};
+</script>
+
 <!-- =================== FO TOGGLES + EXPORT =================== -->
 <script>
 (function(){
@@ -17160,18 +17213,28 @@
   }
   function fo9OpenPicker(addChip, options, onPick){
     if(!options.length){ if(typeof toast==='function') toast('Nothing left to add'); return; }
-    var sel=document.createElement('select');
-    sel.style.cssText='position:fixed;z-index:99999;background:#fff;border:1.5px solid var(--teal,#15616D);border-radius:8px;padding:6px 10px;font-size:13px;font-family:inherit;cursor:pointer;box-shadow:0 4px 16px rgba(0,21,36,.2)';
-    var ph=document.createElement('option'); ph.value=''; ph.textContent='Select…'; ph.disabled=true; ph.selected=true; sel.appendChild(ph);
-    options.forEach(function(o){ var op=document.createElement('option'); op.value=o; op.textContent=o; sel.appendChild(op); });
-    var r=addChip.getBoundingClientRect();
-    sel.style.top=(r.bottom+window.scrollY+4)+'px';
-    sel.style.left=Math.max(8,r.left)+'px';
-    sel.size=Math.min(options.length+1,7);
-    document.body.appendChild(sel); sel.focus();
-    function close(){ if(document.body.contains(sel)) document.body.removeChild(sel); }
-    sel.addEventListener('change', function(){ var v=sel.value; close(); if(v) onPick(v); });
-    sel.addEventListener('blur', close);
+    /* Bottom-sheet modal — works reliably on mobile WebViews */
+    var ov=document.createElement('div');
+    ov.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:99999;display:flex;align-items:flex-end;justify-content:center';
+    var sheet=document.createElement('div');
+    sheet.style.cssText='background:#fff;width:100%;max-width:430px;border-radius:16px 16px 0 0;padding:14px 14px 28px;max-height:60vh;overflow-y:auto;box-shadow:0 -4px 24px rgba(0,0,0,.15)';
+    sheet.innerHTML='<div style="font-weight:800;font-size:13px;color:var(--ink);margin:4px 0 12px">Select an option</div>';
+    options.forEach(function(opt){
+      var row=document.createElement('div');
+      row.style.cssText='padding:11px 14px;border-radius:10px;font-size:13px;font-weight:600;color:var(--ink);background:#f8f8f6;margin-bottom:6px;cursor:pointer;border:1px solid var(--ink-10)';
+      row.textContent=opt;
+      row.addEventListener('click', function(){ close(); onPick(opt); });
+      sheet.appendChild(row);
+    });
+    var cancel=document.createElement('div');
+    cancel.style.cssText='margin-top:8px;padding:11px 14px;border-radius:10px;font-size:13px;font-weight:600;color:var(--rust);background:#fff;border:1px solid rgba(197,48,48,.2);text-align:center;cursor:pointer';
+    cancel.textContent='Cancel';
+    cancel.addEventListener('click', close);
+    sheet.appendChild(cancel);
+    ov.appendChild(sheet);
+    function close(){ if(document.body.contains(ov)) document.body.removeChild(ov); }
+    ov.addEventListener('click', function(e){ if(e.target===ov) close(); });
+    document.body.appendChild(ov);
   }
   function wireFO9Editors(){
     var container=scr('fo-9'); if(!container) return;
@@ -18283,6 +18346,24 @@
       }
     }
 
+    /* Customer type chips — single-select */
+    var selectedCtype = 'farmer';  /* default */
+    s.querySelectorAll('.ctype-chip').forEach(function(chip){
+      chip.addEventListener('click', function(){
+        s.querySelectorAll('.ctype-chip').forEach(function(c){
+          c.classList.remove('on');
+          c.style.border='1.5px solid var(--ink-10)';
+          c.style.color='var(--ink-60)';
+          c.style.background='#fff';
+        });
+        chip.classList.add('on');
+        chip.style.border='1.5px solid var(--teal)';
+        chip.style.color='var(--teal)';
+        chip.style.background='var(--teal-bg,#E4F3F5)';
+        selectedCtype = chip.getAttribute('data-ctype') || 'farmer';
+      });
+    });
+
     /* Age pills + crop chips are cosmetic — just toggle */
     s.querySelectorAll('.pills .pill').forEach(function(p){
       p.style.cursor='pointer';
@@ -18339,7 +18420,7 @@
             : 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c){
                 var r = Math.random()*16|0, v = c==='x' ? r : (r&0x3|0x8); return v.toString(16);
               });
-          var rowData={ auth_user_id:genUUID, full_name:name, phone:phone, role:'farmer', status:'active', referral_agent_id:agentId };
+          var rowData={ auth_user_id:genUUID, full_name:name, phone:phone, role:'farmer', status:'active', referral_agent_id:agentId, customer_type:selectedCtype };
           if(district) rowData.district=district;
           if(sub||village) rowData.sub_county=sub||village;
           var res=await sb.from('app_users').insert(rowData)
@@ -19198,7 +19279,9 @@
   async function renderShopProducts(){
     var s=scr('diaspora-4'); if(!s) return; var grid=s.querySelector('.produce-grid'); if(!grid) return;
     var sb=sbc(); if(!sb) return; var rate=await getRate();
-    var heading=grid.previousElementSibling;
+    /* Use dedicated named elements instead of previousElementSibling */
+    var backBar  = s.querySelector('.dia-shop-back');
+    var labelBar = s.querySelector('.dia-shop-label');
     function applyCmsImages(){ try{ var cms=JSON.parse(localStorage.getItem('amCmsImagesV1')||'null'); if(cms&&cms.map){ grid.querySelectorAll('[data-cms-slot]').forEach(function(el){ var u=cms.map[el.getAttribute('data-cms-slot')]; if(u){ el.src=u; el.style.display=''; } }); } }catch(e){} }
     function catFallback(cat){ var c=(cat||'').toLowerCase();
       if(c.indexOf('fert')>=0) return 'https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=600&q=80';
@@ -19208,21 +19291,15 @@
       if(c==='insecticides'||c==='herbicides'||c==='fungicides'||c.indexOf('protect')>=0) return 'https://images.unsplash.com/photo-1416879595882-3373a0480b5b?auto=format&fit=crop&w=600&q=80';
       return 'https://images.unsplash.com/photo-1530836369250-ef72a3f5cda8?auto=format&fit=crop&w=600&q=80';
     }
-    function setHeading(txt, backFn){
-      if(!heading) return;
-      heading.textContent=txt; heading.onclick=backFn||null;
-      var st=heading.style;
-      if(backFn){
-        /* Inside a category: pin the "‹ All categories" bar to the top while
-           the product list scrolls, so it's always available to go back. */
-        st.cursor='pointer'; st.position='sticky'; st.top='0'; st.zIndex='5';
-        st.background='var(--cream)'; st.margin='0 -14px 8px'; st.padding='10px 14px';
-        st.color='var(--teal)'; st.fontWeight='700'; st.fontSize='12.5px';
-        st.borderBottom='1px solid rgba(0,21,36,.08)';
+    function setHeading(txt, backCat){
+      if(backCat){
+        /* Inside a category: show back-bar, hide label */
+        if(backBar){ backBar.textContent='‹ All categories · '+backCat; backBar.style.display=''; backBar.onclick=function(){ window.__diaInputCat=null; renderShopProducts(); }; }
+        if(labelBar) labelBar.style.display='none';
       } else {
-        st.cursor=''; st.position=''; st.top=''; st.zIndex='';
-        st.background=''; st.margin=''; st.padding='';
-        st.color=''; st.fontWeight=''; st.fontSize=''; st.borderBottom='';
+        /* Root category grid: hide back-bar, show label */
+        if(backBar){ backBar.style.display='none'; backBar.onclick=null; }
+        if(labelBar){ labelBar.textContent=txt||'SHOP BY CATEGORY'; labelBar.style.display=''; }
       }
     }
     function renderCards(prods, emptyMsg){
@@ -19248,7 +19325,7 @@
 
     /* Category grid — the default view, all categories like the farmer shop */
     if(!window.__diaInputCat){
-      setHeading('SHOP BY CATEGORY', null);
+      setHeading('SHOP BY CATEGORY', null);  /* null backCat = root view */
       grid.style.gridTemplateColumns='1fr 1fr';
       var counts={}; try{ var cr=await sb.from('products').select('category').eq('status','active').eq('show_on_shop',true); (cr.data||[]).forEach(function(x){ if(x.category) counts[x.category]=(counts[x.category]||0)+1; }); }catch(e){}
       var names=[]; try{ var mc=await sb.from('settings').select('value').eq('key','product_categories').limit(1); if(mc.data&&mc.data[0]&&mc.data[0].value){ var parsed=JSON.parse(mc.data[0].value); if(Array.isArray(parsed)) names=parsed.map(function(x){return String(x).trim();}).filter(Boolean); } }catch(e){}
@@ -19266,8 +19343,8 @@
       return;
     }
 
-    /* Products inside the chosen category (heading doubles as back) */
-    setHeading('‹ All categories · '+window.__diaInputCat, function(){ window.__diaInputCat=null; renderShopProducts(); });
+    /* Products inside the chosen category — back-bar shows "‹ All categories · X" */
+    setHeading(null, window.__diaInputCat);
     var ip=[]; try{ var rr=await sb.from('products').select('id,name,category,price_ugx,diaspora_price_usd').eq('status','active').eq('show_on_shop',true).eq('category',window.__diaInputCat).order('created_at',{ascending:true}).limit(60); ip=(rr.data)||[]; }catch(e){ return; }
     renderCards(ip,'No products in this category yet.');
   }
