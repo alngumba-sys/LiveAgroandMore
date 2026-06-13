@@ -10065,14 +10065,22 @@
         var activePhotos = photoFiles.filter(Boolean);
         if (activePhotos.length) {
           submitBtn.textContent = 'Uploading photos…';
+          var uploadFailed = 0;
           for (var pi = 0; pi < photoFiles.length; pi++) {
             if (!photoFiles[pi]) continue;
             var ext  = (photoFiles[pi].name || 'jpg').split('.').pop().toLowerCase() || 'jpg';
             var path = 'visits/' + profile.id + '/' + Date.now() + '_' + pi + '.' + ext;
             var up   = await sb.storage.from('farm-visit-photos').upload(path, photoFiles[pi], { upsert: true });
-            if (up.error) { console.warn('Photo upload failed:', up.error); continue; }
+            if (up.error) {
+              console.warn('Photo upload failed:', up.error.message || up.error);
+              uploadFailed++;
+              continue;
+            }
             var pub  = sb.storage.from('farm-visit-photos').getPublicUrl(path);
             if (pub.data && pub.data.publicUrl) photoUrls.push(pub.data.publicUrl);
+          }
+          if (uploadFailed && typeof toast === 'function') {
+            toast(uploadFailed + ' photo(s) failed to upload — visit will be saved without them.', 'error');
           }
           submitBtn.textContent = 'Saving…';
         }
